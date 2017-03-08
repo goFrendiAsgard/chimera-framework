@@ -1,0 +1,29 @@
+{
+    "desc"    : "f = ((a+b) * (a-b)) + a",
+    "vars"    : {"a" : 0, "b" : 0, "c" : 0, "d" : 0, "e" : 0, "f" : 0},
+    "ins"     : ["a", "b"],
+    "out"     : "f",
+    "mode"    : "series",
+    "verbose" : true,
+    "chains"  : [
+        {
+            "mode"  : "parallel",
+            "chains" : [
+                {
+                    "desc" : "first process, using Python, c = a+b",
+                    "command" : "python tests/programs/add.py", "ins" : ["a", "b"], "out" : "c"},
+                {
+                    "desc" : "second process, using Java, d = a-b",
+                    "command" : "javac tests/programs/Substract.java && java -cp tests/programs/ Substract", "ins" : ["a", "b"], "out" : "d"}
+            ]
+        },
+        {
+            "desc" : "third process, using PHP, e = c*d",
+            "command" : "php tests/programs/multiply.php", "ins" : ["c", "d"], "out" : "e"
+        },
+        {
+            "desc" : "fourth process, using Javascript, f = e+a",
+            "command" : "node tests/programs/add.js", "ins" : ["e", "a"], "out" : "f"
+        }
+    ]
+}
