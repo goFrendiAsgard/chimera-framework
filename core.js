@@ -31,7 +31,7 @@ function execute(chainConfigs, argv, executeCallback){
     // The sub functions ================================================
 
     // this will show the output, or use custom callback to process the output
-    function lastProcessOutput(){
+    function lastProcessOutput(err, result){
         var output = 'out' in vars? vars.out: '';
         // execute the callback if defined, or show the output
         if(typeof(executeCallback) === 'function'){
@@ -54,6 +54,7 @@ function execute(chainConfigs, argv, executeCallback){
                 arg = arg.replace('\n', '\\n');
                 chain_command += ' "' + arg + '"';
             });
+            // run the command
             cmd.get(chain_command, function(data, err, stderr){
                 if(verbose){
                     console.info('[INFO] Running: ' + chain_command);
@@ -63,6 +64,7 @@ function execute(chainConfigs, argv, executeCallback){
                     if(verbose){
                         console.info('[INFO] States: ' + JSON.stringify(vars));
                     }
+                    // run callback if there is no error
                     callback();
                 }
                 else{
@@ -99,12 +101,14 @@ function execute(chainConfigs, argv, executeCallback){
         if(mode == 'series'){
             // series
             if(isCoreProcess){
-                actions.push(lastProcessOutput);
+                //actions.push(lastProcessOutput);
+                async.series(actions, lastProcessOutput);
             }
             else{
-                actions.push(runCallback);
+                async.series(actions, runCallback);
+                //actions.push(runCallback);
             }
-            async.series(actions);
+            //async.series(actions);
         }
         else{
             // parallel
