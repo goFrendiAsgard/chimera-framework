@@ -3,11 +3,48 @@ var cmd = require('node-cmd');
 var async = require('async');
 var fs = require('fs');
 
+function arrayToObject(array, keys){
+    var obj = {};
+    for(var i=0; i<keys.length; i++){
+        if(i< array.length){
+            obj[keys[i]] = array[i];
+        }
+    }
+    return obj;
+}
+
+function preprocessChain(chain){
+    if(typeof(chain) === 'object'){
+        if('series' in chain){
+            chain['mode'] = 'series';
+            chain['chains'] = chain['series'];
+        }
+        else if('parallel' in chain){
+            chain['mode'] = 'parallel';
+            chain['chains'] = chain['parallel'];
+        }
+    }
+    return chain;
+}
+
 function execute(chainConfigs, argv, executeCallback){
-    // get values from chainConfigs
+    chainConfigs = preprocessChain(chainConfigs);
+    // determine ins and out
+    var ins, out;
+    // first try to retrieve data from flows
+    if('flow' in chainConfigs){
+        var flowInfo = arrayToObject(chainConfigs.flow, ['ins', 'out']);
+        ins = flowInfo.ins;
+        out = flowInfo.out;
+    }
+    else{
+        // if data cannot be retrieved from flow, use ins and out instead
+        ins = 'ins' in chainConfigs? chainConfigs.ins: [];
+        out = 'out' in chainConfigs? chainConfigs.out: '_';
+    }
+
+    // get vars, chains, mode, and verbose
     var vars    = 'vars' in chainConfigs? chainConfigs.vars: {};
-    var ins     = 'ins' in chainConfigs? chainConfigs.ins: [];
-    var out     = 'out' in chainConfigs? chainConfigs.out: '_';
     var chains  = 'chains' in chainConfigs? chainConfigs.chains: [];
     var mode    = 'mode' in chainConfigs? chainConfigs.mode: 'series';
     var verbose = 'verbose' in chainConfigs? chainConfigs.verbose: false;
@@ -45,7 +82,8 @@ function execute(chainConfigs, argv, executeCallback){
     // get single chain command's executor
     function getChainRunner(chain){
         return function(callback){
-           var chain_command = chain.command;
+            // get command, ins, and out
+            var chain_command = chain.command;
             var chain_ins = 'ins' in chain? chain.ins : [];
             var chain_out = 'out' in chain? chain.out: '_';
             chain_ins.forEach(function(key){
@@ -78,8 +116,19 @@ function execute(chainConfigs, argv, executeCallback){
     function getActions(chains){
         var actions = [];
         chains.forEach(function(chain){
+            if(typeof(chain) == "string"){
+                // preprocess chain if it is a string
+                chain = {"ins" : [], "out" : "_", "command" : chain};
+            }
+            else if(Array.isArray(chain)){
+                // preprocess chain if it is an array
+                chain = arrayToObject(chain, ['ins', 'out', 'command']);
+            }
+            // preprocess chain
+            chain = preprocessChain(chain);
+            // determine appropriate action for chain based on it's subChains exixtance
             if('chains' in chain){
-                // chain has other subprocess
+                // chain has other subChains
                 var subMode = 'mode' in chain? chain.mode: 'series';
                 var subChains = 'chains' in chain? chain.chains: [];
                 actions.push(function(callback){
@@ -87,6 +136,7 @@ function execute(chainConfigs, argv, executeCallback){
                 });
             }
             else{
+                // chain doesn't have subChains
                 actions.push(getChainRunner(chain));
             }
         });

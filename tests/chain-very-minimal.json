@@ -1,0 +1,19 @@
+{
+    "flow"    : [["a", "b"], "f"],
+    "verbose" : true,
+    "series"  : [
+        {
+            "parallel" : [
+                [["a", "b"], "c", "python tests/programs/add.py"],
+                {
+                    "series": [
+                        "javac tests/programs/Substract.java",
+                        [["a", "b"], "d", "java -cp tests/programs/ Substract"]
+                    ]
+                }
+            ]
+        },
+        [["c", "d"], "e", "php tests/programs/multiply.php"],
+        [["e", "a"], "f", "node tests/programs/add.js"]
+    ]
+}
