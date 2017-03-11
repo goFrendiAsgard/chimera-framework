@@ -1,24 +1,26 @@
 {
-  "name": "chimera",
-  "version": "0.0.0",
-  "description": "A Framework that let you code in any programming language/paradigm",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "framework"
-  ],
-  "author": "goFrendi",
-  "license": "ISC",
-  "dependencies": {
-    "async": "^2.1.5",
-    "express": "^4.15.0",
-    "node-cmd": "^2.0.0",
-    "supervisor": "^0.12.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/username/repository.git"
-  }
+    "name": "chimera",
+    "version": "0.0.0",
+    "description": "A Framework to let you combine several codes into single flow",
+    "bin": {
+        "chimera": "chimera.js"
+    },
+    "scripts": {
+        "test": "test.sh"
+    },
+    "keywords": [
+        "framework"
+    ],
+    "author": "goFrendi",
+    "license": "ISC",
+    "dependencies": {
+        "async": "^2.1.5",
+        "express": "^4.15.0",
+        "node-cmd": "^2.0.0",
+        "supervisor": "^0.12.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/goFrendiAsgard/chimera.git"
+    }
 }

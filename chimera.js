@@ -1,3 +1,5 @@
+#! /usr/bin/env node
+
 // imports
 var cmd = require('node-cmd');
 var async = require('async');
