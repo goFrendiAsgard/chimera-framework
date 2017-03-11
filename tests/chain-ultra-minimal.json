@@ -1,6 +1,5 @@
 {
     "flow"    : [["a", "b"], "f"],
-    "verbose" : true,
     "series"  : [
         {
             "parallel" : [

@@ -184,11 +184,18 @@ if(require.main === module){
         fs.readFile(parameter, function(err, data){
             var chainConfigs = {};
             if(!err){
-                // if parameter is not file, then it is json
+                // parameter is a file
+                var parameterParts = parameter.split('/');
+                if(parameterParts.length > 1){
+                    // perform chdir if necessary
+                    var pathParts = parameterParts.slice(0,-1);
+                    var path = pathParts.join('/');
+                    process.chdir(path);
+                }
                 chainConfigs = JSON.parse(data);
             }
             else{
-                // otherwise it is really file, read it and parse
+                // parameter is a json, not a file
                 chainConfigs = JSON.parse(parameter);
             }
             execute(chainConfigs, argv);

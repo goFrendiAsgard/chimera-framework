@@ -4,3 +4,5 @@ echo "MINIMAL CHAIN"
 node core.js ./tests/chain-minimal.json 1 5
 echo "VERY MINIMAL CHAIN"
 node core.js ./tests/chain-very-minimal.json 1 5
+echo "ULTRA MINIMAL CHAIN"
+node core.js ./tests/chain-ultra-minimal.json 1 5

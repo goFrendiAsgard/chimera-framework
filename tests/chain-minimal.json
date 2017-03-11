@@ -7,17 +7,17 @@
             "mode"  : "parallel",
             "chains" : [
                 {
-                    "command" : "python tests/programs/add.py",
+                    "command" : "python programs/add.py",
                     "ins" : ["a", "b"],
                     "out" : "c"
                 },
                 {
                     "chains": [
                         {
-                            "command" : "javac tests/programs/Substract.java"
+                            "command" : "javac programs/Substract.java"
                         },
                         {
-                            "command" : "java -cp tests/programs/ Substract",
+                            "command" : "java -cp programs/ Substract",
                             "ins" : ["a", "b"],
                             "out" : "d"
                         }
@@ -26,12 +26,12 @@
             ]
         },
         {
-            "command" : "php tests/programs/multiply.php",
+            "command" : "php programs/multiply.php",
             "ins" : ["c", "d"],
             "out" : "e"
         },
         {
-            "command" : "node tests/programs/add.js",
+            "command" : "node programs/add.js",
             "ins" : ["e", "a"],
             "out" : "f"
         }

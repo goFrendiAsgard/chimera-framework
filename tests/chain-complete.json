@@ -11,7 +11,7 @@
             "chains" : [
                 {
                     "desc" : "first process, using Python, c = a+b",
-                    "command" : "python tests/programs/add.py",
+                    "command" : "python programs/add.py",
                     "ins" : ["a", "b"],
                     "out" : "c"
                 },
@@ -20,11 +20,11 @@
                     "chains" : [
                         {
                             "desc" : "compile Substract.java",
-                            "command" : "javac tests/programs/Substract.java"
+                            "command" : "javac programs/Substract.java"
                         },
                         {
                             "desc" : "second process, using Java, d = a-b",
-                            "command" : "java -cp tests/programs/ Substract",
+                            "command" : "java -cp programs/ Substract",
                             "ins" : ["a", "b"],
                             "out" : "d"
                         }
@@ -34,13 +34,13 @@
         },
         {
             "desc" : "third process, using PHP, e = c*d",
-            "command" : "php tests/programs/multiply.php",
+            "command" : "php programs/multiply.php",
             "ins" : ["c", "d"],
             "out" : "e"
         },
         {
             "desc" : "fourth process, using Javascript, f = e+a",
-            "command" : "node tests/programs/add.js",
+            "command" : "node programs/add.js",
             "ins" : ["e", "a"],
             "out" : "f"
         }
