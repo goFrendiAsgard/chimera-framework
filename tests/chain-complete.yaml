@@ -42,7 +42,7 @@ chains:
               - b
             out: d
             command: java -cp programs Substract
-   # Process 3 (in PHP)
+  # Process 3 (in PHP)
   - ins:
       - c
       - d

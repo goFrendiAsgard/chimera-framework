@@ -18,11 +18,11 @@ npm link
 # Is it working?
 
 The test case is located in `test.sh`, it requires `php`, `python`, and `jdk`.
-You will get `-23` is result.
+You will get `-23` as result.
 
 # Example
 
-* Define your chain progress in yaml format
+* Define your chain progress in `yaml` format
 
 TODO: provide an explanation
 
@@ -55,7 +55,7 @@ series:
           - ins: a, b
             out: d
             command: java -cp programs Substract
-   # Process 3 (in PHP)
+  # Process 3 (in PHP)
   - ins: c, d
     out: e
     command: php programs/multiply.php
