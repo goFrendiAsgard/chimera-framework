@@ -22,6 +22,13 @@ function preprocessChain(chain){
 
 function preprocessIns(ins){
     if(typeof(ins) === 'string'){
+        ins = ins.split(',');
+        // trim the spaces
+        newIns = [];
+        ins.forEach(function(input){
+            newIns.push(input.trim());
+        });
+        ins = newIns;
     }
     return ins;
 }
@@ -36,6 +43,9 @@ function execute(chainConfigs, argv, executeCallback){
     var chains  = 'chains' in chainConfigs? chainConfigs.chains: [];
     var mode    = 'mode' in chainConfigs? chainConfigs.mode: 'series';
     var verbose = 'verbose' in chainConfigs? chainConfigs.verbose: false;
+
+    // preprocess "ins"
+    ins = preprocessIns(ins);
 
     // populate "vars" based on "ins" and "process.argv"
     ins.forEach(function(key, index){
@@ -71,22 +81,24 @@ function execute(chainConfigs, argv, executeCallback){
     function getChainRunner(chain){
         return function(callback){
             // get command, ins, and out
-            var chain_command = chain.command;
-            var chain_ins = 'ins' in chain? chain.ins : [];
-            var chain_out = 'out' in chain? chain.out: '_';
-            chain_ins.forEach(function(key){
+            var chainCommand = chain.command;
+            var chainIns = 'ins' in chain? chain.ins : [];
+            var chainOut = 'out' in chain? chain.out: '_';
+            // preprocess "ins"
+            chainIns = preprocessIns(chainIns);
+            chainIns.forEach(function(key){
                 var arg = String(vars[key]);
                 arg = arg.replace('"', '\"');
                 arg = arg.replace('\n', '\\n');
-                chain_command += ' "' + arg + '"';
+                chainCommand += ' "' + arg + '"';
             });
             // run the command
-            cmd.get(chain_command, function(data, err, stderr){
+            cmd.get(chainCommand, function(data, err, stderr){
                 if(verbose){
-                    console.info('[INFO] Running: ' + chain_command);
+                    console.info('[INFO] Running: ' + chainCommand);
                 }
                 if(!err){
-                    vars[chain_out] = data.trim();
+                    vars[chainOut] = data.trim();
                     if(verbose){
                         console.info('[INFO] States: ' + JSON.stringify(vars));
                     }

@@ -9,17 +9,13 @@
 # Process 1 and Process 2 will be executed in parallel since they both aren't depend to each another
 # After Process 1 and Process 2 finished, Process 3 and Process 4 should be executed in serial as Process 3 depend on both Process 1 and 2, and Process 4 depend on Process 3
 
-ins: # The inputs of main process
-  - a
-  - b
+ins: a,b # The inputs of main process
 out: f # The outputs of main process
 series:
   # Process 1 and 2
   - parallel:
       # Process 1 (in Python)
-      - ins:
-          - a
-          - b
+      - ins: a, b
         out: c
         command: python programs/add.py
       - mode: series
@@ -27,20 +23,14 @@ series:
           # Compile Substract.java into Substract.class
           - javac programs/Substract.java
           # Process 2 (in Java)
-          - ins:
-              - a
-              - b
+          - ins: a, b
             out: d
             command: java -cp programs Substract
    # Process 3 (in PHP)
-  - ins:
-      - c
-      - d
+  - ins: c, d
     out: e
     command: php programs/multiply.php
   # Process 4 (in Javascript)
-  - ins:
-      - e
-      - a
+  - ins: e, a
     out: f
     command: node programs/add.js
