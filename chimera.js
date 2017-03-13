@@ -4,16 +4,7 @@
 var cmd = require('node-cmd');
 var async = require('async');
 var fs = require('fs');
-
-function arrayToObject(array, keys){
-    var obj = {};
-    for(var i=0; i<keys.length; i++){
-        if(i< array.length){
-            obj[keys[i]] = array[i];
-        }
-    }
-    return obj;
-}
+var yaml = require('js-yaml');
 
 function preprocessChain(chain){
     if(typeof(chain) === 'object'){
@@ -29,23 +20,18 @@ function preprocessChain(chain){
     return chain;
 }
 
+function preprocessIns(ins){
+    if(typeof(ins) === 'string'){
+    }
+    return ins;
+}
+
 function execute(chainConfigs, argv, executeCallback){
     chainConfigs = preprocessChain(chainConfigs);
-    // determine ins and out
-    var ins, out;
-    // first try to retrieve data from flows
-    if('flow' in chainConfigs){
-        var flowInfo = arrayToObject(chainConfigs.flow, ['ins', 'out']);
-        ins = flowInfo.ins;
-        out = flowInfo.out;
-    }
-    else{
-        // if data cannot be retrieved from flow, use ins and out instead
-        ins = 'ins' in chainConfigs? chainConfigs.ins: [];
-        out = 'out' in chainConfigs? chainConfigs.out: '_';
-    }
 
-    // get vars, chains, mode, and verbose
+    // get ins, out, vars, chains, mode, and verbose
+    var ins     = 'ins' in chainConfigs? chainConfigs.ins: [];
+    var out     = 'out' in chainConfigs? chainConfigs.out: '_';
     var vars    = 'vars' in chainConfigs? chainConfigs.vars: {};
     var chains  = 'chains' in chainConfigs? chainConfigs.chains: [];
     var mode    = 'mode' in chainConfigs? chainConfigs.mode: 'series';
@@ -118,13 +104,9 @@ function execute(chainConfigs, argv, executeCallback){
     function getActions(chains){
         var actions = [];
         chains.forEach(function(chain){
-            if(typeof(chain) == "string"){
-                // preprocess chain if it is a string
-                chain = {"ins" : [], "out" : "_", "command" : chain};
-            }
-            else if(Array.isArray(chain)){
-                // preprocess chain if it is an array
-                chain = arrayToObject(chain, ['ins', 'out', 'command']);
+            // preprocess chain if it is a string
+            if(typeof(chain) == 'string'){
+                chain = {'ins' : [], 'out' : '_', 'command' : chain};
             }
             // preprocess chain
             chain = preprocessChain(chain);
@@ -153,16 +135,13 @@ function execute(chainConfigs, argv, executeCallback){
         if(mode == 'series'){
             // series
             if(isCoreProcess){
-                //actions.push(lastProcessOutput);
                 async.series(actions, lastProcessOutput);
             }
             else{
                 async.series(actions, runCallback);
-                //actions.push(runCallback);
             }
-            //async.series(actions);
         }
-        else{
+        else if(mode == 'parallel'){
             // parallel
             if(isCoreProcess){
                 async.parallel(actions, lastProcessOutput);
@@ -194,11 +173,11 @@ if(require.main === module){
                     var path = pathParts.join('/');
                     process.chdir(path);
                 }
-                chainConfigs = JSON.parse(data);
+                chainConfigs = yaml.safeLoad(data);
             }
             else{
                 // parameter is a json, not a file
-                chainConfigs = JSON.parse(parameter);
+                chainConfigs = yaml.safeLoad(parameter);
             }
             execute(chainConfigs, argv);
         });

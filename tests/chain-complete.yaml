@@ -1,32 +1,3 @@
-# Chimera Framework
-
-Chimera is a nodejs based framework that let you write parts of your processes in different programming languages and run it as a whole.
-
-# Installation
-
-```sh
-git clone git@github.com:goFrendiAsgard/chimera.git
-npm link
-```
-
-# Prerequisites
-
-* nodejs
-* npm
-* any programming languages you want to use
-
-# Is it working?
-
-The test case is located in `test.sh`, it requires `php`, `python`, and `jdk`.
-You will get `-23` is result.
-
-# Example
-
-* Define your chain progress in JSON format
-
-TODO: provide an explanation
-
-```yaml
 # THE PROCESS:
 #   f = ((a+b) * (a-b)) + a
 # THE SUBPROCESSES
@@ -38,13 +9,23 @@ TODO: provide an explanation
 # Process 1 and Process 2 will be executed in parallel since they both aren't depend to each another
 # After Process 1 and Process 2 finished, Process 3 and Process 4 should be executed in serial as Process 3 depend on both Process 1 and 2, and Process 4 depend on Process 3
 
+vars: # The variables
+  a : 0
+  b : 0
+  c : 0
+  d : 0
+  e : 0
+  f : 0
 ins: # The inputs of main process
   - a
   - b
 out: f # The outputs of main process
-series:
+mode: series # The process will be done in serial
+verbose: yes # yes to activate verbose mode, no to deactivate it
+chains:
   # Process 1 and 2
-  - parallel:
+  - mode: parallel
+    chains:
       # Process 1 (in Python)
       - ins:
           - a
@@ -54,7 +35,7 @@ series:
       - mode: series
         chains:
           # Compile Substract.java into Substract.class
-          - javac programs/Substract.java
+          - command: javac programs/Substract.java
           # Process 2 (in Java)
           - ins:
               - a
@@ -73,6 +54,3 @@ series:
       - a
     out: f
     command: node programs/add.js
-```
-
-* Execute the chain by invoking `chimera your-chain-file 5 1`. This will give you `29`
