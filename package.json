@@ -1,7 +1,7 @@
 {
     "name": "chimera",
-    "version": "0.0.0",
-    "description": "A Framework to let you combine several codes into single flow",
+    "version": "0.0.1",
+    "description": "A Framework to let you combine several codes into a single flow",
     "bin": {
         "chimera": "chimera.js",
         "checkAndCompile": "compile.js"
