@@ -21,7 +21,7 @@ series:
       - mode: series
         chains:
           # Compile Substract.java into Substract.class
-          - javac programs/Substract.java
+          - checkAndCompile Substract.java Substract.class javac programs/Substract.java
           # Process 2 (in Java)
           - ins: a, b
             out: d

@@ -13,4 +13,5 @@ public class Substract
         int n2 = Integer.parseInt(args[1]);
         System.out.println(substract(n1, n2));
     }
+
 }

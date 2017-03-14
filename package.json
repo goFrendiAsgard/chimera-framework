@@ -1,25 +1,26 @@
 {
-  "name": "chimera",
-  "version": "0.0.0",
-  "description": "A Framework to let you combine several codes into single flow",
-  "bin": {
-    "chimera": "chimera.js"
-  },
-  "scripts": {
-    "test": "test.sh"
-  },
-  "keywords": [
-    "framework"
-  ],
-  "author": "goFrendi",
-  "license": "ISC",
-  "dependencies": {
-    "async": "^2.1.5",
-    "js-yaml": "^3.8.2",
-    "node-cmd": "^2.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/goFrendiAsgard/chimera.git"
-  }
+    "name": "chimera",
+    "version": "0.0.0",
+    "description": "A Framework to let you combine several codes into single flow",
+    "bin": {
+        "chimera": "chimera.js",
+        "checkAndCompile": "compile.js"
+    },
+    "scripts": {
+        "test": "test.sh"
+    },
+    "keywords": [
+        "framework"
+    ],
+    "author": "goFrendi",
+    "license": "ISC",
+    "dependencies": {
+        "async": "^2.1.5",
+        "js-yaml": "^3.8.2",
+        "node-cmd": "^2.0.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/goFrendiAsgard/chimera.git"
+    }
 }

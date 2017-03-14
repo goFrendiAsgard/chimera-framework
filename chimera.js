@@ -196,10 +196,10 @@ if(require.main === module){
     }
     else{
         // show missing arguments warning
-        console.log('Missing Arguments');
-        console.log('USAGE:');
-        console.log('* core.js [chain-file]');
-        console.log('* core.js [json-formatted-chain]');
+        console.error('Missing Arguments');
+        console.error('USAGE:');
+        console.error('* ' + process.argv[1] + ' [chain-file]');
+        console.error('* ' + process.argv[1] + ' [yaml-formatted-chain]');
     }
 }
 
