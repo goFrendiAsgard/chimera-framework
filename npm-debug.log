@@ -1,0 +1,108 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/bin/nodejs', '/usr/bin/npm', 'publish' ]
+2 info using npm@3.10.10
+3 info using node@v6.10.0
+4 verbose publish [ '.' ]
+5 silly cache add args [ '.', null ]
+6 verbose cache add spec .
+7 silly cache add parsed spec Result {
+7 silly cache add   raw: '.',
+7 silly cache add   scope: null,
+7 silly cache add   escapedName: null,
+7 silly cache add   name: null,
+7 silly cache add   rawSpec: '.',
+7 silly cache add   spec: '/home/gofrendi/chimera',
+7 silly cache add   type: 'directory' }
+8 verbose addLocalDirectory /home/gofrendi/.npm/chimera-framework/0.0.1/package.tgz not in flight; packing
+9 verbose correctMkdir /home/gofrendi/.npm correctMkdir not in flight; initializing
+10 info lifecycle chimera-framework@0.0.1~prepublish: chimera-framework@0.0.1
+11 silly lifecycle chimera-framework@0.0.1~prepublish: no script for prepublish, continuing
+12 verbose tar pack [ '/home/gofrendi/.npm/chimera-framework/0.0.1/package.tgz',
+12 verbose tar pack   '/home/gofrendi/chimera' ]
+13 verbose tarball /home/gofrendi/.npm/chimera-framework/0.0.1/package.tgz
+14 verbose folder /home/gofrendi/chimera
+15 verbose addLocalTarball adding from inside cache /home/gofrendi/.npm/chimera-framework/0.0.1/package.tgz
+16 verbose correctMkdir /home/gofrendi/.npm correctMkdir not in flight; initializing
+17 silly cache afterAdd chimera-framework@0.0.1
+18 verbose afterAdd /home/gofrendi/.npm/chimera-framework/0.0.1/package/package.json not in flight; writing
+19 verbose correctMkdir /home/gofrendi/.npm correctMkdir not in flight; initializing
+20 verbose afterAdd /home/gofrendi/.npm/chimera-framework/0.0.1/package/package.json written
+21 silly publish { name: 'chimera-framework',
+21 silly publish   version: '0.0.1',
+21 silly publish   description: 'A Framework to let you combine several codes into a single flow',
+21 silly publish   bin: { chimera: 'chimera.js', checkAndCompile: 'compile.js' },
+21 silly publish   scripts: { test: 'test.sh' },
+21 silly publish   keywords: [ 'framework' ],
+21 silly publish   author: { name: 'goFrendi' },
+21 silly publish   license: 'ISC',
+21 silly publish   dependencies: { async: '^2.1.5', 'js-yaml': '^3.8.2', 'node-cmd': '^2.0.0' },
+21 silly publish   repository:
+21 silly publish    { type: 'git',
+21 silly publish      url: 'git://github.com/goFrendiAsgard/chimera.git' },
+21 silly publish   readme: '# Chimera Framework\n\nChimera is a nodejs based framework that let you write parts of your processes in different programming languages and run it as a whole.\n\n# Installation\n\n* From source (require `git`)\n\n```sh\ngit clone git@github.com:goFrendiAsgard/chimera.git\nnpm link\n```\n* Using npm\n\n```sh\nnpm install --global chimera-framework\n```\n\n# Prerequisites\n\n* nodejs\n* npm\n* any programming languages you want to use\n\n# Is it working?\n\nThe test case is located in `test.sh`, it requires `php`, `python`, and `jdk`.\nYou will get `-23` as result.\n\n# Example\n\n* Define your chain progress in `yaml` format\n\nLet\'s try to make a chain file to execute `Python`, `Javascript`, `Java`, and `PHP` program to solve a simple math problem\n\n\n```yaml\n# THE MAIN PROCESS:\n#   f = ((a+b) * (a-b)) + a\n# THE SUBPROCESSES:\n#   Process 1: c = a + b (we will use Python)\n#   Process 2: d = a - b (we will use Java)\n#   Process 3: e = c * d (we will use PHP)\n#   Process 4: f = e + a (we will use javascript)\n# THE FLOW:\n# Process 1 and Process 2 will be executed in parallel since they both aren\'t depend to each another\n# After Process 1 and Process 2 finished, Process 3 and Process 4 should be executed in serial \n# as Process 3 depend on both Process 1 and 2, and Process 4 depend on Process 3\n\nins: a,b # The inputs of main process\nout: f # The outputs of main process\nseries:\n  # Process 1 and 2\n  - parallel:\n      # Process 1 (in Python)\n      - ins: a, b\n        out: c\n        command: python programs/add.py\n      - mode: series\n        chains:\n          # Compile Substract.java into Substract.class\n          - javac programs/Substract.java\n          # Process 2 (in Java)\n          - ins: a, b\n            out: d\n            command: java -cp programs Substract\n  # Process 3 (in PHP)\n  - ins: c, d\n    out: e\n    command: php programs/multiply.php\n  # Process 4 (in Javascript)\n  - ins: e, a\n    out: f\n    command: node programs/add.js\n```\n\n* Execute the chain by invoking `chimera your-chain-file 5 1`. This will give you `29`\n',
+21 silly publish   readmeFilename: 'README.md',
+21 silly publish   gitHead: '3de1d42c6d56b3ce28bbf96beeadae1efd612f7d',
+21 silly publish   bugs: { url: 'https://github.com/goFrendiAsgard/chimera/issues' },
+21 silly publish   homepage: 'https://github.com/goFrendiAsgard/chimera#readme',
+21 silly publish   _id: 'chimera-framework@0.0.1',
+21 silly publish   _shasum: 'b84e0652094e5ebce7f3c05213988cb83222c205',
+21 silly publish   _from: '.' }
+22 verbose getPublishConfig undefined
+23 silly mapToRegistry name chimera-framework
+24 silly mapToRegistry using default registry
+25 silly mapToRegistry registry https://registry.npmjs.org/
+26 silly mapToRegistry data Result {
+26 silly mapToRegistry   raw: 'chimera-framework',
+26 silly mapToRegistry   scope: null,
+26 silly mapToRegistry   escapedName: 'chimera-framework',
+26 silly mapToRegistry   name: 'chimera-framework',
+26 silly mapToRegistry   rawSpec: '',
+26 silly mapToRegistry   spec: 'latest',
+26 silly mapToRegistry   type: 'tag' }
+27 silly mapToRegistry uri https://registry.npmjs.org/chimera-framework
+28 verbose publish registryBase https://registry.npmjs.org/
+29 silly publish uploading /home/gofrendi/.npm/chimera-framework/0.0.1/package.tgz
+30 verbose request uri https://registry.npmjs.org/chimera-framework
+31 verbose request sending authorization for write operation
+32 info attempt registry request try #1 at 7:20:34 PM
+33 verbose request using bearer token for auth
+34 verbose request id a1de3b3e1e3e1595
+35 http request PUT https://registry.npmjs.org/chimera-framework
+36 http 403 https://registry.npmjs.org/chimera-framework
+37 verbose headers { 'content-type': 'application/json',
+37 verbose headers   'cache-control': 'max-age=300',
+37 verbose headers   'content-length': '95',
+37 verbose headers   'accept-ranges': 'bytes',
+37 verbose headers   date: 'Tue, 14 Mar 2017 12:20:35 GMT',
+37 verbose headers   via: '1.1 varnish',
+37 verbose headers   connection: 'keep-alive',
+37 verbose headers   'x-served-by': 'cache-sin6925-SIN',
+37 verbose headers   'x-cache': 'MISS',
+37 verbose headers   'x-cache-hits': '0',
+37 verbose headers   'x-timer': 'S1489494034.768243,VS0,VE241',
+37 verbose headers   vary: 'Accept-Encoding' }
+38 verbose request invalidating /home/gofrendi/.npm/registry.npmjs.org/chimera-framework on PUT
+39 error publish Failed PUT 403
+40 verbose stack Error: "You cannot publish over the previously published version 0.0.1." : chimera-framework
+40 verbose stack     at makeError (/usr/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:302:12)
+40 verbose stack     at CachingRegistryClient.<anonymous> (/usr/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:290:14)
+40 verbose stack     at Request._callback (/usr/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:210:14)
+40 verbose stack     at Request.self.callback (/usr/lib/node_modules/npm/node_modules/request/request.js:187:22)
+40 verbose stack     at emitTwo (events.js:106:13)
+40 verbose stack     at Request.emit (events.js:191:7)
+40 verbose stack     at Request.<anonymous> (/usr/lib/node_modules/npm/node_modules/request/request.js:1048:10)
+40 verbose stack     at emitOne (events.js:96:13)
+40 verbose stack     at Request.emit (events.js:188:7)
+40 verbose stack     at IncomingMessage.<anonymous> (/usr/lib/node_modules/npm/node_modules/request/request.js:969:12)
+41 verbose statusCode 403
+42 verbose pkgid chimera-framework
+43 verbose cwd /home/gofrendi/chimera
+44 error Linux 4.4.0-66-generic
+45 error argv "/usr/bin/nodejs" "/usr/bin/npm" "publish"
+46 error node v6.10.0
+47 error npm  v3.10.10
+48 error code E403
+49 error "You cannot publish over the previously published version 0.0.1." : chimera-framework
+50 error If you need help, you may report this error at:
+50 error     <https://github.com/npm/npm/issues>
+51 verbose exit [ 1, true ]
