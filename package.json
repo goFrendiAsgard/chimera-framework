@@ -1,5 +1,5 @@
 {
-    "name": "chimera",
+    "name": "chimera-framework",
     "version": "0.0.1",
     "description": "A Framework to let you combine several codes into a single flow",
     "bin": {

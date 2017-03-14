@@ -4,9 +4,16 @@ Chimera is a nodejs based framework that let you write parts of your processes i
 
 # Installation
 
+* From source (require `git`)
+
 ```sh
 git clone git@github.com:goFrendiAsgard/chimera.git
 npm link
+```
+* Using npm
+
+```sh
+npm install --global chimera-framework
 ```
 
 # Prerequisites
@@ -24,19 +31,21 @@ You will get `-23` as result.
 
 * Define your chain progress in `yaml` format
 
-TODO: provide an explanation
+Let's try to make a chain file to execute `Python`, `Javascript`, `Java`, and `PHP` program to solve a simple math problem
+
 
 ```yaml
-# THE PROCESS:
+# THE MAIN PROCESS:
 #   f = ((a+b) * (a-b)) + a
-# THE SUBPROCESSES
-#   Process 1: c = a + b 
-#   Process 2: d = a - b
-#   Process 3: e = c * d
-#   Process 4: f = e + a
-# THE FLOW
+# THE SUBPROCESSES:
+#   Process 1: c = a + b (we will use Python)
+#   Process 2: d = a - b (we will use Java)
+#   Process 3: e = c * d (we will use PHP)
+#   Process 4: f = e + a (we will use javascript)
+# THE FLOW:
 # Process 1 and Process 2 will be executed in parallel since they both aren't depend to each another
-# After Process 1 and Process 2 finished, Process 3 and Process 4 should be executed in serial as Process 3 depend on both Process 1 and 2, and Process 4 depend on Process 3
+# After Process 1 and Process 2 finished, Process 3 and Process 4 should be executed in serial 
+# as Process 3 depend on both Process 1 and 2, and Process 4 depend on Process 3
 
 ins: a,b # The inputs of main process
 out: f # The outputs of main process
