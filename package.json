@@ -1,7 +1,7 @@
 {
     "name": "chimera-framework",
     "version": "0.0.3",
-    "description": "A Framework to let you combine several programming languages into a single flow",
+    "description": "Chimera-framework is a nodejs based framework that let you write any task in any language, and combine them for a greater good.",
     "bin": {
         "chimera": "core.js",
         "checkAndCompile": "compile.js"
@@ -10,7 +10,7 @@
         "test": "node test.js"
     },
     "keywords": [
-        "framework"
+        "framework", "chain", "multiple-programming-language"
     ],
     "author": "goFrendi",
     "license": "ISC",

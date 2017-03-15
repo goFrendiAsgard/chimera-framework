@@ -98,3 +98,23 @@ series:
 ```
 
 * Execute the chain by invoking `chimera your-chain-file.yaml 5 1`. This will give you `29`
+
+# Similar projects, inspirations, and how chimera-framework different from them
+
+* Polyglot (https://github.com/sausheong/polyglot)
+
+In polyglot, single process flow is written in a single programming language. However, you can have a lot of process flows, which each of them can be written in different languages.
+
+In chimera-framework, singe process can be divided into several sub-processes. Every sub-process can be written in different language.
+
+* Beaker notebook (http://beakernotebook.com/)
+
+This one is quite similar to chimera-framework. However, the main purpose of beaker is for prototyping and note-taking. In beaker a cell cannot be used in different notebook. You should copy the cell into another notebook in order to use the same piece of code.
+
+* Invoker (http://dota2.gamepedia.com/Invoker)
+
+A hard-to-master DOTA hero. Not even a framework. Has cool abilities which are combination of 3 orbs.
+
+* Chimera (https://en.wikipedia.org/wiki/Chimera_(mythology))
+
+Legendary creature. Combination of goat, lion, and snake.
