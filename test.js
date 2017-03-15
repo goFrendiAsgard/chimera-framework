@@ -1,23 +1,26 @@
-var yaml = require('js-yaml');
-var fs = require('fs');
+const assert = require('assert');
+const cmd = require('node-cmd');
 
-var parameter = process.argv[2];
-fs.readFile(parameter, function(err, data){
-    var chainConfigs = {};
-    if(!err){
-        // parameter is a file
-        var parameterParts = parameter.split('/');
-        if(parameterParts.length > 1){
-            // perform chdir if necessary
-            var pathParts = parameterParts.slice(0,-1);
-            var path = pathParts.join('/');
-            process.chdir(path);
-        }
-        chainConfigs = yaml.safeLoad(data);
-    }
-    else{
-        // parameter is a json, not a file
-        chainConfigs = yaml.saveLoad(parameter);
-    }
-    console.log(JSON.stringify(chainConfigs, null, 2));
+// assert chain complete
+command = 'chimera tests/chain-complete.yaml 1 5';
+cmd.get(command, function(data, err, stderr){
+    // show command
+    console.log(command);
+    // data contains several lines
+    console.log(data);
+    // get the last line
+    lines = data.trim().split('\n');
+    lastLine = lines[lines.length - 1];
+    assert(lastLine == -23, 'test chain-complete failed');
+
+    // assert chain minimal
+    command = 'chimera tests/chain-minimal.yaml 1 5';
+    cmd.get(command, function(data, err, stderr){
+        // show command
+        console.log(command);
+        // show data
+        console.log(data);
+        assert(data == -23, 'test chain-complete failed');
+    });
+
 });

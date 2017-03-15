@@ -1,13 +1,13 @@
 {
     "name": "chimera-framework",
-    "version": "0.0.2",
-    "description": "A Framework to let you combine several codes into a single flow",
+    "version": "0.0.3",
+    "description": "A Framework to let you combine several programming languages into a single flow",
     "bin": {
-        "chimera": "chimera.js",
+        "chimera": "core.js",
         "checkAndCompile": "compile.js"
     },
     "scripts": {
-        "test": "test.sh"
+        "test": "node test.js"
     },
     "keywords": [
         "framework"
