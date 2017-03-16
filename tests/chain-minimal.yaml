@@ -18,11 +18,10 @@ series:
       - ins: a, b
         out: c
         command: python programs/add.py
-      - mode: series
-        chains:
-          # Compile Substract.java into Substract.class
+      - series: # Process 2 (in Java)
+          # First, compile the source 
           - checkAndCompile Substract.java Substract.class javac programs/Substract.java
-          # Process 2 (in Java)
+          # then run the program
           - ins: a, b
             out: d
             command: java -cp programs Substract

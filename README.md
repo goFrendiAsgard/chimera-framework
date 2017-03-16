@@ -47,7 +47,7 @@ npm install --global chimera-framework
 
 # Is it working?
 
-You can run the test case by running `npm test.js`. There will be two cases and each of them will yield `-23`
+You can run the test case by running `npm test`. There will be two cases and each of them will yield `-23`
 
 # Example
 
@@ -70,7 +70,7 @@ Let's try to make a chain file to execute `Python`, `Javascript`, `Java`, and `P
 # After Process 1 and Process 2 finished, Process 3 and Process 4 should be executed in serial 
 # Process 3 depend on both Process 1 and 2, and Process 4 depend on Process 3
 
-ins: a, b # The inputs of main process
+ins: a,b # The inputs of main process
 out: f # The outputs of main process
 series:
   # Process 1 and 2
@@ -79,11 +79,10 @@ series:
       - ins: a, b
         out: c
         command: python programs/add.py
-      - mode: series
-        chains:
-          # Compile Substract.java into Substract.class
+      - series: # Process 2 (in Java)
+          # First, compile the source 
           - javac programs/Substract.java
-          # Process 2 (in Java)
+          # then run the program
           - ins: a, b
             out: d
             command: java -cp programs Substract
