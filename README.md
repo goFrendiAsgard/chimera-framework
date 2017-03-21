@@ -6,23 +6,23 @@ Chimera-framework is a nodejs based framework that let you write any task in any
 
 * Most programming languages support command line interface
 
-Perl, python, php, ruby, haskell, javascript, c, java, pascal, R, and even matlab (See http://stackoverflow.com/questions/6657005/matlab-running-an-m-file-from-command-line) are supporting command line interface (CLI). Through CLI, different programs can communicate to each others. Chimera-framework provide mechanism to store global variables and to orchastrate the programs into a single flow.
+    Perl, python, php, ruby, haskell, javascript, c, java, pascal, R, and even matlab (See http://stackoverflow.com/questions/6657005/matlab-running-an-m-file-from-command-line) are supporting command line interface (CLI). Through CLI, different programs can communicate to each others. Chimera-framework provide mechanism to store global variables and to orchastrate the programs into a single flow.
 
 * Some programming languages are better at some cases while other are excelled at other cases
 
-You might love PHP from the bottom of your heart, but it doesn't change the fact that doing heavy-statistic computation in R is easier. Rather than trying to make PHP do what R do, it is more easier to just use R instead.
+    You might love PHP from the bottom of your heart, but it doesn't change the fact that doing heavy-statistic computation in R is easier. Rather than trying to make PHP do what R do, it is more easier to just use R instead.
 
 * Atomic process
 
-Unix has a great philosophy. It encourage programmers to build a single program to do a single task. Nowadays, people try to make one thing to rule out everything. This might sounds good at first, but the effort will be futile. It is better to keep everything simple and combine those simple process to achieve a greater good.
+    Unix has a great philosophy. It encourage programmers to build a single program to do a single task. Nowadays, people try to make one thing to rule out everything. This might sounds good at first, but the effort will be futile. It is better to keep everything simple and combine those simple process to achieve a greater good.
 
 * Scalability
 
-By creating independent simple programs, you can make a lot of possibility. There is a hero in DOTA named Invoker that can combine his orbs to activate 10 different abilities (http://dota2.gamepedia.com/Invoker#Invoked_abilities). Rather than building a monolithic program that won't scale, it is better to make simple programs, and combine them as you need.
+    By creating independent simple programs, you can make a lot of possibility. There is a hero in DOTA named Invoker that can combine his orbs to activate 10 different abilities (http://dota2.gamepedia.com/Invoker#Invoked_abilities). Rather than building a monolithic program that won't scale, it is better to make simple programs, and combine them as you need.
 
 * Less language migration
 
-Sometime you need a certain feature that is only available in an esoteric-new-programming-language. You learn the language, convert all your old projects into this new language, and loosing the meaning of life. Just never do that anymore. Chimera framework goal is to let you write any task in any language, and combine them to achieve a greater good.
+    Sometime you need a certain feature that is only available in an esoteric-new-programming-language. You learn the language, convert all your old projects into this new language, and loosing the meaning of life. Just never do that anymore. Chimera framework goal is to let you write any task in any language, and combine them to achieve a greater good.
 
 
 # Installation
@@ -49,11 +49,11 @@ npm install --global chimera-framework
 
 You can run the test case by running `npm test`. There will be two cases and each of them will yield `-23`
 
-# Example
+# Usage (command line)
 
 * Define your chain progress in `yaml` format
 
-Let's try to make a chain file to execute `Python`, `Javascript`, `Java`, and `PHP` program to solve a simple math problem
+    Let's try to make a chain file to execute `Python`, `Javascript`, `Java`, and `PHP` program to solve a simple math problem
 
 
 ```yaml
@@ -96,24 +96,54 @@ series:
     command: node programs/add.js
 ```
 
-* Execute the chain by invoking `chimera your-chain-file.yaml 5 1`. This will give you `29`
+    * Execute the chain by invoking: 
+
+```sh
+chimera your-chain-file.yaml 5 1
+``` 
+
+    This will give you `29`
+
+# Usage (programmatically)
+
+```javascript
+const chimera = require('chimera-framework/core');
+
+// without presets
+chimera.executeYaml('your-chain-file.yaml', [5, 1], {}, function(output){
+    console.log(output);
+});
+
+
+// with presets
+chimera.executeYaml('your-chain-file.yaml', {}, {a: 5, b: 1}, function(output){
+    console.log(output);
+});
+```
+
+Function `executeYaml` has 4 parameters, `executeYaml(yamlFile, inputs, presets, callback)`
+
+* `yamlFile` : The chain file in YAML format
+* `inputs` : Array of inputs
+* `presets` : Initial values of variables
+* `callback` : Callback function. Should has one parameter to hold the output of the chain
 
 # Similar projects, inspirations, and how chimera-framework different from them
 
 * Polyglot (https://github.com/sausheong/polyglot)
 
-In polyglot, single process flow is written in a single programming language. However, you can have a lot of process flows, which each of them can be written in different languages.
+    In polyglot, single process flow is written in a single programming language. However, you can have a lot of process flows, which each of them can be written in different languages.
 
-In chimera-framework, singe process can be divided into several sub-processes. Every sub-process can be written in different language.
+    In chimera-framework, singe process can be divided into several sub-processes. Every sub-process can be written in different language.
 
 * Beaker notebook (http://beakernotebook.com/)
 
-This one is quite similar to chimera-framework. However, the main purpose of beaker is for prototyping and note-taking. In beaker a cell cannot be used in different notebook. You should copy the cell into another notebook in order to use the same piece of code.
+    This one is quite similar to chimera-framework. However, the main purpose of beaker is for prototyping and note-taking. In beaker a cell cannot be used in different notebook. You should copy the cell into another notebook in order to use the same piece of code.
 
 * Invoker (http://dota2.gamepedia.com/Invoker)
 
-A hard-to-master DOTA hero. Not even a framework. Has cool abilities which are combination of 3 orbs.
+    A hard-to-master DOTA hero. Not even a framework. Has cool abilities which are combination of 3 orbs.
 
 * Chimera (https://en.wikipedia.org/wiki/Chimera_(mythology))
 
-Legendary creature. Combination of goat, lion, and snake.
+    Legendary creature. Combination of goat, lion, and snake.
