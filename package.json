@@ -1,26 +1,37 @@
 {
-    "name": "chimera-framework",
-    "version": "0.0.4",
-    "description": "Chimera-framework is a nodejs based framework that let you write any task in any language, and combine them for a greater good.",
-    "bin": {
-        "chimera": "core.js",
-        "checkAndCompile": "compile.js"
-    },
-    "scripts": {
-        "test": "node test.js"
-    },
-    "keywords": [
-        "framework", "chain", "multiple-programming-language"
-    ],
-    "author": "goFrendi",
-    "license": "ISC",
-    "dependencies": {
-        "async": "^2.1.5",
-        "js-yaml": "^3.8.2",
-        "node-cmd": "^2.0.0"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/goFrendiAsgard/chimera.git"
-    }
+  "name": "chimera-framework",
+  "version": "0.0.5",
+  "description": "Chimera-framework is a nodejs based framework that let you write any task in any language, and combine them for a greater good.",
+  "bin": {
+    "chimera": "core.js",
+    "checkAndCompile": "compile.js"
+  },
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [
+    "framework",
+    "chain",
+    "multiple-programming-language"
+  ],
+  "author": "goFrendi",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.1.5",
+    "js-yaml": "^3.8.2",
+    "node-cmd": "^2.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/goFrendiAsgard/chimera.git"
+  },
+  "bugs": {
+    "url": "https://github.com/goFrendiAsgard/chimera/issues"
+  },
+  "homepage": "https://github.com/goFrendiAsgard/chimera#readme",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {}
 }

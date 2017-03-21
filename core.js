@@ -33,7 +33,7 @@ function preprocessIns(ins){
     return ins;
 }
 
-function execute(chainConfigs, argv, executeCallback){
+function execute(chainConfigs, argv, presets, executeCallback){
     chainConfigs = preprocessChain(chainConfigs);
 
     // get ins, out, vars, chains, mode, and verbose
@@ -43,6 +43,13 @@ function execute(chainConfigs, argv, executeCallback){
     var chains  = 'chains' in chainConfigs? chainConfigs.chains: [];
     var mode    = 'mode' in chainConfigs? chainConfigs.mode: 'series';
     var verbose = 'verbose' in chainConfigs? chainConfigs.verbose: false;
+
+    // combine vars with presets
+    if(typeof presets == 'object'){
+        Object.keys(presets).forEach(function(key){
+            vars[key] = presets[key];
+        });
+    }
 
     // preprocess "ins"
     ins = preprocessIns(ins);
@@ -166,6 +173,28 @@ function execute(chainConfigs, argv, executeCallback){
 
 }
 
+function executeYaml(parameter, argv, presets, executeCallback){
+    fs.readFile(parameter, function(err, data){
+        var chainConfigs = {};
+        if(!err){
+            // parameter is a file
+            var parameterParts = parameter.split('/');
+            if(parameterParts.length > 1){
+                // perform chdir if necessary
+                var pathParts = parameterParts.slice(0,-1);
+                var path = pathParts.join('/');
+                process.chdir(path);
+            }
+            chainConfigs = yaml.safeLoad(data);
+        }
+        else{
+            // parameter is a json, not a file
+            chainConfigs = yaml.safeLoad(parameter);
+        }
+        execute(chainConfigs, argv, presets, executeCallback);
+    });
+}
+
 // This will be executed when someone run this module manually
 if(require.main === module){
     if(process.argv.length > 2){
@@ -173,26 +202,8 @@ if(require.main === module){
         var parameter = process.argv[2];
         // second until last arguments are input of the first chain
         var argv = process.argv.slice(3);
-        // assume parameter is file
-        fs.readFile(parameter, function(err, data){
-            var chainConfigs = {};
-            if(!err){
-                // parameter is a file
-                var parameterParts = parameter.split('/');
-                if(parameterParts.length > 1){
-                    // perform chdir if necessary
-                    var pathParts = parameterParts.slice(0,-1);
-                    var path = pathParts.join('/');
-                    process.chdir(path);
-                }
-                chainConfigs = yaml.safeLoad(data);
-            }
-            else{
-                // parameter is a json, not a file
-                chainConfigs = yaml.safeLoad(parameter);
-            }
-            execute(chainConfigs, argv);
-        });
+        // execute Yaml
+        executeYaml(parameter, argv);
     }
     else{
         // show missing arguments warning
@@ -205,5 +216,6 @@ if(require.main === module){
 
 // The exported resources
 module.exports = {
-    'execute' : execute
+    'execute' : execute,
+    'executeYaml' : executeYaml
 };
