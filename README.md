@@ -102,7 +102,7 @@ series:
 chimera your-chain-file.yaml 5 1
 ``` 
 
-    This will give you `29`
+This will give you `29` as  `((5+1) * (5-1)) + a = 29`
 
 # Usage (programmatically)
 
