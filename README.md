@@ -96,7 +96,7 @@ series:
     command: node programs/add.js
 ```
 
-    * Execute the chain by invoking: 
+* Execute the chain by invoking: 
 
 ```sh
 chimera your-chain-file.yaml 5 1
