@@ -31,6 +31,7 @@ Chimera-framework is a nodejs based framework that let you write any task in any
 
 ```sh
 git clone git@github.com:goFrendiAsgard/chimera.git
+npm install
 npm link
 ```
 * Using npm
