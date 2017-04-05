@@ -8,6 +8,7 @@ var yaml = require('js-yaml');
 
 function preprocessChain(chain){
     if(typeof(chain) === 'object'){
+        // try to build chains and mode
         if('series' in chain){
             chain['mode'] = 'series';
             chain['chains'] = chain['series'];
@@ -34,6 +35,14 @@ function preprocessIns(ins){
 }
 
 function execute(chainConfigs, argv, presets, executeCallback){
+    // don't do anything if chainConfigs is wrong
+    if(typeof(chainConfigs) != 'object'){
+        console.error('[ERROR] Unable to fetch chain');
+        executeCallback('', false);
+        return null;
+    }
+
+    // preprocessing
     chainConfigs = preprocessChain(chainConfigs);
 
     // get ins, out, vars, chains, mode, and verbose
@@ -43,6 +52,15 @@ function execute(chainConfigs, argv, presets, executeCallback){
     var chains  = 'chains' in chainConfigs? chainConfigs.chains: [];
     var mode    = 'mode' in chainConfigs? chainConfigs.mode: 'series';
     var verbose = 'verbose' in chainConfigs? chainConfigs.verbose: false;
+
+    // secondary preprocessing in case of the chain config only contains single command
+    if(typeof(chainConfigs) == 'object' && ('command' in chainConfigs)){
+        chains = [{
+            'command' : chainConfigs['command'],
+            'ins' : ins,
+            'out' : out,
+        }]; 
+    }
 
     // combine vars with presets
     if(typeof presets == 'object'){
@@ -77,7 +95,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
         var output = 'out' in vars? vars.out: '';
         // execute the callback if defined, or show the output
         if(typeof(executeCallback) === 'function'){
-            executeCallback(vars[out]);
+            executeCallback(vars[out], true);
         }
         else{
             console.log(vars[out]);
@@ -94,9 +112,15 @@ function execute(chainConfigs, argv, presets, executeCallback){
             // preprocess "ins"
             chainIns = preprocessIns(chainIns);
             chainIns.forEach(function(key){
-                var arg = String(vars[key]);
-                arg = arg.replace('"', '\"');
-                arg = arg.replace('\n', '\\n');
+                var arg = '';
+                if(typeof(vars[key]) == 'object'){
+                    arg = JSON.stringify(vars[key]);
+                }
+                else{
+                    arg = String(vars[key]);
+                }
+                arg = arg.replace(/"/g, '\\\"');
+                arg = arg.replace(/\n/g, '\\n');
                 chainCommand += ' "' + arg + '"';
             });
             // run the command
@@ -114,6 +138,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
                 }
                 else{
                     console.info('[ERROR] Message: ' + stderr);
+                    executeCallback('', false);
                 }
             });
         };
@@ -176,6 +201,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
 function executeYaml(parameter, argv, presets, executeCallback){
     fs.readFile(parameter, function(err, data){
         var chainConfigs = {};
+        var currentPath = process.cwd();
         if(!err){
             // parameter is a file
             var parameterParts = parameter.split('/');
@@ -191,7 +217,16 @@ function executeYaml(parameter, argv, presets, executeCallback){
             // parameter is a json, not a file
             chainConfigs = yaml.safeLoad(parameter);
         }
-        execute(chainConfigs, argv, presets, executeCallback);
+        // ensure we going back to this directory
+        alteredCallback = function(response, success){
+            // ensure we return to current dir
+            process.chdir(currentPath);
+            // execute callback
+            if(typeof(executeCallback) === 'function'){
+                executeCallback(response, success);
+            }
+        }
+        execute(chainConfigs, argv, presets, alteredCallback);
     });
 }
 

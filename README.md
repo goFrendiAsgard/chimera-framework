@@ -127,7 +127,7 @@ Function `executeYaml` has 4 parameters, `executeYaml(yamlFile, inputs, presets,
 * `yamlFile` : The chain file in YAML format
 * `inputs` : Array of inputs
 * `presets` : Initial values of variables
-* `callback` : Callback function. Should has one parameter to hold the output of the chain
+* `callback` : Callback function. Should has two parameter. The first parameter to hold the output of the chain, while the second one is boolean which value is going to be `true` if the chain succeed
 
 # Similar projects, inspirations, and how chimera-framework different from them
 

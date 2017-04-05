@@ -1,0 +1,18 @@
+# Here you can define all of your routes in YAML format
+# Defining routes is as easy as this:
+#
+# get:
+#   your_route: your_chain.yaml
+# post:
+#   your_route: your_chain.yaml
+# put:
+#   your_route: your_chain.yaml
+# delete:
+#   your_route: your_chain.yaml
+# all:
+#   your_route: your_chain.yaml
+#   your_other_route: your_other_chain.yaml
+
+get:
+  "/": "chains/index.yaml"
+  "/:name": "chains/index.yaml"
