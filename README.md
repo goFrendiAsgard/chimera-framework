@@ -129,6 +129,10 @@ Function `executeYaml` has 4 parameters, `executeYaml(yamlFile, inputs, presets,
 * `presets` : Initial values of variables
 * `callback` : Callback function. Should has two parameter. The first parameter to hold the output of the chain, while the second one is boolean which value is going to be `true` if the chain succeed
 
+# Soon, The web framework everyone dreaming of
+
+![demo](doc/web-framework.png)
+
 # Similar projects, inspirations, and how chimera-framework different from them
 
 * Polyglot (https://github.com/sausheong/polyglot)
