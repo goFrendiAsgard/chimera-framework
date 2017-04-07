@@ -238,7 +238,7 @@ if(require.main === module){
         // second until last arguments are input of the first chain
         var argv = process.argv.slice(3);
         // execute Yaml
-        executeYaml(parameter, argv);
+        executeYaml(parameter, argv, {}, console.log);
     }
     else{
         // show missing arguments warning
