@@ -119,8 +119,8 @@ function execute(chainConfigs, argv, presets, executeCallback){
                 else{
                     arg = String(vars[key]);
                 }
-                //arg = arg.replace(/"/g, '\\\"');
-                //arg = arg.replace(/\n/g, '\\n');
+                arg = arg.replace(/"/g, '\\\"');
+                arg = arg.replace(/\n/g, '\\n');
                 chainCommand += ' "' + arg + '"';
             });
             // run the command
@@ -129,8 +129,9 @@ function execute(chainConfigs, argv, presets, executeCallback){
                     console.info('[INFO] Running: ' + chainCommand);
                 }
                 if(!err){
-                    //data = data.replace(/\\\"/g, '"');
-                    //data = data.replace(/\\n/g, '\n');
+                    data = data.replace(/\\\"/g, '"');
+                    data = data.replace(/\\n/g, '\n');
+                    //console.log(data);
                     vars[chainOut] = data;
                     if(verbose){
                         console.info('[INFO] States: ' + JSON.stringify(vars));

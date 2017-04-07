@@ -1,0 +1,11 @@
+ins: anyWord
+out: output
+series:
+  - out: currentCalendar
+    command: cal
+  - ins: anyWord
+    out: cow
+    command: cowsay
+  - ins: currentCalendar, cow
+    out: output
+    command: echo
