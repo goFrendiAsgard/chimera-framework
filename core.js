@@ -92,13 +92,13 @@ function execute(chainConfigs, argv, presets, executeCallback){
 
     // this will show the output, or use custom callback to process the output
     function lastProcessOutput(err, result){
-        var output = 'out' in vars? vars.out: '';
+        var output = out in vars? vars[out]: '';
         // execute the callback if defined, or show the output
         if(typeof(executeCallback) === 'function'){
-            executeCallback(vars[out], true);
+            executeCallback(output, true);
         }
         else{
-            console.log(vars[out]);
+            console.log(output);
         }
     }
 
@@ -119,8 +119,8 @@ function execute(chainConfigs, argv, presets, executeCallback){
                 else{
                     arg = String(vars[key]);
                 }
-                arg = arg.replace(/"/g, '\\\"');
-                arg = arg.replace(/\n/g, '\\n');
+                //arg = arg.replace(/"/g, '\\\"');
+                //arg = arg.replace(/\n/g, '\\n');
                 chainCommand += ' "' + arg + '"';
             });
             // run the command
@@ -129,7 +129,9 @@ function execute(chainConfigs, argv, presets, executeCallback){
                     console.info('[INFO] Running: ' + chainCommand);
                 }
                 if(!err){
-                    vars[chainOut] = data.trim();
+                    //data = data.replace(/\\\"/g, '"');
+                    //data = data.replace(/\\n/g, '\n');
+                    vars[chainOut] = data;
                     if(verbose){
                         console.info('[INFO] States: ' + JSON.stringify(vars));
                     }
@@ -225,6 +227,9 @@ function executeYaml(parameter, argv, presets, executeCallback){
             if(typeof(executeCallback) === 'function'){
                 executeCallback(response, success);
             }
+            else if(success){
+                console.log(response);
+            }
         }
         execute(chainConfigs, argv, presets, alteredCallback);
     });
@@ -238,7 +243,7 @@ if(require.main === module){
         // second until last arguments are input of the first chain
         var argv = process.argv.slice(3);
         // execute Yaml
-        executeYaml(parameter, argv, {}, console.log);
+        executeYaml(parameter, argv);
     }
     else{
         // show missing arguments warning
