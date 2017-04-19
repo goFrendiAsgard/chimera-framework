@@ -1,0 +1,111 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/bin/nodejs', '/usr/bin/npm', 'publish' ]
+2 info using npm@3.10.10
+3 info using node@v6.10.2
+4 verbose publish [ '.' ]
+5 silly cache add args [ '.', null ]
+6 verbose cache add spec .
+7 silly cache add parsed spec Result {
+7 silly cache add   raw: '.',
+7 silly cache add   scope: null,
+7 silly cache add   escapedName: null,
+7 silly cache add   name: null,
+7 silly cache add   rawSpec: '.',
+7 silly cache add   spec: '/home/gofrendi/chimera',
+7 silly cache add   type: 'directory' }
+8 verbose addLocalDirectory /home/gofrendi/.npm/chimera-framework/0.0.7/package.tgz not in flight; packing
+9 verbose correctMkdir /home/gofrendi/.npm correctMkdir not in flight; initializing
+10 info lifecycle chimera-framework@0.0.7~prepublish: chimera-framework@0.0.7
+11 silly lifecycle chimera-framework@0.0.7~prepublish: no script for prepublish, continuing
+12 verbose tar pack [ '/home/gofrendi/.npm/chimera-framework/0.0.7/package.tgz',
+12 verbose tar pack   '/home/gofrendi/chimera' ]
+13 verbose tarball /home/gofrendi/.npm/chimera-framework/0.0.7/package.tgz
+14 verbose folder /home/gofrendi/chimera
+15 verbose addLocalTarball adding from inside cache /home/gofrendi/.npm/chimera-framework/0.0.7/package.tgz
+16 verbose correctMkdir /home/gofrendi/.npm correctMkdir not in flight; initializing
+17 silly cache afterAdd chimera-framework@0.0.7
+18 verbose afterAdd /home/gofrendi/.npm/chimera-framework/0.0.7/package/package.json not in flight; writing
+19 verbose correctMkdir /home/gofrendi/.npm correctMkdir not in flight; initializing
+20 verbose afterAdd /home/gofrendi/.npm/chimera-framework/0.0.7/package/package.json written
+21 silly publish { name: 'chimera-framework',
+21 silly publish   version: '0.0.7',
+21 silly publish   description: 'Chimera-framework is a nodejs based framework that let you write any task in any language, and combine them for a greater good.',
+21 silly publish   bin: { chimera: 'core.js', checkAndCompile: 'compile.js' },
+21 silly publish   scripts: { test: 'node test.js' },
+21 silly publish   keywords: [ 'framework', 'chain', 'multiple-programming-language' ],
+21 silly publish   author: { name: 'goFrendi' },
+21 silly publish   license: 'ISC',
+21 silly publish   dependencies: { async: '^2.1.5', 'js-yaml': '^3.8.2', 'node-cmd': '^2.0.0' },
+21 silly publish   repository:
+21 silly publish    { type: 'git',
+21 silly publish      url: 'git://github.com/goFrendiAsgard/chimera.git' },
+21 silly publish   bugs: { url: 'https://github.com/goFrendiAsgard/chimera/issues' },
+21 silly publish   homepage: 'https://github.com/goFrendiAsgard/chimera#readme',
+21 silly publish   main: 'index.js',
+21 silly publish   directories: { test: 'tests' },
+21 silly publish   devDependencies: {},
+21 silly publish   readme: '# Chimera Framework\n\nChimera-framework is a nodejs based framework that let you write any task in any language, and combine them for a greater good.\n\n# Motivation\n\n* Most programming languages support command line interface\n\n    Perl, python, php, ruby, haskell, javascript, c, java, pascal, R, and even matlab (See http://stackoverflow.com/questions/6657005/matlab-running-an-m-file-from-command-line) are supporting command line interface (CLI). Through CLI, different programs can communicate to each others. Chimera-framework provide mechanism to store global variables and to orchastrate the programs into a single flow.\n\n* Some programming languages are better at some cases while other are excelled at other cases\n\n    You might love PHP from the bottom of your heart, but it doesn\'t change the fact that doing heavy-statistic computation in R is easier. Rather than trying to make PHP do what R do, it is more easier to just use R instead.\n\n* Atomic process\n\n    Unix has a great philosophy. It encourage programmers to build a single program to do a single task. Nowadays, people try to make one thing to rule out everything. This might sounds good at first, but the effort will be futile. It is better to keep everything simple and combine those simple process to achieve a greater good.\n\n* Scalability\n\n    By creating independent simple programs, you can make a lot of possibility. There is a hero in DOTA named Invoker that can combine his orbs to activate 10 different abilities (http://dota2.gamepedia.com/Invoker#Invoked_abilities). Rather than building a monolithic program that won\'t scale, it is better to make simple programs, and combine them as you need.\n\n* Less language migration\n\n    Sometime you need a certain feature that is only available in an esoteric-new-programming-language. You learn the language, convert all your old projects into this new language, and loosing the meaning of life. Just never do that anymore. Chimera framework goal is to let you write any task in any language, and combine them to achieve a greater good.\n\n\n# Installation\n\n* From source (require `git`)\n\n```sh\ngit clone git@github.com:goFrendiAsgard/chimera.git\nnpm install\nnpm link\n```\n* Using npm\n\n```sh\nnpm install --global chimera-framework\n```\n\n# Prerequisites\n\n* nodejs\n* npm\n* any programming languages you want to use\n\n# Is it working?\n\nYou can run the test case by running `npm test`. There will be two cases and each of them will yield `-23`\n\n# Usage (command line)\n\n* Define your chain progress in `yaml` format\n\n    Let\'s try to make a chain file to execute `Python`, `Javascript`, `Java`, and `PHP` program to solve a simple math problem\n\n\n```yaml\n# Location: your-chain-file.yaml\n# THE MAIN PROCESS:\n#   f = ((a+b) * (a-b)) + a\n# THE SUBPROCESSES:\n#   Process 1: c = a + b (we will use Python)\n#   Process 2: d = a - b (we will use Java)\n#   Process 3: e = c * d (we will use PHP)\n#   Process 4: f = e + a (we will use javascript)\n# THE FLOW:\n# Process 1 and Process 2 will be executed in parallel since they both independent to each another\n# After Process 1 and Process 2 finished, Process 3 and Process 4 should be executed in serial \n# Process 3 depend on both Process 1 and 2, and Process 4 depend on Process 3\n\nins: a,b # The inputs of main process\nout: f # The outputs of main process\nseries:\n  # Process 1 and 2\n  - parallel:\n      # Process 1 (in Python)\n      - ins: a, b\n        out: c\n        command: python programs/add.py\n      - series: # Process 2 (in Java)\n          # First, compile the source \n          - javac programs/Substract.java\n          # then run the program\n          - ins: a, b\n            out: d\n            command: java -cp programs Substract\n  # Process 3 (in PHP)\n  - ins: c, d\n    out: e\n    command: php programs/multiply.php\n  # Process 4 (in Javascript)\n  - ins: e, a\n    out: f\n    command: node programs/add.js\n```\n\n* Execute the chain by invoking: \n\n```sh\nchimera your-chain-file.yaml 5 1\n``` \n\nThis will give you `29` as  `((5+1) * (5-1)) + a = 29`\n\n# Usage (programmatically)\n\n```javascript\nconst chimera = require(\'chimera-framework/core\');\n\n// without presets\nchimera.executeYaml(\'your-chain-file.yaml\', [5, 1], {}, function(output){\n    console.log(output);\n});\n\n\n// with presets\nchimera.executeYaml(\'your-chain-file.yaml\', {}, {a: 5, b: 1}, function(output){\n    console.log(output);\n});\n```\n\nFunction `executeYaml` has 4 parameters, `executeYaml(yamlFile, inputs, presets, callback)`\n\n* `yamlFile` : The chain file in YAML format\n* `inputs` : Array of inputs\n* `presets` : Initial values of variables\n* `callback` : Callback function. Should has two parameter. The first parameter to hold the output of the chain, while the second one is boolean which value is going to be `true` if the chain succeed and `false` if there is any error.\n\n# Web Framework\n\nChimera web framework is still under development. You can try it however, by doing this:\n\n```\ncd chimera-web-template\nnode app.js\n```\n\nThe already working features:\n* File upload (there but not tested)\n* Cookies & Session (both, retrieving and writing are working)\n* View (via pug, but not necessarily)\n* Configurations \n\n![demo](doc/web-framework.png)\n\n# Similar projects, inspirations, and how chimera-framework different from them\n\n* Polyglot (https://github.com/sausheong/polyglot)\n\n    In polyglot, single process flow is written in a single programming language. However, you can have a lot of process flows, which each of them can be written in different languages.\n\n    In chimera-framework, singe process can be divided into several sub-processes. Every sub-process can be written in different language.\n\n* Beaker notebook (http://beakernotebook.com/)\n\n    This one is quite similar to chimera-framework. However, the main purpose of beaker is for prototyping and note-taking. In beaker a cell cannot be used in different notebook. You should copy the cell into another notebook in order to use the same piece of code.\n\n* Invoker (http://dota2.gamepedia.com/Invoker)\n\n    A hard-to-master DOTA hero. Not even a framework. Has cool abilities which are combination of 3 orbs.\n\n* Chimera (https://en.wikipedia.org/wiki/Chimera_(mythology))\n\n    Legendary creature. Combination of goat, lion, and snake.\n',
+21 silly publish   readmeFilename: 'README.md',
+21 silly publish   gitHead: 'e0fb6d18923679ebc0c8719fe1593548647c82cd',
+21 silly publish   _id: 'chimera-framework@0.0.7',
+21 silly publish   _shasum: '3485c1d499966304218454c9a87b19a3766c51fa',
+21 silly publish   _from: '.' }
+22 verbose getPublishConfig undefined
+23 silly mapToRegistry name chimera-framework
+24 silly mapToRegistry using default registry
+25 silly mapToRegistry registry https://registry.npmjs.org/
+26 silly mapToRegistry data Result {
+26 silly mapToRegistry   raw: 'chimera-framework',
+26 silly mapToRegistry   scope: null,
+26 silly mapToRegistry   escapedName: 'chimera-framework',
+26 silly mapToRegistry   name: 'chimera-framework',
+26 silly mapToRegistry   rawSpec: '',
+26 silly mapToRegistry   spec: 'latest',
+26 silly mapToRegistry   type: 'tag' }
+27 silly mapToRegistry uri https://registry.npmjs.org/chimera-framework
+28 verbose publish registryBase https://registry.npmjs.org/
+29 silly publish uploading /home/gofrendi/.npm/chimera-framework/0.0.7/package.tgz
+30 verbose request uri https://registry.npmjs.org/chimera-framework
+31 verbose request sending authorization for write operation
+32 info attempt registry request try #1 at 1:13:22 AM
+33 verbose request using bearer token for auth
+34 verbose request id 1ec2f2b5d8d0e3ce
+35 http request PUT https://registry.npmjs.org/chimera-framework
+36 http 403 https://registry.npmjs.org/chimera-framework
+37 verbose headers { 'content-type': 'application/json',
+37 verbose headers   'cache-control': 'max-age=300',
+37 verbose headers   'content-length': '95',
+37 verbose headers   'accept-ranges': 'bytes',
+37 verbose headers   date: 'Wed, 19 Apr 2017 18:13:24 GMT',
+37 verbose headers   via: '1.1 varnish',
+37 verbose headers   connection: 'keep-alive',
+37 verbose headers   'x-served-by': 'cache-sin18023-SIN',
+37 verbose headers   'x-cache': 'MISS',
+37 verbose headers   'x-cache-hits': '0',
+37 verbose headers   'x-timer': 'S1492625603.320646,VS0,VE1507',
+37 verbose headers   vary: 'Accept-Encoding' }
+38 verbose request invalidating /home/gofrendi/.npm/registry.npmjs.org/chimera-framework on PUT
+39 error publish Failed PUT 403
+40 verbose stack Error: "You cannot publish over the previously published version 0.0.7." : chimera-framework
+40 verbose stack     at makeError (/usr/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:302:12)
+40 verbose stack     at CachingRegistryClient.<anonymous> (/usr/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:290:14)
+40 verbose stack     at Request._callback (/usr/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:210:14)
+40 verbose stack     at Request.self.callback (/usr/lib/node_modules/npm/node_modules/request/request.js:187:22)
+40 verbose stack     at emitTwo (events.js:106:13)
+40 verbose stack     at Request.emit (events.js:191:7)
+40 verbose stack     at Request.<anonymous> (/usr/lib/node_modules/npm/node_modules/request/request.js:1048:10)
+40 verbose stack     at emitOne (events.js:96:13)
+40 verbose stack     at Request.emit (events.js:188:7)
+40 verbose stack     at IncomingMessage.<anonymous> (/usr/lib/node_modules/npm/node_modules/request/request.js:969:12)
+41 verbose statusCode 403
+42 verbose pkgid chimera-framework
+43 verbose cwd /home/gofrendi/chimera
+44 error Linux 4.4.0-72-generic
+45 error argv "/usr/bin/nodejs" "/usr/bin/npm" "publish"
+46 error node v6.10.2
+47 error npm  v3.10.10
+48 error code E403
+49 error "You cannot publish over the previously published version 0.0.7." : chimera-framework
+50 error If you need help, you may report this error at:
+50 error     <https://github.com/npm/npm/issues>
+51 verbose exit [ 1, true ]
