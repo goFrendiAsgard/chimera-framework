@@ -127,9 +127,22 @@ Function `executeYaml` has 4 parameters, `executeYaml(yamlFile, inputs, presets,
 * `yamlFile` : The chain file in YAML format
 * `inputs` : Array of inputs
 * `presets` : Initial values of variables
-* `callback` : Callback function. Should has two parameter. The first parameter to hold the output of the chain, while the second one is boolean which value is going to be `true` if the chain succeed
+* `callback` : Callback function. Should has two parameter. The first parameter to hold the output of the chain, while the second one is boolean which value is going to be `true` if the chain succeed and `false` if there is any error.
 
-# Soon, The web framework everyone dreaming of
+# Web Framework
+
+Chimera web framework is still under development. You can try it however, by doing this:
+
+```
+cd chimera-web-template
+node app.js
+```
+
+The already working features:
+* File upload (there but not tested)
+* Cookies & Session (both, retrieving and writing are working)
+* View (via pug, but not necessarily)
+* Configurations 
 
 ![demo](doc/web-framework.png)
 
