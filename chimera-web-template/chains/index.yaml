@@ -1,4 +1,4 @@
 # File: chains/index.yaml
-ins: _req
+ins: _req, _configs
 out: res
-command: 'node programs/index.js'
+command: 'node programs/js/example.js'

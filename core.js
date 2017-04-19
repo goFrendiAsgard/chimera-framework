@@ -38,6 +38,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
     // don't do anything if chainConfigs is wrong
     if(typeof(chainConfigs) != 'object'){
         console.error('[ERROR] Unable to fetch chain');
+        console.error(chainConfigs);
         executeCallback('', false);
         return null;
     }

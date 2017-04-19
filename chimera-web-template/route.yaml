@@ -2,17 +2,37 @@
 # Defining routes is as easy as this:
 #
 # get:
-#   your_route: your_chain.yaml
+#   your_url: your_chain.yaml
+#   your_url:
+#     chain: your_chain.yaml
+#     view: your_view.pug
+#     access:
+#       - access_1
+#       - access_2
 # post:
-#   your_route: your_chain.yaml
+#   your_url: your_chain.yaml
 # put:
-#   your_route: your_chain.yaml
+#   your_url: your_chain.yaml
 # delete:
-#   your_route: your_chain.yaml
+#   your_url: your_chain.yaml
 # all:
-#   your_route: your_chain.yaml
+#   your_url: your_chain.yaml
 #   your_other_route: your_other_chain.yaml
 
 get:
-  "/": "chains/index.yaml"
-  "/:name": "chains/index.yaml"
+
+  "/": 
+    chain: "chains/index.yaml"
+    view: "index.pug"
+    access: 
+      - "@loggedIn"
+      - "@loggedOut"
+
+  "/:name": 
+    chain: "chains/index.yaml"
+    view: "index.pug"
+    access: 
+      - "@loggedIn"
+      - "@loggedOut"
+
+  "/raw/:name": "chains/index.yaml"
