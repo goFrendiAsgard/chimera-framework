@@ -1,0 +1,2 @@
+ins: _req
+command: 'node programs/js/is_login.js'

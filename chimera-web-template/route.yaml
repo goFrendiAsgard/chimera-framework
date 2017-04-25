@@ -24,15 +24,21 @@ get:
   "/": 
     chain: "chains/index.yaml"
     view: "index.pug"
-    access: 
-      - "@loggedIn"
-      - "@loggedOut"
+    access: '_everyone'
 
   "/hello/:name": 
     chain: "chains/index.yaml"
     view: "index.pug"
-    access: 
-      - "@loggedIn"
-      - "@loggedOut"
+    access: '_loggedIn, _loggedOut'
+
+  "/employee/:name": 
+    chain: "chains/index.yaml"
+    view: "index.pug"
+    access: 'employee'
+
+  "/admin/:name": 
+    chain: "chains/index.yaml"
+    view: "index.pug"
+    access: 'admin'
 
   "/raw/:name": "chains/index.yaml"

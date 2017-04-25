@@ -20,7 +20,6 @@ session_resave: true
 # default chains
 login_validation_chain: 'chains/core/is_login.yaml'
 group_validation_chain: 'chains/core/is_in_group.yaml'
-group_list_chain: 'chains/core/group_list.yaml'
 route_list_chain: 'chains/core/route_list.yaml'
 
 

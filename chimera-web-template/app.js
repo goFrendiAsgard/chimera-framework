@@ -92,16 +92,74 @@ function showResponse(chainObject, configs, req, res){
 
 function createRouteHandler(chainObject, configs){
     return function(req, res, next){
-        var loginValidationChainPath = configs.login_validation_chain;
-        var groupValidationChainPath = configs.group_validation_chain;
-        // TODO: workup with this, simply execute "next()" if user is not authorized
+        // get accessList
+        var accessList = 'access' in chainObject? chainObject.access: ['_everyone'];
+        if(typeof accessList == 'string'){
+            accessList = accessList.split(',');
+            for(i=0; i<accessList.length; i++){
+                accessList[i] = accessList[i].trim();
+            }
+        }
 
-        // show the correct response
-        showResponse(chainObject, configs, req, res);
+        // create presets
+        var presets = createPresets(req, configs);
+
+        // check login status
+        chimera.executeYaml(configs.login_validation_chain, [], presets, function(output, success){
+
+            // get login status
+            var isLogin = false;
+            if(success){
+                try{
+                    response = JSON.parse(output);
+                    isLogin = 'is_login' in response? response.is_login: false;
+                }catch(err){
+                    console.error('[ERROR] Failed to parse JSON');
+                    console.error(e);
+                }
+            }
+
+            // if _everyone or _loggedIn or _loggedOut
+            for(i=0; i<accessList.length; i++){
+                var access = accessList[i];
+                if((access == '_everyone') || (access == '_loggedIn' && isLogin) || (access == '_loggedOut' && !isLogin)){
+                    // show correct response and exit from this function
+                    showResponse(chainObject, configs, req, res);
+                    return true;
+                }
+            }
+
+            if(isLogin){
+                // check group membership 
+                chimera.executeYaml(configs.group_validation_chain, [presets._req, accessList], [], function(output, success){
+                    if(success){
+                        try{
+                            response = JSON.parse(output);
+                            isInGroup = 'is_in_group' in response? response.is_in_group: false;
+                            if(isInGroup){
+                                // logged in and is in group
+                                showResponse(chainObject, configs, req, res);
+                                return true;
+                            }
+                        }catch(err){
+                            console.error('[ERROR] Failed to parse JSON');
+                            console.error(e);
+                            show403(req, res, next);
+                        }
+                    }
+                    // failed to get response
+                    show403(req, res, next);
+                });
+            }
+            else{
+                // not logged in and not permitted to access the page
+                show403(req, res, next);
+            }
+        });
     }
 }
 
-function registerRoutes(routes, configs, callback){
+function registerRoutes(routes, configs){
     // loop for every verb and every url define in route.yaml
     for(verb in routes){
         for(url in routes[verb]){
@@ -114,27 +172,30 @@ function registerRoutes(routes, configs, callback){
             app[verb](url, createRouteHandler(chainObject, configs));
         }
     }
-    // run callback
-    callback();
+    // show 404 if no suitable route found
+    app.use(show404);
 }
 
-function createErrorHandler(){
-    // catch 404 and forward to error handler
-    app.use(function(req, res, next) {
-        var err = new Error('Not Found');
-        err.status = 404;
-        next(err);
-    });
-    // error handler
-    app.use(function(err, req, res, next) {
-        // set locals, only providing error in development
-        res.locals.message = err.message;
-        res.locals.error = req.app.get('env') === 'development' ? err : {};
+function showError(err, req, res, next){
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-        // render the error page
-        res.status(err.status || 500);
-        res.render('error');
-    });
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
+}
+
+function show404(req, res, next){
+    var err = new Error('Not Found');
+    err.status = 404;
+    showError(err, req, res, next);
+}
+
+function show403(req, res, next){
+    var err = new Error('Forbidden');
+    err.status = 403;
+    showError(err, req, res, next);
 }
 
 function getConfigByEnv(configs, key){
@@ -168,7 +229,7 @@ function parseRouteYamlContent(routeYamlContent, configs){
                 }
             }
             // create route handler etc
-            registerRoutes(routes, configs, createErrorHandler);
+            registerRoutes(routes, configs);
         });
     }
     catch(e){
