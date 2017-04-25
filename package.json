@@ -4,7 +4,8 @@
   "description": "Chimera-framework is a nodejs based framework that let you write any task in any language, and combine them for a greater good.",
   "bin": {
     "chimera": "core.js",
-    "checkAndCompile": "compile.js"
+    "exec-if-newer": "execIfNewer.js",
+    "": "generateProject.js"
   },
   "scripts": {
     "test": "node test.js"

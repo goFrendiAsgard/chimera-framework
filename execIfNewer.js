@@ -10,6 +10,7 @@ if(process.argv.length > 3){
     fs.stat(srcFile, function(err, srcStat){
         if(err){ // cannot get stat of srcFile
             console.error('[ERROR] Cannot get file stat of ' + srcFile);
+            console.error(err);
         }
         else{
             fs.access(dstFile, function(err){

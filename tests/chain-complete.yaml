@@ -35,7 +35,7 @@ chains:
       - mode: series
         chains:
           # Compile Substract.java into Substract.class
-          - command: checkAndCompile Substract.java Substract.class javac programs/Substract.java
+          - command: exec-if-newer Substract.java Substract.class javac programs/Substract.java
           # Process 2 (in Java)
           - ins:
               - a
