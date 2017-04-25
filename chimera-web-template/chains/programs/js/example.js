@@ -8,13 +8,13 @@ var name = 'name' in req.params ?
     req.query.name;
 
 // modify session
-var session = {};
+var session = req.session;
 session.visit = 'visit' in req.session ?
     parseInt(req.session.visit) + 1 :
     0;
 
 // modify cookies
-var cookies = {};
+var cookies = req.cookies;
 cookies.visit = 'visit' in req.cookies ?
     parseInt(req.cookies.visit) + 1 :
     0;

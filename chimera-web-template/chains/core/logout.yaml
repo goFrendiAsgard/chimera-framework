@@ -1,0 +1,1 @@
+command: echo "{\"_session\":{\"user_id\":\"0\"}}"

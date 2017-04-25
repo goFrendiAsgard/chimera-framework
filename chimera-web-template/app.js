@@ -1,3 +1,20 @@
+// this is the default configuration values, should be overridden by modify config.yaml
+const defaultConfigs = {
+    'mongo_url' : '',
+    'public_path' : 'public',
+    'favicon_path' : 'public/favicon.ico',
+    'view_path' : 'views',
+    'view_engine' : 'pug',
+    'session_secret' : 'mySecret',
+    'session_max_age': 600000,
+    'session_save_unitialized' : true,
+    'session_resave' : true,
+    'login_validation_chain' : 'chains/core/is_login.yaml',
+    'group_validation_chain' : 'chains/core/is_in_group.yaml',
+    'group_list_chain' : 'chains/core/group_list.yaml',
+    'route_list_chain' : 'chains/core/route_list.yaml',
+}
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -21,6 +38,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(fileUpload());
 
+// This function shall add presets value to the process.
 function createPresets(req, configs){
     // _req
     var keys = ['params', 'query', 'body', 'baseUrl', 'cookies', 'session', 'files', 'hostname', 'method', 'protocol', 'subdomains'];
@@ -34,50 +52,56 @@ function createPresets(req, configs){
     return presets;
 }
 
+// This will show the correct response assuming authorization goes right
+function showResponse(chainObject, configs, req, res){
+    chimera.executeYaml(chainObject.chain, [], createPresets(req, configs), function(output, success){
+        // show the output directly or render it
+        try{
+            data = JSON.parse(output);
+            // save cookies
+            if('_cookies' in data){
+                for(key in data._cookies){
+                    if(key != 'session_id'){
+                        res.cookie(key, data._cookies[key]);
+                    }
+                }
+            }
+            // save session
+            if('_session' in data){
+                for(key in data._session){
+                    if(key != 'cookie'){
+                        req.session[key] = data._session[key];
+                    }
+                }
+            }
+            // render response
+            req.session.save(function(err){
+                if('view' in chainObject && chainObject.view != ''){
+                    res.render(chainObject.view, data);
+                }
+                else{
+                    res.send(output);
+                }
+            });
+        }
+        catch(e){
+            res.send(output);
+        }
+    });
+}
+
 function createRouteHandler(chainObject, configs){
-    var chainObject = chainObject;
     return function(req, res, next){
-        // run chimera
-        chimera.executeYaml(chainObject.chain, [], createPresets(req, configs), function(output){
-            // show the output directly or render it
-            try{
-                data = JSON.parse(output);
-                // save cookies
-                if('_cookies' in data){
-                    for(key in data._cookies){
-                        if(key != 'session_id'){
-                            res.cookie(key, data._cookies[key]);
-                        }
-                    }
-                }
-                // save session
-                if('_session' in data){
-                    for(key in data._session){
-                        if(key != 'cookie'){
-                            req.session[key] = data._session[key];
-                        }
-                    }
-                }
+        var loginValidationChainPath = configs.login_validation_chain;
+        var groupValidationChainPath = configs.group_validation_chain;
+        // TODO: workup with this, simply execute "next()" if user is not authorized
 
-                // render response
-                req.session.save(function(err){
-                    if('view' in chainObject && chainObject.view != ''){
-                        res.render(chainObject.view, data);
-                    }
-                    else{
-                        res.send(output);
-                    }
-                });
-
-            }
-            catch(e){
-                res.send(output);
-            }
-        });
+        // show the correct response
+        showResponse(chainObject, configs, req, res);
     }
 }
 
-function processRoutes(routes, configs, callback){
+function registerRoutes(routes, configs, callback){
     // loop for every verb and every url define in route.yaml
     for(verb in routes){
         for(url in routes[verb]){
@@ -124,6 +148,76 @@ function getConfigByEnv(configs, key){
     return '';
 }
 
+function parseRouteYamlContent(routeYamlContent, configs){
+    try{
+        var routes = yaml.safeLoad(routeYamlContent);
+        chimera.executeYaml(configs.route_list_chain, {}, {}, function(data, success){
+            // add additional routes from config.route_list_chain
+            var additionalRoutes = JSON.parse(data); 
+            for(verb in additionalRoutes){
+                // if verb in additionalRoutes is not defined in routes, define it
+                if(!(verb in routes)){
+                    routes[verb] = [];
+                }
+                // for each url in additioanRoutes[verb]
+                for(url in additionalRoutes[verb]){
+                    // if url of additionalRoutes[verb] is not defined in routes, add it
+                    if(!(url in routes[verb])){
+                        routes[verb][url] = additionalRoutes[verb][url];
+                    }
+                }
+            }
+            // create route handler etc
+            registerRoutes(routes, configs, createErrorHandler);
+        });
+    }
+    catch(e){
+        console.error('[ERROR] route.yaml contains error');
+        console.error(e);
+    }
+}
+
+function parseConfigYamlContent(configYamlContent){
+    try{
+
+        // get and completing the configuration
+        var configs = yaml.safeLoad(configYamlContent);
+        for(key in defaultConfigs){
+            if(!(key in configs)){
+                configs[key] = defaultConfigs[key];
+            }
+        }
+
+        // set app based on configs
+        app.use(express.static(path.join(__dirname, getConfigByEnv(configs, 'public_path'))));
+        app.use(favicon(path.join(__dirname, getConfigByEnv(configs, 'favicon_path'))));
+        app.set('views', path.join(__dirname, getConfigByEnv(configs, 'view_path')));
+        app.set('view engine', getConfigByEnv(configs, 'view_engine'));
+        app.use(session({
+            'secret': getConfigByEnv(configs, 'session_secret'), 
+            'resave': getConfigByEnv(configs, 'session_resave'),
+            'saveUninitialized': getConfigByEnv(configs, 'session_save_unitialized'),
+            'cookie': {'maxAge':getConfigByEnv(configs, 'session_max_age')}
+        }));
+
+        // read route.yaml
+        fs.readFile('route.yaml', function(err, routeYamlContent){
+            if(err){
+                console.error('[ERROR] cannot read route.yaml');
+                console.error(err);
+            }
+            else{
+                parseRouteYamlContent(routeYamlContent, configs);
+            }
+        });
+    }
+    catch(e){
+        console.error('[ERROR] config.yaml contains error');
+        console.error(e);
+    }
+
+}
+
 // read config.yaml
 fs.readFile('config.yaml', function(err, configYamlContent){
     // is config.yaml loadable?
@@ -132,46 +226,7 @@ fs.readFile('config.yaml', function(err, configYamlContent){
         console.error(err);
     }
     else{
-        try{
-            var configs = yaml.safeLoad(configYamlContent);
-
-            // settings
-            app.use(express.static(path.join(__dirname, getConfigByEnv(configs, 'public_path'))));
-            app.use(favicon(path.join(__dirname, getConfigByEnv(configs, 'favicon_path'))));
-            app.set('views', path.join(__dirname, getConfigByEnv(configs, 'view_path')));
-            app.set('view engine', getConfigByEnv(configs, 'view_engine'));
-            app.use(session({
-                'secret': getConfigByEnv(configs, 'session_secret'), 
-                'resave': getConfigByEnv(configs, 'session_resave'),
-                'saveUninitialized': getConfigByEnv(configs, 'session_save_unitialized'),
-                'cookie': {'maxAge':getConfigByEnv(configs, 'session_max_age')}
-            }));
-
-            // read route.yaml
-            fs.readFile('route.yaml', function(err, routeYamlContent){
-
-                if(err){
-                    console.error('[ERROR] cannot read route.yaml');
-                    console.error(err);
-                }
-                else{
-                    // parse routes 
-                    try{
-                        var routes = yaml.safeLoad(routeYamlContent);
-                        processRoutes(routes, configs, createErrorHandler);
-                    }
-                    catch(e){
-                        console.error('[ERROR] route.yaml contains error');
-                        console.error(e);
-                    }
-                }
-
-            });
-        }
-        catch(e){
-            console.error('[ERROR] config.yaml contains error');
-            console.error(e);
-        }
+        parseConfigYamlContent(configYamlContent);
     }
 });
 

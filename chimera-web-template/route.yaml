@@ -28,7 +28,7 @@ get:
       - "@loggedIn"
       - "@loggedOut"
 
-  "/:name": 
+  "/hello/:name": 
     chain: "chains/index.yaml"
     view: "index.pug"
     access: 

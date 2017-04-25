@@ -13,19 +13,19 @@ view_engine: 'pug'
 
 # session setting
 session_secret: 'mySecret'
-session_max_age: 6000
+session_max_age: 60000
 session_save_unitialized: true
 session_resave: true
 
 # default chains
-login_validation_chain: 'chains/is_login.yaml'
-group_validation_chain: 'chains/is_in_group.yaml'
-group_list_chain: 'chains/group_list.yaml'
-route_list_chain: 'chains/route_list.yaml'
+login_validation_chain: 'chains/core/is_login.yaml'
+group_validation_chain: 'chains/core/is_in_group.yaml'
+group_list_chain: 'chains/core/group_list.yaml'
+route_list_chain: 'chains/core/route_list.yaml'
 
 
 # ======================== DEVELOPMENT ===============================
 
 # database setting
 development.session_secret: 'Secret of my heart'
-development.session_max_age: 3000
+development.session_max_age: 30000
