@@ -1,3 +1,0 @@
-verbose: true
-ins: _req, groups
-command: 'node programs/js/is_in_group.js'
