@@ -1,0 +1,26 @@
+# ======================== GENERAL ==================================
+# Uncomment and modify the default settings
+# ===================================================================
+
+mongo_url: 'mongodb://localhost/coba'
+
+# public_path: 'public'
+# favicon_path: 'public/favicon.ico'
+
+# view_path: 'views'
+# view_engine: 'pug'
+
+# session_secret: 'mySecret'
+# session_max_age: 60000
+# session_save_unitialized: true
+# session_resave: true
+
+# login_validation_chain: 'chains/core/is_login.yaml'
+# group_validation_chain: 'chains/core/is_in_group.yaml'
+# route_list_chain: 'chains/core/route_list.yaml'
+
+
+# ======================== DEVELOPMENT ===============================
+
+# development.session_secret: 'Secret of my heart'
+# development.session_max_age: 30000

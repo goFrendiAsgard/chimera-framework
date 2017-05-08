@@ -1,0 +1,1 @@
+command: echo "{\"all\":{\"/login\":\"chains/core/login.yaml\", \"/logout\":\"chains/core/logout.yaml\", \"/is_login\":\"chains/core/is_login.yaml\", \"/is_in_group/:group\":\"chains/core/is_in_group.yaml\"}}"
