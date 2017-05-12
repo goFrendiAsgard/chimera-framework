@@ -35,6 +35,11 @@ function preprocessIns(ins){
 }
 
 function execute(chainConfigs, argv, presets, executeCallback){
+    // if chainConfigs is a string, cast it into object
+    if(typeof(chainConfigs) == 'string'){
+        chainConfigs = {'command': chainConfigs};
+    }
+
     // don't do anything if chainConfigs is wrong
     if(typeof(chainConfigs) != 'object'){
         console.error('[ERROR] Unable to fetch chain');

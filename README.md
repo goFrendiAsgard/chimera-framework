@@ -52,6 +52,8 @@ You can run the test case by running `npm test`. There will be two cases and eac
 
 # Usage (command line)
 
+## Using YAML File
+
 * Define your chain progress in `yaml` format
 
     Let's try to make a chain file to execute `Python`, `Javascript`, `Java`, and `PHP` program to solve a simple math problem
@@ -104,6 +106,18 @@ chimera your-chain-file.yaml 5 1
 ``` 
 
 This will give you `29` as  `((5+1) * (5-1)) + a = 29`
+
+## Parsing YAML directly 
+
+```sh
+chimera "command : cal"
+```
+
+## Parsing command directly
+
+```sh
+chimera cal
+```
 
 # Usage (programmatically)
 

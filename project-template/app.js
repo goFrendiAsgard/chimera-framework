@@ -172,6 +172,9 @@ function registerRoutes(routes, configs){
             app[verb](url, createRouteHandler(chainObject, configs));
         }
     }
+    // coba
+    var routes = app._router.stack;
+    console.log(routes);
     // show 404 if no suitable route found
     app.use(show404);
 }
