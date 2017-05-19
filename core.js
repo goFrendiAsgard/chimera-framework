@@ -135,9 +135,11 @@ function execute(chainConfigs, argv, presets, executeCallback){
                     console.info('[INFO] Running: ' + chainCommand);
                 }
                 if(!err){
+                    // preprocess data
                     data = data.replace(/\\\"/g, '"');
                     data = data.replace(/\\n/g, '\n');
-                    //console.log(data);
+                    data = data.trim();
+                    // assign as output
                     vars[chainOut] = data;
                     if(verbose){
                         console.info('[INFO] States: ' + JSON.stringify(vars));
