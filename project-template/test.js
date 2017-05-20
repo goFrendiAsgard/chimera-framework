@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const routes = {'get': {'/price/:price1/:price2':'', '/hello/:name':'', '/go/:from-:to':''}}
+const routes = {'get': {'/': '', '/price/:price1/:price2':'', '/hello/:name':'', '/go/:from-:to':''}}
 
 function escapeHyphenAndDot(str){
     // hyphen should be translated literally
@@ -16,6 +16,7 @@ function getRegexPattern(route){
         route = escapeHyphenAndDot(route)
         // translate into regex
         route = route.replace(/:[a-zA-Z_][a-zA-Z0-9_]*/g, '([a-zA-Z0-9_]*)')
+        route = '^'+route+'$'
         route = new RegExp(route)
     }
     return route
@@ -26,6 +27,9 @@ function getParameterNames(route){
         route = escapeHyphenAndDot(route)
     }
     let matches = route.match(/:([a-zA-Z_][a-zA-Z0-9_]*)/g) 
+    if(matches === null){
+        matches = []
+    }
     for(i=0; i<matches.length; i++){
         matches[i] = matches[i].replace(':', '')
     }

@@ -90,38 +90,44 @@ function showResponse(chainObject, configs, req, res){
     });
 }
 
+function getAccessList(chainObject){
+    let accessList = 'access' in chainObject? chainObject.access: ['_everyone'];
+    if(typeof accessList == 'string'){
+        accessList = accessList.split(',');
+        for(i=0; i<accessList.length; i++){
+            accessList[i] = accessList[i].trim();
+        }
+    }
+    return accessList
+}
+
+function getLoginStatus(jsonResponse){
+    let isLogin = false
+    try{
+        response = JSON.parse(jsonResponse);
+        isLogin = 'is_login' in response? response.is_login: false;
+    }catch(err){
+        console.error('[ERROR] Failed to parse JSON');
+        console.error(err);
+    }
+    return isLogin
+}
+
 function createRouteHandler(chainObject, configs){
     return function(req, res, next){
         // get accessList
-        var accessList = 'access' in chainObject? chainObject.access: ['_everyone'];
-        if(typeof accessList == 'string'){
-            accessList = accessList.split(',');
-            for(i=0; i<accessList.length; i++){
-                accessList[i] = accessList[i].trim();
-            }
-        }
-
+        let accessList = getAccessList(chainObject)
         // create presets
         var presets = createPresets(req, configs);
-
         // check login status
         chimera.executeYaml(configs.login_validation_chain, [], presets, function(output, success){
 
             // get login status
-            var isLogin = false;
-            if(success){
-                try{
-                    response = JSON.parse(output);
-                    isLogin = 'is_login' in response? response.is_login: false;
-                }catch(err){
-                    console.error('[ERROR] Failed to parse JSON');
-                    console.error(e);
-                }
-            }
+            let isLogin = getLoginStatus(output);
 
             // if _everyone or _loggedIn or _loggedOut
             for(i=0; i<accessList.length; i++){
-                var access = accessList[i];
+                let access = accessList[i];
                 if((access == '_everyone') || (access == '_loggedIn' && isLogin) || (access == '_loggedOut' && !isLogin)){
                     // show correct response and exit from this function
                     showResponse(chainObject, configs, req, res);
@@ -157,23 +163,6 @@ function createRouteHandler(chainObject, configs){
             }
         });
     }
-}
-
-function registerRoutes(routes, configs){
-    // loop for every verb and every url define in route.yaml
-    for(verb in routes){
-        for(url in routes[verb]){
-            // get chainObject
-            chainObject = routes[verb][url]; 
-            if(typeof chainObject == 'string'){
-                chainObject = {'chain' : chainObject};
-            }
-            // add router
-            app[verb](url, createRouteHandler(chainObject, configs));
-        }
-    }
-    // show 404 if no suitable route found
-    app.use(show404);
 }
 
 function showError(err, req, res, next){
@@ -223,6 +212,7 @@ function getRegexPattern(route){
         route = escapeHyphenAndDot(route)
         // translate into regex
         route = route.replace(/:[a-zA-Z_][a-zA-Z0-9_]*/g, '([a-zA-Z0-9_]*)')
+        route = '^'+route+'$'
         route = new RegExp(route)
     }
     return route
@@ -233,69 +223,77 @@ function getParameterNames(route){
         route = escapeHyphenAndDot(route)
     }
     let matches = route.match(/:([a-zA-Z_][a-zA-Z0-9_]*)/g) 
+    if(matches === null){
+        matches = []
+    }
     for(i=0; i<matches.length; i++){
         matches[i] = matches[i].replace(':', '')
     }
     return matches;
 }
 
+function injectAdditionalRoutes(routes, additionalRoutes){
+    for(verb in additionalRoutes){
+        // if verb in additionalRoutes is not defined in routes, define it
+        if(!(verb in routes)){
+            routes[verb] = [];
+        }
+        // for each url in additioanRoutes[verb]
+        for(url in additionalRoutes[verb]){
+            // if url of additionalRoutes[verb] is not defined in routes, add it
+            if(!(url in routes[verb])){
+                routes[verb][url] = additionalRoutes[verb][url];
+            }
+        }
+    }
+    return routes
+}
+
+function getChainObjectAndParams(url, verbRoute){
+    for(route in verbRoute){
+        let re = getRegexPattern(route)
+        let matches = url.match(re)
+        if(matches){
+            let re = getRegexPattern(route)
+            let matches = url.match(re)
+            if(matches){
+                let parameterNames = getParameterNames(route)
+                let parameters = {}
+                for(i=0; i<parameterNames.length; i++){
+                    parameters[parameterNames[i]] = matches[i+1]
+                }
+                return {'chainObject' : verbRoute[route], 'params' : parameters}
+            }
+        }
+    }
+    return {'chainObject' : null, 'params' : []}
+}
+
 function parseRouteYamlContent(routeYamlContent, configs){
     try{
-        var routes = yaml.safeLoad(routeYamlContent);
+        let routes = yaml.safeLoad(routeYamlContent);
         chimera.executeYaml(configs.route_list_chain, {}, {}, function(data, success){
             // add additional routes from config.route_list_chain
-            var additionalRoutes = JSON.parse(data); 
-            for(verb in additionalRoutes){
-                // if verb in additionalRoutes is not defined in routes, define it
-                if(!(verb in routes)){
-                    routes[verb] = [];
-                }
-                // for each url in additioanRoutes[verb]
-                for(url in additionalRoutes[verb]){
-                    // if url of additionalRoutes[verb] is not defined in routes, add it
-                    if(!(url in routes[verb])){
-                        routes[verb][url] = additionalRoutes[verb][url];
-                    }
-                }
-            }
+            let additionalRoutes = JSON.parse(data); 
+            routes = injectAdditionalRoutes(routes, additionalRoutes)
             // create route handler etc
-            //registerRoutes(routes, configs);
             for(verb in routes){
+                let verbRoute = routes[verb]
                 app[verb]('/*', function (req, res, next) {
-                    let verbRoute = routes[verb]
                     let url = req.url
-                    let chainObject = null;
-                    for(route in verbRoute){
-                        let re = getRegexPattern(route)
-                        let matches = url.match(re)
-                        console.log(route)
-                        console.log(re)
-                        console.log(matches)
-                        if(matches){
-                            let parameterNames = getParameterNames(route)
-                            let parameters = {}
-                            for(i=0; i<parameterNames.length; i++){
-                                parameters[parameterNames[i]] = matches[i+1]
-                            }
-                            console.log(url)
-                            console.log(parameters)
-                            chainObject = verbRoute[route]
-                            console.log(chainObject)
-                            break
+                    let chainObjectAndParams = getChainObjectAndParams(url, verbRoute)
+                    let chainObject = chainObjectAndParams.chainObject
+                    req.params = chainObjectAndParams.params
+                    if(chainObject != null){
+                        if(typeof chainObject == 'string'){
+                            chainObject = {'chain' : chainObject};
                         }
+                        // add router
+                        createRouteHandler(chainObject, configs)(req, res, next);
                     }
-                    next()
-                    //res.send(req.url)
-                    /*
-                    // get chainObject
-                    chainObject = routes[verb][url]; 
-                    if(typeof chainObject == 'string'){
-                        chainObject = {'chain' : chainObject};
+                    else{
+                        next()
                     }
-                    // add router
-                    createRouteHandler(chainObject, configs)();
-                    */
-
                 })
             }            
             app.use(show404);
