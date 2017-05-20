@@ -172,9 +172,6 @@ function registerRoutes(routes, configs){
             app[verb](url, createRouteHandler(chainObject, configs));
         }
     }
-    // coba
-    var routes = app._router.stack;
-    console.log(routes);
     // show 404 if no suitable route found
     app.use(show404);
 }
@@ -190,13 +187,13 @@ function showError(err, req, res, next){
 }
 
 function show404(req, res, next){
-    var err = new Error('Not Found');
+    let err = new Error('Not Found');
     err.status = 404;
     showError(err, req, res, next);
 }
 
 function show403(req, res, next){
-    var err = new Error('Forbidden');
+    let err = new Error('Forbidden');
     err.status = 403;
     showError(err, req, res, next);
 }
@@ -210,6 +207,36 @@ function getConfigByEnv(configs, key){
         return configs[key];
     }
     return '';
+}
+
+function escapeHyphenAndDot(str){
+    // hyphen should be translated literally
+    str = str.replace(/\-/g, '\\-')
+    // dots should be translated literally
+    str = str.replace(/\./g, '\\.') 
+    return str
+}
+
+function getRegexPattern(route){
+    // object (including regex pattern) should not be processed
+    if(typeof route == 'string'){
+        route = escapeHyphenAndDot(route)
+        // translate into regex
+        route = route.replace(/:[a-zA-Z_][a-zA-Z0-9_]*/g, '([a-zA-Z0-9_]*)')
+        route = new RegExp(route)
+    }
+    return route
+}
+
+function getParameterNames(route){
+    if(typeof route == 'string'){
+        route = escapeHyphenAndDot(route)
+    }
+    let matches = route.match(/:([a-zA-Z_][a-zA-Z0-9_]*)/g) 
+    for(i=0; i<matches.length; i++){
+        matches[i] = matches[i].replace(':', '')
+    }
+    return matches;
 }
 
 function parseRouteYamlContent(routeYamlContent, configs){
@@ -232,7 +259,46 @@ function parseRouteYamlContent(routeYamlContent, configs){
                 }
             }
             // create route handler etc
-            registerRoutes(routes, configs);
+            //registerRoutes(routes, configs);
+            for(verb in routes){
+                app[verb]('/*', function (req, res, next) {
+                    let verbRoute = routes[verb]
+                    let url = req.url
+                    let chainObject = null;
+                    for(route in verbRoute){
+                        let re = getRegexPattern(route)
+                        let matches = url.match(re)
+                        console.log(route)
+                        console.log(re)
+                        console.log(matches)
+                        if(matches){
+                            let parameterNames = getParameterNames(route)
+                            let parameters = {}
+                            for(i=0; i<parameterNames.length; i++){
+                                parameters[parameterNames[i]] = matches[i+1]
+                            }
+                            console.log(url)
+                            console.log(parameters)
+                            chainObject = verbRoute[route]
+                            console.log(chainObject)
+                            break
+                        }
+                    }
+                    next()
+                    //res.send(req.url)
+                    /*
+                    // get chainObject
+                    chainObject = routes[verb][url]; 
+                    if(typeof chainObject == 'string'){
+                        chainObject = {'chain' : chainObject};
+                    }
+                    // add router
+                    createRouteHandler(chainObject, configs)();
+                    */
+
+                })
+            }            
+            app.use(show404);
         });
     }
     catch(e){
