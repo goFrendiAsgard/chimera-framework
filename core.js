@@ -127,6 +127,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
                 }
                 arg = arg.replace(/"/g, '\\\"');
                 arg = arg.replace(/\n/g, '\\n');
+                arg = arg.trim()
                 chainCommand += ' "' + arg + '"';
             });
             // run the command

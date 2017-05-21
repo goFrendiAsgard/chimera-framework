@@ -42,3 +42,13 @@ get:
     access: 'admin'
 
   "/raw/:name": "chains/index.yaml"
+
+  "/test/ejs":
+    chain: "echo {\\\"data\\\":\\\"hai\\\"}"
+    view: "test-ejs.ejs"
+
+  "/test/pug":
+    chain: "echo {\\\"data\\\":\\\"hai\\\"}"
+    view: "test-pug.pug"
+
+
