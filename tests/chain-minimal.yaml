@@ -20,7 +20,7 @@ series:
         command: python programs/add.py
       - series: # Process 2 (in Java)
           # First, compile the source 
-          - exec-is-newer Substract.java Substract.class javac programs/Substract.java
+          - exec-if-newer Substract.java Substract.class javac programs/Substract.java
           # then run the program
           - ins: a, b
             out: d

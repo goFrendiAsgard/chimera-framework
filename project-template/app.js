@@ -4,7 +4,7 @@ const defaultConfigs = {
     'public_path' : 'public',
     'favicon_path' : 'public/favicon.ico',
     'view_path' : 'views',
-    'view_engine' : 'pug',
+    'error_template' : 'error.pug',
     'session_secret' : 'mySecret',
     'session_max_age': 600000,
     'session_save_unitialized' : true,
@@ -30,6 +30,7 @@ const yaml = require('js-yaml')
 const chimera = require('chimera/core')
 
 var app = express()
+var globalErrorTemplate = defaultConfigs.error_template
 
 // view engine setup
 
@@ -173,7 +174,7 @@ function showError(err, req, res, next){
 
     // render the error page
     res.status(err.status || 500)
-    res.render('error')
+    res.render(globalErrorTemplate)
 }
 
 function show404(req, res, next){
@@ -274,7 +275,7 @@ function parseRouteYamlContent(routeYamlContent, configs){
     try{
         let routes = yaml.safeLoad(routeYamlContent)
         chimera.executeYaml(configs.route_list_chain, {}, {}, function(data, success){
-            // add additional routes from config.route_list_chain
+            // add additional routes from configs.route_list_chain
             let additionalRoutes = JSON.parse(data) 
             routes = injectAdditionalRoutes(routes, additionalRoutes)
             // create route handler etc
@@ -316,11 +317,13 @@ function parseConfigYamlContent(configYamlContent){
                 configs[key] = defaultConfigs[key]
             }
         }
+        globalErrorTemplate = configs.error_template
 
         // set app based on configs
         app.use(express.static(path.join(__dirname, getConfigByEnv(configs, 'public_path'))))
         app.use(favicon(path.join(__dirname, getConfigByEnv(configs, 'favicon_path'))))
         app.set('views', path.join(__dirname, getConfigByEnv(configs, 'view_path')))
+        // pug, handlebars, and ejs are used altogether
         app.engine('pug', engines.pug)
         app.engine('handlebars', engines.handlebars)
         app.engine('ejs', engines.ejs)

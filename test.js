@@ -30,7 +30,7 @@ cmd.get(command, function(data, err, stderr){
             assert(output == -23, 'test executeYaml without presets failed');
            
             // try to import executeYaml
-            chimera.executeYaml('chain-minimal.yaml', {}, {a:1, b:5}, function(output){
+            chimera.executeYaml('tests/chain-minimal.yaml', {}, {a:1, b:5}, function(output){
                 console.log('test executeYaml with presets');
                 console.log(output);
                 assert(output == -23, 'test executeYaml with presets failed');

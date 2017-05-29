@@ -25,5 +25,6 @@ console.log(JSON.stringify({
     'name' : name,
     '_cookies' : cookies,
     '_session' : session,
-    'configs' : configs
+    'configs' : configs,
+    'req' : req,
 }));

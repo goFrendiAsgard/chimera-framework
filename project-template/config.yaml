@@ -8,7 +8,7 @@ mongo_url: 'mongodb://localhost/project-template'
 # favicon_path: 'public/favicon.ico'
 
 # view_path: 'views'
-# view_engine: 'pug'
+# error_template: 'error.pug'
 
 # session_secret: 'mySecret'
 # session_max_age: 60000
