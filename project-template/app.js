@@ -43,7 +43,7 @@ app.use(fileUpload())
 // This function shall add presets value to the process.
 function createPresets(req, configs){
     // _req
-    var keys = ['params', 'query', 'body', 'baseUrl', 'cookies', 'session', 'files', 'hostname', 'method', 'protocol', 'subdomains']
+    var keys = ['params', 'query', 'body', 'baseUrl', 'cookies', 'session', 'files', 'hostname', 'method', 'protocol']
     var presets = {'_req' : {}}
     for(i=0; i<keys.length; i++){
         var key = keys[i]
@@ -92,17 +92,6 @@ function showResponse(chainObject, configs, req, res){
     })
 }
 
-function getAccessList(chainObject){
-    let accessList = 'access' in chainObject? chainObject.access: ['_everyone']
-    if(typeof accessList == 'string'){
-        accessList = accessList.split(',')
-        for(i=0; i<accessList.length; i++){
-            accessList[i] = accessList[i].trim()
-        }
-    }
-    return accessList
-}
-
 function getLoginStatus(jsonResponse){
     let isLogin = false
     try{
@@ -118,7 +107,7 @@ function getLoginStatus(jsonResponse){
 function createRouteHandler(chainObject, configs){
     return function(req, res, next){
         // get accessList
-        let accessList = getAccessList(chainObject)
+        let accessList = chainObject.access 
         // create presets
         var presets = createPresets(req, configs)
         // check login status
@@ -251,20 +240,47 @@ function injectAdditionalRoutes(routes, additionalRoutes){
     return routes
 }
 
-function getChainObjectAndParams(url, verbRoute){
+function completeChainObject(chainObject){
+    if(typeof chainObject == 'string'){
+        chainObject = {'chain' : chainObject}
+    }
+    if(typeof chainObject == 'object'){
+        // complete access
+        let accessList = 'access' in chainObject? chainObject.access: ['_everyone']
+        if(typeof accessList == 'string'){
+            accessList = accessList.split(',')
+            for(i=0; i<accessList.length; i++){
+                accessList[i] = accessList[i].trim()
+            }
+        }
+        chainObject.access = accessList
+        // complete host
+        if(!('host' in chainObject)){
+            chainObject.host = '.*'
+        }
+    }
+    return chainObject
+}
+
+function getChainObjectAndParams(req, verbRoute){
+    let url = req.url
     for(route in verbRoute){
-        let re = getRegexPattern(route)
-        let matches = url.match(re)
-        if(matches){
-            let re = getRegexPattern(route)
-            let matches = url.match(re)
-            if(matches){
+        let routePattern = getRegexPattern(route)
+        let routeMatches = url.match(routePattern)
+        // the route is match
+        if(routeMatches){
+            let chainObject = completeChainObject(verbRoute[route])
+            // get host regex pattern 
+            let hostPattern = new RegExp('^' + chainObject.host + '$')
+            let hostMatches = req.hostname.match(hostPattern)
+            // the host also match
+            if(hostMatches){
                 let parameterNames = getParameterNames(route)
                 let parameters = {}
                 for(i=0; i<parameterNames.length; i++){
-                    parameters[parameterNames[i]] = matches[i+1]
+                    parameters[parameterNames[i]] = routeMatches[i+1]
                 }
-                return {'chainObject' : verbRoute[route], 'params' : parameters}
+                return {'chainObject' : chainObject, 'params' : parameters}
             }
         }
     }
@@ -282,14 +298,10 @@ function parseRouteYamlContent(routeYamlContent, configs){
             for(verb in routes){
                 let verbRoute = routes[verb]
                 app[verb]('/*', function (req, res, next) {
-                    let url = req.url
-                    let chainObjectAndParams = getChainObjectAndParams(url, verbRoute)
+                    let chainObjectAndParams = getChainObjectAndParams(req, verbRoute)
                     let chainObject = chainObjectAndParams.chainObject
                     req.params = chainObjectAndParams.params
                     if(chainObject != null){
-                        if(typeof chainObject == 'string'){
-                            chainObject = {'chain' : chainObject}
-                        }
                         // add router
                         createRouteHandler(chainObject, configs)(req, res, next)
                     }
@@ -309,7 +321,6 @@ function parseRouteYamlContent(routeYamlContent, configs){
 
 function parseConfigYamlContent(configYamlContent){
     try{
-
         // get and completing the configuration
         var configs = yaml.safeLoad(configYamlContent)
         for(key in defaultConfigs){

@@ -51,4 +51,9 @@ get:
     chain: "echo {\\\"data\\\":\\\"hai\\\"}"
     view: "test-pug.pug"
 
+  "/test-host/:name":
+    chain: "chains/index.yaml"
+    view: "index.pug"
+    host: "test.localhost"
+
 
