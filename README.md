@@ -4,7 +4,7 @@ Chimera-framework is a nodejs based framework that let you write any task in any
 
 # Motivation
 
-* Most programming languages support command line interface
+* Most (if not all) programming languages support command line interface
 
     Perl, python, php, ruby, haskell, javascript, c, java, pascal, R, and even matlab (See http://stackoverflow.com/questions/6657005/matlab-running-an-m-file-from-command-line) are supporting command line interface (CLI). Through CLI, different programs can communicate to each others. Chimera-framework provide mechanism to store global variables and to orchastrate the programs into a single flow.
 
@@ -69,7 +69,7 @@ You can run the test case by running `npm test`. There will be two cases and eac
 #   Process 3: e = c * d (we will use PHP)
 #   Process 4: f = e + a (we will use javascript)
 # THE FLOW:
-# Process 1 and Process 2 will be executed in parallel since they both independent to each another
+# Process 1 and Process 2 will be executed in parallel since they are independent to each other
 # After Process 1 and Process 2 finished, Process 3 and Process 4 should be executed in serial 
 # Process 3 depend on both Process 1 and 2, and Process 4 depend on Process 3
 
@@ -105,15 +105,18 @@ series:
 chimera your-chain-file.yaml 5 1
 ``` 
 
-This will give you `29` as  `((5+1) * (5-1)) + a = 29`
+This will give you `29` since  `((5+1) * (5-1)) + a = 29`
 
 ## Parsing YAML directly 
 
 ```sh
 chimera "command : cal"
 ```
+This will call `cal` command (works on linux) and show you current month's calendar
 
 ## Parsing command directly
+
+This will also do the same
 
 ```sh
 chimera cal
@@ -145,17 +148,129 @@ Function `executeYaml` has 4 parameters, `executeYaml(yamlFile, inputs, presets,
 
 # Web Framework
 
-Chimera web framework is still under development. You can try it however, by doing this:
+## Init Project
 
-```
-cd chimera-web-template
-node app.js
+Run this command to scaffold a web project:
+
+```sh
+chimera-init-web myApp
 ```
 
+The structure of your web application will be:
+```sh
+▾ myApp/
+  ▸ bin/
+  ▸ chains/
+  ▸ node_modules/
+  ▾ public/
+    ▸ images/
+    ▸ javascripts/
+    ▸ stylesheets/
+      favicon.ico
+  ▾ views/
+      error.pug
+      index.pug
+      layout.pug
+      test-ejs.ejs
+      test-pug.pug
+    app.js
+    config.yaml
+    package.json
+    route.yaml
+```
+
+To run the web server, you can simply move to `myApp` directory and run `npm start`
+
+## Configurations (config.yaml)
+* `mongo_url` 
+Some core programs are using mongodb.
+
+By default, the value will be `mongodb://localhost/myApp` (depend on your application name).
+
+* `public_path`
+The public directory where you put all static resources (javascript, css, images, etc). 
+
+By default, the value will be `public`.
+
+* `migration_path`
+The directory contains all migration chains. 
+
+By default, the value will be `chains/migrations`.
+
+The migration chains should be in this format: `YYmmddHis-up-[name-of-migration].yaml` or `YYmmddHis-down-[name-of-migration].yaml` 
+
+* `favicon_path`
+The favicon path. 
+
+By default, the value will be `public/favicon.ico`
+
+* `view_path`
+The directory contains view templates (either pug, ejs, or handlebars). 
+
+By default, the value will be `views`
+
+* `error_template` 
+The error template.
+
+By default, the value will be `error.pug`
+
+* `session_secret` 
+The session secret.
+
+By default, the value will be `mySecret`
+
+* `session_max_age`
+Session max age (in seconds).
+
+By default, the value will be `60000`
+
+* `session_save_unitialized`
+If this is true, the session will be saved and updated in each request
+
+By default, the value will be `true`
+
+* `session_resave`
+
+By default, the value will be `true`
+
+* `login_validation_chain` 
+
+Login validation chain. Require `request` as input.
+
+The output of the chain should be in JSON format indicating the login status of a user, either `{"is_login" : true}` or `{"is_login" : false}`
+
+By default, the value will be `chains/core/is_login.yaml`
+
+* `group_validation_chain` 
+
+Group validation chain. Require `request` and `groups` (in JSON list format, or string) as input.
+
+The output of the chain should be in JSON format indicating whether the user is part of particular group or not. `{"is_in_group" : true, "groups": ["admin", "employee"]}`
+
+By default, the value will be `chains/core/is_in_group.yaml`
+
+* `route_list_chain` 
+
+Route list chain.
+
+The output of the chain should be routes in JSON format.
+
+By default, the value will be `chains/core/route_list.yaml`
+
+* `current_version_chain` 
+
+By default, the value will be `chains/core/current_version.yaml`
+
+* `update_version_chain` 
+
+By default, the value will be `chains/core/update_version.yaml`
+
+
+## Current Features (Under development)
 The already working features:
 * File upload (there but not tested)
 * Cookies & Session (both, retrieving and writing are working)
-* View (via pug, but not necessarily)
+* View template (using pug, ejs, and handlebar)
 * Configurations 
 
 ![demo](doc/web-framework.png)

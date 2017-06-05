@@ -5,7 +5,7 @@
   "bin": {
     "chimera": "core.js",
     "exec-if-newer": "execIfNewer.js",
-    "chimera-start-project": "generateProject.js"
+    "chimera-init-web": "generateProject.js"
   },
   "scripts": {
     "test": "node test.js"

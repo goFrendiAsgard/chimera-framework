@@ -5,6 +5,7 @@
 mongo_url: 'mongodb://localhost/project-template'
 
 # public_path: 'public'
+# migration_path: 'chains/migrations'
 # favicon_path: 'public/favicon.ico'
 
 # view_path: 'views'
@@ -18,6 +19,8 @@ mongo_url: 'mongodb://localhost/project-template'
 # login_validation_chain: 'chains/core/is_login.yaml'
 # group_validation_chain: 'chains/core/is_in_group.yaml'
 # route_list_chain: 'chains/core/route_list.yaml'
+# current_version_chain: 'chains/core/current_version.yaml'
+# update_version_chain: 'chains/core/update_version.yaml'
 
 
 # ======================== DEVELOPMENT ===============================

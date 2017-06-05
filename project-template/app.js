@@ -2,6 +2,7 @@
 const defaultConfigs = {
     'mongo_url' : '',
     'public_path' : 'public',
+    'migration_path' : 'chains/migrations',
     'favicon_path' : 'public/favicon.ico',
     'view_path' : 'views',
     'error_template' : 'error.pug',
@@ -13,6 +14,8 @@ const defaultConfigs = {
     'group_validation_chain' : 'chains/core/is_in_group.yaml',
     'group_list_chain' : 'chains/core/group_list.yaml',
     'route_list_chain' : 'chains/core/route_list.yaml',
+    'current_version_chain' : 'chains/core/current_version.yaml',
+    'update_version_chain' : 'chains/core/update_version.yaml',
 }
 
 const express = require('express')
@@ -322,7 +325,7 @@ function parseRouteYamlContent(routeYamlContent, configs){
 function parseConfigYamlContent(configYamlContent){
     try{
         // get and completing the configuration
-        var configs = yaml.safeLoad(configYamlContent)
+        let configs = yaml.safeLoad(configYamlContent)
         for(key in defaultConfigs){
             if(!(key in configs)){
                 configs[key] = defaultConfigs[key]
@@ -361,7 +364,6 @@ function parseConfigYamlContent(configYamlContent){
         console.error('[ERROR] config.yaml contains error')
         console.error(e)
     }
-
 }
 
 // read config.yaml
