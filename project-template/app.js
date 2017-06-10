@@ -14,9 +14,6 @@ const defaultConfigs = {
     'group_validation_chain' : 'chains/core/is_in_group.yaml',
     'group_list_chain' : 'chains/core/group_list.yaml',
     'route_list_chain' : 'chains/core/route_list.yaml',
-    'current_version_chain' : 'chains/core/current_version.yaml',
-    'upgrade_version_chain' : 'chains/core/upgrade_version.yaml',
-    'downgrade_version_chain': 'chains/core/downgrade_version.yaml',
 }
 
 const express = require('express')
