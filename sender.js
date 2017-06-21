@@ -54,31 +54,70 @@ function getOptions(host, data){
     }
 }
 
+if(process.argv.length > 3){
+    let host = process.argv[2]
+    let chain = process.argv[3]
+    let bodyRequest = querystring.stringify({'chain' : chain, 'input' : process.argv.slice(4)})
+    let options = getOptions(host, bodyRequest)
+    let protocol = options.protocol
+    
+    // create request using required protocol
+    let http = protocol == 'https'? require('https'): require('http')
+    let httpreq = http.request(options, function (response) {
+        response.setEncoding('utf8')
+        let output = ''
+        // get each chunk as output
+        response.on('data', function (chunk) {
+            output += chunk
+        })
+        // show the output
+        response.on('end', function() {
+            try{
+                output = JSON.parse(output)
+                if(output.success){
+                    console.log(output.response)
+                }
+                else{
+                    console.error('[ERROR] ' + output.errorMessage)
+                }
+            }
+            catch(err){
+                console.error('[ERROR] Failed to parse JSON')
+                console.error(err)
+            }
+        })
+    })
+    // error handler
+    httpreq.on('error', function (e) {
+        console.error('[ERROR] Request failed')
+        console.error(e);
+    });
+    // timeout handler
+    httpreq.on('timeout', function () {
+        console.error('[ERROR] Request timeout')
+        httpreq.abort();
+    });
+
+    if(process.env.TIMEOUT){
+        // get timeout from environment 
+        httpreq.setTimeout(parseInt(process.env.TIMEOUT))
+    }
+    else{
+        // by default, a minute without response, cut it off
+        httpreq.setTimeout(60000);
+    }
+
+    // send request
+    httpreq.write(bodyRequest)
+    httpreq.end()
+}
+
+
 /*
+TEST:
 console.log(getOptions('http://facebook.com/abc/def'))
 console.log(getOptions('http://facebook.com:80/abc/def'))
 console.log(getOptions('https://facebook.com/abc/def'))
 console.log(getOptions('https://facebook.com:80/abc/def'))
 console.log(getOptions('facebook.com'))
 */
-
-if(process.argv.length > 3){
-    host = process.argv[2]
-    chain = process.argv[3]
-    data = querystring.stringify({'input' : process.argv.slice(4)})
-    options = getOptions(host, data)
-    protocol = options.protocol
-    
-    const http = protocol == 'https'? require('https'): require('http')
-    var httpreq = http.request(options, function (response) {
-        response.setEncoding('utf8')
-        response.on('data', function (chunk) {
-            console.log("body: " + chunk)
-        })
-        response.on('end', function() {
-            console.log('ok')
-        })
-    })
-    httpreq.write(data)
-    httpreq.end()
-}

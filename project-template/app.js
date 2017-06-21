@@ -30,9 +30,9 @@ const fs = require('fs')
 const yaml = require('js-yaml')
 const chimera = require('chimera/core')
 
+const currentPath = process.cwd()
 var app = express()
 var globalErrorTemplate = defaultConfigs.error_template
-
 // view engine setup
 
 app.use(logger('dev'))
@@ -57,6 +57,7 @@ function createPresets(req, configs){
 
 // This will show the correct response assuming authorization goes right
 function showResponse(chainObject, configs, req, res){
+    process.chdir(currentPath)
     chimera.executeYaml(chainObject.chain, [], createPresets(req, configs), function(output, success){
         // show the output directly or render it
         try{

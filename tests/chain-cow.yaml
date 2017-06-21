@@ -1,11 +1,14 @@
+vars:
+  anyWord : "Hello"
 ins: anyWord
 out: output
 series:
-  - out: currentCalendar
-    command: cal
-  - ins: anyWord
-    out: cow
-    command: cowsay
+  - parallel:
+      - out: currentCalendar
+        command: cal
+      - ins: anyWord
+        out: cow
+        command: cowsay
   - ins: currentCalendar, cow
     out: output
     command: echo

@@ -59,7 +59,7 @@ function preprocessIns(ins){
  *      'series' : {'command': 'python operation.py', 'ins': ['a, 'b', 'operation'], 'out': 'c'}, 
  *      'ins':['a','b'], 
  *      'out':'c'};
- *  executeYaml(chainConfig, [5 6], {'operation' : 'plus'}, function(result, success){console.log(out);});
+ *  executeYaml(chainConfig, [5 6], {'operation' : 'plus'}, function(result, success, errorMessage){console.log(out);});
  *  executeYaml(chainConfig, [5 6], {'operation' : 'plus'});
  *  executeYaml(chainConfig, [5 6]);
  *  executeYaml(chainConfig);
@@ -80,7 +80,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
     if(typeof(chainConfigs) != 'object'){
         console.error('[ERROR] Unable to fetch chain')
         console.error(chainConfigs)
-        executeCallback('', false)
+        executeCallback('', false, 'Unable to fetch chain')
         return null
     }
 
@@ -137,7 +137,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
         let output = out in vars? vars[out]: ''
         // execute the callback if defined, or show the output
         if(typeof(executeCallback) === 'function'){
-            executeCallback(output, true)
+            executeCallback(output, true, '')
         }
         else{
             console.log(output)
@@ -187,7 +187,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
                 }
                 else{
                     console.info('[ERROR] Message: ' + stderr)
-                    executeCallback('', false)
+                    executeCallback('', false, stderr)
                 }
             })
         }
@@ -280,12 +280,12 @@ function executeYaml(yamlFile, argv, presets, executeCallback){
             chainConfigs = yaml.safeLoad(yamlFile)
         }
         // ensure we going back to this directory
-        alteredCallback = function(result, success){
+        alteredCallback = function(result, success, errorMessage){
             // ensure we return to current dir
             process.chdir(currentPath)
             // execute callback
             if(typeof(executeCallback) === 'function'){
-                executeCallback(result, success)
+                executeCallback(result, success, errorMessage)
             }
             else if(success){
                 console.log(result)
@@ -316,6 +316,5 @@ if(require.main === module){
 
 // The exported resources
 module.exports = {
-    'execute' : execute,
     'executeYaml' : executeYaml
 }

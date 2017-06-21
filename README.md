@@ -144,7 +144,28 @@ Function `executeYaml` has 4 parameters, `executeYaml(yamlFile, inputs, presets,
 * `yamlFile` : The chain file in YAML format
 * `inputs` : Array of inputs
 * `presets` : Initial values of variables
-* `callback` : Callback function. Should has two parameter. The first parameter to hold the output of the chain, while the second one is boolean which value is going to be `true` if the chain succeed and `false` if there is any error.
+* `callback` : Callback function. Can has three parameters `output`, `success`, `errorMessage`.
+    - `output` contains output of the chain
+    - `success` contains whether true or false, reflecting whether the chain executed successfully or with error
+    - `errorMessage` contains useful error message for debugging purpose
+
+# Web Service
+
+Chimera web service will let you run chains in other computer.
+
+To start a chimera web service, you can run `chimera-serve` in the server.
+
+While to use the web service, you can run `chimera-send http://server.com:3000 chain-file.yaml your-first-input your-second-input`.
+
+You can also define TIMEOUT and PUBLISHED directory when running `chimera-serve`. In Unix, you can do this: `TIMEOUT=5000 PUBLISHED=. chimera-serve` to start the web service that only allows client to access chains in current directory. The maximum execution process should be 5000 ms. Otherwise, a request time out will be returned.
+
+Similar mechanism also works when you run `chimera-send`. `TIMEOUT=1000 chimera-send tests/chain-minimal.yaml 4 4` will makes the process only waits for maximum 1 second response from server.
+
+# Utilities
+
+* `chimera-serve` : Look at web service section
+* `chimera-send` : Look at web service section
+* `chimera-eisn` : Execute if source newer, example: `chimera-eisn program.java program.class javac program.java`
 
 # Web Framework
 
