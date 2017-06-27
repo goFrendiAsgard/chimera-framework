@@ -7,30 +7,6 @@ const fs = require('fs')
 const yaml = require('js-yaml')
 
 /**
- * Preprocess chain's shorthand.
- * Example:
- *  preprocessChain({'series' : 'python add.py 5 6'})
- * Output: 
- *  {'mode' : 'series', 'chains' : 'python add py 5 6'}
- *
- * @param {object} chain
- */
-function preprocessChain(chain){
-    if(typeof(chain) === 'object'){
-        // try to build chains and mode
-        if('series' in chain){
-            chain['mode'] = 'series'
-            chain['chains'] = chain['series']
-        }
-        else if('parallel' in chain){
-            chain['mode'] = 'parallel'
-            chain['chains'] = chain['parallel']
-        }
-    }
-    return chain
-}
-
-/**
  * Preprocess ins's shorthand
  * Example:
  *  preprocessIns('a, b')
@@ -53,11 +29,68 @@ function preprocessIns(ins){
 }
 
 /**
- * Execute chain configuration 
+ * Preprocess chain's shorthand.
+ * Example:
+ *  preprocessChain({'series' : ['python add.py 5 6']})
+ * Output:
+ *  {'mode' : 'series', 'chains' : ['python add py 5 6']}
+ *
+ * @param {object} chain
+ */
+function preprocessChain(chain, isRoot){
+    // if chain is a string, cast it into object
+    if(typeof(chain) == 'string'){
+        chain = {'command' : chain}
+    }
+    // other process require chain to be object
+    if(typeof(chain) === 'object'){
+        if(isRoot){
+            // The root can contains only a single command (no "chains" or "mode")
+            if ('command' in chain){
+                chain.mode = 'series'
+                chain.chains = [{'command': chain.command}]
+                delete chain.command
+            }
+            // default values
+            chain.verbose = 'verbose' in chain? chain.verbose: false
+            chain.vars    = 'vars' in chain? chain.vars: {}
+        }
+        // preprocess 'series' shorthand
+        if('series' in chain){
+            chain.mode = 'series'
+            chain.chains = chain.series
+            delete chain.series
+        }
+        // preprocess 'parallel' shorthand
+        if('parallel' in chain){
+            chain.mode = 'parallel'
+            chain.chains = chain.parallel
+            delete chain.parallel
+        }
+        // default values
+        chain.ins   = 'ins' in chain? preprocessIns(chain.ins): []
+        chain.out   = 'out' in chain? chain.out: '_'
+        chain.mode  = 'mode' in chain? chain.mode: 'series'
+        chain.if    = 'if' in chain? chain.if: true
+        chain.while = 'while' in chain? chain.while: false
+        // recursive preprocessing
+        if('chains' in chain){
+            for(let i=0; i<chain.chains.length; i++){
+                chain.chains[i] = preprocessChain(chain.chains[i], false)
+            }
+        }
+        // return chain
+        return chain
+    }
+    return false
+}
+
+/**
+ * Execute chain configuration
  * Example
  *  var chainConfig = {
- *      'series' : {'command': 'python operation.py', 'ins': ['a, 'b', 'operation'], 'out': 'c'}, 
- *      'ins':['a','b'], 
+ *      'series' : {'command': 'python operation.py', 'ins': ['a, 'b', 'operation'], 'out': 'c'},
+ *      'ins':['a','b'],
  *      'out':'c'};
  *  executeYaml(chainConfig, [5 6], {'operation' : 'plus'}, function(result, success, errorMessage){console.log(out);});
  *  executeYaml(chainConfig, [5 6], {'operation' : 'plus'});
@@ -70,55 +103,34 @@ function preprocessIns(ins){
  * @params {function} executeCallback
  */
 function execute(chainConfigs, argv, presets, executeCallback){
-
-    // if chainConfigs is a string, cast it into object
-    if(typeof(chainConfigs) == 'string'){
-        chainConfigs = {'command': chainConfigs}
+    // argv should be array or object
+    if(typeof(argv) != 'array' && typeof(argv) != 'object'){
+        argv = []
     }
-
+    // preprocessing
+    chainConfigs = preprocessChain(chainConfigs, true)
     // don't do anything if chainConfigs is wrong
-    if(typeof(chainConfigs) != 'object'){
+    if(chainConfigs === false){
         console.error('[ERROR] Unable to fetch chain')
         console.error(chainConfigs)
         executeCallback('', false, 'Unable to fetch chain')
         return null
     }
-
-    // preprocessing
-    chainConfigs = preprocessChain(chainConfigs)
-
     // get ins, out, vars, chains, mode, and verbose
-    let ins     = 'ins' in chainConfigs? chainConfigs.ins: []
-    let out     = 'out' in chainConfigs? chainConfigs.out: '_'
-    let vars    = 'vars' in chainConfigs? chainConfigs.vars: {}
-    let chains  = 'chains' in chainConfigs? chainConfigs.chains: []
-    let mode    = 'mode' in chainConfigs? chainConfigs.mode: 'series'
-    let verbose = 'verbose' in chainConfigs? chainConfigs.verbose: false
-
-    // secondary preprocessing in case of the chain config only contains single command
-    if(typeof(chainConfigs) == 'object' && ('command' in chainConfigs)){
-        chains = [{
-            'command' : chainConfigs['command'],
-            'ins' : ins,
-            'out' : out,
-        }] 
-    }
-
-    // combine vars with presets
+    let ins     =  chainConfigs.ins
+    let out     =  chainConfigs.out
+    let vars    =  chainConfigs.vars
+    let chains  =  chainConfigs.chains
+    let mode    =  chainConfigs.mode
+    let verbose =  chainConfigs.verbose
+    // override vars with presets
     if(typeof presets == 'object'){
         Object.keys(presets).forEach(function(key){
             vars[key] = presets[key]
         })
     }
-
-    // preprocess "ins"
-    ins = preprocessIns(ins)
-
     // populate "vars" based on "ins" and "process.argv"
     ins.forEach(function(key, index){
-        if(typeof(argv) != 'array' && typeof(argv) != 'object'){
-            argv = []
-        }
         if(index < argv.length){
             vars[key] = argv[index]
         }
@@ -126,13 +138,12 @@ function execute(chainConfigs, argv, presets, executeCallback){
             vars[key] = 0
         }
     })
-
     // run the chains
     runChains(chains, mode, true)
 
     // The sub functions ================================================
 
-    // function to run executeCallback or show the result 
+    // function to run executeCallback or show the result
     function lastProcessOutput(err, result){
         let output = out in vars? vars[out]: ''
         // execute the callback if defined, or show the output
@@ -144,16 +155,14 @@ function execute(chainConfigs, argv, presets, executeCallback){
         }
     }
 
-    // function to build another another function 
+    // function to build another another function
     // the function returned will execute a single chain
     function getChainRunner(chain){
         return function(callback){
             // get command, ins, and out
             let chainCommand = chain.command
-            let chainIns = 'ins' in chain? chain.ins : []
-            let chainOut = 'out' in chain? chain.out: '_'
-            // preprocess "ins"
-            chainIns = preprocessIns(chainIns)
+            let chainIns = chain.ins
+            let chainOut = chain.out
             chainIns.forEach(function(key){
                 let arg = ''
                 if(typeof(vars[key]) == 'object'){
@@ -195,26 +204,22 @@ function execute(chainConfigs, argv, presets, executeCallback){
 
     // get actions that will be used in async process
     function getActions(chains){
-        var actions = []
+        let actions = []
         chains.forEach(function(chain){
-            // preprocess chain if it is a string
-            if(typeof(chain) == 'string'){
-                chain = {'ins' : [], 'out' : '_', 'command' : chain}
-            }
-            // preprocess chain
-            chain = preprocessChain(chain)
-            // determine appropriate action for chain based on it's subChains exixtance
-            if('chains' in chain){
-                // chain has other subChains
-                let subMode = 'mode' in chain? chain.mode: 'series'
-                let subChains = 'chains' in chain? chain.chains: []
-                actions.push(function(callback){
-                    runChains(subChains, subMode, false, callback)
-                })
-            }
-            else{
-                // chain doesn't have subChains
-                actions.push(getChainRunner(chain))
+            if(eval(chain.if)){
+                // determine appropriate action for chain based on it's subChains exixtance
+                if('chains' in chain){
+                    // chain has other subChains
+                    let subMode = 'mode' in chain? chain.mode: 'series'
+                    let subChains = 'chains' in chain? chain.chains: []
+                    actions.push(function(callback){
+                        runChains(subChains, subMode, false, callback)
+                    })
+                }
+                else if('command' in chain){
+                    // chain doesn't have subChains
+                    actions.push(getChainRunner(chain))
+                }
             }
         })
         return actions
