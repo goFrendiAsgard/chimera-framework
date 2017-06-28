@@ -61,17 +61,26 @@ You can run the test case by running `npm test`. There will be two cases and eac
 
 ```yaml
 # Location: your-chain-file.yaml
+#
 # THE MAIN PROCESS:
 #   f = ((a+b) * (a-b)) + a
+#
 # THE SUBPROCESSES:
-#   Process 1: c = a + b (we will use Python)
-#   Process 2: d = a - b (we will use Java)
-#   Process 3: e = c * d (we will use PHP)
-#   Process 4: f = e + a (we will use javascript)
+#   Process 1: c = a + b (Python)
+#   Process 2: d = a - b (Java)
+#   Process 3: e = c * d (PHP)
+#   Process 4: f = e + a (Javascript)
+#
+#
 # THE FLOW:
-# Process 1 and Process 2 will be executed in parallel since they are independent to each other
-# After Process 1 and Process 2 finished, Process 3 and Process 4 should be executed in serial 
-# Process 3 depend on both Process 1 and 2, and Process 4 depend on Process 3
+#
+# Process 1 and Process 2 will be executed in parallel 
+# since they are independent to each other
+#
+# After Process 1 and Process 2 finished, 
+# Process 3 and Process 4 should be executed in serial 
+# Process 3 depend on both Process 1 and 2, 
+# and Process 4 depend on Process 3
 
 ins: a,b # The inputs of main process
 out: f # The outputs of main process

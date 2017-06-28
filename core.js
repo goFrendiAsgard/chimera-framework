@@ -155,9 +155,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
         }
     }
 
-    // function to build another another function
-    // the function returned will execute a single chain
-    function getChainRunner(chain){
+    function getTrueChainRunner(chain){
         return function(callback){
             // get command, ins, and out
             let chainCommand = chain.command
@@ -202,6 +200,24 @@ function execute(chainConfigs, argv, presets, executeCallback){
         }
     }
 
+    // function to build another another function
+    // the function returned will execute a single chain
+    function getChainRunner(chain){
+        if('chains' in chain){
+            // chain has other subChains
+            let subMode = 'mode' in chain? chain.mode: 'series'
+            let subChains = 'chains' in chain? chain.chains: []
+            return function(callback){
+                runChains(subChains, subMode, false, callback)
+            }
+        }
+        else if('command' in chain){
+            // chain doesn't have subChains
+            return getTrueChainRunner(chain)
+        }
+        return null
+    }
+
     function getVar(key){
         if(key in vars){
             return vars[key]
@@ -210,10 +226,12 @@ function execute(chainConfigs, argv, presets, executeCallback){
     }
 
     function isTrue(statement){
-        re = /(\$[a-zA-Z0-9-_])/g
+        statement = String(statement)
+        re = /\$([a-zA-Z0-9-_]*)/g
         replacer = function(match, offset, string){
-            return getVar(match)
+            return getVar(offset)
         }
+        statement = statement.replace(re, replacer)
         return eval(statement)
     }
 
@@ -223,32 +241,23 @@ function execute(chainConfigs, argv, presets, executeCallback){
         chains.forEach(function(chain){
             // only proceed if "chain.if" is true
             if(isTrue(chain.if)){
-                let chainRunner = null
-                // determine appropriate action for chain based on it's subChains exixtance
-                if('chains' in chain){
-                    // chain has other subChains
-                    let subMode = 'mode' in chain? chain.mode: 'series'
-                    let subChains = 'chains' in chain? chain.chains: []
-                    chainRunner = function(callback){
-                        runChains(subChains, subMode, false, callback)
-                    }
-                }
-                else if('command' in chain){
-                    // chain doesn't have subChains
-                    chainRunner = getChainRunner(chain)
-                    
-                }
-                // loop
+                let chainRunner = getChainRunner(chain)
                 if(chainRunner != null){
+                    // need a flag so that the chainRunner will be executed at at least once
+                    let neverRunBefore = true
                     let alteredChainRunner = function(callback){
                         // if "chain.while" is true, then call this chainRunner once more 
                         if(isTrue(chain.while)){
-                            chainRunner(chainRunner(callback))
+                            let alteredCallback = function(){
+                                alteredChainRunner(callback)
+                            }
+                            chainRunner(alteredCallback)
                         }
                         // otherwise, just proceed as is
-                        else{
+                        else if(neverRunBefore){
                             chainRunner(callback)
                         }
+                        neverRunBefore = false
                     }
                     // add to actions
                     actions.push(alteredChainRunner)

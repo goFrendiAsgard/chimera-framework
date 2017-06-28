@@ -1,0 +1,31 @@
+vars : 
+    delta : 1
+ins : a
+out : a
+verbose : true
+series :
+
+  - if : $a < 10
+    ins : a, delta
+    out : a
+    command : node programs/add.js
+    while : $a < 8
+
+    # This is how the above configuration written in javascript
+    #
+    # if (a < 10){
+    #     do {
+    #        a = getOutputOf("node programs/add.js " + a + " " + delta)
+    #     } while (a < 8)
+    # }
+
+  - if : $a > 10
+    ins : a, delta
+    out : a
+    command : node programs/substract.js
+
+    # This is how the above configuration written in javascript
+    #
+    # if (a > 10){
+    #     a = getOutputOf("node programs/substract.js " + a + " " + delta)
+    # }
