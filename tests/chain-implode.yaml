@@ -1,3 +1,4 @@
 ins: a, b, c # The inputs of main process
 out: d # The outputs of main process
+verbose: yes
 command: node programs/implode.js

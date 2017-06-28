@@ -44,11 +44,17 @@ function preprocessChain(chain, isRoot){
     }
     // other process require chain to be object
     if(typeof(chain) === 'object'){
+        // default values
+        chain.ins   = 'ins' in chain? preprocessIns(chain.ins): []
+        chain.out   = 'out' in chain? chain.out: '_'
+        chain.mode  = 'mode' in chain? chain.mode: 'series'
+        chain.if    = 'if' in chain? chain.if: true
+        chain.while = 'while' in chain? chain.while: false
         if(isRoot){
             // The root can contains only a single command (no "chains" or "mode")
             if ('command' in chain){
                 chain.mode = 'series'
-                chain.chains = [{'command': chain.command}]
+                chain.chains = [{'command': chain.command, 'ins':chain.ins, 'out':chain.out}]
                 delete chain.command
             }
             // default values
@@ -67,12 +73,6 @@ function preprocessChain(chain, isRoot){
             chain.chains = chain.parallel
             delete chain.parallel
         }
-        // default values
-        chain.ins   = 'ins' in chain? preprocessIns(chain.ins): []
-        chain.out   = 'out' in chain? chain.out: '_'
-        chain.mode  = 'mode' in chain? chain.mode: 'series'
-        chain.if    = 'if' in chain? chain.if: true
-        chain.while = 'while' in chain? chain.while: false
         // recursive preprocessing
         if('chains' in chain){
             for(let i=0; i<chain.chains.length; i++){
@@ -202,23 +202,56 @@ function execute(chainConfigs, argv, presets, executeCallback){
         }
     }
 
+    function getVar(key){
+        if(key in vars){
+            return vars[key]
+        }
+        return 0
+    }
+
+    function isTrue(statement){
+        re = /(\$[a-zA-Z0-9-_])/g
+        replacer = function(match, offset, string){
+            return getVar(match)
+        }
+        return eval(statement)
+    }
+
     // get actions that will be used in async process
     function getActions(chains){
         let actions = []
         chains.forEach(function(chain){
-            if(eval(chain.if)){
+            // only proceed if "chain.if" is true
+            if(isTrue(chain.if)){
+                let chainRunner = null
                 // determine appropriate action for chain based on it's subChains exixtance
                 if('chains' in chain){
                     // chain has other subChains
                     let subMode = 'mode' in chain? chain.mode: 'series'
                     let subChains = 'chains' in chain? chain.chains: []
-                    actions.push(function(callback){
+                    chainRunner = function(callback){
                         runChains(subChains, subMode, false, callback)
-                    })
+                    }
                 }
                 else if('command' in chain){
                     // chain doesn't have subChains
-                    actions.push(getChainRunner(chain))
+                    chainRunner = getChainRunner(chain)
+                    
+                }
+                // loop
+                if(chainRunner != null){
+                    let alteredChainRunner = function(callback){
+                        // if "chain.while" is true, then call this chainRunner once more 
+                        if(isTrue(chain.while)){
+                            chainRunner(chainRunner(callback))
+                        }
+                        // otherwise, just proceed as is
+                        else{
+                            chainRunner(callback)
+                        }
+                    }
+                    // add to actions
+                    actions.push(alteredChainRunner)
                 }
             }
         })

@@ -2,6 +2,7 @@ vars:
   anyWord : "Hello"
 ins: anyWord
 out: output
+verbose: yes
 series:
   - parallel:
       - out: currentCalendar
