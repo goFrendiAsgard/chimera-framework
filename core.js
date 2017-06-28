@@ -251,23 +251,21 @@ function execute(chainConfigs, argv, presets, executeCallback){
                 let chainRunner = getChainRunner(chain)
                 if(chainRunner != null){
                     // need a flag so that the chainRunner will be executed at at least once
-                    let neverRunBefore = true
+                    let firstRun = true
                     let alteredChainRunner = function(callback){
-                        // if "chain.while" is true, then call this chainRunner once more 
-                        if(isTrue(chain.while)){
+                        // if "chain.while" is true or this is the first run,
+                        // then call this chainRunner one more time (recursive strategy)
+                        if(isTrue(chain.while) || firstRun){
                             let alteredCallback = function(){
                                 alteredChainRunner(callback)
                             }
                             chainRunner(alteredCallback)
+                            firstRun = false
                         }
-                        // otherwise, just proceed as is
-                        else if(neverRunBefore){
-                            chainRunner(callback)
-                        }
+                        // otherwise just execute the callback
                         else{
                             callback()
                         }
-                        neverRunBefore = false
                     }
                     // add to actions
                     actions.push(alteredChainRunner)

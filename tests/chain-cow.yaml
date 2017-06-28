@@ -1,9 +1,9 @@
-vars:
-  anyWord : "Hello"
 ins: anyWord
 out: output
-verbose: yes
 series:
+  - if: $anyWord == 0
+    out: anyWord
+    command: echo hello
   - parallel:
       - out: currentCalendar
         command: cal

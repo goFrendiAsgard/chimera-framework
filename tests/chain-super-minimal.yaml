@@ -1,0 +1,11 @@
+# Simplification of chain-complete.yaml
+ins: a,b
+out: f
+series:
+  - parallel:
+      - (a, b) -> python programs/add.py -> c
+      - series:
+          - chimera-eisn Substract.java Substract.class javac programs/Substract.java
+          - (a, b) -> java -cp programs Substract -> d
+  - (c, d) -> php programs/multiply.php -> e
+  - (e, a) -> node programs/add.js -> f
