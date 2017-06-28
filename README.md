@@ -48,75 +48,160 @@ npm install --global chimera-framework
 
 # Is it working?
 
-You can run the test case by running `npm test`. There will be two cases and each of them will yield `-23`
+You can run the test case by running `npm test`. The test require `python`, `php`, and `java` to be already installed.
 
 # Usage (command line)
 
-## Using YAML File
+## Using YAML-chain File
 
-* Define your chain progress in `yaml` format
+Basically you can invoke your YAML chain file by using this command:
 
-    Let's try to make a chain file to execute `Python`, `Javascript`, `Java`, and `PHP` program to solve a simple math problem
+```sh
+chimera your-chain-file.yaml [input1 [input2 [input3 ...]]]
+```
+
+In the next section you will see how to write a YAML-chain file
+
+### Single process
+
+A chain should contains at least three components. Inputs, command, and output.
+For single process, the YAML syntax is quite straight-forward.
+
+```yaml
+# filename: add.yaml
+ins: a, b
+out: c
+command: node add.js
+```
+
+You can invoke the chain by performing `chimera add.yaml 5 6`. Assuming you `add.js` works correctly, you should see `11` as result.
+If you don't define `out` element, `_ans` will be used by default.
+
+Chimera also provide some syntactic sugar for your convenience. The above example can also be written as:
 
 
 ```yaml
-# Location: your-chain-file.yaml
-#
-# THE MAIN PROCESS:
-#   f = ((a+b) * (a-b)) + a
-#
-# THE SUBPROCESSES:
-#   Process 1: c = a + b (Python)
-#   Process 2: d = a - b (Java)
-#   Process 3: e = c * d (PHP)
-#   Process 4: f = e + a (Javascript)
-#
-#
-# THE FLOW:
-#
-# Process 1 and Process 2 will be executed in parallel 
-# since they are independent to each other
-#
-# After Process 1 and Process 2 finished, 
-# Process 3 and Process 4 should be executed in serial 
-# Process 3 depend on both Process 1 and 2, 
-# and Process 4 depend on Process 3
-
-ins: a,b # The inputs of main process
-out: f # The outputs of main process
-series:
-  # Process 1 and 2
-  - parallel:
-      # Process 1 (in Python)
-      - ins: a, b
-        out: c
-        command: python programs/add.py
-      - series: # Process 2 (in Java)
-          # First, compile the source 
-          - javac programs/Substract.java
-          # then run the program
-          - ins: a, b
-            out: d
-            command: java -cp programs Substract
-  # Process 3 (in PHP)
-  - ins: c, d
-    out: e
-    command: php programs/multiply.php
-  # Process 4 (in Javascript)
-  - ins: e, a
-    out: f
-    command: node programs/add.js
+# Now, we put ins and out into the command, separated by ->
+command: (a,b) -> node add.js -> c
 ```
 
-* Execute the chain by invoking: 
+```yaml
+# if not specified, the out parameter will be _ans
+ins: a, b
+command: node add.js
+```
+
+```yaml
+# you can even write this:
+(a, b) -> node add.js
+```
+
+### Process control (branch and loop)
+
+Sometime your process contains several simple logic (i.e: loop and branch). Please look at this example:
+
+```yaml
+# control.yaml
+vars : 
+    delta : 1
+ins : a
+out : a
+verbose : true
+series :
+  # First process
+  - if : a < 10
+    command : (a, delta) -> node programs/add.js -> a
+    while : a < 8
+  # Second process
+  - if : a > 10
+    command : (a, delta) -> node programs/substract.js -> a
+```
+
+In the example, we create a global variable named `delta`. The value is `1`. It can be changed later by the processes. But, for this example, we won't do any changes to `delta`'s value. Instead, we will change the value of `a`
+
+We have two proceesses that run sequentially (you can also use `parallel` instead of `series`, it will be discussed in the next section).
+
+The first process (`(a, delta) -> node programs/add.js -> a`) take `a` and `delta` as inputs. The output will then saved in global variable `a`, so that it can be used later. Chimera will execute this process only if `a < 10`. The process will then executed repeatedly while `a < 8`
+
+Once the first process completed (or ignored in case of the initial condition doesn't met), the second process (`(a, delta) -> node programs/substract.js -> a`) will be executed. The second process will only be executed if `a > 10`.
+
+The process above is logically equal to this pseudo-code (well, actually this is Python):
+
+```python
+delta = 1
+a = input()
+
+# First process
+if a < 10:
+    # Well, it is actually do-while,
+    # Python just strangely doesn't have do-while
+    # so here we go...
+    while True:
+        a = read_output_of('node programs/add.js ' + a + ' ' + delta)
+        if not (a<8):
+            break
+
+# Second process
+if a > 10:
+    a = read_output_of('node programs/substract.js ' + a + ' ' + delta)
+
+# now, show the output
+print a
+```
+
+__Note:__ Use this feature with care. Don't over do it. For a more complex logic-control, please put it on your program.
+
+### Parallel execution
+
+Let's consider you have several programs written in Python, Java, PHP, and Javascript. Each of them takes 2 arguments and return an output. Given `a` and `b`, you want to calculate `((a+b) * (a-b)) + a`.
+
+You can write the process as follow:
+
+```
+f = ((a+b) * (a-b)) + a
+```
+
+You can then divide this process into several sub-processes:
+```
+Process 1: c = a + b
+Process 2: d = a - b
+Process 3: e = c * d
+Process 4: f = e + a
+```
+
+Process 1 and process 2 will be executed in parallel since they are independent to each other. You don't need to solve process 1 in order to do process 2 and vice versa.
+
+After Process 1 and process 2 finished, process 3 and process 4 should be executed in serial.
+Process 3 depend on both process 1 and 2, and process 4 depend on process 3
+
+
+```yaml
+# chain-minimal.yaml
+ins: a,b
+out: f
+series:
+  # Process One & Two
+  - parallel:
+      # Process 1 (Python)
+      - a, b -> python programs/add.py -> c
+      # Process 2 (Java, thus needs compilation)
+      - series:
+          - chimera-eisn Substract.java Substract.class javac programs/Substract.java
+          - a, b -> java -cp programs Substract -> d
+  # Process 3 (PHP)
+  - c, d -> php programs/multiply.php -> e
+  # Process 4 (Javascript)
+  - e, a ->node programs/add.js -> f
+```
+You can execute the chain by invoking: 
 
 ```sh
-chimera your-chain-file.yaml 5 1
+chimera chain-minimal.yaml 5 1
 ``` 
 
-This will give you `29` since  `((5+1) * (5-1)) + a = 29`
+This will give you `29` since  `((5+1) * (5-1)) + 5 = 29`
 
-## Parsing YAML directly 
+## Parsing YAML-chain directly 
 
 ```sh
 chimera "command : cal"
@@ -128,7 +213,7 @@ This will call `cal` command (works on linux) and show you current month's calen
 This will also do the same
 
 ```sh
-chimera cal
+chimera "cal"
 ```
 
 # Usage (programmatically)
@@ -157,6 +242,8 @@ Function `executeYaml` has 4 parameters, `executeYaml(yamlFile, inputs, presets,
     - `output` contains output of the chain
     - `success` contains whether true or false, reflecting whether the chain executed successfully or with error
     - `errorMessage` contains useful error message for debugging purpose
+
+__Note:__ For convenience, Chimera change the working directory to the YAML-chain path. At the end of callback stack, the working directory will be set back. However some problem might occurred if you run another code before the callback finished. Also, for a very rare condition (i.e: You accidentally execute interactive program that will wait user-input forever), the callback might not be executed at all.
 
 # Web Service
 

@@ -1,6 +1,6 @@
 {
   "name": "chimera-framework",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Chimera-framework is a nodejs based framework that let you write any task in any language, and combine them for a greater good.",
   "bin": {
     "chimera": "core.js",

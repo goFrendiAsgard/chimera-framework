@@ -17,10 +17,15 @@ const yaml = require('js-yaml')
  */
 function preprocessIns(ins){
     if(typeof(ins) === 'string'){
+        // remove spaces
+        ins = ins.trim()
+        // remove parantheses
+        ins = ins.replace(/^\((.*)\)/, '$1')
+        // split
         ins = ins.split(',')
-        // trim the spaces
         newIns = []
         ins.forEach(function(input){
+            // remove spaces for each component
             newIns.push(input.trim())
         })
         ins = newIns
@@ -30,6 +35,29 @@ function preprocessIns(ins){
 
 function preprocessCommand(chain){
     if('command' in chain){
+        // split command by '->'
+        let commandParts = chain.command.split('->')
+        for(let i =0; i<commandParts.length; i++){
+            commandParts[i] = commandParts[i].trim()
+        }
+        // if commandParts has 3 elements, then they must be input, process and output
+        if(commandParts.length == 3){
+            chain.ins = commandParts[0]
+            chain.command = commandParts[1]
+            chain.out = commandParts[2]
+        }
+        else if(commandParts.length == 2){
+            // input and process
+            if(commandParts[0].match(/\(.*\)/g)){
+                chain.ins = commandParts[0]
+                chain.command = commandParts[1]
+            }
+            // process and output
+            else{
+                chain.command = commandParts[0]
+                chain.out = commandParts[1] 
+            }
+        }
     }
     return chain
 }
@@ -53,7 +81,7 @@ function preprocessChain(chain, isRoot){
         chain = preprocessCommand(chain)
         // default values
         chain.ins   = 'ins' in chain? preprocessIns(chain.ins): []
-        chain.out   = 'out' in chain? chain.out: '_'
+        chain.out   = 'out' in chain? chain.out: '_ans'
         chain.mode  = 'mode' in chain? chain.mode: 'series'
         chain.if    = 'if' in chain? chain.if: true
         chain.while = 'while' in chain? chain.while: false
@@ -234,11 +262,16 @@ function execute(chainConfigs, argv, presets, executeCallback){
 
     function isTrue(statement){
         statement = String(statement)
-        re = /\$([a-zA-Z0-9-_]*)/g
-        replacer = function(match, offset, string){
-            return getVar(offset)
+        let re = /([a-zA-Z0-9-_]*)/g
+        let words = statement.match(re)
+        for(let i=0; i<words.length; i++){
+            word = words[i]
+            if(word in vars){
+                // declare variables (TODO: look, why "let" doesn't work, but "var" works)
+                eval('var ' + word + '=' + JSON.stringify(vars[word]))
+            }
         }
-        statement = statement.replace(re, replacer)
+        // execute result
         return eval(statement)
     }
 
