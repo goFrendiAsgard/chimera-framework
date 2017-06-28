@@ -28,6 +28,12 @@ function preprocessIns(ins){
     return ins
 }
 
+function preprocessCommand(chain){
+    if('command' in chain){
+    }
+    return chain
+}
+
 /**
  * Preprocess chain's shorthand.
  * Example:
@@ -44,6 +50,7 @@ function preprocessChain(chain, isRoot){
     }
     // other process require chain to be object
     if(typeof(chain) === 'object'){
+        chain = preprocessCommand(chain)
         // default values
         chain.ins   = 'ins' in chain? preprocessIns(chain.ins): []
         chain.out   = 'out' in chain? chain.out: '_'
@@ -256,6 +263,9 @@ function execute(chainConfigs, argv, presets, executeCallback){
                         // otherwise, just proceed as is
                         else if(neverRunBefore){
                             chainRunner(callback)
+                        }
+                        else{
+                            callback()
                         }
                         neverRunBefore = false
                     }

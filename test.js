@@ -14,30 +14,41 @@ cmd.get(command, function(data, err, stderr){
     lastLine = lines[lines.length - 1];
     assert(lastLine == -23, 'test chain-complete failed');
 
-    // assert chain minimal
-    command = 'chimera tests/chain-minimal.yaml 1 5';
+    command = 'chimera tests/chain-control.yaml 5';
     cmd.get(command, function(data, err, stderr){
         // show command
         console.log(command);
-        // show data
+        // data contains several lines
         console.log(data);
-        assert(data == -23, 'test chain-complete failed');
+        // get the last line
+        lines = data.trim().split('\n');
+        lastLine = lines[lines.length - 1];
+        assert(lastLine == 8, 'test chain-control failed');
 
-        // try to import executeYaml
-        chimera.executeYaml('tests/chain-minimal.yaml', [1, 5], {}, function(output){
-            console.log('test executeYaml without presets');
-            console.log(output);
-            assert(output == -23, 'test executeYaml without presets failed');
-           
+        // assert chain minimal
+        command = 'chimera tests/chain-minimal.yaml 1 5';
+        cmd.get(command, function(data, err, stderr){
+            // show command
+            console.log(command);
+            // show data
+            console.log(data);
+            assert(data == -23, 'test chain-complete failed');
+
             // try to import executeYaml
-            chimera.executeYaml('tests/chain-minimal.yaml', {}, {a:1, b:5}, function(output){
-                console.log('test executeYaml with presets');
+            chimera.executeYaml('tests/chain-minimal.yaml', [1, 5], {}, function(output){
+                console.log('test executeYaml without presets');
                 console.log(output);
-                assert(output == -23, 'test executeYaml with presets failed');
+                assert(output == -23, 'test executeYaml without presets failed');
+
+                // try to import executeYaml
+                chimera.executeYaml('tests/chain-minimal.yaml', {}, {a:1, b:5}, function(output){
+                    console.log('test executeYaml with presets');
+                    console.log(output);
+                    assert(output == -23, 'test executeYaml with presets failed');
+                });
+
             });
 
         });
-
     });
-
 });
