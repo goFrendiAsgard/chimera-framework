@@ -1,15 +1,9 @@
 ins: anyWord
 out: output
 series:
-  - if: $anyWord == 0
-    out: anyWord
-    command: echo hello
+  - if: anyWord == 0
+    command: echo hello -> anyWord
   - parallel:
-      - out: currentCalendar
-        command: cal
-      - ins: anyWord
-        out: cow
-        command: cowsay
-  - ins: currentCalendar, cow
-    out: output
-    command: echo
+      - cal -> currentCalendar
+      - anyWord -> cowsay -> cow
+  - (currentCalendar, cow) -> echo -> output

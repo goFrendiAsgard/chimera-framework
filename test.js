@@ -4,8 +4,11 @@ const cmd = require('node-cmd')
 const chimera = require('chimera-framework/core')
 
 function testExecuteCommand(testName, command, expectedResult, callback){
+    let startTime = process.hrtime(); 
+    console.log('START ' + testName + ' ON nanosecond: ' + chimera.getFormattedNanoSecond(startTime) + '\n')
     cmd.get(command, function(data, err, stderr){
-        console.log('START ' + testName + '\n')
+        let diff = process.hrtime(startTime);
+        let endTime = process.hrtime(); 
         // show command
         console.log(command)
         // data contains several lines
@@ -14,19 +17,26 @@ function testExecuteCommand(testName, command, expectedResult, callback){
         lines = data.trim().split('\n')
         lastLine = lines[lines.length - 1]
         // show assertion or success
-        assert(lastLine == expectedResult, testName + ' FAIL, Expected: '+expectedResult+', Actual: '+lastLine+'\n')
-        console.log(testName + ' SUCCESS\n')
+        console.log('END ' + testName + ' ON nanosecond: ' + chimera.getFormattedNanoSecond(endTime))
+        console.log('EXECUTION TIME: ' + chimera.getFormattedNanoSecond(diff) + ' nanosecond')
+        assert(lastLine == expectedResult, 'FAIL, Expected: '+expectedResult+', Actual: '+lastLine+'\n')
+        console.log('SUCCESS\n')
         // run callback
         callback()
     })
 }
 
 function testExecuteYaml(testName, yaml, inputs, presets, expectedResult, callback){
+    let startTime = process.hrtime(); 
+    console.log('START ' + testName + ' ON nanosecond: ' + chimera.getFormattedNanoSecond(startTime) + '\n')
     chimera.executeYaml(yaml, inputs, presets, function(output, success){
-        console.log('START ' + testName + '\n')
+        let diff = process.hrtime(startTime);
+        let endTime = process.hrtime(); 
         console.log(output);
-        assert(output == expectedResult, testName + ' FAIL, Expected: '+expectedResult+', Actual: '+lastLine+'\n')
-        console.log(testName + ' SUCCESS\n')
+        console.log('END ' + testName + ' ON nanosecond: ' + chimera.getFormattedNanoSecond(endTime))
+        console.log('EXECUTION TIME: ' + chimera.getFormattedNanoSecond(diff) + ' nanosecond')
+        assert(output == expectedResult, 'FAIL, Expected: '+expectedResult+', Actual: '+lastLine+'\n')
+        console.log('SUCCESS\n')
         // run callback
         callback()
     });
@@ -42,14 +52,29 @@ async.series([
     (callback) => {testExecuteCommand('Test chain-minimal', 
         'chimera tests/chain-minimal.yaml 1 5', -23, callback)},
 
+    (callback) => {testExecuteCommand('Test chain-inline-1', 
+        'chimera "(a, b) -> node tests/programs/add.js -> c" 1 5', 6, callback)},
+
+    (callback) => {testExecuteCommand('Test chain-inline-2', 
+        'chimera "(a, b) -> node tests/programs/add.js" 1 5', 6, callback)},
+
     (callback) => {testExecuteCommand('Test chain-implode', 
-        'chimera tests/chain-implode.yaml 1 2 3', JSON.stringify(['1','2','3']), callback)},
+        'chimera tests/chain-implode.yaml 1 2 3', '1, 2, 3', callback)},
 
     (callback) => {testExecuteCommand('Test chain-control-1', 
         'chimera tests/chain-control.yaml 5', 8, callback)},
 
     (callback) => {testExecuteCommand('Test chain-control-2', 
         'chimera tests/chain-control.yaml 12', 11, callback)},
+
+    (callback) => {testExecuteCommand('Test chain-simple-command', 
+        'chimera tests/chain-simple-command.yaml 5 6', 11, callback)},
+
+    (callback) => {testExecuteCommand('Test chain-nested-control', 
+        'chimera tests/chain-nested-control.yaml','1112*1314**2122*2324**3132*3334**',callback)},
+
+    (callback) => {testExecuteCommand('Test chain-complex-vars', 
+        'chimera tests/chain-complex-vars.yaml 5 6', -176, callback)},
 
     (callback) => {testExecuteYaml('Test executeYaml without presets',
         'tests/chain-minimal.yaml', [1, 5], {}, -23, callback)},

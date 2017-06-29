@@ -8,4 +8,4 @@ series:
           - chimera-eisn Substract.java Substract.class javac programs/Substract.java
           - a, b -> java -cp programs Substract -> d
   - c, d -> php programs/multiply.php -> e
-  - e, a ->node programs/add.js -> f
+  - e, a -> node programs/add.js -> f

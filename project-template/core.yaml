@@ -1,0 +1,32 @@
+ins: request, chain, view, access
+out: response
+vars:
+    chain: ''
+    response:
+        cookies: {}
+        session: {}
+        view: ''
+        statusCode: 200
+        statusMessage: 'OK'
+    request:
+        baseUrl: ''
+        hostname: ''
+        method: 'get'
+        protocol: 'http'
+        params: {}
+        query: {}
+        body: {}
+        cookies: {}
+        session: {}
+    isLogin: false
+    userInfo: {}
+    userGroups: {}
+    config: {}
+series:
+    # First of all, we need to read the config
+    - chimera readConfig.yaml config.yaml -> config 
+    # get user info
+    # get user groups
+    # if accessible call the chain
+    # Otherwise show error
+

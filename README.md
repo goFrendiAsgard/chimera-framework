@@ -82,17 +82,25 @@ Chimera also provide some syntactic sugar for your convenience. The above exampl
 
 ```yaml
 # Now, we put ins and out into the command, separated by ->
+# The format is: [input] -> [process] -> output
 command: (a,b) -> node add.js -> c
 ```
 
+if not specified, the out parameter is default to `_ans`
+
 ```yaml
-# if not specified, the out parameter will be _ans
 ins: a, b
 command: node add.js
 ```
 
+You can even write this:
 ```yaml
-# you can even write this:
+(a, b) -> node add.js
+```
+
+or even this:
+
+```yaml
 (a, b) -> node add.js
 ```
 
@@ -153,7 +161,7 @@ __Note:__ Use this feature with care. Don't over do it. For a more complex logic
 
 ### Parallel execution
 
-Let's consider you have several programs written in Python, Java, PHP, and Javascript. Each of them takes 2 arguments and return an output. Given `a` and `b`, you want to calculate `((a+b) * (a-b)) + a`.
+Let's consider you have several programs written in Python, Java, PHP, and Javascript. Each of them takes 2 arguments, do simple arithmetic operation, and return a single output. Given `a` and `b`, you want to calculate `((a+b) * (a-b)) + a`.
 
 You can write the process as follow:
 
@@ -201,19 +209,55 @@ chimera chain-minimal.yaml 5 1
 
 This will give you `29` since  `((5+1) * (5-1)) + 5 = 29`
 
-## Parsing YAML-chain directly 
+### Nested variables
+
+The best and worst part of Javascript object is that you can add any key without any need to define structure. Chimera's global variable is actually a big javascript object.
+
+Suppose you have variable `a`, you can then access `a.name`, `a.address` etc.
+
+The following YAML file show you how a nested variable can be used.
+
+```yaml
+ins: a, b
+out: c
+vars:
+    tmp: 
+        x: 4
+verbose: true
+series:
+    - echo "{\"x\":4, \"y\":{}}" -> tmp
+    - parallel:
+        - series: 
+            - (a, b) -> node programs/add.js -> tmp.y.addResult
+            - (tmp.y.addResult, tmp.x) -> php programs/multiply.php -> tmp.y.addResult
+        - series:
+            - (a, b) -> node programs/substract.js -> tmp.y.substractResult
+            - (tmp.y.substractResult, tmp.x) -> php programs/multiply.php -> tmp.y.substractResult
+    - (tmp.y.addResult, tmp.y.substractResult) -> php programs/multiply.php -> c
+```
+
+## Put YAML-chain format as argument 
+
+You can also put your YAML content directly as argument.
 
 ```sh
 chimera "command : cal"
 ```
-This will call `cal` command (works on linux) and show you current month's calendar
-
-## Parsing command directly
-
-This will also do the same
+or simply
 
 ```sh
 chimera "cal"
+```
+or even
+
+```sh
+chimera "(a) -> cal" 2017
+```
+
+which is similar to
+
+```sh
+chimera "cal 2017"
 ```
 
 # Usage (programmatically)

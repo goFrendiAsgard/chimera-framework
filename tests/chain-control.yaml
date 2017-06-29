@@ -1,12 +1,12 @@
 vars : 
-    delta : 1
+  delta : 1
 ins : a
 out : a
 verbose : true
 series :
 
   - if : a < 10
-    command : (a, delta) -> node programs/add.js -> a
+    command : (a, delta) -> php programs/add.php -> a
     while : a < 8
 
     # This is how the above configuration written in javascript
@@ -18,7 +18,7 @@ series :
     # }
 
   - if : a > 10
-    command : (a, delta) -> node programs/substract.js -> a
+    command : (a, delta) -> php programs/substract.php -> a
 
     # This is how the above configuration written in javascript
     #

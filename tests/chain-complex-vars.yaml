@@ -1,0 +1,16 @@
+ins: a, b
+out: c
+vars:
+    tmp: 
+        x: 4
+verbose: true
+series:
+    - php programs/echo.php "{\"x\":4, \"y\":{}}" -> tmp
+    - parallel:
+        - series: 
+            - (a, b) -> php programs/add.php -> tmp.y.addResult
+            - (tmp.y.addResult, tmp.x) -> php programs/multiply.php -> tmp.y.addResult
+        - series:
+            - (a, b) -> php programs/substract.php -> tmp.y.substractResult
+            - (tmp.y.substractResult, tmp.x) -> php programs/multiply.php -> tmp.y.substractResult
+    - (tmp.y.addResult, tmp.y.substractResult) -> php programs/multiply.php -> c

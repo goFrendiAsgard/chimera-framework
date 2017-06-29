@@ -6,6 +6,12 @@ const async = require('async')
 const fs = require('fs')
 const yaml = require('js-yaml')
 
+// this one is for benchamarking
+function getFormattedNanoSecond(time){
+    let nano = time[0] * 1e9 + time[1]
+    return nano.toLocaleString()
+}
+
 /**
  * Preprocess ins's shorthand
  * Example:
@@ -190,45 +196,102 @@ function execute(chainConfigs, argv, presets, executeCallback){
         }
     }
 
+    function getVar(key){
+        let keyParts = key.split('.')
+        // bypass everything if the key is not nested
+        if(keyParts.length == 1){
+            return key in vars? vars[key]: 0
+        }
+        // recursively get value of vars
+        let value = vars
+        for(let i=0; i<keyParts.length; i++){
+            let keyPart = keyParts[i]
+            if((typeof value == 'object') && (keyPart in value)){
+                value = value[keyPart]
+            }
+            else{
+                value = 0
+                break
+            }
+        }
+        return value
+    }
+
+    function setVar(key, value){
+        // If the value can be parsed into object, parse it 
+        value = value.replace(/[ \n]+$/g, '')
+        try{ value = JSON.parse(value);} catch(e){}
+        let keyParts = key.split('.')
+        // bypass everything if the key is not nested
+        if(keyParts.length == 1){
+            vars[key] = value
+        }
+        // recursively set value of vars
+        let obj = vars
+        for(let i=0; i<keyParts.length; i++){
+            let keyPart = keyParts[i]
+            // last part
+            if(i == keyParts.length -1){
+                obj[keyPart] = value
+            }
+            // middle part
+            else{
+                // define object if not defined
+                if(!('keypart') in obj || typeof obj[keyPart] != 'object'){
+                    obj[keyPart] = {}
+                }
+                // Traverse. Javacript has "call by reference" !!!
+                obj = obj[keyPart]
+            }
+        }
+    }
+
     function getTrueChainRunner(chain){
         return function(callback){
             // get command, ins, and out
             let chainCommand = chain.command
             let chainIns = chain.ins
             let chainOut = chain.out
+            // we can only send string in CLI, thus if the input is object, 
+            // it should be stringified
             chainIns.forEach(function(key){
                 let arg = ''
                 if(typeof(vars[key]) == 'object'){
-                    arg = JSON.stringify(vars[key])
+                    arg = JSON.stringify(getVar(key))
                 }
                 else{
-                    arg = String(vars[key])
+                    arg = String(getVar(key))
                 }
                 arg = arg.replace(/"/g, '\\\"')
                 arg = arg.replace(/\n/g, '\\n')
                 arg = arg.trim()
                 chainCommand += ' "' + arg + '"'
             })
+            // benchmarking
+            let startTime = 0
+            if(verbose){
+                startTime = process.hrtime(); 
+                    console.info('[INFO] START PROCESS ['+chainCommand+'] AT    : ' + getFormattedNanoSecond(startTime))
+            }
             // run the command
             cmd.get(chainCommand, function(data, err, stderr){
                 if(verbose){
-                    console.info('[INFO] Running: ' + chainCommand)
+                    let diff = process.hrtime(startTime);
+                    let endTime = process.hrtime(); 
+                    console.info('[INFO] END PROCESS   ['+chainCommand+'] AT    : ' + getFormattedNanoSecond(endTime))
+                    console.info('[INFO] PROCESS       ['+chainCommand+'] TAKES : ' + getFormattedNanoSecond(diff) + ' NS')
                 }
                 if(!err){
-                    // preprocess data
-                    data = data.replace(/\\\"/g, '"')
-                    data = data.replace(/\\n/g, '\n')
-                    data = data.trim()
                     // assign as output
-                    vars[chainOut] = data
+                    setVar(chainOut, data)
                     if(verbose){
-                        console.info('[INFO] States: ' + JSON.stringify(vars))
+                    console.info('[INFO] STATE AFTER   ['+chainCommand+']       : ' + JSON.stringify(vars))
                     }
                     // run callback if there is no error
                     callback()
                 }
                 else{
-                    console.info('[ERROR] Message: ' + stderr)
+                    console.info('[ERROR] FAILED TO PROCESS ['+chainCommand+']  : ' + stderr)
                     executeCallback('', false, stderr)
                 }
             })
@@ -253,26 +316,19 @@ function execute(chainConfigs, argv, presets, executeCallback){
         return null
     }
 
-    function getVar(key){
-        if(key in vars){
-            return vars[key]
-        }
-        return 0
-    }
-
     function isTrue(statement){
         statement = String(statement)
         let re = /([a-zA-Z0-9-_]*)/g
         let words = statement.match(re)
+        let script = ''
         for(let i=0; i<words.length; i++){
             word = words[i]
             if(word in vars){
-                // declare variables (TODO: look, why "let" doesn't work, but "var" works)
-                eval('var ' + word + '=' + JSON.stringify(vars[word]))
+                script += 'let ' + word + '=' + JSON.stringify(vars[word]) + ';'
             }
         }
         // execute result
-        return eval(statement)
+        return eval(script + ';' + statement)
     }
 
     // get actions that will be used in async process
@@ -404,5 +460,6 @@ if(require.main === module){
 
 // The exported resources
 module.exports = {
-    'executeYaml' : executeYaml
+    'executeYaml' : executeYaml,
+    'getFormattedNanoSecond' : getFormattedNanoSecond,
 }
