@@ -1,0 +1,59 @@
+# Here you can define all of your routes in YAML format
+# Defining routes is as easy as this:
+#
+# get:
+#   your_url: your_chain.yaml
+#   your_url:
+#     chain: your_chain.yaml
+#     view: your_view.pug
+#     access:
+#       - access_1
+#       - access_2
+# post:
+#   your_url: your_chain.yaml
+# put:
+#   your_url: your_chain.yaml
+# delete:
+#   your_url: your_chain.yaml
+# all:
+#   your_url: your_chain.yaml
+#   your_other_route: your_other_chain.yaml
+
+get:
+
+  "/": 
+    chain: "chains/index.yaml"
+    view: "index.pug"
+    access: '_everyone'
+
+  "/hello/:name": 
+    chain: "chains/index.yaml"
+    view: "index.pug"
+    access: '_loggedIn, _loggedOut'
+
+  "/employee/:name": 
+    chain: "chains/index.yaml"
+    view: "index.pug"
+    access: 'employee'
+
+  "/admin/:name": 
+    chain: "chains/index.yaml"
+    view: "index.pug"
+    access: 'admin'
+
+  "/raw/:name": "chains/index.yaml"
+
+  "/test/ejs":
+    chain: "echo {\\\"data\\\":\\\"hai\\\"}"
+    view: "test-ejs.ejs"
+
+  "/test/pug":
+    chain: "echo {\\\"data\\\":\\\"hai\\\"}"
+    view: "test-pug.pug"
+
+  "/test-host/:name":
+    chain: "chains/index.yaml"
+    view: "index.pug"
+    host: "test.localhost"
+
+

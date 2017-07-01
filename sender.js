@@ -7,16 +7,14 @@ let args = ''
 
 function getOptions(host, data){
     let protocol = 'http'
-    let port = '80'
+    let host = ''
     let path = ''
+    let port = 80
     // get protocol
     hostParts = host.split('://') 
     if(hostParts.length > 1){
         protocol = hostParts[0]
         host = hostParts[1]
-    }
-    else{
-        protocol = 'http'
     }
     protocol = protocol.toLowerCase()
     port = protocol == 'https'? 443: 80
@@ -28,7 +26,6 @@ function getOptions(host, data){
         // get port and path
         if(hostParts.length == 1){
             port = hostParts[0]
-            path = ''
         }
         else{
             path = hostParts.slice(1).join('/') 

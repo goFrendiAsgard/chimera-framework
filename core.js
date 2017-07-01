@@ -6,6 +6,9 @@ const async = require('async')
 const fs = require('fs')
 const yaml = require('js-yaml')
 
+// adjust JSON
+const stringify = require('json-stringify-safe')
+
 // this one is for benchamarking
 function getFormattedNanoSecond(time){
     let nano = time[0] * 1e9 + time[1]
@@ -119,6 +122,29 @@ function preprocessChain(chain, isRoot){
             for(let i=0; i<chain.chains.length; i++){
                 chain.chains[i] = preprocessChain(chain.chains[i], false)
             }
+        } 
+        // for root, move chain to lower level
+        if(isRoot){
+            // define subchain
+            let subChain = {}
+            if ('chains' in chain){
+                subChain = {'chains' : chain.chains}
+            }
+            else if('command' in chain){
+                subChain = {'command': chain.command}
+                delete chain.command
+            }
+            // adjust the keys
+            let keys = ['mode', 'if', 'while']
+            keys.forEach(function(key){
+                if(key in chain){
+                    subChain[key] = chain[key]
+                }
+                if(key != 'mode'){
+                    delete(chain[key])
+                }
+            })
+            chain.chains = [subChain]
         }
         // return chain
         return chain
@@ -257,7 +283,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
             chainIns.forEach(function(key){
                 let arg = ''
                 if(typeof(vars[key]) == 'object'){
-                    arg = JSON.stringify(getVar(key))
+                    arg = stringify(getVar(key))
                 }
                 else{
                     arg = String(getVar(key))
@@ -285,7 +311,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
                     // assign as output
                     setVar(chainOut, data)
                     if(verbose){
-                    console.info('[INFO] STATE AFTER   ['+chainCommand+']       : ' + JSON.stringify(vars))
+                    console.info('[INFO] STATE AFTER   ['+chainCommand+']       : ' + stringify(vars))
                     }
                     // run callback if there is no error
                     callback()
@@ -319,16 +345,20 @@ function execute(chainConfigs, argv, presets, executeCallback){
     function isTrue(statement){
         statement = String(statement)
         let re = /([a-zA-Z0-9-_]*)/g
-        let words = statement.match(re)
-        let script = ''
+        let words = statement.match(re).filter((value, index, self) =>{
+            return self.indexOf(value) === index
+        })
+        // build script. We need anonymous function for sandboxing
+        let script = '(function(){'
         for(let i=0; i<words.length; i++){
             word = words[i]
             if(word in vars){
-                script += 'let ' + word + '=' + JSON.stringify(vars[word]) + ';'
+                script += 'let ' + word + '=' + stringify(vars[word]) + ';'
             }
         }
-        // execute result
-        return eval(script + ';' + statement)
+        script += 'return ' + statement + ';})()'
+        // execute script
+        return eval(script)
     }
 
     // get actions that will be used in async process

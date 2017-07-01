@@ -82,4 +82,4 @@ async.series([
     (callback) => {testExecuteYaml('Test executeYaml with presets',
         'tests/chain-minimal.yaml', [1, 5], {'a':1, 'b':1}, -23, callback)},
 
-], function(result, error){})
+], (result, error) => {})
