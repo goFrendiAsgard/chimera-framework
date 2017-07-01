@@ -4,7 +4,7 @@ const DEFAULT_CONFIGS = {
     'migration_path' : 'chains/migrations',
     'favicon_path' : 'public/favicon.ico',
     'view_path' : 'views',
-    'error_template' : 'error.jade',
+    'error_template' : 'error.pug',
     'session_secret' : 'mySecret',
     'session_max_age': 600000,
     'session_save_unitialized' : true,
@@ -55,8 +55,45 @@ app.use(fileUpload())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
-serveAuthenticatedRoutes((req, res, next)=>{
-    res.sendStatus(200)
+serveAuthenticatedRoutes((req, res, next, chainObject)=>{
+    process.chdir(CURRENTPATH)
+    chimera.executeYaml(chainObject.chain, [req, CONFIGS], {}, (data, success)=>{
+        if(success){
+            if(typeof data == 'object'){
+                // save cookies
+                if('_cookies' in data){
+                    for(key in data._cookies){
+                        if(key != 'session_id'){
+                            res.cookie(key, data._cookies[key])
+                        }
+                    }
+                }
+                // save session
+                if('_session' in data){
+                    for(key in data._session){
+                        if(key != 'cookie'){
+                            req.session[key] = data._session[key]
+                        }
+                    }
+                }
+                // render response
+                req.session.save(function(err){
+                    if('view' in chainObject && chainObject.view != ''){
+                        res.render(chainObject.view, data)
+                    }
+                    else{
+                        res.send(data)
+                    }
+                })
+            }
+            else{
+                res.send(data)
+            }
+        }
+        else{
+            show500(req, res, next) // fail to execute chain
+        }
+    })
 })
 
 module.exports = app
@@ -64,10 +101,14 @@ module.exports = app
 
 // ===================== FUNCTIONS ====================================
 
+function inArray(array, value){
+    return array.indexOf(value) > -1
+}
+
 function serveAuthenticatedRoutes(routeHandler){
     serveAllRoutes((req, res, next, chainObject)=>{
-        if(('_everyone' in chainObject.access) || (('_loggedIn' in chainObject.access) && ('_loggedOut' in chainObject.access))){
-            routeHandler(req, res, next)
+        if(inArray(chainObject.access, '_everyone') || (inArray(chainObject.access, '_loggedIn') && inArray(chainObject.access, '_loggedOut'))){
+            routeHandler(req, res, next, chainObject) // success
         }
         else{
             process.chdir(CURRENTPATH)
@@ -76,25 +117,25 @@ function serveAuthenticatedRoutes(routeHandler){
                 let userInfo = patchObject(DEFAULT_USER_INFO, data.userInfo)
                 if(success && (typeof userInfo == 'object')){
                     // logged out
-                    if('_loggedOut' in chainObject.access && userInfo.user_id == null){
-                        routeHandler(req, res, next)
+                    if(inArray(chainObject.access, '_loggedOut') && userInfo.user_id == null){
+                        routeHandler(req, res, next, chainObject) // success
                     }
                     // logged in
-                    else if('_loggedIn' in chainObject.access && userInfo.user_id != null){
-                        routeHandler(req, res, next)
+                    else if(inArray(chainObject.access, '_loggedIn') && userInfo.user_id != null){
+                        routeHandler(req, res, next, chainObject) // success
                     }
                     // authorized
                     else if(userInfo.user_id != null){
                         // check whether user is part of the group or not
                         let authorized = false
                         userInfo.groups.forEach((group) => {
-                            if(group in chainObject.access){
+                            if(inArray(chainObject.access, group)){
                                 authorized = true
                             }
                         })
                         // show response
                         if(authorized){
-                            routeHandler(req, res, next)
+                            routeHandler(req, res, next, chainObject) // success
                         }
                         else{ show401(req, res, next); } // Unauthorized
                     }
