@@ -17,6 +17,7 @@
     "express-fileupload": "^0.1.3",
     "express-session": "^1.15.3",
     "handlebars": "^4.0.10",
+    "jade": "~1.11.0",
     "js-yaml": "^3.8.4",
     "mongodb": "^2.2.29",
     "mongoose": "^4.10.7",

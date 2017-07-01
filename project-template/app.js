@@ -1,19 +1,29 @@
-// this is the default configuration values, should be overridden by modify config.yaml
-const defaultConfigs = {
+const DEFAULT_CONFIGS = {
     'mongo_url' : '',
     'public_path' : 'public',
     'migration_path' : 'chains/migrations',
     'favicon_path' : 'public/favicon.ico',
     'view_path' : 'views',
-    'error_template' : 'error.pug',
+    'error_template' : 'error.jade',
     'session_secret' : 'mySecret',
     'session_max_age': 600000,
     'session_save_unitialized' : true,
     'session_resave' : true,
-    'login_validation_chain' : 'chains/core/is_login.yaml',
-    'group_validation_chain' : 'chains/core/is_in_group.yaml',
-    'group_list_chain' : 'chains/core/group_list.yaml',
-    'route_list_chain' : 'chains/core/route_list.yaml',
+    'auth_chain' : 'chains/core.auth.yaml',
+    'configs_chain' : 'chains/core.configs.yaml',
+    'routes_chain' : 'chains/core.routes.yaml',
+}
+
+const DEFAULT_CHAIN_OBJECT = {
+    'host' : '.*',
+    'access' : [],
+    'chain' : ''
+}
+
+const DEFAULT_USER_INFO = {
+    'user_id' : null,
+    'user_name' : null,
+    'groups' : [],
 }
 
 const express = require('express')
@@ -25,170 +35,227 @@ const bodyParser = require('body-parser')
 const session = require('express-session')
 const fileUpload = require('express-fileupload')
 const engines = require('consolidate')
-
 const fs = require('fs')
 const yaml = require('js-yaml')
 const chimera = require('chimera/core')
+const async = require('async')
 
-const currentPath = process.cwd()
+
+const CURRENTPATH = process.cwd()
 var app = express()
-var globalErrorTemplate = defaultConfigs.error_template
-// view engine setup
+var CONFIGS = {}
+var ROUTES = {}
 
+// uncomment after placing your favicon in /public
 app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(fileUpload())
+app.use(express.static(path.join(__dirname, 'public')))
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
-// This function shall add presets value to the process.
-function createPresets(req, configs){
-    // _req
-    var keys = ['params', 'query', 'body', 'baseUrl', 'cookies', 'session', 'files', 'hostname', 'method', 'protocol']
-    var presets = {'_req' : {}}
-    for(i=0; i<keys.length; i++){
-        var key = keys[i]
-        presets._req[key] = req[key]
-    }
-    // _configs
-    presets._configs = configs
-    return presets
-}
+serveAuthenticatedRoutes((req, res, next)=>{
+    res.sendStatus(200)
+})
 
-// This will show the correct response assuming authorization goes right
-function showResponse(chainObject, configs, req, res){
-    process.chdir(currentPath)
-    chimera.executeYaml(chainObject.chain, [], createPresets(req, configs), function(output, success){
-        // show the output directly or render it
-        try{
-            data = JSON.parse(output)
-            // save cookies
-            if('_cookies' in data){
-                for(key in data._cookies){
-                    if(key != 'session_id'){
-                        res.cookie(key, data._cookies[key])
-                    }
-                }
-            }
-            // save session
-            if('_session' in data){
-                for(key in data._session){
-                    if(key != 'cookie'){
-                        req.session[key] = data._session[key]
-                    }
-                }
-            }
-            // render response
-            req.session.save(function(err){
-                if('view' in chainObject && chainObject.view != ''){
-                    res.render(chainObject.view, data)
-                }
-                else{
-                    res.send(output)
-                }
-            })
+module.exports = app
+
+
+// ===================== FUNCTIONS ====================================
+
+function serveAuthenticatedRoutes(routeHandler){
+    serveAllRoutes((req, res, next, chainObject)=>{
+        if(('_everyone' in chainObject.access) || (('_loggedIn' in chainObject.access) && ('_loggedOut' in chainObject.access))){
+            routeHandler(req, res, next)
         }
-        catch(e){
-            res.send(output)
+        else{
+            process.chdir(CURRENTPATH)
+            chimera.executeYaml(CONFIGS.auth_chain, [req], [], function(data, success){
+                // get userInfo
+                let userInfo = patchObject(DEFAULT_USER_INFO, data.userInfo)
+                if(success && (typeof userInfo == 'object')){
+                    // logged out
+                    if('_loggedOut' in chainObject.access && userInfo.user_id == null){
+                        routeHandler(req, res, next)
+                    }
+                    // logged in
+                    else if('_loggedIn' in chainObject.access && userInfo.user_id != null){
+                        routeHandler(req, res, next)
+                    }
+                    // authorized
+                    else if(userInfo.user_id != null){
+                        // check whether user is part of the group or not
+                        let authorized = false
+                        userInfo.groups.forEach((group) => {
+                            if(group in chainObject.access){
+                                authorized = true
+                            }
+                        })
+                        // show response
+                        if(authorized){
+                            routeHandler(req, res, next)
+                        }
+                        else{ show401(req, res, next); } // Unauthorized
+                    }
+                    else{ show401(req, res, next); } // Unauthorized
+                }
+                else{ show500(req, res, next); } // Internal Server Error
+            })
         }
     })
 }
 
-function getLoginStatus(jsonResponse){
-    let isLogin = false
-    try{
-        response = JSON.parse(jsonResponse)
-        isLogin = 'is_login' in response? response.is_login: false
-    }catch(err){
-        console.error('[ERROR] Failed to parse JSON')
-        console.error(err)
-    }
-    return isLogin
+function serveAllRoutes(routeHandler){
+    loadConfigsAndRoutes((error, result)=>{
+        if(error){
+            console.log(error)
+            return false
+        }
+        // set app based on configs
+        app.use(express.static(path.join(__dirname, CONFIGS.public_path)))
+        app.use(favicon(path.join(__dirname, CONFIGS.favicon_path)))
+        app.set('views', path.join(__dirname, CONFIGS.view_path))
+        // pug, handlebars, and ejs are used altogether
+        app.engine('pug', engines.pug)
+        app.engine('handlebars', engines.handlebars)
+        app.engine('ejs', engines.ejs)
+        app.engine('jade', engines.jade)
+        app.use(session({
+            'secret': CONFIGS.session_secret, 
+            'resave': CONFIGS.session_resave,
+            'saveUninitialized': CONFIGS.session_save_unitialized,
+            'cookie': {'maxAge':CONFIGS.session_max_age}
+        }))
+        // serve the route
+        for(verb in ROUTES){
+            let verbRoute = ROUTES[verb]
+            app[verb]('/*', function (req, res, next) {
+                let chainObjectAndParams = getChainObjectAndParams(req, verbRoute)
+                let chainObject = chainObjectAndParams.chainObject
+                req.params = chainObjectAndParams.params
+                if(chainObject != null){
+                    // add router
+                    routeHandler(req, res, next, chainObject)
+                }
+                else{
+                    next()
+                }
+            })
+        }
+        app.use(show404)
+    })
 }
 
-function createRouteHandler(chainObject, configs){
-    return function(req, res, next){
-        // get accessList
-        let accessList = chainObject.access 
-        // create presets
-        var presets = createPresets(req, configs)
-        // check login status
-        chimera.executeYaml(configs.login_validation_chain, [], presets, function(output, success){
-
-            // get login status
-            let isLogin = getLoginStatus(output)
-
-            // if _everyone or _loggedIn or _loggedOut
-            for(i=0; i<accessList.length; i++){
-                let access = accessList[i]
-                if((access == '_everyone') || (access == '_loggedIn' && isLogin) || (access == '_loggedOut' && !isLogin)){
-                    // show correct response and exit from this function
-                    showResponse(chainObject, configs, req, res)
-                    return true
+function getChainObjectAndParams(req, verbRoute){
+    let url = req.url
+    for(route in verbRoute){
+        let routePattern = getRegexPattern(route)
+        let routeMatches = url.match(routePattern)
+        // the route is match
+        if(routeMatches){
+            // get chainObject
+            let chainObject = verbRoute[route]
+            // if chainObject is string, turn it into string
+            if(typeof chainObject == 'string'){
+                chainObject = {'chain' : chainObject}
+            }
+            chainObject = patchObject(DEFAULT_CHAIN_OBJECT, chainObject)
+            // completing chainObject's accessList
+            let accessList = 'access' in chainObject? chainObject.access: ['_everyone']
+            if(typeof accessList == 'string'){
+                accessList = accessList.split(',')
+                for(i=0; i<accessList.length; i++){
+                    accessList[i] = accessList[i].trim()
                 }
             }
-
-            if(isLogin){
-                // check group membership 
-                chimera.executeYaml(configs.group_validation_chain, [presets._req, accessList], [], function(output, success){
-                    if(success){
-                        try{
-                            response = JSON.parse(output)
-                            isInGroup = 'is_in_group' in response? response.is_in_group: false
-                            if(isInGroup){
-                                // logged in and is in group
-                                showResponse(chainObject, configs, req, res)
-                                return true
-                            }
-                        }catch(err){
-                            console.error('[ERROR] Failed to parse JSON')
-                            console.error(e)
-                            show403(req, res, next)
-                        }
-                    }
-                    // failed to get response
-                    show403(req, res, next)
-                })
+            chainObject.access = accessList
+            // get host regex pattern 
+            let hostPattern = new RegExp('^' + chainObject.host + '$')
+            let hostMatches = req.hostname.match(hostPattern)
+            // the host also match
+            if(hostMatches){
+                let parameterNames = getParameterNames(route)
+                let parameters = {}
+                for(i=0; i<parameterNames.length; i++){
+                    parameters[parameterNames[i]] = routeMatches[i+1]
+                }
+                return {'chainObject' : chainObject, 'params' : parameters}
             }
-            else{
-                // not logged in and not permitted to access the page
-                show403(req, res, next)
-            }
-        })
+        }
     }
+    return {'chainObject' : null, 'params' : []}
 }
 
-function showError(err, req, res, next){
-    // set locals, only providing error in development
-    res.locals.message = err.message
-    res.locals.error = req.app.get('env') === 'development' ? err : {}
-
-    // render the error page
-    res.status(err.status || 500)
-    res.render(globalErrorTemplate)
+function loadConfigsAndRoutes(callback){
+    async.parallel([
+        prepareConfigs,
+        prepareOriginalRoutes,
+    ], (error, result) => {
+        if(error){
+            callback(error)
+            return false
+        }
+        readChainResponse(CONFIGS.routes_chain, [], [], 
+            (obj) => {
+                // combine CONFIGS and configuration in user-defined chain, patch by environment
+                ROUTES = patchObject(ROUTES, obj)
+                callback(false)
+            }, 
+            (errorMessage) => {callback(error)})
+    })
 }
 
-function show404(req, res, next){
-    let err = new Error('Not Found')
-    err.status = 404
-    showError(err, req, res, next)
+function prepareConfigs(callback){
+    readYaml('config.yaml', 
+        // read config success
+        (obj) => {
+            // combine DEFAULT_CONFIGS and obj, patch by environment
+            CONFIGS = patchObject(DEFAULT_CONFIGS, obj)
+            CONFIGS = patchConfigsByEnv(CONFIGS)
+            // read additional config from user-defined chain
+            readChainResponse(CONFIGS.configs_chain, [], [], 
+                (obj) => {
+                    // combine CONFIGS and configuration in user-defined chain, patch by environment
+                    CONFIGS = patchObject(CONFIGS, obj)
+                    CONFIGS = patchConfigsByEnv(CONFIGS)
+                    callback(false)
+                }, 
+                (errorMessage) => {callback(errorMessage)})
+        },
+        // read config failed
+        (errorMessage) => {
+            callback(errorMessage)
+        }
+    )
 }
 
-function show403(req, res, next){
-    let err = new Error('Forbidden')
-    err.status = 403
-    showError(err, req, res, next)
+function prepareOriginalRoutes(callback){
+    readYaml('route.yaml',
+        // read route success
+        (obj) => {
+            ROUTES = obj
+            callback(false)
+        },
+        // read route failed
+        (errorMessage) => {
+            callback(errorMessage)
+        }
+    )
 }
 
-function getConfigByEnv(configs, key){
-    var env = app.get('env')
-    if(env + '.' + key in configs){
-        return configs[env + '.' + key]
+function patchConfigsByEnv(configs){
+    let env = app.get('env')
+    let pattern = new RegExp('^' + env + '\.(.*)$')
+    for(fullKey in configs){
+        let match = fullKey.match(pattern) 
+        if(match){
+            let key = match[1]
+            configs[key] = configs[fullKey]
+            delete configs[fullKey]
+        }
     }
-    else if(key in configs){
-        return configs[key]
-    }
-    return ''
+    return configs
 }
 
 function escapeHyphenAndDot(str){
@@ -225,164 +292,101 @@ function getParameterNames(route){
     return matches
 }
 
-function injectAdditionalRoutes(routes, additionalRoutes){
-    for(verb in additionalRoutes){
-        // if verb in additionalRoutes is not defined in routes, define it
-        if(!(verb in routes)){
-            routes[verb] = []
+function patchObject(obj, patcher){
+    for(key in patcher){
+        if((key in obj) && (typeof obj[key] == 'object') && (typeof patcher[key] == 'object')){
+            // recursive patch for if value type is object
+            obj[key] = patchObject(obj[key], patcher[key])
         }
-        // for each url in additioanRoutes[verb]
-        for(url in additionalRoutes[verb]){
-            // if url of additionalRoutes[verb] is not defined in routes, add it
-            if(!(url in routes[verb])){
-                routes[verb][url] = additionalRoutes[verb][url]
-            }
+        else{
+            // simple replacement if value type is not object
+            obj[key] = patcher[key]
         }
     }
-    return routes
+    return obj
 }
 
-function completeChainObject(chainObject){
-    if(typeof chainObject == 'string'){
-        chainObject = {'chain' : chainObject}
-    }
-    if(typeof chainObject == 'object'){
-        // complete access
-        let accessList = 'access' in chainObject? chainObject.access: ['_everyone']
-        if(typeof accessList == 'string'){
-            accessList = accessList.split(',')
-            for(i=0; i<accessList.length; i++){
-                accessList[i] = accessList[i].trim()
+// callbackSuccess should has one parameter containing the parsed object
+// callbackError should has one parameter containing error message
+function readYaml(fileName, callbackSuccess, callbackError){
+    fs.readFile(fileName, function(err, yamlContent){
+        if(err){
+            callbackError('Cannot read '+fileName)
+        }
+        else{
+            try{
+                let obj = yaml.safeLoad(yamlContent)
+                callbackSuccess(obj)
+            }
+            catch(err){
+                callbackError('Cannot parse YAML from ' + fileName + '\n' + err)
             }
         }
-        chainObject.access = accessList
-        // complete host
-        if(!('host' in chainObject)){
-            chainObject.host = '.*'
-        }
-    }
-    return chainObject
+    })
 }
 
-function getChainObjectAndParams(req, verbRoute){
-    let url = req.url
-    for(route in verbRoute){
-        let routePattern = getRegexPattern(route)
-        let routeMatches = url.match(routePattern)
-        // the route is match
-        if(routeMatches){
-            let chainObject = completeChainObject(verbRoute[route])
-            // get host regex pattern 
-            let hostPattern = new RegExp('^' + chainObject.host + '$')
-            let hostMatches = req.hostname.match(hostPattern)
-            // the host also match
-            if(hostMatches){
-                let parameterNames = getParameterNames(route)
-                let parameters = {}
-                for(i=0; i<parameterNames.length; i++){
-                    parameters[parameterNames[i]] = routeMatches[i+1]
-                }
-                return {'chainObject' : chainObject, 'params' : parameters}
-            }
-        }
-    }
-    return {'chainObject' : null, 'params' : []}
-}
-
-function parseRouteYamlContent(routeYamlContent, configs){
-    try{
-        let routes = yaml.safeLoad(routeYamlContent)
-        chimera.executeYaml(configs.route_list_chain, {}, {}, function(data, success){
-            // add additional routes from configs.route_list_chain
-            let additionalRoutes = JSON.parse(data) 
-            routes = injectAdditionalRoutes(routes, additionalRoutes)
-            // create route handler etc
-            for(verb in routes){
-                let verbRoute = routes[verb]
-                app[verb]('/*', function (req, res, next) {
-                    let chainObjectAndParams = getChainObjectAndParams(req, verbRoute)
-                    let chainObject = chainObjectAndParams.chainObject
-                    req.params = chainObjectAndParams.params
-                    if(chainObject != null){
-                        // add router
-                        createRouteHandler(chainObject, configs)(req, res, next)
-                    }
-                    else{
-                        next()
-                    }
-                })
-            }            
-            app.use(show404)
-        })
-    }
-    catch(e){
-        console.error('[ERROR] route.yaml contains error')
-        console.error(e)
-    }
-}
-
-function parseConfigYamlContent(configYamlContent){
-    try{
-        // get and completing the configuration
-        let configs = yaml.safeLoad(configYamlContent)
-        for(key in defaultConfigs){
-            if(!(key in configs)){
-                configs[key] = defaultConfigs[key]
-            }
-        }
-        globalErrorTemplate = configs.error_template
-
-        // set app based on configs
-        app.use(express.static(path.join(__dirname, getConfigByEnv(configs, 'public_path'))))
-        app.use(favicon(path.join(__dirname, getConfigByEnv(configs, 'favicon_path'))))
-        app.set('views', path.join(__dirname, getConfigByEnv(configs, 'view_path')))
-        // pug, handlebars, and ejs are used altogether
-        app.engine('pug', engines.pug)
-        app.engine('handlebars', engines.handlebars)
-        app.engine('ejs', engines.ejs)
-        //app.set('view engine', getConfigByEnv(configs, 'view_engine'))
-        app.use(session({
-            'secret': getConfigByEnv(configs, 'session_secret'), 
-            'resave': getConfigByEnv(configs, 'session_resave'),
-            'saveUninitialized': getConfigByEnv(configs, 'session_save_unitialized'),
-            'cookie': {'maxAge':getConfigByEnv(configs, 'session_max_age')}
-        }))
-
-        // read route.yaml
-        fs.readFile('route.yaml', function(err, routeYamlContent){
-            if(err){
-                console.error('[ERROR] cannot read route.yaml')
-                console.error(err)
+// callbackSuccess should has one parameter containing the parsed object
+// callbackError should has one parameter containing error message
+function readChainResponse(fileName, inputs, presets, callbackSuccess, callbackError){
+    process.chdir(CURRENTPATH)
+    chimera.executeYaml(fileName, inputs, presets, function(data, success){
+        if(success){
+            if(typeof data == 'object'){
+                callbackSuccess(data)
             }
             else{
-                parseRouteYamlContent(routeYamlContent, configs)
+                callbackError('Output of ' + fileName + 'is not a valid object\n' + data)
             }
-        })
-    }
-    catch(e){
-        console.error('[ERROR] config.yaml contains error')
-        console.error(e)
-    }
+        }
+        else{
+            callbackError('Cannot get output of ' + fileName)
+        }
+    })
 }
 
-// read config.yaml
-fs.readFile('config.yaml', function(err, configYamlContent){
-    // is config.yaml loadable?
-    if(err){
-        console.error('[ERROR] cannot read config.yaml')
-        console.error(err)
+function show400(req, res, next){
+    showErrorResponse(400, 'Bad Request', req, res, next)
+}
+
+function show401(req, res, next){
+    showErrorResponse(401, 'Unauthorized', req, res, next)
+}
+
+function show403(req, res, next){
+    showErrorResponse(403, 'Forbidden', req, res, next)
+}
+
+function show404(req, res, next){
+    showErrorResponse(404, 'Not Found', req, res, next)
+}
+
+function show405(req, res, next){
+    showErrorResponse(403, 'Method Not Allowed', req, res, next)
+}
+
+function show409(req, res, next){
+    showErrorResponse(409, 'Conflict', req, res, next)
+}
+
+function show500(req, res, next){
+    showErrorResponse(500, 'Internal Server Error', req, res, next)
+}
+
+function showErrorResponse(statusCode, errorMessage, req, res, next){
+    // set locals, only providing error in development
+    res.locals.message = statusCode
+    console.log(statusCode)
+    if(req.app.get('env') === 'development'){
+        let err = new Error(errorMessage)
+        err.status = statusCode
+        res.locals.error = err
     }
     else{
-        parseConfigYamlContent(configYamlContent)
+        res.locals.error = {}
     }
-})
-
-if(require.main === module){
-    var http = require('http')
-    var port = process.env.PORT || '3000'
-    app.set('port', port)
-    var server = http.createServer(app)
-    console.log('Run server at port ' + port)
-    server.listen(port)
+    // render the error page
+    res.status(statusCode || 500)
+    res.render(CONFIGS.error_template)
 }
-module.exports = app
+
+

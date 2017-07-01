@@ -1,0 +1,8 @@
+ins: _req
+chains:
+    - if: _req.session.user_id = 'admin' && _req.session.is_logged_in
+      command: echo "{\"userInfo\":{\"user_id\":\"admin\", \"user_name\":\"Admin\", \"groups\":[\"admin\", \"employee\"],  \"is_logged_in\":true}}"
+    - if: _req.session.user_id = 'employee' && _req.session.is_logged_in
+      command: echo "{\"userInfo\":{\"user_id\":\"employee\", \"user_name\":\"Employee\", \"groups\":[\"employee\"],  \"is_logged_in\":true}}"
+    - if: _req.session.user_id != 'admin' && _req.session.user_id != 'employee'
+      command: echo "{\"userInfo\":{\"user_id\":null, \"user_name\":null, \"groups\":[]}"

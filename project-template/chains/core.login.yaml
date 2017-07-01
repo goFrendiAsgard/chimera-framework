@@ -1,0 +1,10 @@
+ins: req
+chains:
+    - if: req.request.body.user_name = 'Admin' && req.request.body.password = 'admin'
+      command: echo "{\"session\":{\"user_id\":\"admin\", \"is_logged_in\":true}}"
+    - if: req.request.body.user_name = 'Employee' && req.request.body.password = 'employee'
+      command: echo "{\"session\":{\"user_id\":\"employee\", \"is_logged_in\":true}}"
+    - if: req.request.get.user_name = 'Admin' && req.request.get.password = 'admin'
+      command: echo "{\"session\":{\"user_id\":\"admin\", \"is_logged_in\":true}}"
+    - if: req.request.get.user_name = 'Employee' && req.request.get.password = 'employee'
+      command: echo "{\"session\":{\"user_id\":\"employee\", \"is_logged_in\":true}}"
