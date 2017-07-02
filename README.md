@@ -95,7 +95,7 @@ command: node add.js
 
 You can even write this:
 ```yaml
-(a, b) -> node add.js
+command: (a, b) -> node add.js
 ```
 
 or even this:
@@ -114,7 +114,6 @@ vars :
     delta : 1
 ins : a
 out : a
-verbose : true
 series :
   # First process
   - if : a < 10
@@ -187,6 +186,7 @@ Process 3 depend on both process 1 and 2, and process 4 depend on process 3
 # chain-minimal.yaml
 ins: a,b
 out: f
+verbose: false
 series:
   # Process One & Two
   - parallel:
@@ -209,6 +209,40 @@ chimera chain-minimal.yaml 5 1
 
 This will give you `29` since  `((5+1) * (5-1)) + 5 = 29`
 
+__Verbosity:__ Chimera also allows you to see the whole process log. This is useful for benchmarking.
+To see the process log, you need to change `verbose: false` into `verbose: true`. If the key is not exists, you can add it.
+
+Below is the log example of previous process in order to let you see if the process is really parallel
+
+```sh
+gofrendi@minastirith:~/chimera$ chimera tests/chain-minimal.yaml 5 1
+[INFO] START PROCESS [python programs/add.py "5" "1"] AT    : 57,267,581,140,268
+[INFO] START PROCESS [chimera-eisn Substract.java Substract.class javac programs/Substract.java] AT    : 57,267,600,777,741
+[INFO] END PROCESS   [python programs/add.py "5" "1"] AT    : 57,267,621,802,911
+[INFO] PROCESS       [python programs/add.py "5" "1"] TAKES : 40,613,652 NS
+[INFO] STATE AFTER   [python programs/add.py "5" "1"]       : {"a":5,"b":1,"c":6}
+[INFO] END PROCESS   [chimera-eisn Substract.java Substract.class javac programs/Substract.java] AT    : 57,267,702,087,331
+[INFO] PROCESS       [chimera-eisn Substract.java Substract.class javac programs/Substract.java] TAKES : 101,288,225 NS
+[INFO] STATE AFTER   [chimera-eisn Substract.java Substract.class javac programs/Substract.java]       : {"a":5,"b":1,"c":6,"_ans":""}
+[INFO] START PROCESS [java -cp programs Substract "5" "1"] AT    : 57,267,703,642,875
+[INFO] END PROCESS   [java -cp programs Substract "5" "1"] AT    : 57,267,817,048,351
+[INFO] PROCESS       [java -cp programs Substract "5" "1"] TAKES : 113,360,360 NS
+[INFO] STATE AFTER   [java -cp programs Substract "5" "1"]       : {"a":5,"b":1,"c":6,"_ans":"","d":4}
+[INFO] START PROCESS [php programs/multiply.php "6" "4"] AT    : 57,267,818,154,108
+[INFO] END PROCESS   [php programs/multiply.php "6" "4"] AT    : 57,267,857,071,186
+[INFO] PROCESS       [php programs/multiply.php "6" "4"] TAKES : 38,877,463 NS
+[INFO] STATE AFTER   [php programs/multiply.php "6" "4"]       : {"a":5,"b":1,"c":6,"_ans":"","d":4,"e":24}
+[INFO] START PROCESS [node programs/add.js "24" "5"] AT    : 57,267,857,806,195
+[INFO] END PROCESS   [node programs/add.js "24" "5"] AT    : 57,267,948,281,977
+[INFO] PROCESS       [node programs/add.js "24" "5"] TAKES : 90,429,904 NS
+[INFO] STATE AFTER   [node programs/add.js "24" "5"]       : {"a":5,"b":1,"c":6,"_ans":"","d":4,"e":24,"f":29}
+29
+```
+
+As you see, the second process (`[chimera-eisn Substract.java Substract.class javac programs/Substract.java]`) had been started without waiting the first process (`[python programs/add.py "5" "1"]`) finished.
+
+`chimera-eisn` is a tool to execute a command (the third parameter) only if the source file (first parameter) modification time is newer than the destination file (second parameter) modification time
+
 ### Nested variables
 
 The best and worst part of Javascript object is that you can add any key without any need to define structure. Chimera's global variable is actually a big javascript object.
@@ -222,8 +256,9 @@ ins: a, b
 out: c
 vars:
     tmp: 
-        x: 4
-verbose: true
+        x: 3
+        z: 5
+verbose: false
 series:
     - echo "{\"x\":4, \"y\":{}}" -> tmp
     - parallel:
@@ -234,6 +269,36 @@ series:
             - (a, b) -> node programs/substract.js -> tmp.y.substractResult
             - (tmp.y.substractResult, tmp.x) -> php programs/multiply.php -> tmp.y.substractResult
     - (tmp.y.addResult, tmp.y.substractResult) -> php programs/multiply.php -> c
+```
+Please observe each state of the program
+
+```sh
+gofrendi@minastirith:~/chimera$ chimera tests/chain-complex-vars.yaml 10 11
+[INFO] START PROCESS [php programs/echo.php "{\"x\":4, \"y\":{}}"] AT    : 57,939,071,995,102
+[INFO] END PROCESS   [php programs/echo.php "{\"x\":4, \"y\":{}}"] AT    : 57,939,119,742,255
+[INFO] PROCESS       [php programs/echo.php "{\"x\":4, \"y\":{}}"] TAKES : 47,689,756 NS
+[INFO] STATE AFTER   [php programs/echo.php "{\"x\":4, \"y\":{}}"]       : {"tmp":{"x":4,"y":{}},"a":10,"b":11}
+[INFO] START PROCESS [php programs/add.php "10" "11"] AT    : 57,939,122,782,058
+[INFO] START PROCESS [php programs/substract.php "10" "11"] AT    : 57,939,125,628,701
+[INFO] END PROCESS   [php programs/add.php "10" "11"] AT    : 57,939,155,653,704
+[INFO] PROCESS       [php programs/add.php "10" "11"] TAKES : 32,833,697 NS
+[INFO] STATE AFTER   [php programs/add.php "10" "11"]       : {"tmp":{"x":4,"y":{"addResult":21}},"a":10,"b":11}
+[INFO] START PROCESS [php programs/multiply.php "21" "4"] AT    : 57,939,156,339,845
+[INFO] END PROCESS   [php programs/substract.php "10" "11"] AT    : 57,939,158,555,972
+[INFO] PROCESS       [php programs/substract.php "10" "11"] TAKES : 32,884,663 NS
+[INFO] STATE AFTER   [php programs/substract.php "10" "11"]       : {"tmp":{"x":4,"y":{"addResult":21,"substractResult":-1}},"a":10,"b":11}
+[INFO] START PROCESS [php programs/multiply.php "-1" "4"] AT    : 57,939,159,097,322
+[INFO] END PROCESS   [php programs/multiply.php "21" "4"] AT    : 57,939,190,612,102
+[INFO] PROCESS       [php programs/multiply.php "21" "4"] TAKES : 34,214,893 NS
+[INFO] STATE AFTER   [php programs/multiply.php "21" "4"]       : {"tmp":{"x":4,"y":{"addResult":84,"substractResult":-1}},"a":10,"b":11}
+[INFO] END PROCESS   [php programs/multiply.php "-1" "4"] AT    : 57,939,192,968,186
+[INFO] PROCESS       [php programs/multiply.php "-1" "4"] TAKES : 33,867,169 NS
+[INFO] STATE AFTER   [php programs/multiply.php "-1" "4"]       : {"tmp":{"x":4,"y":{"addResult":84,"substractResult":-4}},"a":10,"b":11}
+[INFO] START PROCESS [php programs/multiply.php "84" "-4"] AT    : 57,939,193,351,485
+[INFO] END PROCESS   [php programs/multiply.php "84" "-4"] AT    : 57,939,223,041,934
+[INFO] PROCESS       [php programs/multiply.php "84" "-4"] TAKES : 29,685,070 NS
+[INFO] STATE AFTER   [php programs/multiply.php "84" "-4"]       : {"tmp":{"x":4,"y":{"addResult":84,"substractResult":-4}},"a":10,"b":11,"c":-336}
+-336
 ```
 
 ## Put YAML-chain format as argument 
@@ -321,7 +386,15 @@ The structure of your web application will be:
 ```sh
 ▾ myApp/
   ▸ bin/
-  ▸ chains/
+  ▾ chains/
+    ▾ programs/
+        sample.responder.py
+      core.auth.yaml
+      core.configs.yaml
+      core.login.yaml
+      core.logout.yaml
+      core.routes.yaml
+      index.yaml
   ▸ node_modules/
   ▾ public/
     ▸ images/
@@ -332,8 +405,9 @@ The structure of your web application will be:
       error.pug
       index.pug
       layout.pug
-      test-ejs.ejs
-      test-pug.pug
+      sample.respond.pug
+      sample.ejs
+      sample.pug
     app.js
     config.yaml
     package.json
@@ -352,13 +426,6 @@ By default, the value will be `mongodb://localhost/myApp` (depend on your applic
 The public directory where you put all static resources (javascript, css, images, etc). 
 
 By default, the value will be `public`.
-
-* `migration_path`
-The directory contains all migration chains. 
-
-By default, the value will be `chains/migrations`.
-
-The migration chains should be in this format: `YYmmddHis-up-[name-of-migration].yaml` or `YYmmddHis-down-[name-of-migration].yaml` 
 
 * `favicon_path`
 The favicon path. 

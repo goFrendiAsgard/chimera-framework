@@ -2,7 +2,8 @@ ins: a, b
 out: c
 vars:
     tmp: 
-        x: 4
+        x: 3
+        z: 5
 verbose: true
 series:
     - php programs/echo.php "{\"x\":4, \"y\":{}}" -> tmp
