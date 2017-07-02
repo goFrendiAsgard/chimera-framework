@@ -5,9 +5,15 @@ const async = require('async')
 const migrationPath = 'migrations/'
 const migrationCacheFile = migrationPath + 'migration.json'
 
-migrate(migrationPath, migrationCacheFile)
+// get configs from CLI argument
+var configs = {}
+if(process.argv.length > 2){
+    configs = process.argv[2]
+}
+// run migration
+migrate(migrationPath, migrationCacheFile, configs)
 
-function migrate(migrationPath, migrationCacheFile){
+function migrate(migrationPath, migrationCacheFile, configs){
     // read migrationCacheFile, parse the content into migrationCache (should be array)
     fs.readFile(migrationCacheFile, function(err, data){
         let migrationCache = []
@@ -23,11 +29,11 @@ function migrate(migrationPath, migrationCacheFile){
             }
         }
         // process all migration files in migrationPath
-        processMigrationFiles(migrationPath, migrationCache)
+        processMigrationFiles(migrationPath, migrationCache, configs)
     })
 }
 
-function processMigrationFiles(migrationPath, migrationCache){
+function processMigrationFiles(migrationPath, migrationCache, configs){
     // get all the files and sort them
     let allFiles = fs.readdirSync(migrationPath).sort()
     let migrationFiles = []
@@ -42,17 +48,17 @@ function processMigrationFiles(migrationPath, migrationCache){
         }
     }
     // run all selected files
-    runMigration(migrationFiles, migrationCache)
+    runMigration(migrationFiles, migrationCache, configs)
 }
 
-function runMigration(migrationFiles, migrationCache){
+function runMigration(migrationFiles, migrationCache, configs){
     let failedMigrations = []
     let processList = []
     // populate processList
     for(let i=0; i<migrationFiles.length; i++){
         let migrationFile = migrationFiles[i]
         processList.push((callback) => {
-            chimera.executeYaml(migrationPath+'/'+migrationFile, [], {}, function(output, success){
+            chimera.executeYaml(migrationPath+'/'+migrationFile, [configs], {}, function(output, success){
                 if(success){
                     // success
                     migrationCache.push(migrationFile)
