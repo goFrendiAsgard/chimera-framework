@@ -12,6 +12,7 @@ const DEFAULT_CONFIGS = {
     'auth_chain' : 'chains/core.auth.yaml',
     'configs_chain' : 'chains/core.configs.yaml',
     'routes_chain' : 'chains/core.routes.yaml',
+    'migration_chain': 'chains/core.migration.yaml'
 }
 
 const DEFAULT_CHAIN_OBJECT = {
@@ -163,29 +164,33 @@ function serveAllRoutes(routeHandler){
         if(error){ console.error(error); return false; }
         // setup app (based on CONFIGS), this will only be done once
         setupApp()
-        // handle everything here
-        app.all('/*', function(req, res, next){
-            let verb = req.method.toLowerCase()
-            // re-load the config and the routes
-            // TODO: optimize this. This is slow
-            loadConfigsAndRoutes((error, result)=>{
-                // if error, show the message, let the next function handle it and quit
-                if(error){ console.error(error); next(); return false; }
-                // get verbRoute by combining current ROUTES[verb] with ROUTES.all
-                let verbRoute = patchObject(ROUTES[verb], ROUTES.all)
-                let chainObjectAndParams = getChainObjectAndParams(req, verbRoute)
-                let chainObject = chainObjectAndParams.chainObject
-                req.params = chainObjectAndParams.params
-                if(chainObject != null){
-                    // add router
-                    routeHandler(req, res, next, chainObject)
-                }
-                else{
-                    next()
-                }
+        // run migration
+        chimera.executeYaml(CONFIGS.migration_chain, [CONFIGS], {}, function(data, success){
+            // handle everything here
+            app.all('/*', function(req, res, next){
+                let verb = req.method.toLowerCase()
+                // re-load the config and the routes
+                // TODO: optimize this. This is slow
+                loadConfigsAndRoutes((error, result)=>{
+                    // if error, show the message, let the next function handle it and quit
+                    if(error){ console.error(error); next(); return false; }
+                    // get verbRoute by combining current ROUTES[verb] with ROUTES.all
+                    let verbRoute = patchObject(ROUTES[verb], ROUTES.all)
+                    let chainObjectAndParams = getChainObjectAndParams(req, verbRoute)
+                    let chainObject = chainObjectAndParams.chainObject
+                    req.params = chainObjectAndParams.params
+                    if(chainObject != null){
+                        // add router
+                        routeHandler(req, res, next, chainObject)
+                    }
+                    else{
+                        next()
+                    }
+                })
             })
+            // if everything else failed, show 404
+            app.use(show404)
         })
-        app.use(show404)
     })
 }
 

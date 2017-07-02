@@ -3,6 +3,8 @@ const assert = require('assert')
 const cmd = require('node-cmd')
 const chimera = require('chimera-framework/core')
 
+const currentPath = process.cwd()
+
 function testExecuteCommand(testName, command, expectedResult, callback){
     let startTime = process.hrtime(); 
     console.log('START ' + testName + ' ON nanosecond: ' + chimera.getFormattedNanoSecond(startTime) + '\n')
@@ -15,7 +17,7 @@ function testExecuteCommand(testName, command, expectedResult, callback){
         console.log(data)
         // get the last line
         lines = data.trim().split('\n')
-        lastLine = lines[lines.length - 1]
+        lastLine = lines.length == 0? '': lines[lines.length - 1]
         // show assertion or success
         console.log('END ' + testName + ' ON nanosecond: ' + chimera.getFormattedNanoSecond(endTime))
         console.log('EXECUTION TIME: ' + chimera.getFormattedNanoSecond(diff) + ' nanosecond')
@@ -35,7 +37,7 @@ function testExecuteYaml(testName, yaml, inputs, presets, expectedResult, callba
         console.log(output);
         console.log('END ' + testName + ' ON nanosecond: ' + chimera.getFormattedNanoSecond(endTime))
         console.log('EXECUTION TIME: ' + chimera.getFormattedNanoSecond(diff) + ' nanosecond')
-        assert(output == expectedResult, 'FAIL, Expected: '+expectedResult+', Actual: '+lastLine+'\n')
+        assert(output == expectedResult, 'FAIL, Expected: '+expectedResult+', Actual: '+output+'\n')
         console.log('SUCCESS\n')
         // run callback
         callback()
@@ -45,6 +47,9 @@ function testExecuteYaml(testName, yaml, inputs, presets, expectedResult, callba
 
 // Run the test
 async.series([
+
+    (callback) => {testExecuteYaml('Test executeYaml containing infinite loop, expect error',
+        'tests/chain-infinite-loop.yaml', [0], {}, '', callback)},
 
     (callback) => {testExecuteCommand('Test chain-complete', 
         'chimera tests/chain-complete.yaml 1 5', -23, callback)},
@@ -82,4 +87,12 @@ async.series([
     (callback) => {testExecuteYaml('Test executeYaml with presets',
         'tests/chain-minimal.yaml', [1, 5], {'a':1, 'b':1}, -23, callback)},
 
-], (result, error) => {})
+    (callback) => {testExecuteYaml('Test executeYaml containing empty object',
+        'tests/chain-empty.yaml', [0], {}, '', callback)},
+
+], (result, error) => {
+    assert(process.cwd() == currentPath, 'FAIL: current path doesn\'t set back')
+    console.log('ALL TEST SUCCESS: there should be some error messages shown, but it is expected')
+    console.log('If you see this message, it means the errors are catched.')
+
+})

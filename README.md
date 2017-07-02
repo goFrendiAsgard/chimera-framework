@@ -482,9 +482,17 @@ By default, the value will be `chains/core.configs.yaml`
 
 Authorization chain, require request.
 
-The output of the chain should be routes in JSON format.
+The output of the chain should be user info in JSON format.
 
 By default, the value will be `chains/core.auth.yaml`
+
+* `migration_chain` 
+
+Migration chain, require config.
+
+The output of the chain should be migration info in JSON format.
+
+By default, the value will be `chains/core.migration.yaml`
 
 
 ## Current Features (Under development)

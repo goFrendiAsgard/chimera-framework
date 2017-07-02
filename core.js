@@ -82,6 +82,9 @@ function preprocessCommand(chain){
  */
 function preprocessChain(chain, isRoot){
     // if chain is a string, cast it into object
+    if(chain == null){
+        chain = ''
+    }
     if(typeof(chain) == 'string'){
         chain = {'command' : chain}
     }
@@ -179,7 +182,6 @@ function execute(chainConfigs, argv, presets, executeCallback){
     // don't do anything if chainConfigs is wrong
     if(chainConfigs === false){
         console.error('[ERROR] Unable to fetch chain')
-        console.error(chainConfigs)
         executeCallback('', false, 'Unable to fetch chain')
         return null
     }
@@ -207,7 +209,15 @@ function execute(chainConfigs, argv, presets, executeCallback){
         }
     })
     // run the chains
-    runChains(chains, mode, true)
+    try{
+        runChains(chains, mode, true)
+    }
+    catch(e){
+        console.error('[ERROR] Chain execution failed')
+        console.error(e)
+        executeCallback('', false, e)
+        return null
+    }
 
     // The sub functions ================================================
 
@@ -305,27 +315,34 @@ function execute(chainConfigs, argv, presets, executeCallback){
                     console.info('[INFO] START PROCESS ['+chainCommand+'] AT    : ' + getFormattedNanoSecond(startTime))
             }
             // run the command
-            cmd.get(chainCommand, function(data, err, stderr){
-                if(verbose){
-                    let diff = process.hrtime(startTime);
-                    let endTime = process.hrtime(); 
-                    console.info('[INFO] END PROCESS   ['+chainCommand+'] AT    : ' + getFormattedNanoSecond(endTime))
-                    console.info('[INFO] PROCESS       ['+chainCommand+'] TAKES : ' + getFormattedNanoSecond(diff) + ' NS')
-                }
-                if(!err){
-                    // assign as output
-                    setVar(chainOut, data)
+            try{
+                cmd.get(chainCommand, function(data, err, stderr){
                     if(verbose){
-                    console.info('[INFO] STATE AFTER   ['+chainCommand+']       : ' + stringify(vars))
+                        let diff = process.hrtime(startTime);
+                        let endTime = process.hrtime(); 
+                        console.info('[INFO] END PROCESS   ['+chainCommand+'] AT    : ' + getFormattedNanoSecond(endTime))
+                        console.info('[INFO] PROCESS       ['+chainCommand+'] TAKES : ' + getFormattedNanoSecond(diff) + ' NS')
                     }
-                    // run callback if there is no error
-                    callback()
-                }
-                else{
-                    console.info('[ERROR] FAILED TO PROCESS ['+chainCommand+']  : ' + stderr)
-                    executeCallback('', false, stderr)
-                }
-            })
+                    if(!err){
+                        // assign as output
+                        setVar(chainOut, data)
+                        if(verbose){
+                            console.info('[INFO] STATE AFTER   ['+chainCommand+']       : ' + stringify(vars))
+                        }
+                        // run callback if there is no error
+                        callback()
+                    }
+                    else{
+                        console.info('[ERROR] FAILED TO PROCESS ['+chainCommand+']  : ' + stderr)
+                        executeCallback('', false, stderr)
+                    }
+                })
+            }
+            catch(e){
+                console.error('[ERROR] Error running [' + chainCommand + ']')
+                executeCallback('', false, e)
+                console.error(e)
+            }
         }
     }
 

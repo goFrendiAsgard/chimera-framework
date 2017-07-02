@@ -1,0 +1,7 @@
+verbose: true
+ins: a
+out: a
+vars:
+  out: ''
+command: (a, a) -> php programs/echo.php -> a
+while: true

@@ -15,6 +15,7 @@ mongo_url: 'mongodb://localhost/project-template'
 # session_save_unitialized: true
 # session_resave: true
 
+# migration_chain: 'chains/core.migration.yaml'
 # auth_chain: 'chains/core.auth.yaml'
 # configs_chain: 'chains/core.configs.yaml'
 # routes_chain: 'chains/core.routes.yaml'
