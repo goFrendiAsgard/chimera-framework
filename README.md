@@ -386,6 +386,7 @@ Session max age (in seconds).
 By default, the value will be `60000`
 
 * `session_save_unitialized`
+
 If this is true, the session will be saved and updated in each request
 
 By default, the value will be `true`
@@ -394,37 +395,29 @@ By default, the value will be `true`
 
 By default, the value will be `true`
 
-* `login_validation_chain` 
-
-Login validation chain. Require `request` as input.
-
-The output of the chain should be in JSON format indicating the login status of a user, either `{"is_login" : true}` or `{"is_login" : false}`
-
-By default, the value will be `chains/core/is_login.yaml`
-
-* `group_validation_chain` 
-
-Group validation chain. Require `request` and `groups` (in JSON list format, or string) as input.
-
-The output of the chain should be in JSON format indicating whether the user is part of particular group or not. `{"is_in_group" : true, "groups": ["admin", "employee"]}`
-
-By default, the value will be `chains/core/is_in_group.yaml`
-
-* `route_list_chain` 
+* `route_chain` 
 
 Route list chain.
 
 The output of the chain should be routes in JSON format.
 
-By default, the value will be `chains/core/route_list.yaml`
+By default, the value will be `chains/core.routes.yaml`
 
-* `current_version_chain` 
+* `config_chain` 
 
-By default, the value will be `chains/core/current_version.yaml`
+Config list chain.
 
-* `update_version_chain` 
+The output of the chain should be configs in JSON format.
 
-By default, the value will be `chains/core/update_version.yaml`
+By default, the value will be `chains/core.configs.yaml`
+
+* `auth_chain` 
+
+Authorization chain, require request.
+
+The output of the chain should be routes in JSON format.
+
+By default, the value will be `chains/core.auth.yaml`
 
 
 ## Current Features (Under development)

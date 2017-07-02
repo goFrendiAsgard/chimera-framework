@@ -5,7 +5,6 @@
 mongo_url: 'mongodb://localhost/project-template'
 
 # public_path: 'public'
-# migration_path: 'chains/migrations'
 # favicon_path: 'public/favicon.ico'
 
 # view_path: 'views'
@@ -16,12 +15,9 @@ mongo_url: 'mongodb://localhost/project-template'
 # session_save_unitialized: true
 # session_resave: true
 
-# login_validation_chain: 'chains/core/is_login.yaml'
-# group_validation_chain: 'chains/core/is_in_group.yaml'
-# route_list_chain: 'chains/core/route_list.yaml'
-# current_version_chain: 'chains/core/current_version.yaml'
-# upgrade_version_chain: 'chains/core/upgrade_version.yaml'
-# downgrade_version_chain: 'chains/core/downgrade_version.yaml'
+# auth_chain: 'chains/core.auth.yaml'
+# configs_chain: 'chains/core.configs.yaml'
+# routes_chain: 'chains/core.routes.yaml'
 
 
 # ======================== DEVELOPMENT ===============================

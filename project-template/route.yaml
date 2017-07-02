@@ -23,37 +23,37 @@ get:
 
   "/": 
     chain: "chains/index.yaml"
-    view: "index.pug"
+    view: "sample.respond.pug"
     access: '_everyone'
 
   "/hello/:name": 
     chain: "chains/index.yaml"
-    view: "index.pug"
+    view: "sample.respond.pug"
     access: '_loggedIn, _loggedOut'
 
   "/employee/:name": 
     chain: "chains/index.yaml"
-    view: "index.pug"
+    view: "sample.respond.pug"
     access: 'employee'
 
   "/admin/:name": 
     chain: "chains/index.yaml"
-    view: "index.pug"
+    view: "sample.respond.pug"
     access: 'admin'
 
   "/raw/:name": "chains/index.yaml"
 
   "/test/ejs":
     chain: "echo {\\\"data\\\":\\\"hai\\\"}"
-    view: "test-ejs.ejs"
+    view: "sample.ejs"
 
   "/test/pug":
     chain: "echo {\\\"data\\\":\\\"hai\\\"}"
-    view: "test-pug.pug"
+    view: "sample.pug"
 
   "/test-host/:name":
     chain: "chains/index.yaml"
-    view: "index.pug"
+    view: "sample.respond.pug"
     host: "test.localhost"
 
 

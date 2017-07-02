@@ -1,2 +1,1 @@
-# File: chains/index.yaml
-command: echo "{\"title\":\"HELLO\"}"
+command: (req, config) -> python programs/sample.responder.py

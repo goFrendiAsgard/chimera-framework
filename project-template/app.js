@@ -16,7 +16,7 @@ const DEFAULT_CONFIGS = {
 
 const DEFAULT_CHAIN_OBJECT = {
     'host' : '.*',
-    'access' : [],
+    'access' : ['_everyone'],
     'chain' : ''
 }
 
@@ -25,6 +25,8 @@ const DEFAULT_USER_INFO = {
     'user_name' : null,
     'groups' : [],
 }
+
+const REQ_KEYS = ['params', 'query', 'body', 'baseUrl', 'cookies', 'session', 'files', 'hostname', 'method', 'protocol']
 
 const express = require('express')
 const path = require('path')
@@ -39,7 +41,6 @@ const fs = require('fs')
 const yaml = require('js-yaml')
 const chimera = require('chimera/core')
 const async = require('async')
-
 
 const CURRENTPATH = process.cwd()
 var app = express()
@@ -57,7 +58,7 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
 serveAuthenticatedRoutes((req, res, next, chainObject)=>{
     process.chdir(CURRENTPATH)
-    chimera.executeYaml(chainObject.chain, [req, CONFIGS], {}, (data, success)=>{
+    chimera.executeYaml(chainObject.chain, [shortenRequest(req), CONFIGS], {}, (data, success)=>{
         if(success){
             if(typeof data == 'object'){
                 // save cookies
@@ -105,6 +106,15 @@ function inArray(array, value){
     return array.indexOf(value) > -1
 }
 
+function shortenRequest(req){
+    let shortReq = {}
+    for(let i=0; i<REQ_KEYS.length; i++){
+        let key = REQ_KEYS[i]
+        shortReq[key] = req[key]
+    }
+    return shortReq
+}
+
 function serveAuthenticatedRoutes(routeHandler){
     serveAllRoutes((req, res, next, chainObject)=>{
         if(inArray(chainObject.access, '_everyone') || (inArray(chainObject.access, '_loggedIn') && inArray(chainObject.access, '_loggedOut'))){
@@ -112,7 +122,7 @@ function serveAuthenticatedRoutes(routeHandler){
         }
         else{
             process.chdir(CURRENTPATH)
-            chimera.executeYaml(CONFIGS.auth_chain, [req], [], function(data, success){
+            chimera.executeYaml(CONFIGS.auth_chain, [shortenRequest(req)], [], function(data, success){
                 // get userInfo
                 let userInfo = patchObject(DEFAULT_USER_INFO, data.userInfo)
                 if(success && (typeof userInfo == 'object')){
@@ -149,29 +159,20 @@ function serveAuthenticatedRoutes(routeHandler){
 
 function serveAllRoutes(routeHandler){
     loadConfigsAndRoutes((error, result)=>{
-        if(error){
-            console.log(error)
-            return false
-        }
-        // set app based on configs
-        app.use(express.static(path.join(__dirname, CONFIGS.public_path)))
-        app.use(favicon(path.join(__dirname, CONFIGS.favicon_path)))
-        app.set('views', path.join(__dirname, CONFIGS.view_path))
-        // pug, handlebars, and ejs are used altogether
-        app.engine('pug', engines.pug)
-        app.engine('handlebars', engines.handlebars)
-        app.engine('ejs', engines.ejs)
-        app.engine('jade', engines.jade)
-        app.use(session({
-            'secret': CONFIGS.session_secret, 
-            'resave': CONFIGS.session_resave,
-            'saveUninitialized': CONFIGS.session_save_unitialized,
-            'cookie': {'maxAge':CONFIGS.session_max_age}
-        }))
-        // serve the route
-        for(verb in ROUTES){
-            let verbRoute = ROUTES[verb]
-            app[verb]('/*', function (req, res, next) {
+        // if error, show the message and quit
+        if(error){ console.error(error); return false; }
+        // setup app (based on CONFIGS), this will only be done once
+        setupApp()
+        // handle everything here
+        app.all('/*', function(req, res, next){
+            let verb = req.method.toLowerCase()
+            // re-load the config and the routes
+            // TODO: optimize this. This is slow
+            loadConfigsAndRoutes((error, result)=>{
+                // if error, show the message, let the next function handle it and quit
+                if(error){ console.error(error); next(); return false; }
+                // get verbRoute by combining current ROUTES[verb] with ROUTES.all
+                let verbRoute = patchObject(ROUTES[verb], ROUTES.all)
                 let chainObjectAndParams = getChainObjectAndParams(req, verbRoute)
                 let chainObject = chainObjectAndParams.chainObject
                 req.params = chainObjectAndParams.params
@@ -183,16 +184,34 @@ function serveAllRoutes(routeHandler){
                     next()
                 }
             })
-        }
+        })
         app.use(show404)
     })
 }
 
+function setupApp(){
+    // set app based on configs
+    app.use(express.static(path.join(__dirname, CONFIGS.public_path)))
+    app.use(favicon(path.join(__dirname, CONFIGS.favicon_path)))
+    app.set('views', path.join(__dirname, CONFIGS.view_path))
+    // pug, handlebars, and ejs are used altogether
+    app.engine('pug', engines.pug)
+    app.engine('handlebars', engines.handlebars)
+    app.engine('ejs', engines.ejs)
+    app.engine('jade', engines.jade)
+    app.use(session({
+        'secret': CONFIGS.session_secret, 
+        'resave': CONFIGS.session_resave,
+        'saveUninitialized': CONFIGS.session_save_unitialized,
+        'cookie': {'maxAge':CONFIGS.session_max_age}
+    }))
+}
+
 function getChainObjectAndParams(req, verbRoute){
-    let url = req.url
+    let url = req.path
     for(route in verbRoute){
         let routePattern = getRegexPattern(route)
-        let routeMatches = url.match(routePattern)
+        let routeMatches = url.match(routePattern) || url.replace(/(.*)\/$/, '$1').match(routePattern)
         // the route is match
         if(routeMatches){
             // get chainObject
@@ -229,6 +248,8 @@ function getChainObjectAndParams(req, verbRoute){
 }
 
 function loadConfigsAndRoutes(callback){
+    ROUTES = {}
+    CONFIGS = {}
     async.parallel([
         prepareConfigs,
         prepareOriginalRoutes,
@@ -333,9 +354,21 @@ function getParameterNames(route){
     return matches
 }
 
+function deepCopyObject(obj){
+    let newObj = {}
+    if(typeof obj == 'object'){
+        // deep copy, avoiding by-ref call
+        newObj = Object.create(obj)
+    }
+    return newObj
+}
+
 function patchObject(obj, patcher){
+    obj = deepCopyObject(obj)
+    patcher = deepCopyObject(patcher)
+    // patch
     for(key in patcher){
-        if((key in obj) && (typeof obj[key] == 'object') && (typeof patcher[key] == 'object')){
+        if((key in obj) && !Array.isArray(obj[key]) && (typeof obj[key] == 'object') && (typeof patcher[key] == 'object')){
             // recursive patch for if value type is object
             obj[key] = patchObject(obj[key], patcher[key])
         }
@@ -416,7 +449,6 @@ function show500(req, res, next){
 function showErrorResponse(statusCode, errorMessage, req, res, next){
     // set locals, only providing error in development
     res.locals.message = statusCode
-    console.log(statusCode)
     if(req.app.get('env') === 'development'){
         let err = new Error(errorMessage)
         err.status = statusCode

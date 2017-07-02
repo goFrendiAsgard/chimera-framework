@@ -15,7 +15,7 @@ function replace(file, pattern, replacement, callback){
 // The program needs at least 1 parameter (excluding the default 3)
 // Example: node generateProject.js projectName
 if(process.argv.length > 2){
-    let projectDir = process.slice(2).join('_')
+    let projectDir = process.argv.slice(2).join('_')
     let currentDir = __dirname
     // copy project-template to projectDir
     fse.copy(path.join(currentDir, 'project-template'), projectDir, function(err){

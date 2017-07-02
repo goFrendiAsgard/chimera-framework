@@ -1,10 +1,25 @@
-ins: req
-chains:
-    - if: req.request.body.user_name = 'Admin' && req.request.body.password = 'admin'
-      command: echo "{\"session\":{\"user_id\":\"admin\", \"is_logged_in\":true}}"
-    - if: req.request.body.user_name = 'Employee' && req.request.body.password = 'employee'
-      command: echo "{\"session\":{\"user_id\":\"employee\", \"is_logged_in\":true}}"
-    - if: req.request.get.user_name = 'Admin' && req.request.get.password = 'admin'
-      command: echo "{\"session\":{\"user_id\":\"admin\", \"is_logged_in\":true}}"
-    - if: req.request.get.user_name = 'Employee' && req.request.get.password = 'employee'
-      command: echo "{\"session\":{\"user_id\":\"employee\", \"is_logged_in\":true}}"
+verbose: true
+ins: request
+out: response
+series:
+    - parallel:
+
+        # POST
+        - if: "'body' in request && 'user_name' in request.body && 'password' in request.body"
+          parallel:
+            - if: request.body.user_name == 'Admin' && request.body.password == 'admin'
+              command: echo "{\"_session\":{\"user_id\":\"admin\", \"is_logged_in\":true}}" -> response
+            - if:  request.body.user_name == 'Employee' && request.body.password == 'employee'
+              command: echo "{\"_session\":{\"user_id\":\"employee\", \"is_logged_in\":true}}" -> response
+
+            # GET 
+        - if: "'query' in request && 'user_name' in request.query && 'password' in request.query"
+          parallel:
+            - if: request.query.user_name == 'Admin' && request.query.password == 'admin'
+              command: echo "{\"_session\":{\"user_id\":\"admin\", \"is_logged_in\":true}}" -> response
+            - if: request.query.user_name == 'Employee' && request.query.password == 'employee'
+              command: echo "{\"_session\":{\"user_id\":\"employee\", \"is_logged_in\":true}}" -> response
+
+    # No response at all
+    - if: response == 0
+      command: response -> echo  -> response

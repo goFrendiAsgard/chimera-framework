@@ -199,7 +199,8 @@ function execute(chainConfigs, argv, presets, executeCallback){
     // populate "vars" based on "ins" and "process.argv"
     ins.forEach(function(key, index){
         if(index < argv.length){
-            vars[key] = argv[index]
+            setVar(key, argv[index])
+            //vars[key] = argv[index]
         }
         else if(!(key in vars)){
             vars[key] = 0
@@ -244,9 +245,13 @@ function execute(chainConfigs, argv, presets, executeCallback){
     }
 
     function setVar(key, value){
+        if(typeof value == 'string'){
+            value = value.replace(/[ \n]+$/g, '')
+        }
         // If the value can be parsed into object, parse it 
-        value = value.replace(/[ \n]+$/g, '')
-        try{ value = JSON.parse(value);} catch(e){}
+        try{
+            value = JSON.parse(value);
+        } catch(e){}
         let keyParts = key.split('.')
         // bypass everything if the key is not nested
         if(keyParts.length == 1){
@@ -343,22 +348,31 @@ function execute(chainConfigs, argv, presets, executeCallback){
     }
 
     function isTrue(statement){
-        statement = String(statement)
-        let re = /([a-zA-Z0-9-_]*)/g
-        let words = statement.match(re).filter((value, index, self) =>{
-            return self.indexOf(value) === index
-        })
-        // build script. We need anonymous function for sandboxing
-        let script = '(function(){'
-        for(let i=0; i<words.length; i++){
-            word = words[i]
-            if(word in vars){
-                script += 'let ' + word + '=' + stringify(vars[word]) + ';'
+        let truth = false
+        let script = ''
+        try{
+            statement = String(statement)
+            let re = /([a-zA-Z0-9-_]*)/g
+            let words = statement.match(re).filter((value, index, self) =>{
+                return self.indexOf(value) === index
+            })
+            // build script. We need anonymous function for sandboxing
+            script = '(function(){'
+            for(let i=0; i<words.length; i++){
+                word = words[i]
+                if(word in vars){
+                    script += 'let ' + word + '=' + stringify(vars[word]) + ';'
+                }
             }
+            script += 'return ' + statement + ';})()'
+            // execute script
+            truth = eval(script)
         }
-        script += 'return ' + statement + ';})()'
-        // execute script
-        return eval(script)
+        catch(error){
+            console.error('[ERROR] Failed to evaluate condition')
+            console.error(script)
+        }
+        return truth 
     }
 
     // get actions that will be used in async process
@@ -376,10 +390,10 @@ function execute(chainConfigs, argv, presets, executeCallback){
                         // then call this chainRunner one more time (recursive strategy)
                         if(isTrue(chain.while) || firstRun){
                             let alteredCallback = function(){
+                                firstRun = false
                                 alteredChainRunner(callback)
                             }
                             chainRunner(alteredCallback)
-                            firstRun = false
                         }
                         // otherwise just execute the callback
                         else{
