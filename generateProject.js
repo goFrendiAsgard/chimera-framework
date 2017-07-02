@@ -34,6 +34,8 @@ if(process.argv.length > 2){
                     cmd.get('npm install', function(data, err, stderr){
                         console.log('Project ' + projectDir + ' has been created')
                     })
+                    // try to delete migrationCache
+                    fse.unlink('chains/migrations/migration.json',(err)=>{})
                 })
             })
         }

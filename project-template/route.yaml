@@ -22,26 +22,26 @@
 get:
 
   "/": 
-    chain: "chains/index.yaml"
+    chain: "chains/sample.responder.yaml"
     view: "sample.respond.pug"
     access: '_everyone'
 
   "/hello/:name": 
-    chain: "chains/index.yaml"
+    chain: "chains/sample.responder.yaml"
     view: "sample.respond.pug"
     access: '_loggedIn, _loggedOut'
 
   "/employee/:name": 
-    chain: "chains/index.yaml"
+    chain: "chains/sample.responder.yaml"
     view: "sample.respond.pug"
     access: 'employee'
 
   "/admin/:name": 
-    chain: "chains/index.yaml"
+    chain: "chains/sample.responder.yaml"
     view: "sample.respond.pug"
     access: 'admin'
 
-  "/raw/:name": "chains/index.yaml"
+  "/raw/:name": "chains/sample.responder.yaml"
 
   "/test/ejs":
     chain: "echo {\\\"data\\\":\\\"hai\\\"}"
@@ -52,7 +52,7 @@ get:
     view: "sample.pug"
 
   "/test-host/:name":
-    chain: "chains/index.yaml"
+    chain: "chains/sample.responder.yaml"
     view: "sample.respond.pug"
     host: "test.localhost"
 

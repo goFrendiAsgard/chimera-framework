@@ -1,1 +1,3 @@
-echo ok
+ins: config
+command: (config) -> node programs/core.migration.js
+
