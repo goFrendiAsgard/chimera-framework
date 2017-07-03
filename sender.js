@@ -7,7 +7,6 @@ let args = ''
 
 function getOptions(host, data){
     let protocol = 'http'
-    let host = ''
     let path = ''
     let port = 80
     // get protocol
@@ -117,4 +116,5 @@ console.log(getOptions('http://facebook.com:80/abc/def'))
 console.log(getOptions('https://facebook.com/abc/def'))
 console.log(getOptions('https://facebook.com:80/abc/def'))
 console.log(getOptions('facebook.com'))
+console.log(getOptions('localhost:3000'))
 */
