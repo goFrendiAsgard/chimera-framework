@@ -21,7 +21,7 @@ function migrate(migrationPath, migrationCacheFile, configs){
             try{
                 data = JSON.parse(data)
                 if(Array.isArray(data)){
-                    migrationCache = JSON.parse(data)
+                    migrationCache = data
                 }
             }
             catch(e){
@@ -53,6 +53,7 @@ function processMigrationFiles(migrationPath, migrationCache, configs){
 
 function runMigration(migrationFiles, migrationCache, configs){
     let failedMigrations = []
+    let succeedMigrations = []
     let processList = []
     // populate processList
     for(let i=0; i<migrationFiles.length; i++){
@@ -61,11 +62,14 @@ function runMigration(migrationFiles, migrationCache, configs){
             chimera.executeYaml(migrationPath+'/'+migrationFile, [configs], {}, function(output, success){
                 if(success){
                     // success
+                    console.info(output)
+                    succeedMigrations.push(migrationFile)
                     migrationCache.push(migrationFile)
                     callback(output, false)
                 }
                 else{
                     // error occurred
+                    console.error(output)
                     failedMigrations.push(migrationFile)
                     callback(output, true)
                 }
@@ -74,19 +78,33 @@ function runMigration(migrationFiles, migrationCache, configs){
     }
     // run migration sequentially
     async.series(processList, (result, err) => {
-        console.info('[INFO] Migration done:')
-        console.info(formatArray(migrationCache))
-        if(err){
+        // success message
+        if(succeedMigrations.length > 0){
+            console.info('[INFO] Migration done:')
+            console.info(formatArray(succeedMigrations))
+        }
+        // failed message
+        if(failedMigrations.length > 0){
             console.error('[ERROR] Some migration failed:')
             console.error(formatArray(failedMigrations))
         }
+        // no migration done
+        if(succeedMigrations.length == 0 && failedMigrations.length == 0){
+            console.info('[INFO] No migration has been performed')
+        }
         // save cache
-        saveCache(migrationCacheFile, migrationCache)
+        if(succeedMigrations.length > 0){
+            saveCache(migrationCacheFile, migrationCache)
+        }
     })
 }
 
 function formatArray(array){
-    return array.join('\n')
+    let arr = []
+    for(let i=0; i<array.length; i++){
+        arr.push(' - '+array[i])
+    }
+    return arr.join('\n')
 }
 
 function saveCache(migrationCacheFile, migrationCache){

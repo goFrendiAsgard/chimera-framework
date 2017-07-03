@@ -166,30 +166,32 @@ function serveAllRoutes(routeHandler){
         setupApp()
         // run migration
         chimera.executeYaml(CONFIGS.migration_chain, [CONFIGS], {}, function(data, success){
-            // handle everything here
-            app.all('/*', function(req, res, next){
-                let verb = req.method.toLowerCase()
-                // re-load the config and the routes
-                // TODO: optimize this. This is slow
-                loadConfigsAndRoutes((error, result)=>{
-                    // if error, show the message, let the next function handle it and quit
-                    if(error){ console.error(error); next(); return false; }
-                    // get verbRoute by combining current ROUTES[verb] with ROUTES.all
-                    let verbRoute = patchObject(ROUTES[verb], ROUTES.all)
-                    let chainObjectAndParams = getChainObjectAndParams(req, verbRoute)
-                    let chainObject = chainObjectAndParams.chainObject
-                    req.params = chainObjectAndParams.params
-                    if(chainObject != null){
-                        // add router
-                        routeHandler(req, res, next, chainObject)
-                    }
-                    else{
-                        next()
-                    }
+            if(success){
+                console.info(data)
+                // handle everything here
+                app.all('/*', function(req, res, next){
+                    let verb = req.method.toLowerCase()
+                    // re-load the config and the routes
+                    loadConfigsAndRoutes((error, result)=>{
+                        // if error, show the message, let the next function handle it and quit
+                        if(error){ console.error(error); next(); return false; }
+                        // get verbRoute by combining current ROUTES[verb] with ROUTES.all
+                        let verbRoute = patchObject(ROUTES[verb], ROUTES.all)
+                        let chainObjectAndParams = getChainObjectAndParams(req, verbRoute)
+                        let chainObject = chainObjectAndParams.chainObject
+                        req.params = chainObjectAndParams.params
+                        if(chainObject != null){
+                            // add router
+                            routeHandler(req, res, next, chainObject)
+                        }
+                        else{
+                            next()
+                        }
+                    })
                 })
-            })
-            // if everything else failed, show 404
-            app.use(show404)
+                // if everything else failed, show 404
+                app.use(show404)
+            }
         })
     })
 }
@@ -363,26 +365,26 @@ function deepCopyObject(obj){
     let newObj = {}
     if(typeof obj == 'object'){
         // deep copy, avoiding by-ref call
-        newObj = Object.create(obj)
+        newObj = JSON.parse(JSON.stringify(obj))
     }
     return newObj
 }
 
 function patchObject(obj, patcher){
-    obj = deepCopyObject(obj)
+    newObj = deepCopyObject(obj)
     patcher = deepCopyObject(patcher)
     // patch
     for(key in patcher){
-        if((key in obj) && !Array.isArray(obj[key]) && (typeof obj[key] == 'object') && (typeof patcher[key] == 'object')){
-            // recursive patch for if value type is object
-            obj[key] = patchObject(obj[key], patcher[key])
+        if((key in newObj) && !Array.isArray(newObj[key]) && (typeof newObj[key] == 'newObject') && (typeof patcher[key] == 'newObject')){
+            // recursive patch for if value type is newObject
+            newObj[key] = patchnewObject(newObj[key], patcher[key])
         }
         else{
-            // simple replacement if value type is not object
-            obj[key] = patcher[key]
+            // simple replacement if value type is not newObject
+            newObj[key] = patcher[key]
         }
     }
-    return obj
+    return newObj
 }
 
 // callbackSuccess should has one parameter containing the parsed object
