@@ -333,8 +333,9 @@ function execute(chainConfigs, argv, presets, executeCallback){
                         callback()
                     }
                     else{
-                        console.info('[ERROR] FAILED TO PROCESS ['+chainCommand+']  : ' + stderr)
-                        executeCallback('', false, stderr)
+                        console.error('[ERROR] FAILED TO PROCESS ['+chainCommand+']  : ')
+                        console.error(err)
+                        executeCallback('', false, err)
                     }
                 })
             }

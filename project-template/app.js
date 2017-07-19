@@ -40,7 +40,7 @@ const fileUpload = require('express-fileupload')
 const engines = require('consolidate')
 const fs = require('fs')
 const yaml = require('js-yaml')
-const chimera = require('chimera/core')
+const chimera = require('chimera-framework/core')
 const async = require('async')
 
 const CURRENTPATH = process.cwd()

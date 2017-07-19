@@ -1,1 +1,1 @@
-(a,b) -> node programs/add.js
+(a,b) -> node programs/add.js -> c

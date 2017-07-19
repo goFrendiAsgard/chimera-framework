@@ -1,7 +1,7 @@
 # Shorthand for chain-complete.yaml
 ins: a,b
 out: f
-verbose: true
+verbose: false
 series:
   - parallel:
       - a, b -> python programs/add.py -> c

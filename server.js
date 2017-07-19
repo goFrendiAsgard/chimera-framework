@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
 const express = require('express')
-const chimera = require('chimera/core')
+const chimera = require('chimera-framework/core')
 const bodyParser = require('body-parser')
 const path = require('path')
 const currentPath = process.cwd()

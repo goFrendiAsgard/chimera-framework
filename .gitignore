@@ -1,2 +1,4 @@
 node_modules/
-web-template/node_modules/
+npm_debug.log
+project-template/node_modules/
+project-template/npm_debug.log
