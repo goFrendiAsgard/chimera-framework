@@ -74,7 +74,7 @@ if(process.argv.length > 3){
                     console.log(output.response)
                 }
                 else{
-                    console.error('[ERROR] ' + output.errorMessage)
+                    console.error('[ERROR] ' + JSON.stringify(output.errorMessage))
                 }
             }
             catch(err){
@@ -86,7 +86,7 @@ if(process.argv.length > 3){
     // error handler
     httpreq.on('error', function (e) {
         console.error('[ERROR] Request failed')
-        console.error(e);
+        console.error(JSON.stringify(e))
     });
     // timeout handler
     httpreq.on('timeout', function () {

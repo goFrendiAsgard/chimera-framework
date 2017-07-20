@@ -32,11 +32,13 @@ app.post('/', function (req, res) {
     if(insidePublishedDirectory(chain)){
         // call chimera process
         chimera.executeYaml(chain, input, [], function(output, success, errorMessage){
-            res.send(JSON.stringify({
-                'success' : success, 
-                'errorMessage' : errorMessage,
-                'response' : output,
-            }))
+            if(!res.headersSent){
+                res.send(JSON.stringify({
+                    'success' : success, 
+                    'errorMessage' : errorMessage,
+                    'response' : output,
+                }))
+            }
         })
     }
     else{
