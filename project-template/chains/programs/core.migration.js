@@ -1,5 +1,5 @@
 const fs = require('fs')
-const chimera = require('chimera/core')
+const chimera = require('chimera-framework/core')
 const async = require('async')
 
 const migrationPath = 'migrations/'

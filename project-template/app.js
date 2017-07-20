@@ -290,7 +290,7 @@ function prepareConfigs(callback){
                     CONFIGS = patchConfigsByEnv(CONFIGS)
                     callback(false)
                 }, 
-                (errorMessage) => {callback(errorMessage)})
+                (errorMessage) => {callback(errorMessage);})
         },
         // read config failed
         (errorMessage) => {

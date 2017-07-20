@@ -316,7 +316,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
             }
             // run the command
             try{
-                cmd.get(chainCommand, function(data, err, stderr){
+                cmd.get(chainCommand, function(err, data, stderr){
                     if(verbose){
                         let diff = process.hrtime(startTime);
                         let endTime = process.hrtime(); 

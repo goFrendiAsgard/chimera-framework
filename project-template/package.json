@@ -8,7 +8,7 @@
   "dependencies": {
     "async": "^2.4.1",
     "body-parser": "^1.17.2",
-    "chimera-framework": "0.0.22",
+    "chimera-framework": "^0.0.23",
     "consolidate": "^0.14.5",
     "cookie-parser": "~1.4.3",
     "debug": "^2.6.8",

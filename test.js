@@ -8,7 +8,7 @@ const currentPath = process.cwd()
 function testExecuteCommand(testName, command, expectedResult, callback){
     let startTime = process.hrtime(); 
     console.log('START ' + testName + ' ON nanosecond: ' + chimera.getFormattedNanoSecond(startTime) + '\n')
-    cmd.get(command, function(data, err, stderr){
+    cmd.get(command, function(err, data, stderr){
         let diff = process.hrtime(startTime);
         let endTime = process.hrtime(); 
         // show command
