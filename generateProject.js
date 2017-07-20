@@ -18,6 +18,7 @@ if(process.argv.length > 2){
     let projectDir = process.argv.slice(2).join('_')
     let currentDir = __dirname
     // copy project-template to projectDir
+    console.log('Creating new project')
     fse.copy(path.join(currentDir, 'project-template'), projectDir, function(err){
         if (err){
             // something goes wrong, let the user know

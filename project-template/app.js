@@ -410,7 +410,7 @@ function readYaml(fileName, callbackSuccess, callbackError){
 // callbackError should has one parameter containing error message
 function readChainResponse(fileName, inputs, presets, callbackSuccess, callbackError){
     process.chdir(CURRENTPATH)
-    chimera.executeYaml(fileName, inputs, presets, function(data, success){
+    chimera.executeYaml(fileName, inputs, presets, function(data, success, errorMessage){
         if(success){
             if(typeof data == 'object'){
                 callbackSuccess(data)
@@ -468,5 +468,3 @@ function showErrorResponse(statusCode, errorMessage, req, res, next){
     res.status(statusCode || 500)
     res.render(CONFIGS.error_template)
 }
-
-
