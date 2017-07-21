@@ -13,5 +13,5 @@ if 'name' in params:
 response = {'title': title, 'name': name}
 
 # show time
-print json.dumps(response)
+print (json.dumps(response))
 
