@@ -4,5 +4,5 @@ verbose: true
 series:
   - parallel:
       - (a,b) -> php programs/add.php -> c
-      - (server, 'tests/chain-minimal.yaml', a,b) -> chimera-send -> d
+      - (server, 'tests/chain-add.yaml', a,b) -> chimera-send -> d
   - (c,d) -> node programs/add.js -> e
