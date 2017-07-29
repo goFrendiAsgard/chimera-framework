@@ -1,10 +1,8 @@
 ins: a,b,server
 out: e
-vars:
-  server_chain: tests/chain-minimal.yaml 
 verbose: true
 series:
   - parallel:
       - (a,b) -> php programs/add.php -> c
-      - (server, server_chain, a,b) -> chimera-send -> d
+      - (server, 'tests/chain-minimal.yaml', a,b) -> chimera-send -> d
   - (c,d) -> node programs/add.js -> e

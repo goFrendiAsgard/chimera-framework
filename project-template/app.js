@@ -167,7 +167,7 @@ function serveAllRoutes(routeHandler){
         // run migration
         chimera.executeYaml(CONFIGS.migration_chain, [CONFIGS], {}, function(data, success){
             if(success){
-                console.info(data)
+                console.warn(data)
                 // handle everything here
                 app.all('/*', function(req, res, next){
                     let verb = req.method.toLowerCase()

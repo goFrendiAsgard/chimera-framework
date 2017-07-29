@@ -297,7 +297,10 @@ function execute(chainConfigs, argv, presets, executeCallback){
             // it should be stringified
             chainIns.forEach(function(key){
                 let arg = ''
-                if(typeof(vars[key]) == 'object'){
+                if(key.match(/"(.*)"/g) || key.match(/'(.*)'/g)){
+                    arg = key.substring(1, key.length-1); 
+                }
+                else if(typeof(vars[key]) == 'object'){
                     arg = stringify(getVar(key))
                 }
                 else{
@@ -312,7 +315,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
             let startTime = 0
             if(verbose){
                 startTime = process.hrtime(); 
-                    console.info('[INFO] START PROCESS ['+chainCommand+'] AT    : ' + getFormattedNanoSecond(startTime))
+                    console.warn('[INFO] START PROCESS ['+chainCommand+'] AT    : ' + getFormattedNanoSecond(startTime))
             }
             // run the command
             try{
@@ -320,14 +323,14 @@ function execute(chainConfigs, argv, presets, executeCallback){
                     if(verbose){
                         let diff = process.hrtime(startTime);
                         let endTime = process.hrtime(); 
-                        console.info('[INFO] END PROCESS   ['+chainCommand+'] AT    : ' + getFormattedNanoSecond(endTime))
-                        console.info('[INFO] PROCESS       ['+chainCommand+'] TAKES : ' + getFormattedNanoSecond(diff) + ' NS')
+                        console.warn('[INFO] END PROCESS   ['+chainCommand+'] AT    : ' + getFormattedNanoSecond(endTime))
+                        console.warn('[INFO] PROCESS       ['+chainCommand+'] TAKES : ' + getFormattedNanoSecond(diff) + ' NS')
                     }
                     if(!err){
                         // assign as output
                         setVar(chainOut, data)
                         if(verbose){
-                            console.info('[INFO] STATE AFTER   ['+chainCommand+']       : ' + stringify(vars))
+                            console.warn('[INFO] STATE AFTER   ['+chainCommand+']       : ' + stringify(vars))
                         }
                         // run callback if there is no error
                         callback()

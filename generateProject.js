@@ -18,7 +18,7 @@ if(process.argv.length > 2){
     let projectDir = process.argv.slice(2).join('_')
     let currentDir = __dirname
     // copy project-template to projectDir
-    console.info('Creating new project')
+    console.warn('Creating new project')
     fse.copy(path.join(currentDir, 'project-template'), projectDir, function(err){
         if (err){
             // something goes wrong, let the user know
@@ -28,22 +28,22 @@ if(process.argv.length > 2){
             // change to projectDir
             process.chdir(projectDir)
             // replace project-template in package.json
-            console.info('Processing package.json')
+            console.warn('Processing package.json')
             replace(path.join('package.json'), /project-template/g, projectDir, function(){
                 // replace project-template in config.yaml
-                console.info('Processing config.yaml')
+                console.warn('Processing config.yaml')
                 replace(path.join('config.yaml'), /project-template/g, projectDir, function(){
                     // install all dependencies
-                    console.info('Installing dependencies')
+                    console.warn('Installing dependencies')
                     cmd.get('npm install', function(err, data, stderr){
                         if(err){
                             console.error(err)
-                            console.info('Project ' + projectDir + ' has been created, but dependencies are not installed')
-                            console.info('Please connect to the internet and run "npm install"')
+                            console.warn('Project ' + projectDir + ' has been created, but dependencies are not installed')
+                            console.warn('Please connect to the internet and run "npm install"')
                         }
                         else{
-                            console.info(data)
-                            console.info('Project ' + projectDir + ' has been created successfully')
+                            console.warn(data)
+                            console.warn('Project ' + projectDir + ' has been created successfully')
                         }
                     })
                     // try to delete migrationCache

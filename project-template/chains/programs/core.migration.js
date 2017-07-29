@@ -62,7 +62,7 @@ function runMigration(migrationFiles, migrationCache, configs){
             chimera.executeYaml(migrationPath+'/'+migrationFile, [configs], {}, function(output, success){
                 if(success){
                     // success
-                    console.info(output)
+                    console.warn(output)
                     succeedMigrations.push(migrationFile)
                     migrationCache.push(migrationFile)
                     callback(output, false)
@@ -80,8 +80,8 @@ function runMigration(migrationFiles, migrationCache, configs){
     async.series(processList, (result, err) => {
         // success message
         if(succeedMigrations.length > 0){
-            console.info('[INFO] Migration done:')
-            console.info(formatArray(succeedMigrations))
+            console.warn('[INFO] Migration done:')
+            console.warn(formatArray(succeedMigrations))
         }
         // failed message
         if(failedMigrations.length > 0){
@@ -90,7 +90,7 @@ function runMigration(migrationFiles, migrationCache, configs){
         }
         // no migration done
         if(succeedMigrations.length == 0 && failedMigrations.length == 0){
-            console.info('[INFO] No migration has been performed')
+            console.warn('[INFO] No migration has been performed')
         }
         // save cache
         if(succeedMigrations.length > 0){
@@ -124,7 +124,7 @@ function saveCache(migrationCacheFile, migrationCache){
                 return false
             }
             // no error, let user know
-            console.info('[INFO] Cache file has been rewriten')
+            console.warn('[INFO] Cache file has been rewriten')
         })
     })
 }
