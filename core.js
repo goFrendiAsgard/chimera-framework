@@ -56,8 +56,8 @@ function preprocessCommand(chain){
             chain.out = commandParts[2]
         }
         else if(commandParts.length == 2){
-            // input and process
-            if(commandParts[0].match(/\(.*\)/g)){
+            // input and process, input should be wrapped in parantheses and should not contains '=>'
+            if(commandParts[0].match(/\([^(=>)]*\)/g)){
                 chain.ins = commandParts[0]
                 chain.command = commandParts[1]
             }
