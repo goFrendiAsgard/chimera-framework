@@ -1,0 +1,1 @@
+(a,b) -> (x,y) => {return parseFloat(x)+parseFloat(y);} -> c

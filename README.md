@@ -106,6 +106,14 @@ or even this:
 (a, b) -> node add.js
 ```
 
+In some situation, your process might be so simple that you only need a single line javascript arrow function instead of a fully stand alone program. In that case, you can do this:
+
+```yaml
+(a, b) -> (x,y)=>{return parseFloat(x)+parseFloat(y)}
+```
+
+For more comprehensive information regarding anonymous javascript arrow function, please visit (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
+
 ### Process control (branch and loop)
 
 Sometime your process contains several simple logic (i.e: loop and branch). Please look at this example:

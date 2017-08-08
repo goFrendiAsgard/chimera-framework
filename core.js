@@ -155,6 +155,30 @@ function preprocessChain(chain, isRoot){
     return false
 }
 
+
+/**
+ * Show current time in nano second, and return it
+ * Example:
+ *  startTime = showStartTime('myProcess')
+ */
+function showStartTime(processName){
+    startTime = process.hrtime();
+    console.warn('[INFO] START PROCESS ['+processName+'] AT    : ' + getFormattedNanoSecond(startTime))
+    return startTime
+}
+
+/**
+ * Show current time in nano second, and calculate difference from startTime 
+ * Example:
+ *  showEndTime('myProcess', startTime)
+ */
+function showEndTime(processName, startTime){
+    let diff = process.hrtime(startTime);
+    let endTime = process.hrtime();
+    console.warn('[INFO] END PROCESS   ['+processName+'] AT    : ' + getFormattedNanoSecond(endTime))
+    console.warn('[INFO] PROCESS       ['+processName+'] TAKES : ' + getFormattedNanoSecond(diff) + ' NS')
+}
+
 /**
  * Execute chain configuration
  * Example
@@ -293,6 +317,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
             let chainCommand = chain.command
             let chainIns = chain.ins
             let chainOut = chain.out
+            let parameters = []
             // we can only send string in CLI, thus if the input is object,
             // it should be stringified
             chainIns.forEach(function(key){
@@ -309,43 +334,68 @@ function execute(chainConfigs, argv, presets, executeCallback){
                 arg = arg.replace(/"/g, '\\\"')
                 arg = arg.replace(/\n/g, '\\n')
                 arg = arg.trim()
-                chainCommand += ' "' + arg + '"'
+                arg = '"'+arg+'"'
+                parameters.push(arg)
             })
-            // benchmarking
             let startTime = 0
-            if(verbose){
-                startTime = process.hrtime();
-                    console.warn('[INFO] START PROCESS ['+chainCommand+'] AT    : ' + getFormattedNanoSecond(startTime))
-            }
-            // run the command
-            try{
-                cmd.get(chainCommand, function(err, data, stderr){
+            // if chainCommand is purely javascript's arrow function, we can simply use eval
+            if(chainCommand.match(/.*=>.*/g)){
+                let jsScript = '(' + chainCommand + ')(' + parameters.join(', ') + ')'
+                if(verbose){
+                    startTime = showStartTime(jsScript)
+                }
+                try{
+                    output = eval(jsScript)
+                    // assign as output
+                    setVar(chainOut, output)
                     if(verbose){
-                        let diff = process.hrtime(startTime);
-                        let endTime = process.hrtime();
-                        console.warn('[INFO] END PROCESS   ['+chainCommand+'] AT    : ' + getFormattedNanoSecond(endTime))
-                        console.warn('[INFO] PROCESS       ['+chainCommand+'] TAKES : ' + getFormattedNanoSecond(diff) + ' NS')
+                        showEndTime(jsScript, startTime)
+                        console.warn('[INFO] STATE AFTER   ['+jsScript+']       : ' + stringify(vars))
                     }
-                    if(!err){
-                        // assign as output
-                        setVar(chainOut, data)
-                        if(verbose){
-                            console.warn('[INFO] STATE AFTER   ['+chainCommand+']       : ' + stringify(vars))
-                        }
-                        // run callback if there is no error
-                        callback()
-                    }
-                    else{
-                        console.error('[ERROR] FAILED TO PROCESS ['+chainCommand+']  : ')
-                        console.error(err)
-                        executeCallback('', false, err)
-                    }
-                })
+                    // run callback if there is no error
+                    callback()
+                }
+                catch(e){
+                    console.error('[ERROR] Error running [' + jsScript + ']')
+                    executeCallback('', false, e)
+                    console.error(e)
+                }
             }
-            catch(e){
-                console.error('[ERROR] Error running [' + chainCommand + ']')
-                executeCallback('', false, e)
-                console.error(e)
+            // if chainCommand is really external command, so we should use cmd.get
+            else{
+                // add parameter to chainCommand
+                let cmdCommand = chainCommand + ' ' + parameters.join(' ')
+                // benchmarking
+                if(verbose){
+                    startTime = showStartTime(cmdCommand)
+                }
+                // run the command
+                try{
+                    cmd.get(cmdCommand, function(err, stdout, stderr){
+                        if(verbose){
+                            showEndTime(cmdCommand, startTime)
+                        }
+                        if(!err){
+                            // assign as output
+                            setVar(chainOut, stdout)
+                            if(verbose){
+                                console.warn('[INFO] STATE AFTER   ['+cmdCommand+']       : ' + stringify(vars))
+                            }
+                            // run callback if there is no error
+                            callback()
+                        }
+                        else{
+                            console.error('[ERROR] FAILED TO PROCESS ['+cmdCommand+']  : ')
+                            console.error(err)
+                            executeCallback('', false, err)
+                        }
+                    })
+                }
+                catch(e){
+                    console.error('[ERROR] Error running [' + cmdCommand + ']')
+                    executeCallback('', false, e)
+                    console.error(e)
+                }
             }
         }
     }

@@ -48,11 +48,11 @@ function testExecuteChain(testName, chain, inputs, presets, expectedResult, call
 // Run the test
 async.series([
 
-    (callback) => {testExecuteChain('Test executeChain containing infinite loop, expect error',
-        'tests/chain-infinite-loop.yaml', [0], {}, '', callback)},
-
-    (callback) => {testExecuteCommand('Test chain-add.json', 
+    (callback) => {testExecuteCommand('Test JSON instead of YAML', 
         'chimera tests/chain-add.json 1 5', 6, callback)},
+
+    (callback) => {testExecuteCommand('Test javascript arrow function', 
+        'chimera tests/chain-add-js.yaml 1 5', 6, callback)},
 
     (callback) => {testExecuteCommand('Test chain-complete', 
         'chimera tests/chain-complete.yaml 1 5', -23, callback)},
@@ -93,9 +93,12 @@ async.series([
     (callback) => {testExecuteChain('Test executeChain containing empty object',
         'tests/chain-empty.yaml', [0], {}, '', callback)},
 
+    /* Infinite loop test
+    (callback) => {testExecuteChain('Test executeChain containing infinite loop, expect error',
+        'tests/chain-infinite-loop.yaml', [0], {}, '', callback)},
+    */
+
 ], (result, error) => {
     assert(process.cwd() == currentPath, 'FAIL: current path doesn\'t set back')
-    console.log('ALL TEST SUCCESS: there should be some error messages shown, but it is expected')
-    console.log('If you see this message, it means the errors are catched.')
-
+    console.log('ALL TEST SUCCESS: No error encountered or all errors were caught')
 })
