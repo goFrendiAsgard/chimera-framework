@@ -28,10 +28,10 @@ function testExecuteCommand(testName, command, expectedResult, callback){
     })
 }
 
-function testExecuteYaml(testName, yaml, inputs, presets, expectedResult, callback){
+function testExecuteChain(testName, chain, inputs, presets, expectedResult, callback){
     let startTime = process.hrtime(); 
     console.log('START ' + testName + ' ON nanosecond: ' + chimera.getFormattedNanoSecond(startTime) + '\n')
-    chimera.executeYaml(yaml, inputs, presets, function(output, success){
+    chimera.executeChain(chain, inputs, presets, function(output, success){
         let diff = process.hrtime(startTime);
         let endTime = process.hrtime(); 
         console.log(output);
@@ -48,8 +48,11 @@ function testExecuteYaml(testName, yaml, inputs, presets, expectedResult, callba
 // Run the test
 async.series([
 
-    (callback) => {testExecuteYaml('Test executeYaml containing infinite loop, expect error',
+    (callback) => {testExecuteChain('Test executeChain containing infinite loop, expect error',
         'tests/chain-infinite-loop.yaml', [0], {}, '', callback)},
+
+    (callback) => {testExecuteCommand('Test chain-add.json', 
+        'chimera tests/chain-add.json 1 5', 6, callback)},
 
     (callback) => {testExecuteCommand('Test chain-complete', 
         'chimera tests/chain-complete.yaml 1 5', -23, callback)},
@@ -81,13 +84,13 @@ async.series([
     (callback) => {testExecuteCommand('Test chain-complex-vars', 
         'chimera tests/chain-complex-vars.yaml 5 6', -176, callback)},
 
-    (callback) => {testExecuteYaml('Test executeYaml without presets',
+    (callback) => {testExecuteChain('Test executeChain without presets',
         'tests/chain-minimal.yaml', [1, 5], {}, -23, callback)},
 
-    (callback) => {testExecuteYaml('Test executeYaml with presets',
+    (callback) => {testExecuteChain('Test executeChain with presets',
         'tests/chain-minimal.yaml', [1, 5], {'a':1, 'b':1}, -23, callback)},
 
-    (callback) => {testExecuteYaml('Test executeYaml containing empty object',
+    (callback) => {testExecuteChain('Test executeChain containing empty object',
         'tests/chain-empty.yaml', [0], {}, '', callback)},
 
 ], (result, error) => {

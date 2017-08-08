@@ -52,15 +52,17 @@ You can run the test case by running `npm test`. The test require `python`, `php
 
 # Usage (command line)
 
-## Using YAML-chain File
+## Using Chain File
 
-Basically you can invoke your YAML chain file by using this command:
+Basically you can invoke your Chain file by using this command:
 
 ```sh
 chimera your-chain-file.yaml [input1 [input2 [input3 ...]]]
 ```
 
 In the next section you will see how to write a YAML-chain file
+
+__Note:__ JSON Format will also works
 
 ### Single process
 
@@ -331,20 +333,20 @@ chimera "cal 2017"
 const chimera = require('chimera-framework/core');
 
 // without presets
-chimera.executeYaml('your-chain-file.yaml', [5, 1], {}, function(output){
+chimera.executeChain('your-chain', [5, 1], {}, function(output){
     console.log(output);
 });
 
 
 // with presets
-chimera.executeYaml('your-chain-file.yaml', {}, {a: 5, b: 1}, function(output){
+chimera.executeChain('your-chain', {}, {a: 5, b: 1}, function(output){
     console.log(output);
 });
 ```
 
-Function `executeYaml` has 4 parameters, `executeYaml(yamlFile, inputs, presets, callback)`
+Function `executeChain` has 4 parameters, `executeChain(yamlFile, inputs, presets, callback)`
 
-* `yamlFile` : The chain file in YAML format
+* `your-chain` : A string or a file. YAML or JSON format are both valid. 
 * `inputs` : Array of inputs
 * `presets` : Initial values of variables
 * `callback` : Callback function. Can has three parameters `output`, `success`, `errorMessage`.

@@ -59,7 +59,7 @@ function runMigration(migrationFiles, migrationCache, configs){
     for(let i=0; i<migrationFiles.length; i++){
         let migrationFile = migrationFiles[i]
         processList.push((callback) => {
-            chimera.executeYaml(migrationPath+'/'+migrationFile, [configs], {}, function(output, success){
+            chimera.executeChain(migrationPath+'/'+migrationFile, [configs], {}, function(output, success){
                 if(success){
                     // success
                     console.warn(output)

@@ -31,7 +31,7 @@ app.post('/', function (req, res) {
     process.chdir(currentPath)
     if(insidePublishedDirectory(chain)){
         // call chimera process
-        chimera.executeYaml(chain, input, [], function(output, success, errorMessage){
+        chimera.executeChain(chain, input, [], function(output, success, errorMessage){
             if(!res.headersSent){
                 res.send(JSON.stringify({
                     'success' : success, 

@@ -59,7 +59,7 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
 serveAuthenticatedRoutes((req, res, next, chainObject)=>{
     process.chdir(CURRENTPATH)
-    chimera.executeYaml(chainObject.chain, [shortenRequest(req), CONFIGS], {}, (data, success)=>{
+    chimera.executeChain(chainObject.chain, [shortenRequest(req), CONFIGS], {}, (data, success)=>{
         if(success){
             if(typeof data == 'object'){
                 // save cookies
@@ -123,7 +123,7 @@ function serveAuthenticatedRoutes(routeHandler){
         }
         else{
             process.chdir(CURRENTPATH)
-            chimera.executeYaml(CONFIGS.auth_chain, [shortenRequest(req)], [], function(data, success){
+            chimera.executeChain(CONFIGS.auth_chain, [shortenRequest(req)], [], function(data, success){
                 // get userInfo
                 let userInfo = patchObject(DEFAULT_USER_INFO, data.userInfo)
                 if(success && (typeof userInfo == 'object')){
@@ -165,7 +165,7 @@ function serveAllRoutes(routeHandler){
         // setup app (based on CONFIGS), this will only be done once
         setupApp()
         // run migration
-        chimera.executeYaml(CONFIGS.migration_chain, [CONFIGS], {}, function(data, success){
+        chimera.executeChain(CONFIGS.migration_chain, [CONFIGS], {}, function(data, success){
             if(success){
                 console.warn(data)
                 // handle everything here
@@ -205,7 +205,6 @@ function setupApp(){
     app.engine('pug', engines.pug)
     app.engine('handlebars', engines.handlebars)
     app.engine('ejs', engines.ejs)
-    app.engine('jade', engines.jade)
     app.use(session({
         'secret': CONFIGS.session_secret, 
         'resave': CONFIGS.session_resave,
@@ -410,7 +409,7 @@ function readYaml(fileName, callbackSuccess, callbackError){
 // callbackError should has one parameter containing error message
 function readChainResponse(fileName, inputs, presets, callbackSuccess, callbackError){
     process.chdir(CURRENTPATH)
-    chimera.executeYaml(fileName, inputs, presets, function(data, success, errorMessage){
+    chimera.executeChain(fileName, inputs, presets, function(data, success, errorMessage){
         if(success){
             if(typeof data == 'object'){
                 callbackSuccess(data)

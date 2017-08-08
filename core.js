@@ -64,7 +64,7 @@ function preprocessCommand(chain){
             // process and output
             else{
                 chain.command = commandParts[0]
-                chain.out = commandParts[1] 
+                chain.out = commandParts[1]
             }
         }
     }
@@ -125,7 +125,7 @@ function preprocessChain(chain, isRoot){
             for(let i=0; i<chain.chains.length; i++){
                 chain.chains[i] = preprocessChain(chain.chains[i], false)
             }
-        } 
+        }
         // for root, move chain to lower level
         if(isRoot){
             // define subchain
@@ -162,10 +162,10 @@ function preprocessChain(chain, isRoot){
  *      'series' : {'command': 'python operation.py', 'ins': ['a, 'b', 'operation'], 'out': 'c'},
  *      'ins':['a','b'],
  *      'out':'c'};
- *  executeYaml(chainConfig, [5 6], {'operation' : 'plus'}, function(result, success, errorMessage){console.log(out);});
- *  executeYaml(chainConfig, [5 6], {'operation' : 'plus'});
- *  executeYaml(chainConfig, [5 6]);
- *  executeYaml(chainConfig);
+ *  execute(chainConfig, [5 6], {'operation' : 'plus'}, function(result, success, errorMessage){console.log(out);});
+ *  execute(chainConfig, [5 6], {'operation' : 'plus'});
+ *  execute(chainConfig, [5 6]);
+ *  execute(chainConfig);
  *
  * @params {object} chainConfig
  * @params {array} argv
@@ -258,7 +258,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
         if(typeof value == 'string'){
             value = value.replace(/[ \n]+$/g, '')
         }
-        // If the value can be parsed into object, parse it 
+        // If the value can be parsed into object, parse it
         try{
             value = JSON.parse(value);
         } catch(e){}
@@ -293,12 +293,12 @@ function execute(chainConfigs, argv, presets, executeCallback){
             let chainCommand = chain.command
             let chainIns = chain.ins
             let chainOut = chain.out
-            // we can only send string in CLI, thus if the input is object, 
+            // we can only send string in CLI, thus if the input is object,
             // it should be stringified
             chainIns.forEach(function(key){
                 let arg = ''
                 if(key.match(/"(.*)"/g) || key.match(/'(.*)'/g)){
-                    arg = key.substring(1, key.length-1); 
+                    arg = key.substring(1, key.length-1);
                 }
                 else if(typeof(vars[key]) == 'object'){
                     arg = stringify(getVar(key))
@@ -314,7 +314,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
             // benchmarking
             let startTime = 0
             if(verbose){
-                startTime = process.hrtime(); 
+                startTime = process.hrtime();
                     console.warn('[INFO] START PROCESS ['+chainCommand+'] AT    : ' + getFormattedNanoSecond(startTime))
             }
             // run the command
@@ -322,7 +322,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
                 cmd.get(chainCommand, function(err, data, stderr){
                     if(verbose){
                         let diff = process.hrtime(startTime);
-                        let endTime = process.hrtime(); 
+                        let endTime = process.hrtime();
                         console.warn('[INFO] END PROCESS   ['+chainCommand+'] AT    : ' + getFormattedNanoSecond(endTime))
                         console.warn('[INFO] PROCESS       ['+chainCommand+'] TAKES : ' + getFormattedNanoSecond(diff) + ' NS')
                     }
@@ -393,7 +393,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
             console.error('[ERROR] Failed to evaluate condition')
             console.error(script)
         }
-        return truth 
+        return truth
     }
 
     // get actions that will be used in async process
@@ -457,36 +457,52 @@ function execute(chainConfigs, argv, presets, executeCallback){
 }
 
 /**
- * Execute YAML chain file
+ * Execute chain file
  * Example
- *  executeYaml('myChain.yaml', [5 6], {'operation' : 'plus'}, function(result, success){console.log(out);});
- *  executeYaml('myChain.yaml', [5 6], {'operation' : 'plus'});
- *  executeYaml('myChain.yaml', [5 6]);
- *  executeYaml('myChain.yaml');
+ *  executeChain('myChain.yaml', [5 6], {'operation' : 'plus'}, function(result, success){console.log(out);});
+ *  executeChain('myChain.yaml', [5 6], {'operation' : 'plus'});
+ *  executeChain('myChain.yaml', [5 6]);
+ *  executeChain('myChain.yaml');
  *
- * @params {string} yamlFile
+ * @params {string} chain
  * @params {array} argv
  * @params {object} presets
  * @params {function} executeCallback
  */
-function executeYaml(yamlFile, argv, presets, executeCallback){
-    fs.readFile(yamlFile, function(err, data){
-        let chainConfigs = {}
+function executeChain(chain, argv, presets, executeCallback){
+    fs.readFile(chain, function(err, data){
         let currentPath = process.cwd()
+        let chainString = ''
         if(!err){
-            // yamlFile is really a file
-            let yamlParts = yamlFile.split('/')
+            // chain is really a file
+            let yamlParts = chain.split('/')
             if(yamlParts.length > 1){
                 // perform chdir if necessary
                 let pathParts = yamlParts.slice(0,-1)
                 let path = pathParts.join('/')
                 process.chdir(path)
             }
-            chainConfigs = yaml.safeLoad(data)
+            chainString = data
         }
         else{
-            // yamlFile is a json, not a file
-            chainConfigs = yaml.safeLoad(yamlFile)
+            // chain is actualy a string, not a file
+            chainString = chain
+        }
+        // get chainConfigs
+        let chainConfigs = {}
+        try{
+            chainConfigs = yaml.safeLoad(chainString)
+        }
+        catch(e){
+            try{
+                chainConfigs = JSON.parse(chainString)
+            }
+            catch(e){
+                console.warn('[ERROR] Not a valid YAML or JSON format')
+                console.warn(chainString)
+                process.chdir(currentPath)
+                return null
+            }
         }
         // ensure we going back to this directory
         alteredCallback = function(result, success, errorMessage){
@@ -512,7 +528,7 @@ if(require.main === module){
         // second until last arguments are input of the first chain
         var argv = process.argv.slice(3)
         // execute Yaml
-        executeYaml(parameter, argv)
+        executeChain(parameter, argv)
     }
     else{
         // show missing arguments warning
@@ -525,6 +541,8 @@ if(require.main === module){
 
 // The exported resources
 module.exports = {
-    'executeYaml' : executeYaml,
+    'executeYaml' : executeChain, // gonna be deprecated, solely here for historical purpose
+    'executeChain' : executeChain,
+    'execute' : executeChain,
     'getFormattedNanoSecond' : getFormattedNanoSecond,
 }

@@ -1,0 +1,8 @@
+ins: a,b,server
+out: e
+verbose: true
+series:
+  - parallel:
+      - (server, 'tests/chain-add.yaml', a,b) -> chimera-send -> d
+      - (a,b) -> php programs/add.php -> c
+  - (c,d) -> node programs/add.js -> e

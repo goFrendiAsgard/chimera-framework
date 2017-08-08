@@ -1,0 +1,5 @@
+{
+    "ins" : ["a", "b"],
+    "command" : "php programs/add.php",
+    "out" : "c"
+}
