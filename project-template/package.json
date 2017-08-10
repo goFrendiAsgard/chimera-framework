@@ -6,7 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "chimera-framework": "*",
+    "chimera-framework": "0.0.27",
     "consolidate": "^0.14.5",
     "cookie-parser": "~1.4.3",
     "debug": "^2.6.8",
@@ -14,12 +14,12 @@
     "express-fileupload": "^0.1.3",
     "express-session": "^1.15.3",
     "handlebars": "^4.0.10",
-    "pug": "^2.0.0-rc.2",
     "mongodb": "^2.2.29",
     "mongoose": "^4.10.7",
     "morgan": "~1.8.2",
     "path": "^0.12.7",
     "process": "^0.11.10",
+    "pug": "^2.0.0-rc.2",
     "serve-favicon": "~2.4.3"
   }
 }

@@ -1,1 +1,10 @@
-echo "{\"all\":{\"/login\":\"chains/core.login.yaml\", \"/logout\":\"chains/core.logout.yaml\", \"/auth\":\"chains/core.auth.yaml\"}}"
+command: |
+    () => {
+        return {
+            "all":{
+                "/login":"chains/core.login.yaml", 
+                "/logout":"chains/core.logout.yaml", 
+                "/auth":"chains/core.auth.yaml"
+            }
+        };
+    }
