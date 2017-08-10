@@ -557,7 +557,7 @@ function executeChain(chain, argv, presets, executeCallback){
             }
             catch(e){
                 console.warn('[ERROR] Not a valid YAML or JSON format')
-                console.warn(chainString)
+                console.warn(e)
                 process.chdir(currentPath)
                 return null
             }
