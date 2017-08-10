@@ -179,6 +179,10 @@ function showEndTime(processName, startTime){
     console.warn('[INFO] PROCESS       ['+processName+'] TAKES : ' + getFormattedNanoSecond(diff) + ' NS')
 }
 
+function showVars(processName, vars){
+    console.warn('[INFO] STATE AFTER   ['+processName+']       : ' + stringify(vars))
+}
+
 /**
  * Execute chain configuration
  * Example
@@ -334,10 +338,6 @@ function execute(chainConfigs, argv, presets, executeCallback){
                 else{
                     arg = String(getVar(key))
                 }
-                arg = arg.replace(/"/g, '\\\"')
-                arg = arg.replace(/\n/g, '\\n')
-                arg = arg.trim()
-                arg = '"'+arg+'"'
                 parameters.push(arg)
             })
             let startTime = 0
@@ -353,7 +353,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
                     setVar(chainOut, output)
                     if(verbose){
                         showEndTime(jsScript, startTime)
-                        console.warn('[INFO] STATE AFTER   ['+jsScript+']       : ' + stringify(vars))
+                        showVars(jsScript, vars)
                     }
                     // run callback if there is no error
                     callback()
@@ -366,6 +366,13 @@ function execute(chainConfigs, argv, presets, executeCallback){
             }
             // if chainCommand is really external command, so we should use cmd.get
             else{
+                // sanitize parameters for 
+                for(let i=0; i<parameters.length; i++){
+                    parameters[i] = parameters[i].replace(/"/g, '\\\"')
+                    parameters[i] = parameters[i].replace(/\n/g, '\\n')
+                    parameters[i] = parameters[i].trim()
+                    parameters[i] = '"'+parameters[i]+'"'
+                }
                 // add parameter to chainCommand
                 let cmdCommand = chainCommand + ' ' + parameters.join(' ')
                 // benchmarking
@@ -375,14 +382,12 @@ function execute(chainConfigs, argv, presets, executeCallback){
                 // run the command
                 try{
                     cmd.get(cmdCommand, function(err, stdout, stderr){
-                        if(verbose){
-                            showEndTime(cmdCommand, startTime)
-                        }
                         if(!err){
                             // assign as output
                             setVar(chainOut, stdout)
                             if(verbose){
-                                console.warn('[INFO] STATE AFTER   ['+cmdCommand+']       : ' + stringify(vars))
+                                showEndTime(cmdCommand, startTime)
+                                showVars(cmdCommand, vars)
                             }
                             // run callback if there is no error
                             callback()

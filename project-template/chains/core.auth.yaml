@@ -1,8 +1,33 @@
 ins: req
-chains:
-    - if: req.session.user_id == 'admin' && req.session.is_logged_in
-      command: echo "{\"userInfo\":{\"user_id\":\"admin\", \"user_name\":\"Admin\", \"groups\":[\"admin\", \"employee\"],  \"is_logged_in\":true}}"
-    - if: req.session.user_id == 'employee' && req.session.is_logged_in
-      command: echo "{\"userInfo\":{\"user_id\":\"employee\", \"user_name\":\"Employee\", \"groups\":[\"employee\"],  \"is_logged_in\":true}}"
-    - if: req.session.user_id != 'admin' && req.session.user_id != 'employee'
-      command: echo "{\"userInfo\":{\"user_id\":null, \"user_name\":null, \"groups\":[]}"
+command: |
+    (req)=>{
+        let userId = null
+        let userName = null
+        let groups = [] 
+        if(req.session.is_logged_in){
+            if(req.session.is_logged_in){
+                if(req.session.user_id == 'admin'){
+                    userId = 'admin'
+                    userName = 'Admin'
+                    groups = ['admin', 'employee']
+                }
+                else if(req.session.user_id == 'employee'){
+                    userId = 'employee'
+                    userName = 'Employee'
+                    groups = ['employee']
+                }
+            }
+        }
+        return {"userInfo":{
+            "user_id" : userId,
+            "user_name" : userName,
+            "groups" : groups
+        }}
+    }
+# chains:
+#    - if: req.session.user_id == 'admin' && req.session.is_logged_in
+#      command: echo "{\"userInfo\":{\"user_id\":\"admin\", \"user_name\":\"Admin\", \"groups\":[\"admin\", \"employee\"],  \"is_logged_in\":true}}"
+#    - if: req.session.user_id == 'employee' && req.session.is_logged_in
+#      command: echo "{\"userInfo\":{\"user_id\":\"employee\", \"user_name\":\"Employee\", \"groups\":[\"employee\"],  \"is_logged_in\":true}}"
+#    - if: req.session.user_id != 'admin' && req.session.user_id != 'employee'
+#      command: echo "{\"userInfo\":{\"user_id\":null, \"user_name\":null, \"groups\":[]}"
