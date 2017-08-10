@@ -6,7 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "chimera-framework": "0.0.27",
+    "chimera-framework": "0.0.28",
     "consolidate": "^0.14.5",
     "cookie-parser": "~1.4.3",
     "debug": "^2.6.8",

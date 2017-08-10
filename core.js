@@ -222,16 +222,19 @@ function execute(chainConfigs, argv, presets, executeCallback){
             vars[key] = presets[key]
         })
     }
-    // populate "vars" based on "ins" and "process.argv"
+    // populate "vars" with "ins" and "process.argv"
     ins.forEach(function(key, index){
         if(index < argv.length){
             setVar(key, argv[index])
-            //vars[key] = argv[index]
         }
         else if(!(key in vars)){
-            vars[key] = 0
+            setVar(key, 0)
         }
     })
+    // populate "vars" with on "out"
+    if(!(out in vars)){
+        setVar(out, '')
+    }
     // run the chains
     try{
         runChains(chains, mode, true)
@@ -432,7 +435,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
             for(let i=0; i<words.length; i++){
                 word = words[i]
                 if(word in vars){
-                    script += 'let ' + word + '=' + stringify(vars[word]) + ';'
+                    script += 'let ' + word + '=' + stringify(getVar(word)) + ';'
                 }
             }
             script += 'return ' + statement + ';})()'
