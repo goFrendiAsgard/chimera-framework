@@ -1,4 +1,5 @@
 #! /usr/bin/env node
+'use strict';
 
 const express = require('express')
 const chimera = require('chimera-framework/core')
@@ -34,7 +35,7 @@ app.post('/', function (req, res) {
         chimera.executeChain(chain, input, [], function(output, success, errorMessage){
             if(!res.headersSent){
                 res.send(JSON.stringify({
-                    'success' : success, 
+                    'success' : success,
                     'errorMessage' : errorMessage,
                     'response' : output,
                 }))
@@ -43,7 +44,7 @@ app.post('/', function (req, res) {
     }
     else{
         res.send(JSON.stringify({
-            'success' : false, 
+            'success' : false,
             'errorMessage' : 'Cannot access ' + chain,
             'response' : '',
         }))

@@ -1,4 +1,5 @@
 #! /usr/bin/env node
+'use strict';
 
 const querystring = require('querystring')
 
@@ -10,7 +11,7 @@ function getOptions(host, data){
     let path = ''
     let port = 80
     // get protocol
-    hostParts = host.split('://') 
+    let hostParts = host.split('://')
     if(hostParts.length > 1){
         protocol = hostParts[0]
         host = hostParts[1]
@@ -27,7 +28,7 @@ function getOptions(host, data){
             port = hostParts[0]
         }
         else{
-            path = hostParts.slice(1).join('/') 
+            path = hostParts.slice(1).join('/')
         }
     }
     else{
@@ -39,10 +40,10 @@ function getOptions(host, data){
     path = '/' + path
     return {
         'protocol' : protocol+':',
-        'host' : host, 
-        'port' : port, 
-        'path' : path, 
-        'method' : 'POST', 
+        'host' : host,
+        'port' : port,
+        'path' : path,
+        'method' : 'POST',
         'headers': {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Content-Length': Buffer.byteLength(data)
@@ -56,7 +57,6 @@ if(process.argv.length > 3){
     let bodyRequest = querystring.stringify({'chain' : chain, 'input' : process.argv.slice(4)})
     let options = getOptions(host, bodyRequest)
     let protocol = options.protocol
-    
     // create request using required protocol
     let http = protocol == 'https'? require('https'): require('http')
     let httpreq = http.request(options, function (response) {
@@ -95,7 +95,7 @@ if(process.argv.length > 3){
     });
 
     if(process.env.TIMEOUT){
-        // get timeout from environment 
+        // get timeout from environment
         httpreq.setTimeout(parseInt(process.env.TIMEOUT))
     }
     else{

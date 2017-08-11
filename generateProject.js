@@ -1,4 +1,5 @@
 #! /usr/bin/env node
+'use strict';
 
 const fse = require('fs-extra')
 const cmd = require('node-cmd')
