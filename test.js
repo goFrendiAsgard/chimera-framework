@@ -20,8 +20,8 @@ function testExecuteCommand(testName, command, expectedResult, callback){
         // show data
         console.log(data)
         // get the last line
-        lines = data.trim().split('\n')
-        lastLine = lines.length == 0? '': lines[lines.length - 1]
+        let lines = data.trim().split('\n')
+        let lastLine = lines.length == 0? '': lines[lines.length - 1]
         // show assertion or success
         console.log('END ' + testName + ' ON nanosecond: ' + chimera.getFormattedNanoSecond(endTime))
         console.log('EXECUTION TIME: ' + chimera.getFormattedNanoSecond(diff) + ' nanosecond')
@@ -106,7 +106,9 @@ async.series([
 
     // run chimera server
     (callback) => {
+        console.log('Run chimera-serve on port 3010')
         serverProcess = cmd.get('PORT=3010 chimera-serve')
+        console.log('The process id was ' + serverProcess.pid)
         callback()
     },
 
