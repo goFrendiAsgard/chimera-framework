@@ -125,5 +125,6 @@ async.series([
     assert(process.cwd() == currentPath, 'FAIL: current path doesn\'t set back')
     console.log('ALL TEST SUCCESS: No error encountered or all errors were caught')
     console.log('NOTE: Please make sure you have run "sudo npm link first" before running the test')
-    console.log('      Otherwise, please re-run the test')
+    console.log('      Otherwise, please re-run the test.')
+    console.log('Press Ctrl+c to exit')
 })
