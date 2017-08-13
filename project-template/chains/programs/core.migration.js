@@ -1,3 +1,6 @@
+#! /usr/bin/env node
+'use strict';
+
 const fs = require('fs')
 const chimera = require('chimera-framework/core')
 const async = require('async')
@@ -37,7 +40,7 @@ function processMigrationFiles(migrationPath, migrationCache, configs){
     // get all the files and sort them
     let allFiles = fs.readdirSync(migrationPath).sort()
     let migrationFiles = []
-    for(i=0; i<allFiles.length; i++){
+    for(let i=0; i<allFiles.length; i++){
         let fileName = allFiles[i]
         // only process select files with .yaml extension
         if(fileName.match(/^.*\.yaml$/)){

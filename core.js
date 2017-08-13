@@ -16,6 +16,34 @@ function getFormattedNanoSecond(time){
     return nano.toLocaleString()
 }
 
+// deep copy and object
+function deepCopyObject(obj){
+    let newObj = {}
+    if(typeof obj == 'object'){
+        // deep copy, avoiding by-ref call
+        newObj = JSON.parse(JSON.stringify(obj))
+    }
+    return newObj
+}
+
+// patch object with patcher
+function patchObject(obj, patcher){
+    let newObj = deepCopyObject(obj)
+    patcher = deepCopyObject(patcher)
+    // patch
+    for(let key in patcher){
+        if((key in newObj) && !Array.isArray(newObj[key]) && (typeof newObj[key] == 'newObject') && (typeof patcher[key] == 'newObject')){
+            // recursive patch for if value type is newObject
+            newObj[key] = patchnewObject(newObj[key], patcher[key])
+        }
+        else{
+            // simple replacement if value type is not newObject
+            newObj[key] = patcher[key]
+        }
+    }
+    return newObj
+}
+
 /**
  * Preprocess ins's shorthand
  * Example:
@@ -399,6 +427,11 @@ function execute(chainConfigs, argv, presets, executeCallback){
                 // run the command
                 try{
                     cmd.get(cmdCommand, function(err, stdout, stderr){
+                        // it might be no error, but stderr exists
+                        if(stderr != ''){
+                            console.warn(stderr)
+                        }
+                        // run callback
                         if(!err){
                             // assign as output
                             setVar(chainOut, stdout)
@@ -622,4 +655,6 @@ module.exports = {
     'executeChain' : executeChain,
     'execute' : executeChain,
     'getFormattedNanoSecond' : getFormattedNanoSecond,
+    'deepCopyObject' : deepCopyObject,
+    'patchObject' : patchObject,
 }

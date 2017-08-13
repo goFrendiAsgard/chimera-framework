@@ -1,3 +1,6 @@
+#! /usr/bin/env node
+'use strict';
+
 const DEFAULT_CONFIGS = {
     'mongo_url' : '',
     'public_path' : 'public',
@@ -64,7 +67,7 @@ serveAuthenticatedRoutes((req, res, next, chainObject)=>{
             if(typeof data == 'object'){
                 // save cookies
                 if('_cookies' in data){
-                    for(key in data._cookies){
+                    for(let key in data._cookies){
                         if(key != 'session_id'){
                             res.cookie(key, data._cookies[key])
                         }
@@ -72,7 +75,7 @@ serveAuthenticatedRoutes((req, res, next, chainObject)=>{
                 }
                 // save session
                 if('_session' in data){
-                    for(key in data._session){
+                    for(let key in data._session){
                         if(key != 'cookie'){
                             req.session[key] = data._session[key]
                         }
@@ -125,7 +128,7 @@ function serveAuthenticatedRoutes(routeHandler){
             process.chdir(CURRENTPATH)
             chimera.executeChain(CONFIGS.auth_chain, [shortenRequest(req)], [], function(data, success){
                 // get userInfo
-                let userInfo = patchObject(DEFAULT_USER_INFO, data.userInfo)
+                let userInfo = chimera.patchObject(DEFAULT_USER_INFO, data.userInfo)
                 if(success && (typeof userInfo == 'object')){
                     // logged out
                     if(inArray(chainObject.access, '_loggedOut') && userInfo.user_id == null){
@@ -165,9 +168,11 @@ function serveAllRoutes(routeHandler){
         // setup app (based on CONFIGS), this will only be done once
         setupApp()
         // run migration
-        chimera.executeChain(CONFIGS.migration_chain, [CONFIGS], {}, function(data, success){
+        chimera.executeChain(CONFIGS.migration_chain, [CONFIGS], {}, function(data, success, message){
+            if(message != ''){
+                console.warn(message)
+            }
             if(success){
-                console.warn(data)
                 // handle everything here
                 app.all('/*', function(req, res, next){
                     let verb = req.method.toLowerCase()
@@ -176,7 +181,7 @@ function serveAllRoutes(routeHandler){
                         // if error, show the message, let the next function handle it and quit
                         if(error){ console.error(error); next(); return false; }
                         // get verbRoute by combining current ROUTES[verb] with ROUTES.all
-                        let verbRoute = patchObject(ROUTES[verb], ROUTES.all)
+                        let verbRoute = chimera.patchObject(ROUTES[verb], ROUTES.all)
                         let chainObjectAndParams = getChainObjectAndParams(req, verbRoute)
                         let chainObject = chainObjectAndParams.chainObject
                         req.params = chainObjectAndParams.params
@@ -215,7 +220,7 @@ function setupApp(){
 
 function getChainObjectAndParams(req, verbRoute){
     let url = req.path
-    for(route in verbRoute){
+    for(let route in verbRoute){
         let routePattern = getRegexPattern(route)
         let routeMatches = url.match(routePattern) || url.replace(/(.*)\/$/, '$1').match(routePattern)
         // the route is match
@@ -226,12 +231,12 @@ function getChainObjectAndParams(req, verbRoute){
             if(typeof chainObject == 'string'){
                 chainObject = {'chain' : chainObject}
             }
-            chainObject = patchObject(DEFAULT_CHAIN_OBJECT, chainObject)
+            chainObject = chimera.patchObject(DEFAULT_CHAIN_OBJECT, chainObject)
             // completing chainObject's accessList
             let accessList = 'access' in chainObject? chainObject.access: ['_everyone']
             if(typeof accessList == 'string'){
                 accessList = accessList.split(',')
-                for(i=0; i<accessList.length; i++){
+                for(let i=0; i<accessList.length; i++){
                     accessList[i] = accessList[i].trim()
                 }
             }
@@ -243,7 +248,7 @@ function getChainObjectAndParams(req, verbRoute){
             if(hostMatches){
                 let parameterNames = getParameterNames(route)
                 let parameters = {}
-                for(i=0; i<parameterNames.length; i++){
+                for(let i=0; i<parameterNames.length; i++){
                     parameters[parameterNames[i]] = routeMatches[i+1]
                 }
                 return {'chainObject' : chainObject, 'params' : parameters}
@@ -267,7 +272,7 @@ function loadConfigsAndRoutes(callback){
         readChainResponse(CONFIGS.routes_chain, [], [], 
             (obj) => {
                 // combine CONFIGS and configuration in user-defined chain, patch by environment
-                ROUTES = patchObject(ROUTES, obj)
+                ROUTES = chimera.patchObject(ROUTES, obj)
                 callback(false)
             }, 
             (errorMessage) => {callback(error)})
@@ -279,13 +284,13 @@ function prepareConfigs(callback){
         // read config success
         (obj) => {
             // combine DEFAULT_CONFIGS and obj, patch by environment
-            CONFIGS = patchObject(DEFAULT_CONFIGS, obj)
+            CONFIGS = chimera.patchObject(DEFAULT_CONFIGS, obj)
             CONFIGS = patchConfigsByEnv(CONFIGS)
             // read additional config from user-defined chain
             readChainResponse(CONFIGS.configs_chain, [], [], 
                 (obj) => {
                     // combine CONFIGS and configuration in user-defined chain, patch by environment
-                    CONFIGS = patchObject(CONFIGS, obj)
+                    CONFIGS = chimera.patchObject(CONFIGS, obj)
                     CONFIGS = patchConfigsByEnv(CONFIGS)
                     callback(false)
                 }, 
@@ -315,7 +320,7 @@ function prepareOriginalRoutes(callback){
 function patchConfigsByEnv(configs){
     let env = app.get('env')
     let pattern = new RegExp('^' + env + '\.(.*)$')
-    for(fullKey in configs){
+    for(let fullKey in configs){
         let match = fullKey.match(pattern) 
         if(match){
             let key = match[1]
@@ -354,36 +359,10 @@ function getParameterNames(route){
     if(matches === null){
         matches = []
     }
-    for(i=0; i<matches.length; i++){
+    for(let i=0; i<matches.length; i++){
         matches[i] = matches[i].replace(':', '')
     }
     return matches
-}
-
-function deepCopyObject(obj){
-    let newObj = {}
-    if(typeof obj == 'object'){
-        // deep copy, avoiding by-ref call
-        newObj = JSON.parse(JSON.stringify(obj))
-    }
-    return newObj
-}
-
-function patchObject(obj, patcher){
-    newObj = deepCopyObject(obj)
-    patcher = deepCopyObject(patcher)
-    // patch
-    for(key in patcher){
-        if((key in newObj) && !Array.isArray(newObj[key]) && (typeof newObj[key] == 'newObject') && (typeof patcher[key] == 'newObject')){
-            // recursive patch for if value type is newObject
-            newObj[key] = patchnewObject(newObj[key], patcher[key])
-        }
-        else{
-            // simple replacement if value type is not newObject
-            newObj[key] = patcher[key]
-        }
-    }
-    return newObj
 }
 
 // callbackSuccess should has one parameter containing the parsed object
