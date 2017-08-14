@@ -32,7 +32,7 @@ function patchObject(obj, patcher){
     patcher = deepCopyObject(patcher)
     // patch
     for(let key in patcher){
-        if((key in newObj) && !Array.isArray(newObj[key]) && (typeof newObj[key] == 'newObject') && (typeof patcher[key] == 'newObject')){
+        if((key in newObj) && !Array.isArray(newObj[key]) && (typeof newObj[key] == 'Object') && (typeof patcher[key] == 'Object')){
             // recursive patch for if value type is newObject
             newObj[key] = patchnewObject(newObj[key], patcher[key])
         }

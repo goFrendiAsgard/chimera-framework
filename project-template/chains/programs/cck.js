@@ -4,17 +4,17 @@
 const process = require('process')
 const mongodb = require('mongodb')
 const monk = require('monk')
-const chimera = require('chimera')
+const chimera = require('chimera-framework/core')
 
-const DEFAULT_CONFIGS = {
+var DEFAULT_CONFIGS = {
     'mongo_url' : '',
     'table' : '',
     'history_table' : '',
-    'deletion_flag_field' : '',
+    'deletion_flag_field' : '_deleted',
     'pk_field' : 'id',
-    'valid_fields' : [],
     'modification_field' : '_modified_at',
-    'modifier_field' : '_modifier'
+    'modifier_field' : '_modifier',
+    'pk_ref_field' : '_ref_id'
 }
 
 if(process.argv.length < 4){
@@ -23,7 +23,7 @@ if(process.argv.length < 4){
 else{
     // get action and configuration
     let action = process.argv[2]
-    let config = config.patchObject(JSON.parse(process.argv[3]), DEFAULT_CONFIGS)
+    let config = chimera.patchObject(DEFAULT_CONFIGS, JSON.parse(process.argv[3]))
 
     let mongoUrl = config.mongo_url
     let tableName = config.table
@@ -33,75 +33,111 @@ else{
     let validFields = config.valid_fields
     let modificationField = config.modification_field
     let modifierField = config.modifier_field
+    let pkRefField = config.pk_ref_field
 
-    let db =  monk(mongoUrl);
+    let db =  monk(mongoUrl)
 
     if(action == 'get'){
         let criteria = process.length > 4? process.argv[4]: {}
         criteria = preprocessCriteria(deletionFlagField, criteria)
-        db.get(tableName).find(criteria).then((rows) =>{
-            console.log(JSON.stringify(rows))
-        })
+        db.get(tableName).find(criteria).then(
+            (rows) =>{
+                console.log(JSON.stringify(rows))
+                db.close()
+            },
+            () => {db.close()}
+        )
     }
     else if(action == 'getOne'){
         let criteria = process.length > 4? process.argv[4]: {}
         criteria = preprocessCriteria(deletionFlagField, criteria)
-        db.get(tableName).findOne(criteria).then((rows) =>{
-            console.log(JSON.stringify(rows))
-        })
+        db.get(tableName).findOne(criteria)
+        .then(
+            (rows) =>{
+                console.log(JSON.stringify(rows))
+                db.close()
+            },
+            () => {db.close()}
+        )
     }
     else if(action == 'insert'){
         if(process.argv.length < 6){
             showUsage()
+            db.close()
         }
         else{
             let data = JSON.parse(process.argv[4])
             let userId = process.argv[5]
-            db.get(tableName).insert(data).then((row) =>{
-                saveHistory(db, historyTableName, data, modificationField, modifierField, userId, ()=>{
-                    console.log(JSON.stringify(row))
-                })
-            })
+            data[deletionFlagField] = 0
+            db.get(tableName).insert(data, {})
+            .then(
+                (newRow) =>{
+                    createHistoryAndShowRow(db, historyTableName, newRow, pkRefField, modificationField, modifierField, userId)
+                },
+                () => {db.close()}
+            )
         }
     }
     else if(action == 'update'){
         if(process.argv.length < 7){
             showUsage()
+            db.close()
         }
         else{
             let pkValue = process.argv[4]
             let data = JSON.parse(process.argv[5])
             let userId = process.argv[6]
-            db.get(tableName).findOneAndUpdate({pkField:pkValue}, data).then((row) =>{
-                saveHistory(db, historyTableName, data, modificationField, modifierField, userId, ()=>{
-                    console.log(JSON.stringify(row))
-                })
-            })
+            let criteria = {}
+            criteria[pkField] = pkValue
+            db.get(tableName).findOneAndUpdate(criteria, data)
+            .then(
+                (newRow) =>{
+                    createHistoryAndShowRow(db, historyTableName, newRow, pkRefField, modificationField, modifierField, userId)
+                },
+                () => {db.close()}
+            )
         }
     }
     else if(action == 'delete'){
         if(process.argv.length < 6){
             showUsage()
+            db.close()
         }
         else{
             let pkValue = process.argv[4]
             let userId = process.argv[5]
-            db.get(tableName).findOneAndUpdate({pkField:pkValue}, {deletionFlagField:1}).then((row) =>{
-                saveHistory(db, historyTableName, data, modificationField, modifierField, userId, ()=>{
-                    console.log(JSON.stringify(row))
-                })
-            })
+            let criteria = {}
+            let data = {}
+            criteria[pkField] = pkValue
+            data[deletionFlagField] = 1
+            db.get(tableName).findOneAndUpdate(criteria, data)
+            .then(
+                (newRow) =>{
+                    createHistoryAndShowRow(db, historyTableName, newRow, pkRefField, modificationField, modifierField, userId)
+                },
+                () => {db.close()}
+            )
         }
     }
     else{
         showUsage()
+        db.close()
     }
 
 }
 
 function preprocessCriteria(deletionFlagField, criteria){
     if(deletionFlagField != ''){
-        criteria = {'$and' : [{deletionFlagField: 0}, criteria]}
+        // create "exists" criteria
+        let existCriteria = {}
+        existCriteria[deletionFlagField] = 0
+        // modify criteria
+        if(Object.keys(criteria).length != 0){
+            criteria = {'$and' : [existCriteria, criteria]}
+        }
+        else{
+            criteria = existCriteria
+        }
     }
     return criteria
 }
@@ -116,15 +152,25 @@ function showUsage(){
     console.error(' * node '+process.argv[1]+' delete [config] [pkValue] [userId]')
 }
 
-function saveHistory(db, historyTableName, data, modificationField, modifierField, userId, callback){
+function createHistoryAndShowRow(db, historyTableName, newRow, pkRefField, modificationField, modifierField, userId){
+    let data = chimera.deepCopyObject(newRow)
+    delete data['_id']
     if(modifierField != ''){
         data[modifierField] = userId
     }
     if(modificationField != ''){
         data[modificationField] = Date.now()
     }
-    db.get(historyTableName).insert([data]).then((row)=>{
-        callback(row)
-    })
-
+    if(pkRefField != ''){
+        data[pkRefField] = newRow['_id']
+    }
+    db.get(historyTableName).insert(data, {})
+    .then(
+        (historyRow) => {
+            console.log(newRow)
+        }
+    )
+    .then(
+        () => {db.close()}
+    )
 }

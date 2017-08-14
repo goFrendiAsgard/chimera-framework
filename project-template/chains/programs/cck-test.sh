@@ -1,0 +1,2 @@
+node cck.js insert "{\"mongo_url\":\"mongodb://localhost/project-template\", \"table\":\"person\", \"history_table\":\"hperson\", \"deletion_flag_field\":\"deleted\", \"pk_field\":\"id\", \"modification_field\":\"modif_on\", \"modifier_field\":\"modif_by\"}" "{\"name\":\"Tono\"}" "u01"
+node cck.js get "{\"mongo_url\":\"mongodb://localhost/project-template\", \"table\":\"person\", \"history_table\":\"hperson\", \"deletion_flag_field\":\"deleted\", \"pk_field\":\"id\", \"modification_field\":\"modif_on\", \"modifier_field\":\"modif_by\"}"
