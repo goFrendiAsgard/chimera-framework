@@ -29,7 +29,7 @@ else{
     let tableName = config.table
     let historyTableName = config.history_table
     let deletionFlagField = config.deletion_flag_field
-    let pkField = config.pk_Field
+    let pkField = config.pk_field
     let validFields = config.valid_fields
     let modificationField = config.modification_field
     let modifierField = config.modifier_field
@@ -49,16 +49,24 @@ else{
         )
     }
     else if(action == 'getOne'){
-        let criteria = process.length > 4? process.argv[4]: {}
-        criteria = preprocessCriteria(deletionFlagField, criteria)
-        db.get(tableName).findOne(criteria)
-        .then(
-            (rows) =>{
-                console.log(JSON.stringify(rows))
-                db.close()
-            },
-            () => {db.close()}
-        )
+        if(process.argv.length < 5){
+            showUsage()
+            db.close()
+        }
+        else{
+            let pkValue = process.argv[4]
+            let criteria = {}
+            criteria[pkField] = pkValue
+            criteria = preprocessCriteria(deletionFlagField, criteria)
+            db.get(tableName).findOne(criteria)
+                .then(
+                    (row) =>{
+                        console.log(JSON.stringify(row))
+                        db.close()
+                    },
+                    () => {db.close()}
+                )
+        }
     }
     else if(action == 'insert'){
         if(process.argv.length < 6){
@@ -72,6 +80,7 @@ else{
             db.get(tableName).insert(data, {})
             .then(
                 (newRow) =>{
+                    console.log(JSON.stringify(newRow))
                     createHistoryAndShowRow(db, historyTableName, newRow, pkRefField, modificationField, modifierField, userId)
                 },
                 () => {db.close()}
@@ -89,12 +98,18 @@ else{
             let userId = process.argv[6]
             let criteria = {}
             criteria[pkField] = pkValue
-            db.get(tableName).findOneAndUpdate(criteria, data)
-            .then(
-                (newRow) =>{
-                    createHistoryAndShowRow(db, historyTableName, newRow, pkRefField, modificationField, modifierField, userId)
-                },
-                () => {db.close()}
+            db.get(tableName).findOne(criteria).then(
+                (oldData) => {
+                    data = chimera.patchObject(oldData, data)
+                    db.get(tableName).findOneAndUpdate(criteria, data)
+                        .then(
+                            (newRow) =>{
+                                console.log(JSON.stringify(newRow))
+                                createHistoryAndShowRow(db, historyTableName, newRow, pkRefField, modificationField, modifierField, userId)
+                            },
+                            () => {db.close()}
+                        )
+                }
             )
         }
     }
@@ -110,12 +125,19 @@ else{
             let data = {}
             criteria[pkField] = pkValue
             data[deletionFlagField] = 1
-            db.get(tableName).findOneAndUpdate(criteria, data)
-            .then(
-                (newRow) =>{
-                    createHistoryAndShowRow(db, historyTableName, newRow, pkRefField, modificationField, modifierField, userId)
-                },
-                () => {db.close()}
+
+            db.get(tableName).findOne(criteria).then(
+                (oldData) => {
+                    data = chimera.patchObject(oldData, data)
+                    db.get(tableName).findOneAndUpdate(criteria, data)
+                        .then(
+                            (newRow) =>{
+                                console.log(JSON.stringify(newRow))
+                                createHistoryAndShowRow(db, historyTableName, newRow, pkRefField, modificationField, modifierField, userId)
+                            },
+                            () => {db.close()}
+                        )
+                }
             )
         }
     }
@@ -167,7 +189,6 @@ function createHistoryAndShowRow(db, historyTableName, newRow, pkRefField, modif
     db.get(historyTableName).insert(data, {})
     .then(
         (historyRow) => {
-            console.log(newRow)
         }
     )
     .then(
