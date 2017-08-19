@@ -9,16 +9,76 @@ const chimera = require('chimera-framework/core')
 var DEFAULT_CONFIGS = {
     'mongo_url' : '',
     'table' : '',
-    'history_table' : '',
-    'deletion_flag_field' : '_deleted',
-    'pk_field' : 'id',
-    'modification_field' : '_modified_at',
-    'modifier_field' : '_modifier',
-    'pk_ref_field' : '_ref_id'
+    'history' : '',
+    'deletion_flag' : '_deleted',
+    'id' : '_id',
+    'modification_time' : '_modified_at',
+    'modification_by' : '_modified_by',
+    'show_deleted' : false
 }
 
-if(process.argv.length < 4){
+function preprocessQuery(query, config){
+    if(config.deletion_flag != '' && !config.show_deleted){
+        // create "exists" query
+        let existquery = {}
+        existquery[config.deletion_flag] = 0
+        // modify query
+        if(Object.keys(query).length != 0){
+            query = {'$and' : [existquery, query]}
+        }
+        else{
+            query = existquery
+        }
+    }
+    return query
+}
+
+function getHistoryData(data, userId, config){
+    let historyData = chimera.deepCopyObject(data) 
+    historyData[config.modification_time] = Date.now()
+    historyData[config.modification_by] = userId
+    return historyData
+}
+
+function showUsage(){
+    console.error('[ERROR] Missing Arguments')
+    console.error('Usage:')
+    console.error(' * node '+process.argv[1]+' get [config] [query] [projection]')
+    console.error(' * node '+process.argv[1]+' getOne [config] [pkValue]')
+    console.error(' * node '+process.argv[1]+' insert [config] [dataInJSON] [userId]')
+    console.error(' * node '+process.argv[1]+' update [config] [pkValue] [dataInJSON] [userId]')
+    console.error(' * node '+process.argv[1]+' delete [config] [pkValue] [userId]')
+}
+
+function isParameterValid(){
+    if(process.argv.length >= 4){
+        let action = process.argv[2]
+        let validAction = ['get', 'getOne', 'insert', 'update', 'delete']
+        let actionIndex = validAction.indexOf(action)
+        if(actionIndex > -1){
+            if(action == 'get'){
+                return true
+            }
+            else if(action == 'getOne'){
+                return process.argv.length >= 5
+            }
+            else if(action == 'insert'){
+                return process.argv.length >= 6
+            }
+            else if(action == 'update'){
+                return process.argv.length >= 7
+            }
+            else if(action == 'delete'){
+                return process.argv.length >= 6
+            }
+        }
+    }
+    return false
+}
+
+if(!isParameterValid()){
     showUsage()
+    console.log(JSON.stringify({'success': false, 'error_message': 'Missing Parameters'}))
 }
 else{
     // get action and configuration
@@ -26,172 +86,113 @@ else{
     let config = chimera.patchObject(DEFAULT_CONFIGS, JSON.parse(process.argv[3]))
 
     let mongoUrl = config.mongo_url
-    let tableName = config.table
-    let historyTableName = config.history_table
-    let deletionFlagField = config.deletion_flag_field
-    let pkField = config.pk_field
-    let validFields = config.valid_fields
-    let modificationField = config.modification_field
-    let modifierField = config.modifier_field
-    let pkRefField = config.pk_ref_field
+    let table = config.table
+    let history = config.history
+    let deletionFlag = config.deletion_flag
+    let id_field = config.id
+    let mtime_field = config.modification_time
+    let mby_field = config.modification_by
 
     let db =  monk(mongoUrl)
+    let collection = db.get(table)
+    let defaultProjection = {}
+    defaultProjection[deletionFlag] = 0
+    defaultProjection[history] = 0
 
     if(action == 'get'){
-        let criteria = process.length > 4? process.argv[4]: {}
-        criteria = preprocessCriteria(deletionFlagField, criteria)
-        db.get(tableName).find(criteria).then(
-            (rows) =>{
-                console.log(JSON.stringify(rows))
+        let query = process.argv.length > 4? JSON.parse(process.argv[4]): {}
+        let projection = process.argv.length > 5? JSON.parse(process.argv[5]): defaultProjection
+        query = preprocessQuery(query, config)
+        collection.find(query, projection, function(err, rows){
+            if(err){
+                console.error(err)
+                console.log(JSON.stringify({'success': false, 'error_message': 'Operation failure: get'}))
                 db.close()
-            },
-            () => {db.close()}
-        )
+            }
+            else{
+                console.log(JSON.stringify({'success': true, 'error_message' : '', 'rows': rows}))
+                db.close()
+            }
+        })
     }
     else if(action == 'getOne'){
-        if(process.argv.length < 5){
-            showUsage()
-            db.close()
-        }
-        else{
-            let pkValue = process.argv[4]
-            let criteria = {}
-            criteria[pkField] = pkValue
-            criteria = preprocessCriteria(deletionFlagField, criteria)
-            db.get(tableName).findOne(criteria)
-                .then(
-                    (row) =>{
-                        console.log(JSON.stringify(row))
-                        db.close()
-                    },
-                    () => {db.close()}
-                )
-        }
+        let pkValue = process.argv[4]
+        let query = {}
+        let projection = process.length > 5? JSON.parese(process.argv[5]): defaultProjection
+        query[id_field] = pkValue
+        query = preprocessQuery(query, config)
+        collection.findOne(query, projection, function(err, row){
+            if(err){
+                console.error(err)
+                console.log(JSON.stringify({'success': false, 'error_message': 'Operation failure: getOne'}))
+                db.close()
+            }
+            else{
+                console.log(JSON.stringify({'success': true, 'error_message' : '', 'row': row}))
+                db.close()
+            }
+        })
     }
     else if(action == 'insert'){
-        if(process.argv.length < 6){
-            showUsage()
-            db.close()
-        }
-        else{
-            let data = JSON.parse(process.argv[4])
-            let userId = process.argv[5]
-            data[deletionFlagField] = 0
-            db.get(tableName).insert(data, {})
-            .then(
-                (newRow) =>{
-                    console.log(JSON.stringify(newRow))
-                    createHistoryAndShowRow(db, historyTableName, newRow, pkRefField, modificationField, modifierField, userId)
-                },
-                () => {db.close()}
-            )
-        }
+        let data = JSON.parse(process.argv[4])
+        let userId = process.argv[5]
+        data[deletionFlag] = 0
+        data[history] = [getHistoryData(data, userId, config)]
+        collection.insert(data, function(err, row){
+            if(err){
+                console.error(err)
+                console.log(JSON.stringify({'success': false, 'error_message': 'Operation failure: insert'}))
+                db.close()
+            }
+            else{
+                console.log(JSON.stringify({'success': true, 'error_message' : '', 'row' : row}))
+                db.close()
+            }
+        })
     }
     else if(action == 'update'){
-        if(process.argv.length < 7){
-            showUsage()
-            db.close()
-        }
-        else{
-            let pkValue = process.argv[4]
-            let data = JSON.parse(process.argv[5])
-            let userId = process.argv[6]
-            let criteria = {}
-            criteria[pkField] = pkValue
-            db.get(tableName).findOne(criteria).then(
-                (oldData) => {
-                    data = chimera.patchObject(oldData, data)
-                    db.get(tableName).findOneAndUpdate(criteria, data)
-                        .then(
-                            (newRow) =>{
-                                console.log(JSON.stringify(newRow))
-                                createHistoryAndShowRow(db, historyTableName, newRow, pkRefField, modificationField, modifierField, userId)
-                            },
-                            () => {db.close()}
-                        )
-                }
-            )
-        }
+        let pkValue = process.argv[4]
+        let data = JSON.parse(process.argv[5])
+        let userId = process.argv[6]
+        let query = {}
+        let historyData = {}
+        query[id_field] = pkValue
+        query = preprocessQuery(query, config)
+        data[deletionFlag] = 0
+        historyData[history] = getHistoryData(data, userId, config)
+        collection.update(query, {'$set':data, '$push':historyData}, function(err, result){
+            if(err){
+                console.error(err)
+                console.log(JSON.stringify({'success': false, 'error_message': 'Operation failure: Update'}))
+                db.close()
+            }
+            else{
+                console.log(JSON.stringify({'success': true, 'error_message' : ''}))
+                db.close()
+            }
+        })
     }
     else if(action == 'delete'){
-        if(process.argv.length < 6){
-            showUsage()
-            db.close()
-        }
-        else{
-            let pkValue = process.argv[4]
-            let userId = process.argv[5]
-            let criteria = {}
-            let data = {}
-            criteria[pkField] = pkValue
-            data[deletionFlagField] = 1
-
-            db.get(tableName).findOne(criteria).then(
-                (oldData) => {
-                    data = chimera.patchObject(oldData, data)
-                    db.get(tableName).findOneAndUpdate(criteria, data)
-                        .then(
-                            (newRow) =>{
-                                console.log(JSON.stringify(newRow))
-                                createHistoryAndShowRow(db, historyTableName, newRow, pkRefField, modificationField, modifierField, userId)
-                            },
-                            () => {db.close()}
-                        )
-                }
-            )
-        }
+        let pkValue = process.argv[4]
+        let data = {}
+        let userId = process.argv[5]
+        let query = {}
+        let historyData = {}
+        query[id_field] = pkValue
+        query = preprocessQuery(query, config)
+        data[deletionFlag] = 1
+        historyData[history] = getHistoryData(data, userId, config)
+        collection.update(query, {'$set':data, '$push':historyData}, function(err, result){
+            if(err){
+                console.error(err)
+                console.log(JSON.stringify({'success': false, 'error_message': 'Operation failure: Delete'}))
+                db.close()
+            }
+            else{
+                console.log(JSON.stringify({'success': true, 'error_message' : ''}))
+                db.close()
+            }
+        })
     }
-    else{
-        showUsage()
-        db.close()
-    }
-
 }
 
-function preprocessCriteria(deletionFlagField, criteria){
-    if(deletionFlagField != ''){
-        // create "exists" criteria
-        let existCriteria = {}
-        existCriteria[deletionFlagField] = 0
-        // modify criteria
-        if(Object.keys(criteria).length != 0){
-            criteria = {'$and' : [existCriteria, criteria]}
-        }
-        else{
-            criteria = existCriteria
-        }
-    }
-    return criteria
-}
-
-function showUsage(){
-    console.error('[ERROR] Missing Arguments')
-    console.error('Usage:')
-    console.error(' * node '+process.argv[1]+' get [config] [criteria]')
-    console.error(' * node '+process.argv[1]+' getOne [config] [pkValue]')
-    console.error(' * node '+process.argv[1]+' insert [config] [dataInJSON] [userId]')
-    console.error(' * node '+process.argv[1]+' update [config] [pkValue] [dataInJSON] [userId]')
-    console.error(' * node '+process.argv[1]+' delete [config] [pkValue] [userId]')
-}
-
-function createHistoryAndShowRow(db, historyTableName, newRow, pkRefField, modificationField, modifierField, userId){
-    let data = chimera.deepCopyObject(newRow)
-    delete data['_id']
-    if(modifierField != ''){
-        data[modifierField] = userId
-    }
-    if(modificationField != ''){
-        data[modificationField] = Date.now()
-    }
-    if(pkRefField != ''){
-        data[pkRefField] = newRow['_id']
-    }
-    db.get(historyTableName).insert(data, {})
-    .then(
-        (historyRow) => {
-        }
-    )
-    .then(
-        () => {db.close()}
-    )
-}

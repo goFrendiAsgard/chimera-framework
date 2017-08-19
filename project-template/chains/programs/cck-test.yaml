@@ -1,33 +1,45 @@
 verbose: true
 vars:
-    config: "{\"mongo_url\":\"mongodb://localhost/project-template\", \"table\":\"person\", \"history_table\":\"hperson\", \"deletion_flag_field\":\"deleted\", \"pk_field\":\"_id\", \"modification_field\":\"modif_on\", \"modifier_field\":\"modif_by\"}" 
+    config: "{\"mongo_url\":\"mongodb://localhost/project-template\", \"table\":\"person\", \"history\":\"hperson\"}" 
+    sharingan_config: "{\"mongo_url\":\"mongodb://localhost/project-template\", \"table\":\"person\", \"history\":\"hperson\", \"show_deleted\":true}" 
+    sharingan_projection: "{\"name\":1, \"alias\":1, \"hperson\":1, \"_deleted\":1}"
     user: "u001"
-    new_data: "{\"name\":\"Tono\"}"
+    new_data: "{\"name\":\"Tono Stark\", \"alias\":\"Ironman\"}"
     newer_data: "{\"name\":\"Toni Stark\"}"
 series:
-    - ("insert", config, new_data, user) -> node cck.js -> inserted_row1
-    - (inserted_row1._id) -> echo -> pkValue1
-    - ("getOne", config, pkValue1, user) -> node cck.js -> fetched_row
-    - ("update", config, pkValue1, newer_data, user) -> node cck.js -> updated_row
-    - ("insert", config, new_data, user) -> node cck.js -> inserted_row2
-    - (inserted_row2._id) -> echo -> pkValue2
-    - ("delete", config, pkValue2, user) -> node cck.js -> deleted_row
-    - ("get", config) -> node cck.js -> all_rows
-    - ins: all_rows, inserted_row1, fetched_row, updated_row, inserted_row2, deleted_row
+    - ("insert", config, new_data, user) -> node cck.js -> insert_result_1
+    - (insert_result_1.row._id) -> echo -> pkValue1
+    - ("getOne", config, pkValue1, user) -> node cck.js -> get_one_result
+    - ("update", config, pkValue1, newer_data, user) -> node cck.js -> update_result
+    - ("insert", config, new_data, user) -> node cck.js -> insert_result_2
+    - (insert_result_2.row._id) -> echo -> pkValue2
+    - ("delete", config, pkValue2, user) -> node cck.js -> delete_result
+    - ("get", config) -> node cck.js -> get_result
+    - ("get", sharingan_config, "{}", sharingan_projection) -> node cck.js -> get_sharingan_result
+    - ins: insert_result_1, get_one_result, update_result, insert_result_2, delete_result, get_result, get_sharingan_result, config
       command: |
-          (all_rows, inserted_row1, fetched_row, updated_row, inserted_row2, deleted_row) => {
+          (insert_result_1, get_one_result, update_result, insert_result_2, delete_result, get_result, get_sharingan_result, config) => {
               let output = '\n'
-              output += ('* All Rows\n')
-              output += JSON.stringify(all_rows)+'\n\n'
-              output += ('* Inserted Row 1\n')
-              output += JSON.stringify(inserted_row1)+'\n\n'
-              output += ('* Fetched Row\n')
-              output += JSON.stringify(fetched_row)+'\n\n'
-              output += ('* Updated row\n')
-              output += JSON.stringify(updated_row)+'\n\n'
-              output += ('* Inserted Row 2\n')
-              output += JSON.stringify(inserted_row2)+'\n\n'
-              output += ('* Deleted row\n')
-              output += JSON.stringify(deleted_row)+'\n\n'
+              output += '* Insert Result 1\n'
+              output += JSON.stringify(insert_result_1, null, 2)+'\n\n'
+
+              output += '* Get One Result 1\n'
+              output += JSON.stringify(get_one_result, null, 2)+'\n\n'
+
+              output += '* Update Result\n'
+              output += JSON.stringify(update_result, null, 2)+'\n\n'
+
+              output += '* Insert Result 2\n'
+              output += JSON.stringify(insert_result_2, null, 2)+'\n\n'
+
+              output += '* Delete Result\n'
+              output += JSON.stringify(delete_result, null, 2)+'\n\n'
+
+              output += '* Get Result\n'
+              output += JSON.stringify(get_result, null, 2)+'\n\n'
+
+              output += '* Get Sharingan Result\n'
+              output += JSON.stringify(get_sharingan_result, null, 2)+'\n\n'
+
               return output
           }
