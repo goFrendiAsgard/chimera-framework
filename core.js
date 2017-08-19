@@ -394,7 +394,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
                     addQuote = true
                 }
                 else{
-                    // if it is javascript and the arg is not json qualified, we also need to add quote 
+                    // if it is javascript and the arg is not json qualified, we also need to add quote
                     try{
                         console.log(key)
                         console.log(arg)
