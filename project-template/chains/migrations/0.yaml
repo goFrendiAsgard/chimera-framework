@@ -1,1 +1,35 @@
-(a) -> echo
+ins: config
+out: output
+vars:
+
+    # user structure
+    user_structure:
+        name: 'user'
+        valid_fields:
+            - 'user_name'
+            - 'hashed_password'
+            - 'first_name'
+            - 'last_name'
+            - 'email_address'
+            - 'groups'
+
+    # group structure
+    group_structure:
+        name: 'group'
+        valid_fields:
+            - 'group_name'
+            - 'description'
+
+series:
+
+    # creating cck_config_structure
+    - ins: config.mongo_url
+      out: cck_config_structure
+      command: (url)=>{return JSON.stringify({'mongo_url':url,'history':'_history','table':'structure'});}
+
+    # define schemas
+    - parallel:
+        # insert user structure
+        - (cck_config_structure, user_structure, "0") -> node ../programs/cck.js insert
+        # insert group structure
+        - (cck_config_structure, group_structure, "0") -> node ../programs/cck.js insert
