@@ -6,7 +6,7 @@ const fs = require('fs')
 const cmd = require('node-cmd')
 
 // The program needs at least 3 parameter (excluding the default 3)
-// Example: node execIfNewer.js src.java src.class javac src.java
+// Example: node eisn.js src.java src.class javac src.java
 if(process.argv.length > 3){
     let srcFile = process.argv[2]
     let dstFile = process.argv[3]

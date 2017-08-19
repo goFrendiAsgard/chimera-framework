@@ -374,14 +374,42 @@ function execute(chainConfigs, argv, presets, executeCallback){
             // it should be stringified
             chainIns.forEach(function(key){
                 let arg = ''
+                key = String(key)
                 if(key.match(/"(.*)"/g) || key.match(/'(.*)'/g)){
+                    // literal, don't do anything
                     arg = key.substring(1, key.length-1);
                 }
                 else if(typeof(vars[key]) == 'object'){
+                    // object
                     arg = stringify(getVar(key))
                 }
                 else{
+                    // others
                     arg = String(getVar(key))
+                }
+                // determine whether we need to add quote
+                let addQuote = false
+                if(!chainCommand.match(/.*=>.*/g)){
+                    // if it is not javascript, we need to add quote
+                    addQuote = true
+                }
+                else{
+                    // if it is javascript and the arg is not json qualified, we also need to add quote 
+                    try{
+                        console.log(key)
+                        console.log(arg)
+                        let tmp = JSON.parse(arg)
+                    }
+                    catch(err){
+                        addQuote = true
+                    }
+                }
+                // add quote if necessary
+                if(addQuote){
+                    arg = arg.replace(/"/g, '\\\"')
+                    arg = arg.replace(/\n/g, '\\n')
+                    arg = arg.trim()
+                    arg = '"'+arg+'"'
                 }
                 parameters.push(arg)
             })
@@ -405,19 +433,13 @@ function execute(chainConfigs, argv, presets, executeCallback){
                 }
                 catch(e){
                     showFailure(jsScript)
-                    executeCallback('', false, e)
+                    console.error('Script: ' + jsScript)
                     console.error(e)
+                    executeCallback('', false, e)
                 }
             }
             // if chainCommand is really external command, so we should use cmd.get
             else{
-                // sanitize parameters for
-                for(let i=0; i<parameters.length; i++){
-                    parameters[i] = parameters[i].replace(/"/g, '\\\"')
-                    parameters[i] = parameters[i].replace(/\n/g, '\\n')
-                    parameters[i] = parameters[i].trim()
-                    parameters[i] = '"'+parameters[i]+'"'
-                }
                 // add parameter to chainCommand
                 let cmdCommand = chainCommand + ' ' + parameters.join(' ')
                 // benchmarking
@@ -444,6 +466,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
                         }
                         else{
                             showFailure(cmdCommand)
+                            console.error('Command: ' + cmdCommand)
                             console.error(err)
                             executeCallback('', false, err)
                         }

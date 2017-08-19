@@ -35,7 +35,7 @@ chains:
       - mode: series
         chains:
           # Compile Substract.java into Substract.class
-          - command: chimera-eisn Substract.java Substract.class javac programs/Substract.java
+          - command: chimera-eisn programs/Substract.java programs/Substract.class javac programs/Substract.java
           # Process 2 (in Java)
           - ins:
               - a

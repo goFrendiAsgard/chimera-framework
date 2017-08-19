@@ -41,7 +41,7 @@ function getHistoryData(data, userId, config){
 }
 
 function showUsage(){
-    console.error('[ERROR] Missing Arguments')
+    console.error('Missing or invalid parameters')
     console.error('Usage:')
     console.error(' * node '+process.argv[1]+' get [config] [query] [projection]')
     console.error(' * node '+process.argv[1]+' getOne [config] [pkValue]')
@@ -78,121 +78,135 @@ function isParameterValid(){
 
 if(!isParameterValid()){
     showUsage()
-    console.log(JSON.stringify({'success': false, 'error_message': 'Missing Parameters'}))
+    console.log(JSON.stringify({'success': false, 'error_message': 'Missing or invalid parameters'}))
 }
 else{
-    // get action and configuration
-    let action = process.argv[2]
-    let config = chimera.patchObject(DEFAULT_CONFIGS, JSON.parse(process.argv[3]))
+    try{
 
-    let mongoUrl = config.mongo_url
-    let table = config.table
-    let history = config.history
-    let deletionFlag = config.deletion_flag
-    let id_field = config.id
-    let mtime_field = config.modification_time
-    let mby_field = config.modification_by
+        // get action and configuration
+        let action = process.argv[2]
+        let config = chimera.patchObject(DEFAULT_CONFIGS, JSON.parse(process.argv[3]))
 
-    let db =  monk(mongoUrl)
-    let collection = db.get(table)
-    let defaultProjection = {}
-    defaultProjection[deletionFlag] = 0
-    defaultProjection[history] = 0
+        let mongoUrl = config.mongo_url
+        let table = config.table
+        let history = config.history
+        let deletionFlag = config.deletion_flag
+        let id_field = config.id
+        let mtime_field = config.modification_time
+        let mby_field = config.modification_by
 
-    if(action == 'get'){
-        let query = process.argv.length > 4? JSON.parse(process.argv[4]): {}
-        let projection = process.argv.length > 5? JSON.parse(process.argv[5]): defaultProjection
-        query = preprocessQuery(query, config)
-        collection.find(query, projection, function(err, rows){
-            if(err){
-                console.error(err)
-                console.log(JSON.stringify({'success': false, 'error_message': 'Operation failure: get'}))
-                db.close()
-            }
-            else{
-                console.log(JSON.stringify({'success': true, 'error_message' : '', 'rows': rows}))
-                db.close()
-            }
-        })
-    }
-    else if(action == 'getOne'){
-        let pkValue = process.argv[4]
-        let query = {}
-        let projection = process.length > 5? JSON.parese(process.argv[5]): defaultProjection
-        query[id_field] = pkValue
-        query = preprocessQuery(query, config)
-        collection.findOne(query, projection, function(err, row){
-            if(err){
-                console.error(err)
-                console.log(JSON.stringify({'success': false, 'error_message': 'Operation failure: getOne'}))
-                db.close()
-            }
-            else{
-                console.log(JSON.stringify({'success': true, 'error_message' : '', 'row': row}))
-                db.close()
-            }
-        })
-    }
-    else if(action == 'insert'){
-        let data = JSON.parse(process.argv[4])
-        let userId = process.argv[5]
-        data[deletionFlag] = 0
-        data[history] = [getHistoryData(data, userId, config)]
-        collection.insert(data, function(err, row){
-            if(err){
-                console.error(err)
-                console.log(JSON.stringify({'success': false, 'error_message': 'Operation failure: insert'}))
-                db.close()
-            }
-            else{
-                console.log(JSON.stringify({'success': true, 'error_message' : '', 'row' : row}))
-                db.close()
-            }
-        })
-    }
-    else if(action == 'update'){
-        let pkValue = process.argv[4]
-        let data = JSON.parse(process.argv[5])
-        let userId = process.argv[6]
-        let query = {}
-        let historyData = {}
-        query[id_field] = pkValue
-        query = preprocessQuery(query, config)
-        data[deletionFlag] = 0
-        historyData[history] = getHistoryData(data, userId, config)
-        collection.update(query, {'$set':data, '$push':historyData}, function(err, result){
-            if(err){
-                console.error(err)
-                console.log(JSON.stringify({'success': false, 'error_message': 'Operation failure: Update'}))
-                db.close()
-            }
-            else{
-                console.log(JSON.stringify({'success': true, 'error_message' : ''}))
-                db.close()
-            }
-        })
-    }
-    else if(action == 'delete'){
-        let pkValue = process.argv[4]
-        let data = {}
-        let userId = process.argv[5]
-        let query = {}
-        let historyData = {}
-        query[id_field] = pkValue
-        query = preprocessQuery(query, config)
-        data[deletionFlag] = 1
-        historyData[history] = getHistoryData(data, userId, config)
-        collection.update(query, {'$set':data, '$push':historyData}, function(err, result){
-            if(err){
-                console.error(err)
-                console.log(JSON.stringify({'success': false, 'error_message': 'Operation failure: Delete'}))
-                db.close()
-            }
-            else{
-                console.log(JSON.stringify({'success': true, 'error_message' : ''}))
-                db.close()
-            }
-        })
+        let db =  monk(mongoUrl)
+        let collection = db.get(table)
+        let defaultProjection = {}
+        defaultProjection[deletionFlag] = 0
+        defaultProjection[history] = 0
+
+
+        if(action == 'get'){
+            let query = process.argv.length > 4? JSON.parse(process.argv[4]): {}
+            let projection = process.argv.length > 5? JSON.parse(process.argv[5]): defaultProjection
+            query = preprocessQuery(query, config)
+            collection.find(query, projection, function(err, rows){
+                if(err){
+                    console.error(err)
+                    console.log(JSON.stringify({'success': false, 'error_message': 'Operation failure: get'}))
+                    db.close()
+                }
+                else{
+                    console.log(JSON.stringify({'success': true, 'error_message' : '', 'rows': rows}))
+                    db.close()
+                }
+            })
+        }
+        else if(action == 'getOne'){
+            let pkValue = process.argv[4]
+            let query = {}
+            let projection = process.length > 5? JSON.parese(process.argv[5]): defaultProjection
+            query[id_field] = pkValue
+            query = preprocessQuery(query, config)
+            collection.findOne(query, projection, function(err, row){
+                if(err){
+                    console.error(err)
+                    console.log(JSON.stringify({'success': false, 'error_message': 'Operation failure: getOne'}))
+                    db.close()
+                }
+                else{
+                    console.log(JSON.stringify({'success': true, 'error_message' : '', 'row': row}))
+                    db.close()
+                }
+            })
+        }
+        else if(action == 'insert'){
+            let data = JSON.parse(process.argv[4])
+            let userId = process.argv[5]
+            data[deletionFlag] = 0
+            // prepare history of the data
+            data[history] = [getHistoryData(data, userId, config)]
+            // insert the data and push the history at once
+            collection.insert(data, function(err, row){
+                if(err){
+                    console.error(err)
+                    console.log(JSON.stringify({'success': false, 'error_message': 'Operation failure: insert'}))
+                    db.close()
+                }
+                else{
+                    console.log(JSON.stringify({'success': true, 'error_message' : '', 'row' : row}))
+                    db.close()
+                }
+            })
+        }
+        else if(action == 'update'){
+            let pkValue = process.argv[4]
+            let data = JSON.parse(process.argv[5])
+            let userId = process.argv[6]
+            let query = {}
+            let historyData = {}
+            query[id_field] = pkValue
+            query = preprocessQuery(query, config)
+            data[deletionFlag] = 0
+            // prepare history of the data
+            historyData[history] = getHistoryData(data, userId, config)
+            // update the data and push the history at once
+            collection.update(query, {'$set':data, '$push':historyData}, function(err, result){
+                if(err){
+                    console.error(err)
+                    console.log(JSON.stringify({'success': false, 'error_message': 'Operation failure: Update'}))
+                    db.close()
+                }
+                else{
+                    console.log(JSON.stringify({'success': true, 'error_message' : ''}))
+                    db.close()
+                }
+            })
+        }
+        else if(action == 'delete'){
+            let pkValue = process.argv[4]
+            let data = {}
+            let userId = process.argv[5]
+            let query = {}
+            let historyData = {}
+            query[id_field] = pkValue
+            query = preprocessQuery(query, config)
+            data[deletionFlag] = 1
+            // prepare history of the data
+            historyData[history] = getHistoryData(data, userId, config)
+            // update the data and push the history at once
+            collection.update(query, {'$set':data, '$push':historyData}, function(err, result){
+                if(err){
+                    console.error(err)
+                    console.log(JSON.stringify({'success': false, 'error_message': 'Operation failure: Delete'}))
+                    db.close()
+                }
+                else{
+                    console.log(JSON.stringify({'success': true, 'error_message' : ''}))
+                    db.close()
+                }
+            })
+        }
+    }catch(err){
+        console.error(err)
+        console.log(JSON.stringify({'success': false, 'error_message': 'Operation failure, invalid parameters'}))
+        db.close()
     }
 }
 
