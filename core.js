@@ -382,7 +382,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
                 let arg = ''
                 key = String(key)
                 if(key.match(/^"(.*)"$/g) || key.match(/^'(.*)'$/g)){
-                    // literal, don't do anything
+                    // literal, remove quotes
                     arg = key.substring(1, key.length-1);
                 }
                 else{
@@ -391,7 +391,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
                 // determine whether we need to add quote
                 let addQuote = false
                 if(!chainCommand.match(/.*=>.*/g)){
-                    // if it is not javascript, we need to add quote
+                    // if it is not javascript, we need to add quote, except it is already quoted by JSON stringify function
                     if(!arg.match(/^"(.*)"$/g) && !arg.match(/^'(.*)'$/g)){
                         addQuote = true
                     }
