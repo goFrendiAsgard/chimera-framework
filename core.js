@@ -32,7 +32,7 @@ function patchObject(obj, patcher){
     patcher = deepCopyObject(patcher)
     // patch
     for(let key in patcher){
-        if((key in newObj) && !Array.isArray(newObj[key]) && (typeof newObj[key] == 'Object') && (typeof patcher[key] == 'Object')){
+        if((key in newObj) && !Array.isArray(newObj[key]) && (typeof newObj[key] == 'object') && (typeof patcher[key] == 'object')){
             // recursive patch for if value type is newObject
             newObj[key] = patchnewObject(newObj[key], patcher[key])
         }
@@ -221,12 +221,11 @@ function showEndTime(processName, startTime){
 function showVars(processName, vars){
     processName = trimProcessName(processName)
     console.warn('[INFO] STATE AFTER   ['+processName+'] : ')
-    let stateList = JSON.stringify(vars, null, ' ').split('\n')
+    let stateList = JSON.stringify(vars, null, '  ').split('\n')
     for(let i=0; i<stateList.length; i++){
         let stateRow = stateList[i]
         console.warn('  ' + stateRow)
     }
-    console.warn('')
 }
 
 function showFailure(processName){
@@ -253,7 +252,7 @@ function showFailure(processName){
  */
 function execute(chainConfigs, argv, presets, executeCallback){
     // argv should be array or object
-    if(typeof(argv) != 'array' && typeof(argv) != 'object'){
+    if(typeof(argv) != 'object'){
         argv = []
     }
     // preprocessing
@@ -338,6 +337,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
 
     function setVar(key, value){
         if(typeof value == 'string'){
+            // remove trailing new lines or trailing spaces
             value = value.replace(/[ \n]+$/g, '')
         }
         // If the value can be parsed into object, parse it
@@ -381,23 +381,20 @@ function execute(chainConfigs, argv, presets, executeCallback){
             chainIns.forEach(function(key){
                 let arg = ''
                 key = String(key)
-                if(key.match(/"(.*)"/g) || key.match(/'(.*)'/g)){
+                if(key.match(/^"(.*)"$/g) || key.match(/^'(.*)'$/g)){
                     // literal, don't do anything
                     arg = key.substring(1, key.length-1);
                 }
-                else if(typeof(vars[key]) == 'object'){
-                    // object
-                    arg = stringify(getVar(key))
-                }
                 else{
-                    // others
-                    arg = String(getVar(key))
+                    arg = JSON.stringify(getVar(key))
                 }
                 // determine whether we need to add quote
                 let addQuote = false
                 if(!chainCommand.match(/.*=>.*/g)){
                     // if it is not javascript, we need to add quote
-                    addQuote = true
+                    if(!arg.match(/^"(.*)"$/g) && !arg.match(/^'(.*)'$/g)){
+                        addQuote = true
+                    }
                 }
                 else{
                     // if it is javascript and the arg is not json qualified, we also need to add quote
@@ -655,7 +652,13 @@ function executeChain(chain, argv, presets, executeCallback){
                 executeCallback(result, success, errorMessage)
             }
             else if(success){
-                console.log(result)
+                // Object should be shown as json
+                if(typeof result == 'object'){
+                    console.log(JSON.stringify(result))
+                }
+                else{
+                    console.log(result)
+                }
             }
         }
         execute(chainConfigs, argv, presets, alteredCallback)

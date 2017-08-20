@@ -13,7 +13,9 @@ series:
 
     # return first row of result or empty object
     - parallel:
-        - if: result.rows.length > 0
-          command: (result.rows) -> (row)=>{return JSON.stringify(result.rows.0)} -> row
-        - if: result.rows.length == 0
-          command: (row)=>{return JSON.stringify({})} -> row
+        - if: "result.rows.length > 0"
+          command: |
+              (result.rows) -> (rows)=>{return rows[0]} -> row
+        - if: "result.rows.length == 0"
+          command: |
+              () -> ()=>{return JSON.stringify({})} -> row

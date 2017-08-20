@@ -6,7 +6,7 @@ vars:
         z: 5
 verbose: true
 series:
-    - php programs/echo.php "{\"x\":4, \"y\":{}}" -> tmp
+    - php programs/json-sample.php -> tmp
     - parallel:
         - series: 
             - (a, b) -> php programs/add.php -> tmp.y.addResult

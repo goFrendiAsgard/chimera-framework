@@ -2,5 +2,4 @@ ins: config, table
 out: output
 verbose: true
 series:
-    - (config) -> (config)=>{return config.mongo_url} -> url
-    - (url, table) -> (url, table)=>{return JSON.stringify({'mongo_url':url,'history':'_history','table':table})} -> output
+    - (config.mongo_url, table) -> (url, table)=>{return {'mongo_url':url,'history':'_history','table':table}} -> output

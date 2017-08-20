@@ -59,6 +59,6 @@ series:
     # create structure
     - (config, structure, 'cms.system') -> chimera ../cck.structure.create.yaml
 
-    #- parallel:
-    #   - (config, user, 'cms.system') -> 'chimera ../cck.structure.create.yaml'
-    #   - (config, group, 'cms.system') -> 'chimera ../cck.structure.create.yaml'
+    - parallel:
+       - (config, user, 'cms.system') -> chimera ../cck.structure.create.yaml
+       - (config, group, 'cms.system') -> chimera ../cck.structure.create.yaml

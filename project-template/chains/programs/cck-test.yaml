@@ -1,11 +1,25 @@
 verbose: true
 vars:
-    config: "{\"mongo_url\":\"mongodb://localhost/project-template\", \"table\":\"person\", \"history\":\"hperson\"}" 
-    sharingan_config: "{\"mongo_url\":\"mongodb://localhost/project-template\", \"table\":\"person\", \"history\":\"hperson\", \"show_deleted\":true}" 
-    sharingan_projection: "{\"name\":1, \"alias\":1, \"hperson\":1, \"_deleted\":1}"
+    config: 
+        mongo_url: mongodb://localhost/project-template
+        table: person
+        history: hperson
+    sharingan_config:
+        mongo_url: mongodb://localhost/project-template
+        table: person
+        history: hperson
+        show_deleted: true
+    sharingan_projection:
+        name: 1
+        alias: 1
+        hperson: 1
+        _deleted: 1
     user: "u001"
-    new_data: "{\"name\":\"Tono Stark\", \"alias\":\"Ironman\"}"
-    newer_data: "{\"name\":\"Toni Stark\"}"
+    new_data:
+        name: "Tono Stark"
+        alias: "Ironman"
+    newer_data:
+        name: "Toni Stark"
 series:
     # insert new data
     - ("insert", config, new_data, user) -> node cck.crud.js -> insert_result_1

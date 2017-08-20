@@ -5,7 +5,7 @@ series:
     # define configuration
     - parallel:
         - (config, "cck.structure") -> chimera cck.config.create.yaml -> structure_config
-        - (config, schema.structure.table) -> chimera cck.config.create.yaml -> table_config
+        #- (config, schema.structure.table) -> chimera cck.config.create.yaml -> table_config
 
     - series:
         # try to get structure
@@ -15,7 +15,8 @@ series:
 
             # if structure exists, update it
             - if: "('_id' in structure)"
-              command: (structure_config, structure._id, schema.structure, user) -> node cck.crud.js update -> update_result
+              series:
+                - (structure_config, structure._id, schema.structure, user) -> node programs/cck.crud.js update -> update_result
 
             # if the structure doesn't exist, insert it
             - if: "!('_id' in structure)"

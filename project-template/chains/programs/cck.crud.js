@@ -34,7 +34,7 @@ function preprocessQuery(query, config){
 }
 
 function getHistoryData(data, userId, config){
-    let historyData = chimera.deepCopyObject(data) 
+    let historyData = chimera.deepCopyObject(data)
     historyData[config.modification_time] = Date.now()
     historyData[config.modification_by] = userId
     return historyData
@@ -81,6 +81,7 @@ if(!isParameterValid()){
     console.log(JSON.stringify({'success': false, 'error_message': 'Missing or invalid parameters'}))
 }
 else{
+    let db = null
     try{
 
         // get action and configuration
@@ -91,11 +92,11 @@ else{
         let table = config.table
         let history = config.history
         let deletionFlag = config.deletion_flag
-        let id_field = config.id
+        let idField = config.id
         let mtime_field = config.modification_time
         let mby_field = config.modification_by
 
-        let db =  monk(mongoUrl)
+        db =  monk(mongoUrl)
         let collection = db.get(table)
         let defaultProjection = {}
         defaultProjection[deletionFlag] = 0
@@ -122,7 +123,7 @@ else{
             let pkValue = process.argv[4]
             let query = {}
             let projection = process.length > 5? JSON.parese(process.argv[5]): defaultProjection
-            query[id_field] = pkValue
+            query[idField] = pkValue
             query = preprocessQuery(query, config)
             collection.findOne(query, projection, function(err, row){
                 if(err){
@@ -161,7 +162,7 @@ else{
             let userId = process.argv[6]
             let query = {}
             let historyData = {}
-            query[id_field] = pkValue
+            query[idField] = pkValue
             query = preprocessQuery(query, config)
             data[deletionFlag] = 0
             // prepare history of the data
@@ -174,8 +175,22 @@ else{
                     db.close()
                 }
                 else{
-                    console.log(JSON.stringify({'success': true, 'error_message' : ''}))
-                    db.close()
+                    // get one
+                    let query = {}
+                    let projection = defaultProjection
+                    query[idField] = pkValue
+                    query = preprocessQuery(query, config)
+                    collection.findOne(query, projection, function(err, row){
+                        if(err){
+                            console.error(err)
+                            console.log(JSON.stringify({'success': true, 'error_message': 'Operation failure: getOne', row:{}}))
+                            db.close()
+                        }
+                        else{
+                            console.log(JSON.stringify({'success': true, 'error_message' : '', 'row': row}))
+                            db.close()
+                        }
+                    })
                 }
             })
         }
@@ -185,7 +200,7 @@ else{
             let userId = process.argv[5]
             let query = {}
             let historyData = {}
-            query[id_field] = pkValue
+            query[idField] = pkValue
             query = preprocessQuery(query, config)
             data[deletionFlag] = 1
             // prepare history of the data
@@ -198,15 +213,33 @@ else{
                     db.close()
                 }
                 else{
-                    console.log(JSON.stringify({'success': true, 'error_message' : ''}))
-                    db.close()
+                    // get one
+                    let query = {}
+                    let projection = defaultProjection
+                    let customConfig = chimera.deepCopyObject(config)
+                    query[idField] = pkValue
+                    customConfig['show_deleted'] = true
+                    query = preprocessQuery(query, customConfig)
+                    collection.findOne(query, projection, function(err, row){
+                        if(err){
+                            console.error(err)
+                            console.log(JSON.stringify({'success': true, 'error_message': 'Operation failure: getOne', row:{}}))
+                            db.close()
+                        }
+                        else{
+                            console.log(JSON.stringify({'success': true, 'error_message' : '', 'row': row}))
+                            db.close()
+                        }
+                    })
                 }
             })
         }
     }catch(err){
         console.error(err)
         console.log(JSON.stringify({'success': false, 'error_message': 'Operation failure, invalid parameters'}))
-        db.close()
+        if(db != null){
+            db.close()
+        }
     }
 }
 
