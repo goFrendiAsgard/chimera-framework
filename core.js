@@ -220,7 +220,13 @@ function showEndTime(processName, startTime){
 
 function showVars(processName, vars){
     processName = trimProcessName(processName)
-    console.warn('[INFO] STATE AFTER   ['+processName+']       : ' + stringify(vars))
+    console.warn('[INFO] STATE AFTER   ['+processName+'] : ')
+    let stateList = JSON.stringify(vars, null, ' ').split('\n')
+    for(let i=0; i<stateList.length; i++){
+        let stateRow = stateList[i]
+        console.warn('  ' + stateRow)
+    }
+    console.warn('')
 }
 
 function showFailure(processName){
@@ -396,8 +402,6 @@ function execute(chainConfigs, argv, presets, executeCallback){
                 else{
                     // if it is javascript and the arg is not json qualified, we also need to add quote
                     try{
-                        console.log(key)
-                        console.log(arg)
                         let tmp = JSON.parse(arg)
                     }
                     catch(err){
@@ -626,13 +630,18 @@ function executeChain(chain, argv, presets, executeCallback){
         try{
             chainConfigs = yaml.safeLoad(chainString)
         }
-        catch(e){
+        catch(yamlError){
             try{
                 chainConfigs = JSON.parse(chainString)
             }
-            catch(e){
+            catch(jsonError){
                 console.warn('[ERROR] Not a valid YAML or JSON format')
-                console.warn(e)
+                console.warn('\nString:')
+                console.warn(chainString)
+                console.warn('\nYAML Error:')
+                console.warn(yamlError)
+                console.warn('\nJSON Error:')
+                console.warn(jsonError)
                 process.chdir(currentPath)
                 return null
             }

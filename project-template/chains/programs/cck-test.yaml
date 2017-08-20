@@ -8,20 +8,20 @@ vars:
     newer_data: "{\"name\":\"Toni Stark\"}"
 series:
     # insert new data
-    - ("insert", config, new_data, user) -> node cck.js -> insert_result_1
+    - ("insert", config, new_data, user) -> node cck.crud.js -> insert_result_1
     - (insert_result_1.row._id) -> echo -> pkValue1
-    - ("getOne", config, pkValue1, user) -> node cck.js -> get_one_result
+    - ("getOne", config, pkValue1, user) -> node cck.crud.js -> get_one_result
     # update inserted data with a newer one
-    - ("update", config, pkValue1, newer_data, user) -> node cck.js -> update_result
+    - ("update", config, pkValue1, newer_data, user) -> node cck.crud.js -> update_result
     # insert another data
-    - ("insert", config, new_data, user) -> node cck.js -> insert_result_2
+    - ("insert", config, new_data, user) -> node cck.crud.js -> insert_result_2
     - (insert_result_2.row._id) -> echo -> pkValue2
     # delete the last one
-    - ("delete", config, pkValue2, user) -> node cck.js -> delete_result
+    - ("delete", config, pkValue2, user) -> node cck.crud.js -> delete_result
     # get the data
-    - ("get", config) -> node cck.js -> get_result
+    - ("get", config) -> node cck.crud.js -> get_result
     # get it with sharingan activated ...
-    - ("get", sharingan_config, "{}", sharingan_projection) -> node cck.js -> get_sharingan_result
+    - ("get", sharingan_config, "{}", sharingan_projection) -> node cck.crud.js -> get_sharingan_result
     # show the result
     - ins: insert_result_1, get_one_result, update_result, insert_result_2, delete_result, get_result, get_sharingan_result, config
       command: |

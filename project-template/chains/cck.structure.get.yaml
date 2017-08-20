@@ -1,0 +1,19 @@
+ins: config, table
+out: row
+verbose: true
+series:
+
+    # create configuration and query
+    - parallel:
+        - (config, "cck.structure") -> chimera cck.config.create.yaml -> structure_config
+        - (table) -> (t)=>{return JSON.stringify({'table':t})} -> query
+
+    # get result
+    - (structure_config, query) -> node programs/cck.crud.js get -> result
+
+    # return first row of result or empty object
+    - parallel:
+        - if: result.rows.length > 0
+          command: (result.rows) -> (row)=>{return JSON.stringify(result.rows.0)} -> row
+        - if: result.rows.length == 0
+          command: (row)=>{return JSON.stringify({})} -> row

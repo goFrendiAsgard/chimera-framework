@@ -1,0 +1,29 @@
+ins: config, schema, user_id
+verbose: true
+series:
+
+    # define configuration
+    - parallel:
+        - (config, "cck.structure") -> chimera cck.config.create.yaml -> structure_config
+        - (config, schema.structure.table) -> chimera cck.config.create.yaml -> table_config
+
+    - series:
+        # try to get structure
+        - (structure_config, schema.structure.table) -> chimera cck.structure.get.yaml -> structure
+
+        - parallel:
+
+            # if structure exists, update it
+            - if: "('_id' in structure)"
+              command: (structure_config, structure._id, schema.structure, user) -> node cck.crud.js update -> update_result
+
+            # if the structure doesn't exist, insert it
+            - if: "!('_id' in structure)"
+              series:
+                - (structure_config, schema.structure, user_id) -> node programs/cck.crud.js insert -> insert_result
+                - (insert_result) -> (insert_result)=>{return insert_result.row} -> structure
+
+        # insert data
+        - if: "'data' in schema"
+          command: (table_config, schema.data, user_id) -> node programs/cck.crud.js insert -> new_data
+
