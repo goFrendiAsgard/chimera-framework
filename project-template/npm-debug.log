@@ -1,162 +1,45 @@
 0 info it worked if it ends with ok
-1 verbose cli [ '/usr/bin/nodejs', '/usr/bin/npm', 'install' ]
+1 verbose cli [ '/usr/bin/nodejs', '/usr/bin/npm', 'start' ]
 2 info using npm@3.10.10
 3 info using node@v6.11.2
-4 silly loadCurrentTree Starting
-5 silly install loadCurrentTree
-6 silly install readLocalPackageData
-7 silly install normalizeTree
-8 silly loadCurrentTree Finishing
-9 silly loadIdealTree Starting
-10 silly install loadIdealTree
-11 silly cloneCurrentTree Starting
-12 silly install cloneCurrentTreeToIdealTree
-13 silly cloneCurrentTree Finishing
-14 silly loadShrinkwrap Starting
-15 silly install loadShrinkwrap
-16 silly loadShrinkwrap Finishing
-17 silly loadAllDepsIntoIdealTree Starting
-18 silly install loadAllDepsIntoIdealTree
-19 silly fetchNamedPackageData chimera-framework
-20 silly mapToRegistry name chimera-framework
-21 silly mapToRegistry using default registry
-22 silly mapToRegistry registry https://registry.npmjs.org/
-23 silly mapToRegistry data Result {
-23 silly mapToRegistry   raw: 'chimera-framework',
-23 silly mapToRegistry   scope: null,
-23 silly mapToRegistry   escapedName: 'chimera-framework',
-23 silly mapToRegistry   name: 'chimera-framework',
-23 silly mapToRegistry   rawSpec: '',
-23 silly mapToRegistry   spec: 'latest',
-23 silly mapToRegistry   type: 'tag' }
-24 silly mapToRegistry uri https://registry.npmjs.org/chimera-framework
-25 verbose request uri https://registry.npmjs.org/chimera-framework
-26 verbose request no auth needed
-27 info attempt registry request try #1 at 9:54:26 PM
-28 verbose request using bearer token for auth
-29 verbose request id 6d0c3d0313ef7a74
-30 verbose etag W/"598c00d6-109ff"
-31 verbose lastModified Thu, 10 Aug 2017 06:44:38 GMT
-32 http request GET https://registry.npmjs.org/chimera-framework
-33 http 304 https://registry.npmjs.org/chimera-framework
-34 verbose headers { server: 'nginx/1.10.3',
-34 verbose headers   'last-modified': 'Thu, 10 Aug 2017 06:44:38 GMT',
-34 verbose headers   etag: '"598c00d6-109ff"',
-34 verbose headers   'cache-control': 'max-age=300',
-34 verbose headers   'accept-ranges': 'bytes',
-34 verbose headers   date: 'Sun, 20 Aug 2017 14:54:27 GMT',
-34 verbose headers   via: '1.1 varnish',
-34 verbose headers   connection: 'keep-alive',
-34 verbose headers   'x-served-by': 'cache-sin18023-SIN',
-34 verbose headers   'x-cache': 'MISS',
-34 verbose headers   'x-cache-hits': '0',
-34 verbose headers   'x-timer': 'S1503240867.189618,VS0,VE629',
-34 verbose headers   vary: 'Accept-Encoding, Accept' }
-35 silly get cb [ 304,
-35 silly get   { server: 'nginx/1.10.3',
-35 silly get     'last-modified': 'Thu, 10 Aug 2017 06:44:38 GMT',
-35 silly get     etag: '"598c00d6-109ff"',
-35 silly get     'cache-control': 'max-age=300',
-35 silly get     'accept-ranges': 'bytes',
-35 silly get     date: 'Sun, 20 Aug 2017 14:54:27 GMT',
-35 silly get     via: '1.1 varnish',
-35 silly get     connection: 'keep-alive',
-35 silly get     'x-served-by': 'cache-sin18023-SIN',
-35 silly get     'x-cache': 'MISS',
-35 silly get     'x-cache-hits': '0',
-35 silly get     'x-timer': 'S1503240867.189618,VS0,VE629',
-35 silly get     vary: 'Accept-Encoding, Accept' } ]
-36 verbose etag https://registry.npmjs.org/chimera-framework from cache
-37 verbose get saving chimera-framework to /home/gofrendi/.npm/registry.npmjs.org/chimera-framework/.cache.json
-38 verbose correctMkdir /home/gofrendi/.npm correctMkdir not in flight; initializing
-39 silly fetchNamedPackageData No valid target from cache, forcing network
-40 verbose request uri https://registry.npmjs.org/chimera-framework
-41 verbose request no auth needed
-42 info attempt registry request try #1 at 9:54:27 PM
-43 verbose request using bearer token for auth
-44 http request GET https://registry.npmjs.org/chimera-framework
-45 http 200 https://registry.npmjs.org/chimera-framework
-46 verbose headers { server: 'nginx/1.10.3',
-46 verbose headers   'content-type': 'application/json',
-46 verbose headers   'last-modified': 'Thu, 10 Aug 2017 06:44:38 GMT',
-46 verbose headers   etag: 'W/"598c00d6-109ff"',
-46 verbose headers   'content-encoding': 'gzip',
-46 verbose headers   'cache-control': 'max-age=300',
-46 verbose headers   'transfer-encoding': 'chunked',
-46 verbose headers   'accept-ranges': 'bytes',
-46 verbose headers   date: 'Sun, 20 Aug 2017 14:54:28 GMT',
-46 verbose headers   via: '1.1 varnish',
-46 verbose headers   connection: 'keep-alive',
-46 verbose headers   'x-served-by': 'cache-sin18023-SIN',
-46 verbose headers   'x-cache': 'MISS',
-46 verbose headers   'x-cache-hits': '0',
-46 verbose headers   'x-timer': 'S1503240868.907490,VS0,VE149',
-46 verbose headers   vary: 'Accept-Encoding, Accept' }
-47 silly get cb [ 200,
-47 silly get   { server: 'nginx/1.10.3',
-47 silly get     'content-type': 'application/json',
-47 silly get     'last-modified': 'Thu, 10 Aug 2017 06:44:38 GMT',
-47 silly get     etag: 'W/"598c00d6-109ff"',
-47 silly get     'content-encoding': 'gzip',
-47 silly get     'cache-control': 'max-age=300',
-47 silly get     'transfer-encoding': 'chunked',
-47 silly get     'accept-ranges': 'bytes',
-47 silly get     date: 'Sun, 20 Aug 2017 14:54:28 GMT',
-47 silly get     via: '1.1 varnish',
-47 silly get     connection: 'keep-alive',
-47 silly get     'x-served-by': 'cache-sin18023-SIN',
-47 silly get     'x-cache': 'MISS',
-47 silly get     'x-cache-hits': '0',
-47 silly get     'x-timer': 'S1503240868.907490,VS0,VE149',
-47 silly get     vary: 'Accept-Encoding, Accept' } ]
-48 verbose get saving chimera-framework to /home/gofrendi/.npm/registry.npmjs.org/chimera-framework/.cache.json
-49 verbose correctMkdir /home/gofrendi/.npm correctMkdir not in flight; initializing
-50 silly fetchPackageMetaData Error: No compatible version found: chimera-framework@0.0.30
-50 silly fetchPackageMetaData Valid install targets:
-50 silly fetchPackageMetaData 0.0.29, 0.0.28, 0.0.27, 0.0.26, 0.0.25, 0.0.24, 0.0.23, 0.0.22, 0.0.21, 0.0.20, 0.0.19, 0.0.18, 0.0.17, 0.0.16, 0.0.15, 0.0.14, 0.0.13, 0.0.12, 0.0.11, 0.0.10, 0.0.9, 0.0.8, 0.0.7, 0.0.6, 0.0.5, 0.0.4, 0.0.3, 0.0.2, 0.0.1
-50 silly fetchPackageMetaData
-50 silly fetchPackageMetaData     at pickVersionFromRegistryDocument (/usr/lib/node_modules/npm/lib/fetch-package-metadata.js:178:16)
-50 silly fetchPackageMetaData     at /usr/lib/node_modules/npm/node_modules/iferr/index.js:13:50
-50 silly fetchPackageMetaData     at /usr/lib/node_modules/npm/lib/utils/pulse-till-done.js:20:8
-50 silly fetchPackageMetaData     at saved (/usr/lib/node_modules/npm/lib/cache/caching-client.js:174:7)
-50 silly fetchPackageMetaData     at /usr/lib/node_modules/npm/node_modules/graceful-fs/polyfills.js:241:18
-50 silly fetchPackageMetaData     at FSReqWrap.oncomplete (fs.js:123:15)
-50 silly fetchPackageMetaData  error for chimera-framework@0.0.30 { Error: No compatible version found: chimera-framework@0.0.30
-50 silly fetchPackageMetaData Valid install targets:
-50 silly fetchPackageMetaData 0.0.29, 0.0.28, 0.0.27, 0.0.26, 0.0.25, 0.0.24, 0.0.23, 0.0.22, 0.0.21, 0.0.20, 0.0.19, 0.0.18, 0.0.17, 0.0.16, 0.0.15, 0.0.14, 0.0.13, 0.0.12, 0.0.11, 0.0.10, 0.0.9, 0.0.8, 0.0.7, 0.0.6, 0.0.5, 0.0.4, 0.0.3, 0.0.2, 0.0.1
-50 silly fetchPackageMetaData
-50 silly fetchPackageMetaData     at pickVersionFromRegistryDocument (/usr/lib/node_modules/npm/lib/fetch-package-metadata.js:178:16)
-50 silly fetchPackageMetaData     at /usr/lib/node_modules/npm/node_modules/iferr/index.js:13:50
-50 silly fetchPackageMetaData     at /usr/lib/node_modules/npm/lib/utils/pulse-till-done.js:20:8
-50 silly fetchPackageMetaData     at saved (/usr/lib/node_modules/npm/lib/cache/caching-client.js:174:7)
-50 silly fetchPackageMetaData     at /usr/lib/node_modules/npm/node_modules/graceful-fs/polyfills.js:241:18
-50 silly fetchPackageMetaData     at FSReqWrap.oncomplete (fs.js:123:15) code: 'ETARGET' }
-51 silly rollbackFailedOptional Starting
-52 silly rollbackFailedOptional Finishing
-53 silly runTopLevelLifecycles Finishing
-54 silly install printInstalled
-55 verbose stack Error: No compatible version found: chimera-framework@0.0.30
-55 verbose stack Valid install targets:
-55 verbose stack 0.0.29, 0.0.28, 0.0.27, 0.0.26, 0.0.25, 0.0.24, 0.0.23, 0.0.22, 0.0.21, 0.0.20, 0.0.19, 0.0.18, 0.0.17, 0.0.16, 0.0.15, 0.0.14, 0.0.13, 0.0.12, 0.0.11, 0.0.10, 0.0.9, 0.0.8, 0.0.7, 0.0.6, 0.0.5, 0.0.4, 0.0.3, 0.0.2, 0.0.1
-55 verbose stack
-55 verbose stack     at pickVersionFromRegistryDocument (/usr/lib/node_modules/npm/lib/fetch-package-metadata.js:178:16)
-55 verbose stack     at /usr/lib/node_modules/npm/node_modules/iferr/index.js:13:50
-55 verbose stack     at /usr/lib/node_modules/npm/lib/utils/pulse-till-done.js:20:8
-55 verbose stack     at saved (/usr/lib/node_modules/npm/lib/cache/caching-client.js:174:7)
-55 verbose stack     at /usr/lib/node_modules/npm/node_modules/graceful-fs/polyfills.js:241:18
-55 verbose stack     at FSReqWrap.oncomplete (fs.js:123:15)
-56 verbose cwd /home/gofrendi/chimera-framework/project-template
-57 error Linux 4.4.0-92-generic
-58 error argv "/usr/bin/nodejs" "/usr/bin/npm" "install"
-59 error node v6.11.2
-60 error npm  v3.10.10
-61 error code ETARGET
-62 error notarget No compatible version found: chimera-framework@0.0.30
-62 error notarget Valid install targets:
-62 error notarget 0.0.29, 0.0.28, 0.0.27, 0.0.26, 0.0.25, 0.0.24, 0.0.23, 0.0.22, 0.0.21, 0.0.20, 0.0.19, 0.0.18, 0.0.17, 0.0.16, 0.0.15, 0.0.14, 0.0.13, 0.0.12, 0.0.11, 0.0.10, 0.0.9, 0.0.8, 0.0.7, 0.0.6, 0.0.5, 0.0.4, 0.0.3, 0.0.2, 0.0.1
-63 error notarget This is most likely not a problem with npm itself.
-63 error notarget In most cases you or one of your dependencies are requesting
-63 error notarget a package version that doesn't exist.
-63 error notarget
-63 error notarget It was specified as a dependency of 'project-template'
-64 verbose exit [ 1, true ]
+4 verbose run-script [ 'prestart', 'start', 'poststart' ]
+5 info lifecycle project-template@0.0.0~prestart: project-template@0.0.0
+6 silly lifecycle project-template@0.0.0~prestart: no script for prestart, continuing
+7 info lifecycle project-template@0.0.0~start: project-template@0.0.0
+8 verbose lifecycle project-template@0.0.0~start: unsafe-perm in lifecycle true
+9 verbose lifecycle project-template@0.0.0~start: PATH: /usr/lib/node_modules/npm/bin/node-gyp-bin:/home/gofrendi/chimera-framework/project-template/node_modules/.bin:/home/gofrendi/.config/composer/vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/lib/jvm/java-8-oracle/bin:/usr/lib/jvm/java-8-oracle/db/bin:/usr/lib/jvm/java-8-oracle/jre/bin:/snap/bin:/usr/lib/jvm/java-8-oracle/bin:/usr/lib/jvm/java-8-oracle/db/bin:/usr/lib/jvm/java-8-oracle/jre/bin:/home/gofrendi/.fzf/bin:/home/gofrendi/Android/Sdk/tools:/home/gofrendi/Android/Sdk/platform-tools
+10 verbose lifecycle project-template@0.0.0~start: CWD: /home/gofrendi/chimera-framework/project-template
+11 silly lifecycle project-template@0.0.0~start: Args: [ '-c', 'node ./bin/www' ]
+12 silly lifecycle project-template@0.0.0~start: Returned: code: 1  signal: null
+13 info lifecycle project-template@0.0.0~start: Failed to exec start script
+14 verbose stack Error: project-template@0.0.0 start: `node ./bin/www`
+14 verbose stack Exit status 1
+14 verbose stack     at EventEmitter.<anonymous> (/usr/lib/node_modules/npm/lib/utils/lifecycle.js:255:16)
+14 verbose stack     at emitTwo (events.js:106:13)
+14 verbose stack     at EventEmitter.emit (events.js:191:7)
+14 verbose stack     at ChildProcess.<anonymous> (/usr/lib/node_modules/npm/lib/utils/spawn.js:40:14)
+14 verbose stack     at emitTwo (events.js:106:13)
+14 verbose stack     at ChildProcess.emit (events.js:191:7)
+14 verbose stack     at maybeClose (internal/child_process.js:891:16)
+14 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:226:5)
+15 verbose pkgid project-template@0.0.0
+16 verbose cwd /home/gofrendi/chimera-framework/project-template
+17 error Linux 4.4.0-92-generic
+18 error argv "/usr/bin/nodejs" "/usr/bin/npm" "start"
+19 error node v6.11.2
+20 error npm  v3.10.10
+21 error code ELIFECYCLE
+22 error project-template@0.0.0 start: `node ./bin/www`
+22 error Exit status 1
+23 error Failed at the project-template@0.0.0 start script 'node ./bin/www'.
+23 error Make sure you have the latest version of node.js and npm installed.
+23 error If you do, this is most likely a problem with the project-template package,
+23 error not with npm itself.
+23 error Tell the author that this fails on your system:
+23 error     node ./bin/www
+23 error You can get information on how to open an issue for this project with:
+23 error     npm bugs project-template
+23 error Or if that isn't available, you can get their info via:
+23 error     npm owner ls project-template
+23 error There is likely additional logging output above.
+24 verbose exit [ 1, true ]

@@ -1,3 +1,9 @@
+# This chain takes 3 inputs:
+# - config: JSON, configuration of chimera web framework
+# - schema: string, schema name
+# - user_id: string, the user id
+# There will be no output
+
 ins: config, schema, user_id
 verbose: true
 series:
@@ -5,7 +11,7 @@ series:
     # define configuration
     - parallel:
         - (config, "cck.structure") -> chimera cck.config.create.yaml -> structure_config
-        #- (config, schema.structure.table) -> chimera cck.config.create.yaml -> table_config
+        - (config, schema.structure.table) -> chimera cck.config.create.yaml -> table_config
 
     - series:
         # try to get structure
@@ -25,6 +31,11 @@ series:
                 - (insert_result) -> (insert_result)=>{return insert_result.row} -> structure
 
         # insert data
+        - () -> ()=>{return 0;} -> i
         - if: "'data' in schema"
-          command: (table_config, schema.data, user_id) -> node programs/cck.crud.js insert -> new_data
+          series: 
+            - (schema.data, i) -> (schema_data, i)=>{return schema_data[i]} -> new_data
+            - (table_config, new_data, user_id) -> node programs/cck.crud.js insert -> new_data
+            - (i) -> (i)=>{return i+1;} -> i
+          while: 'i<schema.data.length'
 

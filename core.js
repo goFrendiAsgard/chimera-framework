@@ -225,9 +225,10 @@ function trimProcessName(processName){
  *  startTime = showStartTime('myProcess')
  */
 function showStartTime(processName){
-    processName = trimProcessName(processName)
+    let trimmedProcessName = trimProcessName(processName)
     let startTime = process.hrtime();
-    console.warn('[INFO] START PROCESS ['+processName+'] AT    : ' + getFormattedNanoSecond(startTime))
+    console.warn('[INFO] PROCESS :      ' + processName)
+    console.warn('[INFO] START PROCESS [' + trimmedProcessName + '] AT    : ' + getFormattedNanoSecond(startTime))
     return startTime
 }
 
@@ -247,11 +248,9 @@ function showEndTime(processName, startTime){
 function showVars(processName, vars){
     processName = trimProcessName(processName)
     console.warn('[INFO] STATE AFTER   ['+processName+'] : ')
-    let stateList = JSON.stringify(vars, null, '  ').split('\n')
-    for(let i=0; i<stateList.length; i++){
-        let stateRow = stateList[i]
-        console.warn('  ' + stateRow)
-    }
+    Object.keys(vars).forEach(function(key){
+        console.warn('        ' + key + ' : ' + JSON.stringify(vars[key]))
+    })
 }
 
 function showFailure(processName){

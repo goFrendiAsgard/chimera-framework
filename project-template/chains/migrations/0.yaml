@@ -7,28 +7,28 @@ vars:
     structure:
         structure:
             name: 'structure'
-            table: 'cck.structure'
+            table: 'cck_structure'
             valid_fields:
-                - 'name'
-                - 'table'
-                - 'valid_fields'
-                - 'script.insert'
-                - 'script.update'
-                - 'script.delete'
-                - 'script.get'
-                - 'script.getOne'
-                - 'script.preprocess.insert'
-                - 'script.preprocess.update'
-                - 'script.preprocess.delete'
-                - 'script.preprocess.query'
-                - 'script.preprocess.row'
+                - 'name' # name of entity
+                - 'table' # table name of entity
+                - 'valid_fields' # list of valid fields
+                - 'script_insert' # insert action (YAML script); input: table, data; output: row
+                - 'script_update' # update action (YAML script); input: table, pk, data; output: row
+                - 'script_delete' # delete action (YAML script); input: table, pk
+                - 'script_get' #  get action (YAML script); input: table, query
+                - 'script_getOne' # getOne action (YAML script); input: table, pk
+                - 'script_preprocess_insert' # preprocess insert (YAML script); input: data; output: data or boolean
+                - 'script_preprocess_update' # preprocess update (YAML script); input: data; output: data or boolean
+                - 'script_preprocess_delete' # preprocess delete (YAML script); input: data; output: data or boolean
+                - 'script_preprocess_query' # preprocess query (YAML script); input: query; output: query
+                - 'script_preprocess_row' # preprocess row (YAML script); input: row; output: row
                 - 'presentations'
 
     # user
     user:
         structure:
             name: 'user'
-            table: 'cms.user'
+            table: 'cms_user'
             valid_fields:
                 - 'user_name'
                 - 'hashed_password'
@@ -37,21 +37,21 @@ vars:
                 - 'email_address'
                 - 'groups'
         data:
-            - _id: 'cms.system'
-              user_name: 'cms.system'
+            - _id: 'cms_system'
+              user_name: 'cms_system'
 
     # group structure
     group:
         structure:
             name: 'group'
-            table: 'cms.group'
+            table: 'cms_group'
             valid_fields:
                 - 'group_name'
                 - 'description'
         data:
-            - _id: 'cms.super_admin'
+            - _id: 'cms_super_admin'
               group_name: 'Super Admin of CMS'
-            - _id: 'cms.admin'
+            - _id: 'cms_admin'
               group_name: 'Admin of CMS'
 
 series:
