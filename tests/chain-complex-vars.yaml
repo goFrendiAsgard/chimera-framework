@@ -1,14 +1,10 @@
 ins: a, b
 out: c
-vars:
-    tmp: 
-        x: 3
-        z: 5
 verbose: true
 series:
-    - php programs/json-sample.php -> tmp
+    - ('{"x":3,"z":5}') -> php programs/echo.php -> tmp
     - parallel:
-        - series: 
+        - series:
             - (a, b) -> php programs/add.php -> tmp.y.addResult
             - (tmp.y.addResult, tmp.x) -> php programs/multiply.php -> tmp.y.addResult
         - series:

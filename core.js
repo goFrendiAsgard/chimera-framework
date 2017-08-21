@@ -44,6 +44,31 @@ function patchObject(obj, patcher){
     return newObj
 }
 
+function smartSplit(string, delimiter){
+    let singleQuoteCount = 0
+    let doubleQuoteCount = 0
+    let data = []
+    let word = ''
+    for(let i=0; i<string.length; i++){
+        let chr = string.charAt(i)
+        if(chr == ',' && doubleQuoteCount % 2 == 0 && singleQuoteCount % 2 == 0){
+            data.push(word.trim())
+            word = ''
+        }
+        else{
+            if(chr == "'"){
+                singleQuoteCount ++
+            }
+            else if(chr == '"'){
+                doubleQuoteCount ++
+            }
+            word += chr
+        }
+    }
+    data.push(word.trim())
+    return data
+}
+
 /**
  * Preprocess ins's shorthand
  * Example:
@@ -60,7 +85,8 @@ function preprocessIns(ins){
         // remove parantheses
         ins = ins.replace(/^\((.*)\)/, '$1')
         // split
-        ins = ins.split(',')
+        ins = smartSplit(ins, ',')
+        //ins = ins.split(',')
         let newIns = []
         ins.forEach(function(input){
             // remove spaces for each component
@@ -379,15 +405,17 @@ function execute(chainConfigs, argv, presets, executeCallback){
             // we can only send string in CLI, thus if the input is object,
             // it should be stringified
             chainIns.forEach(function(key){
-                let arg = ''
-                key = String(key)
+                let arg = 0
                 if(key.match(/^"(.*)"$/g) || key.match(/^'(.*)'$/g)){
                     // literal, remove quotes
-                    arg = key.substring(1, key.length-1);
+                    arg = JSON.stringify(key.substring(1, key.length-1))
+                    arg = JSON.parse(arg)
                 }
                 else{
-                    arg = JSON.stringify(getVar(key))
+                    // non literal, get variable
+                    arg = getVar(key)
                 }
+                arg = JSON.stringify(arg)
                 // determine whether we need to add quote
                 let addQuote = false
                 if(!chainCommand.match(/.*=>.*/g)){
