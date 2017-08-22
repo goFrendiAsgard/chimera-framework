@@ -66,7 +66,7 @@ __Note:__ JSON Format will also works
 
 ### Single process
 
-A chain should contains at least three components. Inputs, command, and output.
+A chain should contain at least three components. Inputs, command, and output.
 For single process, the YAML syntax is quite straight-forward.
 
 ```yaml
@@ -140,7 +140,7 @@ We have two proceesses that run sequentially (you can also use `parallel` instea
 
 The first process (`(a, delta) -> node programs/add.js -> a`) take `a` and `delta` as inputs. The output will then saved in global variable `a`, so that it can be used later. Chimera will execute this process only if `a < 10`. The process will then executed repeatedly while `a < 8`
 
-Once the first process completed (or ignored in case of the initial condition doesn't met), the second process (`(a, delta) -> node programs/substract.js -> a`) will be executed. The second process will only be executed if `a > 10`.
+Once the first process completed (or ignored in case of the initial condition unmet), the second process (`(a, delta) -> node programs/substract.js -> a`) will be executed. The second process will only be executed if `a > 10`.
 
 The process above is logically equal to this pseudo-code (well, actually this is Python):
 
@@ -357,7 +357,7 @@ Function `executeChain` has 4 parameters, `executeChain(yamlFile, inputs, preset
 * `your-chain` : A string or a file. YAML or JSON format are both valid. 
 * `inputs` : Array of inputs
 * `presets` : Initial values of variables
-* `callback` : Callback function. Can has three parameters `output`, `success`, `errorMessage`.
+* `callback` : Callback function. Require three parameters `output`, `success`, `errorMessage`.
     - `output` contains output of the chain
     - `success` contains whether true or false, reflecting whether the chain executed successfully or with error
     - `errorMessage` contains useful error message for debugging purpose
@@ -374,7 +374,7 @@ While to use the web service, you can run `chimera-send http://server.com:3000 c
 
 You can also define TIMEOUT and PUBLISHED directory when running `chimera-serve`. In Unix, you can do this: `TIMEOUT=5000 PUBLISHED=. chimera-serve` to start the web service that only allows client to access chains in current directory. The maximum execution process should be 5000 ms. Otherwise, a request time out will be returned.
 
-Similar mechanism also works when you run `chimera-send`. `TIMEOUT=1000 chimera-send tests/chain-minimal.yaml 4 4` will makes the process only waits for maximum 1 second response from server.
+Similar mechanism also works when you run `chimera-send`. `TIMEOUT=1000 chimera-send tests/chain-minimal.yaml 4 4` will make the process only waits for maximum 1 second response from server.
 
 # Utilities
 
