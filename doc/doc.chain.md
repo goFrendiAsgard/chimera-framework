@@ -3,7 +3,9 @@
 All chain file should contains single `Root Process`.
 The semantic of YAML chain file is written below:
 
-## Root Process
+## Root_process
+
+Complete `Root_process` is as follow:
 
 ```yaml
 vars: [Variable_declaration]
@@ -11,11 +13,15 @@ verbose: [Boolean]
 [Process]
 ```
 
+In some cases, you can ommit `Variable_declaration` and verbosity behavior.
+
 ```yaml
 [Process]
 ```
 
 ## Boolean
+
+Boolean has two possible value, `true` or `false`
 
 ```yaml
 true
@@ -27,6 +33,8 @@ false
 
 ## Variable_declaration
 
+`Variable_declaration` consists of `Variable_name : Value` pairs
+
 ```yaml
 [Variable_name] : [Value]
 [Variable_name] : [Value]
@@ -35,17 +43,23 @@ false
 
 ## Variable_name
 
+Any valid `String` can be used as `Variable_name`
+
 ```yaml
 [String]
 ```
 
 ## Value
 
+Any valid `String` can be used as `Value`
+
 ```yaml
 [String]
 ```
 
 ## Process
+
+There are several ways to write `Process`
 
 ```yaml
 ins: [Input]
@@ -60,16 +74,7 @@ chains:
 ```yaml
 ins: [Input]
 out: [Output]
-series:
-    - [Process]
-    - [Process]
-    - ...
-```
-
-```yaml
-ins: [Input]
-out: [Output]
-parallel:
+[Mode]:
     - [Process]
     - [Process]
     - ...
@@ -80,6 +85,8 @@ ins: [Input]
 out: [Output]
 command: [Command]
 ```
+
+`Process` can also be written in a single line
 
 ```yaml
 ([Input]) -> [Command] -> [Output]
@@ -94,6 +101,8 @@ command: [Command]
 ```
 
 ## Mode
+
+`Mode` is either `serial` or `parallel`
 
 ```yaml
 series
