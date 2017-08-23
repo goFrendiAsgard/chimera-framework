@@ -80,9 +80,10 @@ While the source code of process 3 is shown below:
 // File Location : tests/add.js
 var n1 = parseInt(process.argv[2]) ;
 var n2 = parseInt(process.argv[3]) ;
+console.log n1 + n2;
 ```
 
-In order to assemble the process, we need to build a YAML chain file.  The semantic rule of YAML chain is presented [here](doc/doc.chain-semantic.md)
+In order to assemble the process, we need to build a YAML chain file.  The complete semantic rule of YAML chain is presented [here](doc/doc.chain-semantic.md)
 ```yaml
 # file location process.yaml
 ins: a,b
@@ -117,7 +118,12 @@ The output should be `18` as `(4+5) + (4+5) = 18`.
 
 ## Distributed Process
 
-In the previous example, the sub-processes (Process 1, Process 2, and Process 3) was executed in a single computer. Chimera-framework can also run in distributed scenario. Suppose Process 1 should be run in the server, and Process 2 should run in the client, we should divide the process into 4 steps.
+In the previous example, the sub-processes (Process 1, Process 2, and Process 3) was executed in a single computer.
+
+Chimera-framework can also run in distributed scenario. Suppose Process 1 should be run in the server, and Process 2 should run in the client, we should divide the process into 4 steps.
+
+
+![chimera-example-basic](doc/chimera-example-basic.png)
 
 Before we dive into the steps, we should prepare two more files.
 
@@ -136,10 +142,10 @@ verbose : true
 series :
     − parallel :
         # Process 1
-        − (server, 'server.yaml', a, b)−> chimera−send −> c 
+        − (server, 'server.yaml', a, b)−> chimera−send −> c
         # Process 2
         − (a, b) −> php programs/add.php −> c
-    # Process 3 
+    # Process 3
     − (c, d) −> node programs/add.js −> e
 ```
 
@@ -168,7 +174,7 @@ chimera-serve
 * __Client side execution__: After client preparation completed, we can then execute:
 
 ```sh
-chimera process.yaml 4 5
+chimera process.yaml 4 5 http://server-address.com:3000
 ```
 
 ## Shorthand
