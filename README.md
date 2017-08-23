@@ -257,29 +257,9 @@ The first process (`(a, delta) -> node programs/add.js -> a`) take `a` and `delt
 
 Once the first process completed (or ignored in case of the initial condition unmet), the second process (`(a, delta) -> node programs/substract.js -> a`) will be executed. The second process will only be executed if `a > 10`.
 
-The process above is logically equal to this pseudo-code (well, actually this is Python):
+The process above is logically equal to this flowchart: 
 
-```python
-delta = 1
-a = input()
-
-# First process
-if a < 10:
-    # Well, it is actually do-while,
-    # Python just strangely doesn't have do-while
-    # so here we go...
-    while True:
-        a = read_output_of('node programs/add.js ' + a + ' ' + delta)
-        if not (a<8):
-            break
-
-# Second process
-if a > 10:
-    a = read_output_of('node programs/substract.js ' + a + ' ' + delta)
-
-# now, show the output
-print a
-```
+![chimera-control-flowchart](doc/chimera-control-flowchart.png)
 
 __Note:__ Use this feature with care. Don't over do it. For a more complex logic-control, please put it on your program.
 
