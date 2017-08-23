@@ -59,7 +59,10 @@ The task was broken down into several sub processes:
 * Process 2 : d = a+b (written in PHP)
 * Process 3 : e = c+d (written in Javascript)
 
-Process 1 and process 2 would be executed in parallel. After those processes had been executed, process 3 would be started.
+Since Process 1 and process 2 are independent to each other, we would execute them in parallel.
+On the other hand, process 3 depend on process 1 and process 2's output. Thus, we would execute process 3 after process 1 and process 2 completed.
+
+![chimera-example-basic](doc/chimera-example-basic.png)
 
 To demonstrate language agnosticism, process 1 and process 2 was written in PHP (they have the same source code),while process 3 was written in Javascript. Each programs require two input arguments and return single output. The source code of process 1 and process 2 is presented below: 
 
