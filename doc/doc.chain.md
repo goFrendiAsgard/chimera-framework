@@ -105,14 +105,17 @@ parallel
 
 ## Input
 
+`Input` is comma separated `Value` or `Variable_name`.
+
 ```yaml
 [Variable_name], [Variable_name], [Variable_name], ...
 ```
 
-
 ```yaml
 "[Value]", "[Value]", "[Value]", ...
 ```
+
+The combination of `Value` and `Variable_name` is also permitted.
 
 ```yaml
 [Variable_name], "[Value]", ...
@@ -126,9 +129,14 @@ parallel
 
 ## Command
 
+Any non-interactive command prompt program can be used as `Cmd_command`.
+E.g: `cal`, `calc`, `php your-script.php`, `python your-script.py`, `node your-script.js`, etc.
+
 ```yaml
 Cmd_command
 ```
+
+Javascript arrow function [https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) can be used as `Command`
 
 ```yaml
 Javascript_arrow_function
