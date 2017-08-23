@@ -50,7 +50,7 @@ The YAML chain file semantic can be found [here](doc/doc.chain-semantic.md)
 
 __Note:__ You can also use JSON Format instead of YAML.
 
-# Basic Example
+## Basic Example
 
 Suppose we have two simple programs in PHP and Javascript. The task is to perform `(a+b) + (a+b)`.
 The task was broken down into several sub processes:
