@@ -5,12 +5,15 @@ Chimera-framework is a language agnostic framework for standalone and distribute
 # Why Chimera-Framework?
 
 * CLI Support
+
     Command Line Interface was there since the dawn of UNIX and still relevant today. There are a lot of powerful utilities run on CLI. In Chimera-Framework, you can use them as components of your program. Most programming language also support CLI. Perl, Python, PHP, Ruby, Haskell, Javascript, C, Java, Pascal, R, and even Matlab [http://stackoverflow.com/questions/6657005/matlab-running-an-m-file-from-command-line](http://stackoverflow.com/questions/6657005/matlab-running-an-m-file-from-command-line) are supporting CLI.
 
 * Programming Language Diversity
+
     Some programming language are good at several cases, while some other are better at other cases. You might love PHP from the bottom of your heart. But when it come to statistic computation, R might be a better bet. By using Chimera, you can make PHP, R, and even CLI utilities work together.
 
 * Less Painful Technology Migration
+
     New technologies raise, while some others fall. In the world of software development, limitting our knowledge to a single technology is the worst thing to do. Using Chimera-framework, it is possible to build small components that can be swapped or changed any time. Thus, you can replace some components rather than rebuild your system from scratch.
 
 # Installation
@@ -123,7 +126,7 @@ In the previous example, the sub-processes (Process 1, Process 2, and Process 3)
 Chimera-framework can also run in distributed scenario. Suppose Process 1 should be run in the server, and Process 2 should run in the client, we should divide the process into 4 steps.
 
 
-![chimera-example-basic](doc/chimera-example-basic.png)
+![chimera-example-distributed](doc/chimera-example-distributed.png)
 
 Before we dive into the steps, we should prepare two more files.
 
