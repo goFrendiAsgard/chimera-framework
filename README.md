@@ -274,50 +274,75 @@ The following YAML file show you how a nested variable can be used.
 ```yaml
 ins: a, b
 out: c
-vars:
-    tmp: 
-        x: 3
-        z: 5
-verbose: false
+verbose: true
 series:
-    - echo "{\"x\":4, \"y\":{}}" -> tmp
+    - ('{"x":4,"z":5}') -> php programs/echo.php -> tmp
     - parallel:
-        - series: 
-            - (a, b) -> node programs/add.js -> tmp.y.addResult
+        - series:
+            - (a, b) -> php programs/add.php -> tmp.y.addResult
             - (tmp.y.addResult, tmp.x) -> php programs/multiply.php -> tmp.y.addResult
         - series:
-            - (a, b) -> node programs/substract.js -> tmp.y.substractResult
+            - (a, b) -> php programs/substract.php -> tmp.y.substractResult
             - (tmp.y.substractResult, tmp.x) -> php programs/multiply.php -> tmp.y.substractResult
     - (tmp.y.addResult, tmp.y.substractResult) -> php programs/multiply.php -> c
 ```
-Please observe each state of the program
 
 ```sh
-gofrendi@minastirith:~/chimera$ chimera tests/chain-complex-vars.yaml 10 11
-[INFO] START PROCESS [php programs/echo.php "{\"x\":4, \"y\":{}}"] AT    : 57,939,071,995,102
-[INFO] END PROCESS   [php programs/echo.php "{\"x\":4, \"y\":{}}"] AT    : 57,939,119,742,255
-[INFO] PROCESS       [php programs/echo.php "{\"x\":4, \"y\":{}}"] TAKES : 47,689,756 NS
-[INFO] STATE AFTER   [php programs/echo.php "{\"x\":4, \"y\":{}}"]       : {"tmp":{"x":4,"y":{}},"a":10,"b":11}
-[INFO] START PROCESS [php programs/add.php "10" "11"] AT    : 57,939,122,782,058
-[INFO] START PROCESS [php programs/substract.php "10" "11"] AT    : 57,939,125,628,701
-[INFO] END PROCESS   [php programs/add.php "10" "11"] AT    : 57,939,155,653,704
-[INFO] PROCESS       [php programs/add.php "10" "11"] TAKES : 32,833,697 NS
-[INFO] STATE AFTER   [php programs/add.php "10" "11"]       : {"tmp":{"x":4,"y":{"addResult":21}},"a":10,"b":11}
-[INFO] START PROCESS [php programs/multiply.php "21" "4"] AT    : 57,939,156,339,845
-[INFO] END PROCESS   [php programs/substract.php "10" "11"] AT    : 57,939,158,555,972
-[INFO] PROCESS       [php programs/substract.php "10" "11"] TAKES : 32,884,663 NS
-[INFO] STATE AFTER   [php programs/substract.php "10" "11"]       : {"tmp":{"x":4,"y":{"addResult":21,"substractResult":-1}},"a":10,"b":11}
-[INFO] START PROCESS [php programs/multiply.php "-1" "4"] AT    : 57,939,159,097,322
-[INFO] END PROCESS   [php programs/multiply.php "21" "4"] AT    : 57,939,190,612,102
-[INFO] PROCESS       [php programs/multiply.php "21" "4"] TAKES : 34,214,893 NS
-[INFO] STATE AFTER   [php programs/multiply.php "21" "4"]       : {"tmp":{"x":4,"y":{"addResult":84,"substractResult":-1}},"a":10,"b":11}
-[INFO] END PROCESS   [php programs/multiply.php "-1" "4"] AT    : 57,939,192,968,186
-[INFO] PROCESS       [php programs/multiply.php "-1" "4"] TAKES : 33,867,169 NS
-[INFO] STATE AFTER   [php programs/multiply.php "-1" "4"]       : {"tmp":{"x":4,"y":{"addResult":84,"substractResult":-4}},"a":10,"b":11}
-[INFO] START PROCESS [php programs/multiply.php "84" "-4"] AT    : 57,939,193,351,485
-[INFO] END PROCESS   [php programs/multiply.php "84" "-4"] AT    : 57,939,223,041,934
-[INFO] PROCESS       [php programs/multiply.php "84" "-4"] TAKES : 29,685,070 NS
-[INFO] STATE AFTER   [php programs/multiply.php "84" "-4"]       : {"tmp":{"x":4,"y":{"addResult":84,"substractResult":-4}},"a":10,"b":11,"c":-336}
+gofrendi@minastirith:~/chimera-framework$ chimera tests/chain-complex-vars.yaml 10 11
+[INFO] PROCESS :      php programs/echo.php "{\"x\":4,\"z\":5}"
+[INFO] START PROCESS [php programs/echo.php "{\"x\":4,\"z\":5}"] AT    : 50,016,333,516,851
+[INFO] END PROCESS   [php programs/echo.php "{\"x\":4,\"z\":5}"] AT    : 50,016,441,246,296
+[INFO] PROCESS       [php programs/echo.php "{\"x\":4,\"z\":5}"] TAKES : 107,663,018 NS
+[INFO] STATE AFTER   [php programs/echo.php "{\"x\":4,\"z\":5}"] : 
+        a : 10
+        b : 11
+        c : ""
+        tmp : {"x":4,"z":5}
+[INFO] PROCESS :      php programs/add.php "10" "11"
+[INFO] START PROCESS [php programs/add.php "10" "11"] AT    : 50,016,443,161,714
+[INFO] PROCESS :      php programs/substract.php "10" "11"
+[INFO] START PROCESS [php programs/substract.php "10" "11"] AT    : 50,016,447,803,721
+[INFO] END PROCESS   [php programs/add.php "10" "11"] AT    : 50,016,484,394,967
+[INFO] PROCESS       [php programs/add.php "10" "11"] TAKES : 41,210,854 NS
+[INFO] STATE AFTER   [php programs/add.php "10" "11"] : 
+        a : 10
+        b : 11
+        c : ""
+        tmp : {"x":4,"z":5,"y":{"addResult":21}}
+[INFO] PROCESS :      php programs/multiply.php "21" "4"
+[INFO] START PROCESS [php programs/multiply.php "21" "4"] AT    : 50,016,484,957,674
+[INFO] END PROCESS   [php programs/substract.php "10" "11"] AT    : 50,016,487,877,064
+[INFO] PROCESS       [php programs/substract.php "10" "11"] TAKES : 40,039,632 NS
+[INFO] STATE AFTER   [php programs/substract.php "10" "11"] : 
+        a : 10
+        b : 11
+        c : ""
+        tmp : {"x":4,"z":5,"y":{"addResult":21,"substractResult":-1}}
+[INFO] PROCESS :      php programs/multiply.php "-1" "4"
+[INFO] START PROCESS [php programs/multiply.php "-1" "4"] AT    : 50,016,488,358,786
+[INFO] END PROCESS   [php programs/multiply.php "21" "4"] AT    : 50,016,513,545,979
+[INFO] PROCESS       [php programs/multiply.php "21" "4"] TAKES : 28,537,199 NS
+[INFO] STATE AFTER   [php programs/multiply.php "21" "4"] : 
+        a : 10
+        b : 11
+        c : ""
+        tmp : {"x":4,"z":5,"y":{"addResult":84,"substractResult":-1}}
+[INFO] END PROCESS   [php programs/multiply.php "-1" "4"] AT    : 50,016,519,987,606
+[INFO] PROCESS       [php programs/multiply.php "-1" "4"] TAKES : 31,624,752 NS
+[INFO] STATE AFTER   [php programs/multiply.php "-1" "4"] : 
+        a : 10
+        b : 11
+        c : ""
+        tmp : {"x":4,"z":5,"y":{"addResult":84,"substractResult":-4}}
+[INFO] PROCESS :      php programs/multiply.php "84" "-4"
+[INFO] START PROCESS [php programs/multiply.php "84" "-4"] AT    : 50,016,520,551,138
+[INFO] END PROCESS   [php programs/multiply.php "84" "-4"] AT    : 50,016,551,898,639
+[INFO] PROCESS       [php programs/multiply.php "84" "-4"] TAKES : 31,342,909 NS
+[INFO] STATE AFTER   [php programs/multiply.php "84" "-4"] : 
+        a : 10
+        b : 11
+        c : -336
+        tmp : {"x":4,"z":5,"y":{"addResult":84,"substractResult":-4}}
 -336
 ```
 
