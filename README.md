@@ -1,73 +1,176 @@
-# Chimera Framework
+# Chimera-Framework
 
-Chimera-framework is a nodejs based framework that let you write any task in any language, and combine them for a greater good.
+Chimera-framework is a language agnostic framework for standalone and distributed computing. Chimera-framework is written in Node.js. As a component based software engineering framework, Chimera-framework allows you to orchestrate several components to achieve a greater goal. Despite of written in `Node.JS`, Chimera-framework let you write your components in any languages (even executable machine language such as linux commands).
 
-# Motivation
+# Why Chimera-Framework?
 
-* Most (if not all) programming languages support command line interface
+* CLI Support
+    Command Line Interface was there since the dawn of UNIX and still relevant today. There are a lot of powerful utilities run on CLI. In Chimera-Framework, you can use them as components of your program. Most programming language also support CLI. Perl, Python, PHP, Ruby, Haskell, Javascript, C, Java, Pascal, R, and even Matlab [http://stackoverflow.com/questions/6657005/matlab-running-an-m-file-from-command-line](http://stackoverflow.com/questions/6657005/matlab-running-an-m-file-from-command-line) are supporting CLI.
 
-    Perl, python, php, ruby, haskell, javascript, c, java, pascal, R, and even matlab (See http://stackoverflow.com/questions/6657005/matlab-running-an-m-file-from-command-line) are supporting command line interface (CLI). Through CLI, different programs can communicate to each others. Chimera-framework provide mechanism to store global variables and to orchastrate the programs into a single flow.
+* Programming Language Diversity
+    Some programming language are good at several cases, while some other are better at other cases. You might love PHP from the bottom of your heart. But when it come to statistic computation, R might be a better bet. By using Chimera, you can make PHP, R, and even CLI utilities work together.
 
-* Some programming languages are better at some cases while other are excelled at other cases
-
-    You might love PHP from the bottom of your heart, but it doesn't change the fact that doing heavy-statistic computation in R is easier. Rather than trying to make PHP do what R do, it is more easier to just use R instead.
-
-* Atomic process
-
-    Unix has a great philosophy. It encourage programmers to build a single program to do a single task. Nowadays, people try to make one thing to rule out everything. This might sounds good at first, but the effort will be futile. It is better to keep everything simple and combine those simple process to achieve a greater good.
-
-* Scalability
-
-    By creating independent simple programs, you can make a lot of possibility. There is a hero in DOTA named Invoker that can combine his orbs to activate 10 different abilities (http://dota2.gamepedia.com/Invoker#Invoked_abilities). Rather than building a monolithic program that won't scale, it is better to make simple programs, and combine them as you need.
-
-* Less language migration
-
-    Sometime you need a certain feature that is only available in an esoteric-new-programming-language. You learn the language, convert all your old projects into this new language, and loosing the meaning of life. Just never do that anymore. Chimera framework goal is to let you write any task in any language, and combine them to achieve a greater good.
-
+* Less Painful Technology Migration
+    New technologies raise, while some others fall. In the world of software development, limitting our knowledge to a single technology is the worst thing to do. Using Chimera-framework, it is possible to build small components that can be swapped or changed any time. Thus, you can replace some components rather than rebuild your system from scratch.
 
 # Installation
 
-* From source (require `git`)
-
-```sh
-git clone git@github.com:goFrendiAsgard/chimera.git
-npm install
-npm link
-```
-* Using npm
+Chimera-Framework installation is very easy. First, you need to have `Node.Js` and `npm` installed. Then you can simply perform
 
 ```sh
 npm install --global chimera-framework
 ```
 
-# Prerequisites
-
-* nodejs
-* npm
-* any programming languages you want to use
-
-# Is it working?
-
-You can run the test case by running `npm test`. The test require `python`, `php`, and `java` to be already installed.
-
-# Usage (command line)
-
-## Using Chain File
-
-Basically you can invoke your Chain file by using this command:
-
+Another method to install Chimera-Framework is by using `git`. First, you should make sure you have `git` client installed.
 ```sh
-chimera your-chain-file.yaml [input1 [input2 [input3 ...]]]
+git clone git@github.com:goFrendiAsgard/chimera.git
+npm install
+npm link
 ```
 
-In the next section you will see how to write a YAML-chain file
+# Dependencies
 
-__Note:__ JSON Format will also works
+* Node.Js
+* npm
+* Interpreters/Compilers, depend on programming language you use.
 
-### Single process
+# Testing 
 
-A chain should contain at least three components. Inputs, command, and output.
-For single process, the YAML syntax is quite straight-forward.
+Chimera-Framework was built with TDD in mind. You can run the test by executing `npm test`. The test require `python`, `php`, and `java` to be already installed.
+
+# Using Chimera-Framework 
+
+To use Chimera-Framework, you need to define YAML chain file. Then you can invoke your process as follow:
+
+```sh
+chimera [your-chain-file.yaml] [input1 [input2 [input3 ...]]]
+```
+
+The YAML chain file semantic can be found [here](doc/doc.chain-semantic.md)
+
+__Note:__ You can also use JSON Format instead of YAML.
+
+# Basic Example
+
+Suppose we have two simple programs in PHP and Javascript. The task is to perform `(a+b) + (a+b)`.
+The task was broken down into several sub processes:
+
+* Process 1 : c = a+b (written in PHP)
+* Process 2 : d = a+b (written in PHP)
+* Process 3 : e = c+d (written in Javascript)
+
+Process 1 and process 2 would be executed in parallel. After those processes had been executed, process 3 would be started.
+
+To demonstrate language agnosticism, process 1 and process 2 was written in PHP (they have the same source code),while process 3 was written in Javascript. Each programs require two input arguments and return single output. The source code of process 1 and process 2 is presented below: 
+
+```php
+<?php
+// File Location : tests/add.php
+$n1 = $argv[1];
+$n2 = $argv[2];
+echo $n1 + $n2;
+```
+
+While the source code of process 3 is shown below: 
+
+```Javascript
+// File Location : tests/add.js
+var n1 = parseInt(process.argv[2]) ;
+var n2 = parseInt(process.argv[3]) ;
+```
+
+In order to assemble the process, we need to build a YAML chain file.  The semantic rule of YAML chain is presented [here](doc/doc.chain-semantic.md)
+```yaml
+# file location process.yaml
+ins: a,b
+out: e
+series:
+  − parallel :
+    # Process 1
+    − (a,b) −> php tests/add.php −> c
+    # Process 2
+    − (a,b) −> php tests/add.php −> d
+  # Process 3
+  − (c,d) −> node tests/add.js −> e
+```
+The `Root Process` takes two input, (`a`, and `b`) and yield a single output `e`.
+
+Process 1 and process 2 will be done in parallel.
+
+Process 1 takes two inputs (`a` and `b`) and return `c` as output.
+
+Process 2 takes two inputs (`a` and `b`) and return `d` as output.
+
+After Process 1 and Process 2 finished, Process 3 will be executed. Process 3 takes `c` and `d` as output and return `e` as output.
+
+To execute the process, we can invoke:
+
+```sh
+chimera process.yaml 4 5
+```
+
+The output should be `18` as `(4+5) + (4+5) = 18`.
+
+
+## Distributed Process
+
+In the previous example, the sub-processes (Process 1, Process 2, and Process 3) was executed in a single computer. Chimera-framework can also run in distributed scenario. Suppose Process 1 should be run in the server, and Process 2 should run in the client, we should divide the process into 4 steps.
+
+Before we dive into the steps, we should prepare two more files.
+
+```yaml
+# server.yaml
+(a , b) −> php tests/add.php −> c
+```
+
+`server.yaml` contains only a single process (`tests/add.php`). It takes `a` and `b` as inputs, and return `c` as output. Executing `chimera server.yaml 4 5` will return `9`.
+
+```yaml
+# process.yaml
+ins: a, b, server
+out: e
+verbose : true
+series :
+    − parallel :
+        # Process 1
+        − (server, 'server.yaml', a, b)−> chimera−send −> c 
+        # Process 2
+        − (a, b) −> php programs/add.php −> c
+    # Process 3 
+    − (c, d) −> node programs/add.js −> e
+```
+
+This YAML chain file is basically similar to our previous example. The only difference is on Process 1 definition. This process takes 4 inputs. The first one is server address, the second one is server's YAML chain, and the last two inputs will be sent `server.yaml`'.
+
+`chimera-send` is a utility to execute YAML chain file in other computer. Its first two parameters are `server address` and `server YAML chain file` respectively.
+
+After preparing the files, we should proceed with these 4 steps:
+
+
+* __Server side preparation__: In the server side, we need to provide:
+    - `tests/add.php`
+    - `server.yaml`
+
+* __Server side execution__: After server preparation completed, we need to serve `server.yaml`, so that it is accessible from the network. In order to do this, we can execute `chimera-serve`, a utility to serve chains in the server:
+
+```sh
+chimera-serve
+```
+
+* __Client side preparation__: In the client side, we need to provide:
+    - `tests/add.php`
+    - `tests/add.js`
+    - `process.yaml`
+
+* __Client side execution__: After client preparation completed, we can then execute:
+
+```sh
+chimera process.yaml 4 5
+```
+
+## Shorthand
+
+Let's look at this example:
 
 ```yaml
 # filename: add.yaml
@@ -79,7 +182,7 @@ command: node add.js
 You can invoke the chain by performing `chimera add.yaml 5 6`. Assuming you `add.js` works correctly, you should see `11` as result.
 If you don't define `out` element, `_ans` will be used by default.
 
-Chimera also provide some syntactic sugar for your convenience. The above example can also be written as:
+Chimera also provide some shorthand for your convenience. The above example can also be written as:
 
 
 ```yaml
@@ -95,12 +198,12 @@ ins: a, b
 command: node add.js
 ```
 
-You can even write this:
+You can also write the process as:
 ```yaml
 command: (a, b) -> node add.js
 ```
 
-or even this:
+or even:
 
 ```yaml
 (a, b) -> node add.js
@@ -112,9 +215,9 @@ In some situation, your process might be so simple that you only need a single l
 (a, b) -> (x,y)=>{return parseFloat(x)+parseFloat(y)}
 ```
 
-For more comprehensive information regarding anonymous javascript arrow function, please visit (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
+For more comprehensive information regarding anonymous javascript arrow function, please visit [https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
 
-### Process control (branch and loop)
+## Process control (branch and loop)
 
 Sometime your process contains several simple logic (i.e: loop and branch). Please look at this example:
 
@@ -168,92 +271,7 @@ print a
 
 __Note:__ Use this feature with care. Don't over do it. For a more complex logic-control, please put it on your program.
 
-### Parallel execution
-
-Let's consider you have several programs written in Python, Java, PHP, and Javascript. Each of them takes 2 arguments, do simple arithmetic operation, and return a single output. Given `a` and `b`, you want to calculate `((a+b) * (a-b)) + a`.
-
-You can write the process as follow:
-
-```
-f = ((a+b) * (a-b)) + a
-```
-
-You can then divide this process into several sub-processes:
-```
-Process 1: c = a + b
-Process 2: d = a - b
-Process 3: e = c * d
-Process 4: f = e + a
-```
-
-Process 1 and process 2 will be executed in parallel since they are independent to each other. You don't need to solve process 1 in order to do process 2 and vice versa.
-
-After Process 1 and process 2 finished, process 3 and process 4 should be executed in serial.
-Process 3 depend on both process 1 and 2, and process 4 depend on process 3
-
-
-```yaml
-# chain-minimal.yaml
-ins: a,b
-out: f
-verbose: false
-series:
-  # Process One & Two
-  - parallel:
-      # Process 1 (Python)
-      - a, b -> python programs/add.py -> c
-      # Process 2 (Java, thus needs compilation)
-      - series:
-          - chimera-eisn Substract.java Substract.class javac programs/Substract.java
-          - a, b -> java -cp programs Substract -> d
-  # Process 3 (PHP)
-  - c, d -> php programs/multiply.php -> e
-  # Process 4 (Javascript)
-  - e, a ->node programs/add.js -> f
-```
-You can execute the chain by invoking: 
-
-```sh
-chimera chain-minimal.yaml 5 1
-``` 
-
-This will give you `29` since  `((5+1) * (5-1)) + 5 = 29`
-
-__Verbosity:__ Chimera also allows you to see the whole process log. This is useful for benchmarking.
-To see the process log, you need to change `verbose: false` into `verbose: true`. If the key is not exists, you can add it.
-
-Below is the log example of previous process in order to let you see if the process is really parallel
-
-```sh
-gofrendi@minastirith:~/chimera$ chimera tests/chain-minimal.yaml 5 1
-[INFO] START PROCESS [python programs/add.py "5" "1"] AT    : 57,267,581,140,268
-[INFO] START PROCESS [chimera-eisn Substract.java Substract.class javac programs/Substract.java] AT    : 57,267,600,777,741
-[INFO] END PROCESS   [python programs/add.py "5" "1"] AT    : 57,267,621,802,911
-[INFO] PROCESS       [python programs/add.py "5" "1"] TAKES : 40,613,652 NS
-[INFO] STATE AFTER   [python programs/add.py "5" "1"]       : {"a":5,"b":1,"c":6}
-[INFO] END PROCESS   [chimera-eisn Substract.java Substract.class javac programs/Substract.java] AT    : 57,267,702,087,331
-[INFO] PROCESS       [chimera-eisn Substract.java Substract.class javac programs/Substract.java] TAKES : 101,288,225 NS
-[INFO] STATE AFTER   [chimera-eisn Substract.java Substract.class javac programs/Substract.java]       : {"a":5,"b":1,"c":6,"_ans":""}
-[INFO] START PROCESS [java -cp programs Substract "5" "1"] AT    : 57,267,703,642,875
-[INFO] END PROCESS   [java -cp programs Substract "5" "1"] AT    : 57,267,817,048,351
-[INFO] PROCESS       [java -cp programs Substract "5" "1"] TAKES : 113,360,360 NS
-[INFO] STATE AFTER   [java -cp programs Substract "5" "1"]       : {"a":5,"b":1,"c":6,"_ans":"","d":4}
-[INFO] START PROCESS [php programs/multiply.php "6" "4"] AT    : 57,267,818,154,108
-[INFO] END PROCESS   [php programs/multiply.php "6" "4"] AT    : 57,267,857,071,186
-[INFO] PROCESS       [php programs/multiply.php "6" "4"] TAKES : 38,877,463 NS
-[INFO] STATE AFTER   [php programs/multiply.php "6" "4"]       : {"a":5,"b":1,"c":6,"_ans":"","d":4,"e":24}
-[INFO] START PROCESS [node programs/add.js "24" "5"] AT    : 57,267,857,806,195
-[INFO] END PROCESS   [node programs/add.js "24" "5"] AT    : 57,267,948,281,977
-[INFO] PROCESS       [node programs/add.js "24" "5"] TAKES : 90,429,904 NS
-[INFO] STATE AFTER   [node programs/add.js "24" "5"]       : {"a":5,"b":1,"c":6,"_ans":"","d":4,"e":24,"f":29}
-29
-```
-
-As you see, the second process (`[chimera-eisn Substract.java Substract.class javac programs/Substract.java]`) had been started without waiting the first process (`[python programs/add.py "5" "1"]`) finished.
-
-`chimera-eisn` is a tool to execute a command (the third parameter) only if the source file (first parameter) modification time is newer than the destination file (second parameter) modification time
-
-### Nested variables
+## Nested variables
 
 The best and worst part of Javascript object is that you can add any key without any need to define structure. Chimera's global variable is actually a big javascript object.
 
@@ -335,7 +353,7 @@ which is similar to
 chimera "cal 2017"
 ```
 
-# Usage (programmatically)
+# API 
 
 ```javascript
 const chimera = require('chimera-framework/core');

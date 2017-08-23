@@ -1,7 +1,8 @@
 # YAML chain Semantic
 
-All chain file should contains single `Root Process`.
-The semantic of YAML chain file is written below:
+Chimera is a Component Based Software Engineering Framework. In order to define the orchestration of the components, a YAML chain file is required.
+
+All chain file should contains single `Root Process`. The semantic of YAML chain file is specified as follow:
 
 ## Root_process
 
