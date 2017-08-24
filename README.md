@@ -346,7 +346,7 @@ gofrendi@minastirith:~/chimera-framework$ chimera tests/chain-complex-vars.yaml 
 -336
 ```
 
-## Put YAML-chain format as argument 
+## YAML string as argument 
 
 You can also put your YAML content directly as argument.
 
@@ -379,7 +379,7 @@ Chimera provide several API:
 * `deepCopyObject`
 * `patchObject`
 
-The complete API list can be found [here](doc/doc.api.md)
+The complete API list is presented [here](doc/doc.api.md)
 
 # Web Service
 
@@ -395,9 +395,13 @@ Similar mechanism also works when you run `chimera-send`. `TIMEOUT=1000 chimera-
 
 # Utilities
 
-* `chimera-serve` : Look at web service section
-* `chimera-send` : Look at web service section
-* `chimera-eisn` : Execute if source newer, example: `chimera-eisn program.java program.class javac program.java`
+* `chimera`
+* `chimera-serve`
+* `chimera-send`
+* `chimera-eisn`
+* `chimera-init-web`
+
+The complete Utilities list is presented [here](doc/doc.utilities.md)
 
 # Web Framework
 

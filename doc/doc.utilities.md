@@ -1,3 +1,51 @@
-# Chimera Tools
+# Utilities 
 
-Chimera has some tools that you can use
+Chimera-framework has several CLI utilities
+
+<table>
+    <tr>
+        <th>Utility</th>
+        <th>Usage</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>chimera</td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+    <td>
+    <tr>
+        <td>chimera-serve</td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+    <td>
+    <tr>
+        <td>chimera-send</td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+    <td>
+    <tr>
+        <td>chimera-eisn</td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+    <td>
+    <tr>
+        <td>chimera-init-web</td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+    <td>
+</table>
