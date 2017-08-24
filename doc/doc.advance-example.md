@@ -7,7 +7,7 @@ In the previous example, the sub-processes (Process 1, Process 2, and Process 3)
 Chimera-framework can also run in distributed scenario. Suppose Process 1 should be run in the server, and Process 2 should run in the client, we should divide the process into 4 steps.
 
 
-![chimera-example-distributed](doc/chimera-example-distributed.png)
+![chimera-example-distributed](chimera-example-distributed.png)
 
 Before we dive into the steps, we should prepare two more files.
 
@@ -140,7 +140,7 @@ Once the first process completed (or ignored in case of the initial condition un
 
 The process above is logically equal to this flowchart: 
 
-![chimera-control-flowchart](doc/chimera-control-flowchart.png)
+![chimera-control-flowchart](chimera-control-flowchart.png)
 
 __Note:__ Use this feature with care. Don't over do it. For a more complex logic-control, please put it on your program.
 
