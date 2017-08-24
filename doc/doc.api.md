@@ -8,7 +8,7 @@
         <th>Function Description</th>
     </tr>
     <tr>
-        <th rowspan="4">executeChain</th>
+        <td rowspan="4"><b>executeChain</b></td>
         <td>chain</td>
         <td>string, YAML chain</td>
         <td rowspan="4">
@@ -35,7 +35,7 @@
         </td>
     </tr>
     <tr>
-        <th>getFormattedNanoSecond</th>
+        <td><b>getFormattedNanoSecond</b></td>
         <td>time</td>
         <td>
             high resolution real time in [seconds, nanoseconds], tuple. Usually result of <i>process.hrtime()</i>
