@@ -1,5 +1,7 @@
 # API
 
+Chimera-framework offer several API you can use in your Node.Js scripts. In order to use the API, you need to import `chimera-framework/core`.
+
 <table>
     <tr>
         <th>Function</th>
@@ -73,6 +75,80 @@
 # Example
 
 ## executeChain
+
+```Javascript
+const chimera = require('chimera-framework/core');
+
+// without presets
+chimera.executeChain('your-chain.yaml', [5, 1], {}, function(result, success, errorMessage){
+    if(success){
+        // no error
+        console.log(result);
+    }
+    else{
+        // error
+        console.error(errorMessage);
+    }
+});
+
+
+// with presets
+chimera.executeChain('your-chain.yaml', {}, {a: 5, b: 1}, function(result, success, errorMessage){
+    if(success){
+        // no error
+        console.log(result);
+    }
+    else{
+        // error
+        console.error(errorMessage);
+    }
+});
+```
+
 ## getFormattedNanoSecond
+
+```Javascript
+const chimera = require('chimera-framework/core');
+
+// Show current time
+
+let formattedTime = chimera.getFormattedNanoSecond(process.hrtime());
+console.log(formattedTime); // output example: 13,190,703,346,683
+
+
+// Benchmarking
+
+let startTime = process.hrtime();
+// do a process we want to benchmark
+let a = 5+7;
+let elapsedTime = process.hrtime(startTime);
+// show the elapsed time in formatted nano seconds
+console.log(chimera.getFormattedNanoSecond(elapsedTime));
+```
+
 ## deepCopyObject
+
+```Javascript
+const chimera = require('chimera-framework/core');
+
+let a = {x:5, b:7};
+let b = a; // b refer to a. So, if b changed, a will be affected as well
+let c = chimera.deepCopyObject(a); // c is a copy of a, modification of c will not affect a
+
+a.x = 7;
+console.log(a); // {x:7, b:7}
+console.log(b); // {x:7, b:7}
+console.log(c); // {x:5, b:7}
+
+```
+
 ## patchObject
+```Javascript
+const chimera = require('chimera-framework/core');
+
+let obj = {x:5, b:7};
+let patcher = {b:6, c:7};
+let newObj = chimera.patchObject(obj, patcher);
+
+console.log(newObj); // {x:5, b:6, c:7}
+```
