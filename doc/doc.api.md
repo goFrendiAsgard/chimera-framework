@@ -35,3 +35,10 @@
         </td>
     </tr>
 </table>
+
+# Example
+
+## executeChain
+## getFormattedNanoSecond
+## deepCopyObject
+## patchObject
