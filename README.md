@@ -49,7 +49,7 @@ To use Chimera-Framework, you need to define YAML chain file. Then you can invok
 chimera [your-chain-file.yaml] [input1 [input2 [input3 ...]]]
 ```
 
-The YAML chain file semantic can be found [here](doc/doc.chain-semantic.md)
+The complete YAML chain file semantic rule can be found [here](doc/doc.chain-semantic.md)
 
 __Note:__ You can also use JSON Format instead of YAML.
 
@@ -372,32 +372,14 @@ chimera "cal 2017"
 
 # API 
 
-```javascript
-const chimera = require('chimera-framework/core');
+Chimera provide several API:
 
-// without presets
-chimera.executeChain('your-chain', [5, 1], {}, function(output){
-    console.log(output);
-});
+* `executeChain`
+* `getFormattedNanoSecond`
+* `deepCopyObject`
+* `patchObject`
 
-
-// with presets
-chimera.executeChain('your-chain', {}, {a: 5, b: 1}, function(output){
-    console.log(output);
-});
-```
-
-Function `executeChain` has 4 parameters, `executeChain(yamlFile, inputs, presets, callback)`
-
-* `your-chain` : A string or a file. YAML or JSON format are both valid. 
-* `inputs` : Array of inputs
-* `presets` : Initial values of variables
-* `callback` : Callback function. Require three parameters `output`, `success`, `errorMessage`.
-    - `output` contains output of the chain
-    - `success` contains whether true or false, reflecting whether the chain executed successfully or with error
-    - `errorMessage` contains useful error message for debugging purpose
-
-__Note:__ For convenience, Chimera change the working directory to the YAML-chain path. At the end of callback stack, the working directory will be set back. However some problem might occurred if you run another code before the callback finished. Also, for a very rare condition (i.e: You accidentally execute interactive program that will wait user-input forever), the callback might not be executed at all.
+The complete API list can be found [here](doc/doc.api.md)
 
 # Web Service
 

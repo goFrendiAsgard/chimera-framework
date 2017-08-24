@@ -14,8 +14,9 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         <td>chain</td>
         <td>string, YAML chain</td>
         <td rowspan="4">
-            Execute a YAML chain, and executing the callback. If callback is empty, then the result will be printed into stdout. See <a href="#executechain">example</a>
-        </td>
+            Execute a YAML chain, and executing the callback. If callback is empty, then the result will be printed into stdout. See <a href="#executechain">example</a><br />
+            <b>Note:</b>For convenience, Chimera change the working directory to the YAML-chain path. At the end of callback stack, the working directory will be set back. However some problem might occurred if you run another code before the callback finished. Also, for a very rare condition (i.e: You accidentally execute interactive program that will wait user-input forever), the callback might not be executed at all.
+            </td>
     </tr>
     <tr>
         <td>argv</td>
