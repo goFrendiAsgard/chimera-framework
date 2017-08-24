@@ -17,7 +17,7 @@ Chimera-framework has several CLI utilities
         <td>
             Executing YAML chain
         </td>
-    <td>
+    </tr>
     <tr>
         <td>chimera-serve</td>
         </td>
@@ -29,7 +29,7 @@ Chimera-framework has several CLI utilities
         <td>
             Initiate chimera web service, so that any YAML chain in the current directory will be accessible from the network
         </td>
-    <td>
+    </tr>
     <tr>
         <td>chimera-send</td>
         </td>
@@ -37,7 +37,7 @@ Chimera-framework has several CLI utilities
         </td>
         <td>
         </td>
-    <td>
+    </tr>
     <tr>
         <td>chimera-eisn</td>
         </td>
@@ -45,7 +45,7 @@ Chimera-framework has several CLI utilities
         </td>
         <td>
         </td>
-    <td>
+    </tr>
     <tr>
         <td>chimera-init-web</td>
         </td>
@@ -53,5 +53,5 @@ Chimera-framework has several CLI utilities
         </td>
         <td>
         </td>
-    <td>
+    </tr>
 </table>
