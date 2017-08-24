@@ -12,7 +12,7 @@
         <td>chain</td>
         <td>string, YAML chain</td>
         <td rowspan="4">
-            Execute a YAML chain, and executing the callback. If callback is empty, then the result will be printed into stdout.
+            Execute a YAML chain, and executing the callback. If callback is empty, then the result will be printed into stdout. See <a href="#executechain">example</a>
         </td>
     </tr>
     <tr>
@@ -32,6 +32,16 @@
                 <li>success: boolean, true if YAML chain yield no error</li>
                 <li>errorMessage: string, the error message</li>
             </ul>
+        </td>
+    </tr>
+    <tr>
+        <th>getFormattedNanoSecond</th>
+        <td>time</td>
+        <td>
+            high resolution real time in [seconds, nanoseconds], tuple. Usually result of <i>process.hrtime()</i>
+        </td>
+        <td>
+            Return nanoseconds as formatted number. See <a href="#getFormattedNanoSecond">example</a>
         </td>
     </tr>
 </table>
