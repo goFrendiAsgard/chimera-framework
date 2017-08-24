@@ -44,6 +44,30 @@
             Return nanoseconds as formatted number. See <a href="#getFormattedNanoSecond">example</a>
         </td>
     </tr>
+    <tr>
+        <td><b>deepCopyObject</b></td>
+        <td>obj</td>
+        <td>
+            object to be copied
+        </td>
+        <td>
+            Make a copy of an object. See <a href="#deepCopyObject">example</a>
+        </td>
+    </tr>
+    <tr>
+        <td rowspan="2"><b>patchObject</b></td>
+        <td>obj</td>
+        <td>
+            object to be patched
+        </td>
+        <td rowspan="2">
+            Patch an object with patcher. See <a href="#deepCopyObject">example</a>
+        </td>
+    </tr>
+    <tr>
+        <td>patcher</td>
+        <td>object, the patcher</td>
+    </tr>
 </table>
 
 # Example
