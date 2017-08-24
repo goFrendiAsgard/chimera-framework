@@ -8,7 +8,6 @@
         <th>Function Description</th>
     </tr>
 
-    <!-- executeChain -->
     <tr>
         <th rowspan="4">executeChain</th>
         <td>chain</td>
