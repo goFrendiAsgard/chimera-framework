@@ -34,24 +34,30 @@ Chimera-framework has several CLI utilities
         <td>chimera-send</td>
         </td>
         <td>
+            <code>chimera-send [http(s)://server-address:port] [yaml-chain] [input1, [input2], [input3],... [inputN]]</code>
         </td>
         <td>
+            Executing YAML chain remotely. <code>chimera-serve</code> process should be already available in the server.
         </td>
     </tr>
     <tr>
         <td>chimera-eisn</td>
         </td>
         <td>
+            <code>chimera-eisn [source-code-file] [target-file] [compiling-command]</code>
         </td>
         <td>
+            Execute compiing-command if source-code-file's modification time is newer than target-file's modification time
         </td>
     </tr>
     <tr>
         <td>chimera-init-web</td>
         </td>
         <td>
+            <code>chimera-init-web [project-name]</code>
         </td>
         <td>
+            Create a chimera web framework project
         </td>
     </tr>
 </table>
