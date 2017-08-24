@@ -381,18 +381,6 @@ Chimera provide several API:
 
 The complete API list is presented [here](doc/doc.api.md)
 
-# Web Service
-
-Chimera web service will let you run chains in other computer.
-
-To start a chimera web service, you can run `chimera-serve` in the server.
-
-While to use the web service, you can run `chimera-send http://server.com:3000 chain-file.yaml your-first-input your-second-input`.
-
-You can also define TIMEOUT and PUBLISHED directory when running `chimera-serve`. In Unix, you can do this: `TIMEOUT=5000 PUBLISHED=. chimera-serve` to start the web service that only allows client to access chains in current directory. The maximum execution process should be 5000 ms. Otherwise, a request time out will be returned.
-
-Similar mechanism also works when you run `chimera-send`. `TIMEOUT=1000 chimera-send tests/chain-minimal.yaml 4 4` will make the process only waits for maximum 1 second response from server.
-
 # Utilities
 
 * `chimera`
@@ -405,135 +393,9 @@ The complete Utilities list is presented [here](doc/doc.utilities.md)
 
 # Web Framework
 
-## Init Project
+Chimera web framework is still in development phase. The API might changed anytime.
 
-Run this command to scaffold a web project:
-
-```sh
-chimera-init-web myApp
-```
-
-The structure of your web application will be:
-```sh
-▾ myApp/
-  ▸ bin/
-  ▾ chains/
-    ▾ programs/
-        sample.responder.py
-      core.auth.yaml
-      core.configs.yaml
-      core.login.yaml
-      core.logout.yaml
-      core.routes.yaml
-      index.yaml
-  ▸ node_modules/
-  ▾ public/
-    ▸ images/
-    ▸ javascripts/
-    ▸ stylesheets/
-      favicon.ico
-  ▾ views/
-      error.pug
-      index.pug
-      layout.pug
-      sample.respond.pug
-      sample.ejs
-      sample.pug
-    app.js
-    config.yaml
-    package.json
-    route.yaml
-```
-
-To run the web server, you can simply move to `myApp` directory and run `npm start`
-
-## Configurations (config.yaml)
-* `mongo_url` 
-Some core programs are using mongodb.
-
-By default, the value will be `mongodb://localhost/myApp` (depend on your application name).
-
-* `public_path`
-The public directory where you put all static resources (javascript, css, images, etc). 
-
-By default, the value will be `public`.
-
-* `favicon_path`
-The favicon path. 
-
-By default, the value will be `public/favicon.ico`
-
-* `view_path`
-The directory contains view templates (either pug, ejs, or handlebars). 
-
-By default, the value will be `views`
-
-* `error_template` 
-The error template.
-
-By default, the value will be `error.pug`
-
-* `session_secret` 
-The session secret.
-
-By default, the value will be `mySecret`
-
-* `session_max_age`
-Session max age (in seconds).
-
-By default, the value will be `60000`
-
-* `session_save_unitialized`
-
-If this is true, the session will be saved and updated in each request
-
-By default, the value will be `true`
-
-* `session_resave`
-
-By default, the value will be `true`
-
-* `route_chain` 
-
-Route list chain.
-
-The output of the chain should be routes in JSON format.
-
-By default, the value will be `chains/core.routes.yaml`
-
-* `config_chain` 
-
-Config list chain.
-
-The output of the chain should be configs in JSON format.
-
-By default, the value will be `chains/core.configs.yaml`
-
-* `auth_chain` 
-
-Authorization chain, require request.
-
-The output of the chain should be user info in JSON format.
-
-By default, the value will be `chains/core.auth.yaml`
-
-* `migration_chain` 
-
-Migration chain, require config.
-
-The output of the chain should be migration info in JSON format.
-
-By default, the value will be `chains/core.migration.yaml`
-
-
-## Current Features (Under development)
-The already working features:
-* File upload (there but not tested)
-* Cookies & Session (both, retrieving and writing are working)
-* View template (using pug, ejs, and handlebar)
-* Configurations 
-
-![demo](doc/web-framework.png)
+For more information about the web framework, please visit [this](doc/doc.web-framework.md)
 
 # Similar projects, inspirations, and how chimera-framework different from them
 
