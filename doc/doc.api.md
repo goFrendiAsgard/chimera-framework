@@ -7,7 +7,6 @@
         <th>Parameter Description</th>
         <th>Function Description</th>
     </tr>
-
     <tr>
         <th rowspan="4">executeChain</th>
         <td>chain</td>
@@ -26,5 +25,4 @@
         <td>executeCallback</td>
         <td></td>
     </tr>
-
 </table>
