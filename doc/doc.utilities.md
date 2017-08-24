@@ -12,16 +12,22 @@ Chimera-framework has several CLI utilities
         <td>chimera</td>
         </td>
         <td>
+            <code>chimera [yaml-chain] [input1, [input2], [input3],... [inputN]]</code>
         </td>
         <td>
+            Executing YAML chain
         </td>
     <td>
     <tr>
         <td>chimera-serve</td>
         </td>
         <td>
+            <code>chimera-serve</code><br />
+            Or<br />
+            <code>TIMEOUT=[timeout-in-microseconds] PUBLISHED=[published-directory] PORT=[directory] chimera-serve</code>
         </td>
         <td>
+            Initiate chimera web service, so that any YAML chain in the current directory will be accessible from the network
         </td>
     <td>
     <tr>
