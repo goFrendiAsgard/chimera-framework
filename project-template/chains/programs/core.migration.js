@@ -14,9 +14,9 @@ if(process.argv.length > 2){
     configs = process.argv[2]
 }
 // run migration
-migrate(migrationPath, migrationCacheFile, configs)
+processMigrationDir(migrationPath, migrationCacheFile, configs)
 
-function migrate(migrationPath, migrationCacheFile, configs){
+function processMigrationDir(migrationPath, migrationCacheFile, configs){
     // read migrationCacheFile, parse the content into migrationCache (should be array)
     fs.readFile(migrationCacheFile, function(err, data){
         let migrationCache = []
@@ -51,10 +51,10 @@ function processMigrationFiles(migrationPath, migrationCache, configs){
         }
     }
     // run all selected files
-    runMigration(migrationFiles, migrationCache, configs)
+    createProcessAndRunMigration(migrationFiles, migrationCache, configs)
 }
 
-function runMigration(migrationFiles, migrationCache, configs){
+function createProcessAndRunMigration(migrationFiles, migrationCache, configs){
     let failedMigrations = []
     let succeedMigrations = []
     let processList = []
