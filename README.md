@@ -88,17 +88,14 @@ console.log n1 + n2;
 
 In order to assemble the process, we need to build a YAML chain file.  The complete semantic rule of YAML chain is presented [here](doc/doc.chain-semantic.md)
 ```yaml
-# file location process.yaml
+# file location process.yaml 
 ins: a,b
 out: e
 series:
-  − parallel :
-    # Process 1
-    − (a,b) −> php tests/add.php −> c
-    # Process 2
-    − (a,b) −> php tests/add.php −> d
-  # Process 3
-  − (c,d) −> node tests/add.js −> e
+    - parallel:
+        - (a,b) −> php tests/add.php −> c
+        - (a,b) −> php tests/add.php −> d
+    - (c,d) −> node tests/add.js −> e
 ```
 The `Root Process` takes two input, (`a`, and `b`) and yield a single output `e`.
 

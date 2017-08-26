@@ -1,0 +1,8 @@
+# file location process.yaml 
+ins: a,b
+out: e
+series:
+    - parallel:
+        - (a,b) −> php tests/add.php −> c
+        - (a,b) −> php tests/add.php −> d
+    - (c,d) −> node tests/add.js −> e

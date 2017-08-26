@@ -1,20 +1,21 @@
 verbose: true
 vars:
-    config: 
+    config:
         mongo_url: mongodb://localhost/project-template
         table: person
         history: hperson
+        user_id: "u001"
     sharingan_config:
         mongo_url: mongodb://localhost/project-template
         table: person
         history: hperson
         show_deleted: true
+        user_id: "u001"
     sharingan_projection:
         name: 1
         alias: 1
         hperson: 1
         _deleted: 1
-    user: "u001"
     new_data:
         name: "Tono Stark"
         alias: "Ironman"
@@ -22,20 +23,20 @@ vars:
         name: "Toni Stark"
 series:
     # insert new data
-    - ("insert", config, new_data, user) -> node cck.crud.js -> insert_result_1
+    - ("insert", config, new_data) -> node cck.mongo.core.js -> insert_result_1
     - (insert_result_1.row._id) -> echo -> pkValue1
-    - ("getOne", config, pkValue1, user) -> node cck.crud.js -> get_one_result
+    - ("getOne", config, pkValue1) -> node cck.mongo.core.js -> get_one_result
     # update inserted data with a newer one
-    - ("update", config, pkValue1, newer_data, user) -> node cck.crud.js -> update_result
+    - ("update", config, pkValue1, newer_data) -> node cck.mongo.core.js -> update_result
     # insert another data
-    - ("insert", config, new_data, user) -> node cck.crud.js -> insert_result_2
+    - ("insert", config, new_data) -> node cck.mongo.core.js -> insert_result_2
     - (insert_result_2.row._id) -> echo -> pkValue2
     # delete the last one
-    - ("delete", config, pkValue2, user) -> node cck.crud.js -> delete_result
+    - ("delete", config, pkValue2) -> node cck.mongo.core.js -> delete_result
     # get the data
-    - ("get", config) -> node cck.crud.js -> get_result
+    - ("get", config) -> node cck.mongo.core.js -> get_result
     # get it with sharingan activated ...
-    - ("get", sharingan_config, "{}", sharingan_projection) -> node cck.crud.js -> get_sharingan_result
+    - ("get", sharingan_config, "{}", sharingan_projection) -> node cck.mongo.core.js -> get_sharingan_result
     # show the result
     - ins: insert_result_1, get_one_result, update_result, insert_result_2, delete_result, get_result, get_sharingan_result, config
       command: |
