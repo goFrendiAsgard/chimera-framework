@@ -62,19 +62,19 @@ function createProcessAndRunMigration(migrationFiles, migrationCache, configs){
     for(let i=0; i<migrationFiles.length; i++){
         let migrationFile = migrationFiles[i]
         processList.push((callback) => {
-            chimera.executeChain(migrationPath+'/'+migrationFile, [configs], {}, function(output, success){
+            chimera.executeChain(migrationPath+'/'+migrationFile, [configs], {}, function(output, success, errorMessage){
                 if(success){
                     // success
                     console.warn(output)
                     succeedMigrations.push(migrationFile)
                     migrationCache.push(migrationFile)
-                    callback(output, false)
+                    callback(output, false, errorMessage)
                 }
                 else{
                     // error occurred
                     console.error(output)
                     failedMigrations.push(migrationFile)
-                    callback(output, true)
+                    callback(output, true, errorMessage)
                 }
             });
         })

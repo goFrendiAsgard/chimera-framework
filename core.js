@@ -457,7 +457,19 @@ function execute(chainConfigs, argv, presets, executeCallback){
                         showVars(jsScript, vars)
                     }
                     // run callback if there is no error
-                    callback()
+                    if(getVar('_error')){
+                        let errorMessage = getVar('_error_message')
+                        if(errorMessage == 0){
+                            errorMessage = 'Chain execution stopped'
+                        }
+                        showFailure(jsScript)
+                        console.error('Script: ' + jsScript)
+                        console.error(errorMessage)
+                        executeCallback('', false, errorMessage)
+                    }
+                    else{
+                        callback()
+                    }
                 }
                 catch(e){
                     showFailure(jsScript)
@@ -490,7 +502,19 @@ function execute(chainConfigs, argv, presets, executeCallback){
                                 showVars(cmdCommand, vars)
                             }
                             // run callback if there is no error
-                            callback()
+                            if(getVar('_error')){
+                                let errorMessage = getVar('_error_message')
+                                if(errorMessage == 0){
+                                    errorMessage = 'Chain execution stopped'
+                                }
+                                showFailure(cmdCommand)
+                                console.error('Command: ' + cmdCommand)
+                                console.error(errorMessage)
+                                executeCallback('', false, errorMessage)
+                            }
+                            else{
+                                callback()
+                            }
                         }
                         else{
                             showFailure(cmdCommand)

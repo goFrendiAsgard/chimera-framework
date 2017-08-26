@@ -116,7 +116,7 @@ Sometime your process contains several simple logic (i.e: loop and branch). Plea
 
 ```yaml
 # control.yaml
-vars : 
+vars :
     delta : 1
 ins : a
 out : a
@@ -138,7 +138,7 @@ The first process (`(a, delta) -> node programs/add.js -> a`) take `a` and `delt
 
 Once the first process completed (or ignored in case of the initial condition unmet), the second process (`(a, delta) -> node programs/substract.js -> a`) will be executed. The second process will only be executed if `a > 10`.
 
-The process above is logically equal to this flowchart: 
+The process above is logically equal to this flowchart:
 
 ![chimera-control-flowchart](chimera-control-flowchart.png)
 
@@ -174,7 +174,7 @@ gofrendi@minastirith:~/chimera-framework$ chimera tests/chain-complex-vars.yaml 
 [INFO] START PROCESS [php programs/echo.php "{\"x\":4,\"z\":5}"] AT    : 50,016,333,516,851
 [INFO] END PROCESS   [php programs/echo.php "{\"x\":4,\"z\":5}"] AT    : 50,016,441,246,296
 [INFO] PROCESS       [php programs/echo.php "{\"x\":4,\"z\":5}"] TAKES : 107,663,018 NS
-[INFO] STATE AFTER   [php programs/echo.php "{\"x\":4,\"z\":5}"] : 
+[INFO] STATE AFTER   [php programs/echo.php "{\"x\":4,\"z\":5}"] :
         a : 10
         b : 11
         c : ""
@@ -185,7 +185,7 @@ gofrendi@minastirith:~/chimera-framework$ chimera tests/chain-complex-vars.yaml 
 [INFO] START PROCESS [php programs/substract.php "10" "11"] AT    : 50,016,447,803,721
 [INFO] END PROCESS   [php programs/add.php "10" "11"] AT    : 50,016,484,394,967
 [INFO] PROCESS       [php programs/add.php "10" "11"] TAKES : 41,210,854 NS
-[INFO] STATE AFTER   [php programs/add.php "10" "11"] : 
+[INFO] STATE AFTER   [php programs/add.php "10" "11"] :
         a : 10
         b : 11
         c : ""
@@ -194,7 +194,7 @@ gofrendi@minastirith:~/chimera-framework$ chimera tests/chain-complex-vars.yaml 
 [INFO] START PROCESS [php programs/multiply.php "21" "4"] AT    : 50,016,484,957,674
 [INFO] END PROCESS   [php programs/substract.php "10" "11"] AT    : 50,016,487,877,064
 [INFO] PROCESS       [php programs/substract.php "10" "11"] TAKES : 40,039,632 NS
-[INFO] STATE AFTER   [php programs/substract.php "10" "11"] : 
+[INFO] STATE AFTER   [php programs/substract.php "10" "11"] :
         a : 10
         b : 11
         c : ""
@@ -203,14 +203,14 @@ gofrendi@minastirith:~/chimera-framework$ chimera tests/chain-complex-vars.yaml 
 [INFO] START PROCESS [php programs/multiply.php "-1" "4"] AT    : 50,016,488,358,786
 [INFO] END PROCESS   [php programs/multiply.php "21" "4"] AT    : 50,016,513,545,979
 [INFO] PROCESS       [php programs/multiply.php "21" "4"] TAKES : 28,537,199 NS
-[INFO] STATE AFTER   [php programs/multiply.php "21" "4"] : 
+[INFO] STATE AFTER   [php programs/multiply.php "21" "4"] :
         a : 10
         b : 11
         c : ""
         tmp : {"x":4,"z":5,"y":{"addResult":84,"substractResult":-1}}
 [INFO] END PROCESS   [php programs/multiply.php "-1" "4"] AT    : 50,016,519,987,606
 [INFO] PROCESS       [php programs/multiply.php "-1" "4"] TAKES : 31,624,752 NS
-[INFO] STATE AFTER   [php programs/multiply.php "-1" "4"] : 
+[INFO] STATE AFTER   [php programs/multiply.php "-1" "4"] :
         a : 10
         b : 11
         c : ""
@@ -219,7 +219,7 @@ gofrendi@minastirith:~/chimera-framework$ chimera tests/chain-complex-vars.yaml 
 [INFO] START PROCESS [php programs/multiply.php "84" "-4"] AT    : 50,016,520,551,138
 [INFO] END PROCESS   [php programs/multiply.php "84" "-4"] AT    : 50,016,551,898,639
 [INFO] PROCESS       [php programs/multiply.php "84" "-4"] TAKES : 31,342,909 NS
-[INFO] STATE AFTER   [php programs/multiply.php "84" "-4"] : 
+[INFO] STATE AFTER   [php programs/multiply.php "84" "-4"] :
         a : 10
         b : 11
         c : -336
@@ -227,7 +227,24 @@ gofrendi@minastirith:~/chimera-framework$ chimera tests/chain-complex-vars.yaml 
 -336
 ```
 
-## YAML string as argument 
+## Stop Execution
+
+By set `_error` into `true`, you can break the chain execution process. Example:
+
+```yaml
+ins: file, content
+series:
+    - (file, content) -> write-file.yaml -> result
+    - if: "!result.success"
+      parallel:
+        # This will stop the chain execution
+        - ()=>{return true} -> _error
+        - ()=>{return 'Cannot write to file'} -> _error_message
+    # So, if result.success == false, the following process will never be executed
+    - some_other_command -> some_variable
+```
+
+## YAML string as argument
 
 You can also put your YAML content directly as argument.
 
