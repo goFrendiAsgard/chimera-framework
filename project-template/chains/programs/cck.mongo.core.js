@@ -10,7 +10,7 @@ const chimera = require('chimera-framework/core')
 var DEFAULT_CCK_CONFIG = {
     'mongo_url' : '',
     'table' : '',
-    'history' : '',
+    'history' : '_history',
     'deletion_flag' : '_deleted',
     'id' : '_id',
     'modification_time' : '_modified_at',
@@ -18,6 +18,7 @@ var DEFAULT_CCK_CONFIG = {
     'show_deleted' : false,
     'user_id' : null,
 }
+var db = null
 
 function preprocessCckConfig(cckConfig){
     return chimera.patchObject(DEFAULT_CCK_CONFIG, cckConfig)
@@ -25,15 +26,19 @@ function preprocessCckConfig(cckConfig){
 
 function preprocessQuery(cckConfig, query){
     cckConfig = preprocessCckConfig(cckConfig)
-    if(query === null){
+    if(query === null || typeof query == 'undefined'){
         query = {}
     }
     // if query is string, assume it as primary key value and build appropriate query
     if(typeof query == 'string'){
-        let pk = cckConfig.id
-        let newQuery = {}
-        newQuery[pk] = query
-        query = newQuery
+        try{
+            query = JSON.parse(query)
+        }
+        catch(e){
+            let newQuery = {}
+            newQuery[cckConfig.id] = query
+            query = newQuery
+        }
     }
     if(cckConfig.deletion_flag != '' && !cckConfig.show_deleted){
         // create "exists" query
@@ -50,7 +55,7 @@ function preprocessQuery(cckConfig, query){
     return query
 }
 
-function preprocessSingleUpdateData(cckConfig, data){
+function preprocessUpdateData(cckConfig, data){
     // determine whether the data contains update operator or not
     let isContainOperator = false
     for(let key in data){
@@ -67,26 +72,26 @@ function preprocessSingleUpdateData(cckConfig, data){
     }
     // copy the data for historical purpose
     let dataCopy = chimera.deepCopyObject(data)
+    // remove $set, $push, and other update operators
+    let newDataCopy = {}
+    for(let key in dataCopy){
+        if(key[0] == '$'){
+            newDataCopy[key.substring(1)] = dataCopy[key]
+        }
+        else{
+            newDataCopy[key] = dataCopy[key]
+        }
+    }
+    dataCopy = newDataCopy
+    // set modifier and modification time
     dataCopy[cckConfig.modification_by] = cckConfig.user_id
     dataCopy[cckConfig.modification_time] = Date.now()
+    // add dataCopy as history
     if(!('$push' in data)){
-        data['$push'] = []
+        data['$push'] = {}
     }
     data['$push'][cckConfig.history] = dataCopy
     return data
-}
-
-function preprocessUpdateData(cckConfig, data){
-    cckConfig = preprocessCckConfig(cckConfig)
-    if(Array.isArray(data)){
-        newData = []
-        for(let i=0; i<data.length; i++){
-            let doc = data[i]
-            newData.push(preprocessSingleUpdateData(cckConfig, data))
-        }
-        return newData
-    }
-    return preprocessSingleUpdateData(cckConfig, data)
 }
 
 function preprocessSingleInsertData(cckConfig, data){
@@ -112,21 +117,28 @@ function preprocessInsertData(cckConfig, data){
 }
 
 function initCollection(cckConfig){
-    let db = monk(cckConfig.mongo_url)
+    if(db === null){
+        db = monk(cckConfig.mongo_url)
+    }
     return db.get(cckConfig.table)
 }
 
 function find(cckConfig, query, projection, callback){
     cckConfig = preprocessCckConfig(cckConfig)
     let collection = initCollection(cckConfig)
-    query = preprocessQuery(query)
+    query = preprocessQuery(cckConfig, query)
     return collection.find(query, projection, function(err, docs){
+        // close the database
+        if(db != null){
+            db.close()
+        }
+        // deal with callback
         if(callback == null){
             if(err){
                 console.error(JSON.stringify({'error':err, 'docs':[]}))
             }
             else{
-                console.log({'error':err, 'docs':doc})
+                console.log(JSON.stringify({'error':err, 'docs':docs}))
             }
         }
         else{
@@ -138,18 +150,23 @@ function find(cckConfig, query, projection, callback){
 function findOne(cckConfig, query, projection, callback){
     cckConfig = preprocessCckConfig(cckConfig)
     let collection = initCollection(cckConfig)
-    query = preprocessQuery(query)
+    query = preprocessQuery(cckConfig, query)
     return collection.findOne(query, projection, function(err, doc){
+        // close the database
+        if(db != null){
+            db.close()
+        }
+        // deal with callback
         if(callback == null){
             if(err){
-                console.error(JSON.stringify({'error':err, 'doc':[]}))
+                console.error(JSON.stringify({'error':err, 'doc':{} }))
             }
             else{
-                console.log({'error':err, 'doc':doc})
+                console.log(JSON.stringify({'error':err, 'doc':doc}))
             }
         }
         else{
-            callback(err, docs)
+            callback(err, doc)
         }
     })
 }
@@ -159,16 +176,21 @@ function insert(cckConfig, data, options, callback){
     let collection = initCollection(cckConfig)
     data = preprocessInsertData(cckConfig, data)
     return collection.insert(data, options, function(err, doc){
+        // close the database
+        if(db != null){
+            db.close()
+        }
+        // deal with callback
         if(callback == null){
             if(err){
-                console.error(JSON.stringify({'error':err, 'doc':[]}))
+                console.error(JSON.stringify({'error':err, 'doc':{} }))
             }
             else{
-                console.log({'error':err, 'doc':doc})
+                console.log(JSON.stringify({'error':err, 'doc':doc}))
             }
         }
         else{
-            callback(err, docs)
+            callback(err, doc)
         }
     })
 }
@@ -177,24 +199,42 @@ function update(cckConfig, query, data, options, callback){
     cckConfig = preprocessCckConfig(cckConfig)
     let collection = initCollection(cckConfig)
     data = preprocessUpdateData(cckConfig, data)
-    query = preprocessQuery(query)
-    return collection.update(data, options, function(err, doc){
+    query = preprocessQuery(cckConfig, query)
+    return collection.update(query, data, options, function(err, result){
+        // close the database
+        if(db != null){
+            db.close()
+        }
+        // deal with callback
         if(callback == null){
             if(err){
-                console.error(JSON.stringify({'error':err, 'doc':[]}))
+                console.error(JSON.stringify({'error':err, 'result':result, 'docs':{}}))
             }
             else{
-                console.log({'error':err, 'doc':doc})
+                if(result.n > 0){
+                    find(cckConfig, query, null, function(findErr, docs){
+                        if(err){
+                            console.error(JSON.stringify({'error':findErr, 'result':result, 'docs':{}}))
+                        }
+                        else{
+                            console.log(JSON.stringify({'error':err, 'result':result, 'docs':docs}))
+                        }
+                    })
+                }
+                else{
+                    console.error(JSON.stringify({'error':err, 'result':result, 'docs':{}}))
+                }
             }
         }
         else{
-            callback(err, docs)
+            callback(err, result)
         }
     })
 }
 
 function remove(cckConfig, query, options, callback){
     cckConfig = preprocessCckConfig(cckConfig)
+    cckConfig.show_deleted = true
     let data = {}
     data[cckConfig.deletion_flag] = 1
     return update(cckConfig, query, data, options, callback)
@@ -220,16 +260,16 @@ function isParameterValid(){
                 return true
             }
             else if(action == 'getOne'){
-                return process.argv.length >= 5
+                return process.argv.length >= 4
             }
             else if(action == 'insert'){
-                return process.argv.length >= 6
+                return process.argv.length >= 5
             }
             else if(action == 'update'){
-                return process.argv.length >= 7
+                return process.argv.length >= 6
             }
             else if(action == 'delete'){
-                return process.argv.length >= 6
+                return process.argv.length >= 5
             }
         }
     }
@@ -249,33 +289,42 @@ if(require.main === module){
         console.log(JSON.stringify({'success': false, 'error_message': 'Missing or invalid parameters'}))
     }
     else{
-        let action = process.argv[2]
-        let cckConfig = preprocessCckConfig(JSON.parse(process.argv[3]))
-        if(action == 'get'){
-            let query = process.argv.length > 4? process.argv[4] : {}
-            let projection = process.argv.length > 5? process.argv[5] : {}
-            find(cckConfig, query, projection)
-        }
-        else if(action == 'getOne'){
-            let query = process.argv.length > 4? process.argv[4] : {}
-            let projection = process.argv.length > 5? process.argv[5] : {}
-            findOne(cckConfig, query, projection)
-        }
-        else if(action == 'insert'){
-            let data = process.argv.length > 4? process.argv[4] : {}
-            let options = process.argv.length > 5? process.argv[5] : {}
-            insert(cckConfig, query, projection)
-        }
-        else if(action == 'update'){
-            let query = process.argv.length > 4? process.argv[4] : {}
-            let data = process.argv.length > 5? process.argv[5] : {}
-            let options = process.argv.length > 6? process.argv[6] : {}
-            update(cckConfig, query, data, options)
-        }
-        else if(action == 'delete'){
-            let query = process.argv.length > 4? process.argv[4] : {}
-            let options = process.argv.length > 5? process.argv[5] : {}
-            remove(cckConfig, query, options)
+        try{
+            let action = process.argv[2]
+            let cckConfig = preprocessCckConfig(JSON.parse(process.argv[3]))
+            if(action == 'get'){
+                let query = process.argv.length > 4? process.argv[4] : {}
+                let projection = process.argv.length > 5? JSON.parse(process.argv[5]) : {}
+                find(cckConfig, query, projection)
+            }
+            else if(action == 'getOne'){
+                let query = process.argv.length > 4? process.argv[4] : {}
+                let projection = process.argv.length > 5? JSON.parse(process.argv[5]) : {}
+                findOne(cckConfig, query, projection)
+            }
+            else if(action == 'insert'){
+                let data = process.argv.length > 4? JSON.parse(process.argv[4]) : {}
+                let options = process.argv.length > 5? JSON.parse(process.argv[5]) : {}
+                insert(cckConfig, data, options)
+            }
+            else if(action == 'update'){
+                let query = process.argv.length > 4? process.argv[4] : {}
+                let data = process.argv.length > 5? JSON.parse(process.argv[5]) : {}
+                let options = process.argv.length > 6? JSON.parse(process.argv[6]) : {}
+                update(cckConfig, query, data, options)
+            }
+            else if(action == 'delete'){
+                let query = process.argv.length > 4? process.argv[4] : {}
+                let options = process.argv.length > 5? JSON.parse(process.argv[5]) : {}
+                remove(cckConfig, query, options)
+            }
+        
+        }catch(err){
+            console.error(err)
+            console.log(JSON.stringify({'success': false, 'error_message': 'Operation failure, invalid parameters'}))
+            if(db != null){
+                db.close()
+            }
         }
     }
 }

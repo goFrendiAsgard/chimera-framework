@@ -3,18 +3,16 @@ vars:
     config:
         mongo_url: mongodb://localhost/project-template
         table: person
-        history: hperson
         user_id: "u001"
     sharingan_config:
         mongo_url: mongodb://localhost/project-template
         table: person
-        history: hperson
         show_deleted: true
         user_id: "u001"
     sharingan_projection:
         name: 1
         alias: 1
-        hperson: 1
+        _history: 1
         _deleted: 1
     new_data:
         name: "Tono Stark"
@@ -24,13 +22,13 @@ vars:
 series:
     # insert new data
     - ("insert", config, new_data) -> node cck.mongo.core.js -> insert_result_1
-    - (insert_result_1.row._id) -> echo -> pkValue1
+    - (insert_result_1.doc._id) -> echo -> pkValue1
     - ("getOne", config, pkValue1) -> node cck.mongo.core.js -> get_one_result
     # update inserted data with a newer one
     - ("update", config, pkValue1, newer_data) -> node cck.mongo.core.js -> update_result
     # insert another data
     - ("insert", config, new_data) -> node cck.mongo.core.js -> insert_result_2
-    - (insert_result_2.row._id) -> echo -> pkValue2
+    - (insert_result_2.doc._id) -> echo -> pkValue2
     # delete the last one
     - ("delete", config, pkValue2) -> node cck.mongo.core.js -> delete_result
     # get the data
