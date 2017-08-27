@@ -22,15 +22,13 @@ vars:
 series:
     # insert new data
     - ("insert", config, new_data) -> node cck.mongo.core.js -> insert_result_1
-    - (insert_result_1.doc._id) -> echo -> pkValue1
-    - ("getOne", config, pkValue1) -> node cck.mongo.core.js -> get_one_result
+    - ("getOne", config, insert_result_1.doc._id) -> node cck.mongo.core.js -> get_one_result
     # update inserted data with a newer one
-    - ("update", config, pkValue1, newer_data) -> node cck.mongo.core.js -> update_result
+    - ("update", config, insert_result_1.doc, newer_data) -> node cck.mongo.core.js -> update_result
     # insert another data
     - ("insert", config, new_data) -> node cck.mongo.core.js -> insert_result_2
-    - (insert_result_2.doc._id) -> echo -> pkValue2
     # delete the last one
-    - ("delete", config, pkValue2) -> node cck.mongo.core.js -> delete_result
+    - ("delete", config, insert_result_2.doc._id) -> node cck.mongo.core.js -> delete_result
     # get the data
     - ("get", config) -> node cck.mongo.core.js -> get_result
     # get it with sharingan activated ...

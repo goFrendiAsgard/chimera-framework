@@ -34,7 +34,7 @@ function patchObject(obj, patcher){
     for(let key in patcher){
         if((key in newObj) && !Array.isArray(newObj[key]) && (typeof newObj[key] == 'object') && (typeof patcher[key] == 'object')){
             // recursive patch for if value type is newObject
-            newObj[key] = patchnewObject(newObj[key], patcher[key])
+            newObj[key] = patchObject(newObj[key], patcher[key])
         }
         else{
             // simple replacement if value type is not newObject
@@ -224,10 +224,13 @@ function trimProcessName(processName){
  * Example:
  *  startTime = showStartTime('myProcess')
  */
-function showStartTime(processName){
+function showStartTime(processName, chainDescription){
     let trimmedProcessName = trimProcessName(processName)
     let startTime = process.hrtime();
-    console.warn('[INFO] PROCESS :      ' + processName)
+    if(chainDescription != ''){
+        console.warn('[INFO] ' + String(chainDescription))
+    }
+    console.warn('[INFO] PROCESS : ' + processName)
     console.warn('[INFO] START PROCESS [' + trimmedProcessName + '] AT    : ' + getFormattedNanoSecond(startTime))
     return startTime
 }
@@ -275,7 +278,7 @@ function showFailure(processName){
  * @params {object} presets
  * @params {function} executeCallback
  */
-function execute(chainConfigs, argv, presets, executeCallback){
+function execute(chainConfigs, argv, presets, executeCallback, chainDescription){
     // argv should be array or object
     if(typeof(argv) != 'object'){
         argv = []
@@ -446,7 +449,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
             if(chainCommand.match(/.*=>.*/g)){
                 let jsScript = '(' + chainCommand + ')(' + parameters.join(', ') + ')'
                 if(verbose){
-                    startTime = showStartTime(jsScript)
+                    startTime = showStartTime(jsScript, chainDescription)
                 }
                 try{
                     let output = eval(jsScript)
@@ -484,7 +487,7 @@ function execute(chainConfigs, argv, presets, executeCallback){
                 let cmdCommand = chainCommand + ' ' + parameters.join(' ')
                 // benchmarking
                 if(verbose){
-                    startTime = showStartTime(cmdCommand)
+                    startTime = showStartTime(cmdCommand, chainDescription)
                 }
                 // run the command
                 try{
@@ -658,6 +661,7 @@ function executeChain(chain, argv, presets, executeCallback){
     fs.readFile(chain, function(err, data){
         let currentPath = process.cwd()
         let chainString = ''
+        let chainDescription = ''
         if(!err){
             // chain is really a file
             let yamlParts = chain.split('/')
@@ -668,10 +672,12 @@ function executeChain(chain, argv, presets, executeCallback){
                 process.chdir(path)
             }
             chainString = data
+            chainDescription = 'FILE    : ' + chain
         }
         else{
             // chain is actualy a string, not a file
             chainString = chain
+            chainDescription = 'CHAIN   : ' + chain
         }
         // get chainConfigs
         let chainConfigs = {}
@@ -685,7 +691,7 @@ function executeChain(chain, argv, presets, executeCallback){
             catch(jsonError){
                 console.warn('[ERROR] Not a valid YAML or JSON format')
                 console.warn('\nString:')
-                console.warn(chainString)
+                console.warn(String(chainString))
                 console.warn('\nYAML Error:')
                 console.warn(yamlError)
                 console.warn('\nJSON Error:')
@@ -712,7 +718,7 @@ function executeChain(chain, argv, presets, executeCallback){
                 }
             }
         }
-        execute(chainConfigs, argv, presets, alteredCallback)
+        execute(chainConfigs, argv, presets, alteredCallback, chainDescription)
     })
 }
 

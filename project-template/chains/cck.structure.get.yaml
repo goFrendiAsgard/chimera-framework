@@ -1,5 +1,5 @@
 ins: config, table
-out: row
+out: doc
 verbose: true
 series:
 
@@ -9,13 +9,5 @@ series:
         - (table) -> (t)=>{return JSON.stringify({'table':t})} -> query
 
     # get result
-    - (structure_config, query) -> node programs/cck.crud.js get -> result
-
-    # return first row of result or empty object
-    - parallel:
-        - if: "result.rows.length > 0"
-          command: |
-              (result.rows) -> (rows)=>{return rows[0]} -> row
-        - if: "result.rows.length == 0"
-          command: |
-              () -> ()=>{return JSON.stringify({})} -> row
+    - (structure_config, query) -> node programs/cck.mongo.core.js getOne -> result
+    - (result.doc) -> (doc)=>{return doc} -> doc

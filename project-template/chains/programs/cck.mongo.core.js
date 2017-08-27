@@ -55,6 +55,23 @@ function preprocessQuery(cckConfig, query){
     return query
 }
 
+function preprocessProjection(cckConfig, projection){
+    cckConfig = preprocessCckConfig(cckConfig)
+    if(projection === null || typeof projection == 'undefined'){
+        projection = {}
+    }
+    // if not show_deleted, don't show deletion_flag 
+    if(Object.keys(projection).length == 0 && !cckConfig.show_deleted){
+        if(cckConfig.deletion_flag != '' ){
+            projection[cckConfig.deletion_flag] = 0
+        }
+        if(cckConfig.history != ''){
+            projection[cckConfig.history] = 0
+        }
+    }
+    return projection
+}
+
 function preprocessUpdateData(cckConfig, data){
     // determine whether the data contains update operator or not
     let isContainOperator = false
@@ -97,9 +114,10 @@ function preprocessUpdateData(cckConfig, data){
 function preprocessSingleInsertData(cckConfig, data){
     // copy the data for historical purpose
     let dataCopy = chimera.deepCopyObject(data)
-    dataCopy[cckConfig.modification_by] = cckConfig.user_id
-    dataCopy[cckConfig.modification_time] = Date.now()
-    data[cckConfig.history] = [dataCopy]
+    let historyData = {'set' : dataCopy}
+    historyData[cckConfig.modification_by] = cckConfig.user_id
+    historyData[cckConfig.modification_time] = Date.now()
+    data[cckConfig.history] = [historyData]
     return data
 }
 
@@ -127,18 +145,21 @@ function find(cckConfig, query, projection, callback){
     cckConfig = preprocessCckConfig(cckConfig)
     let collection = initCollection(cckConfig)
     query = preprocessQuery(cckConfig, query)
+    projection = preprocessProjection(cckConfig, projection)
     return collection.find(query, projection, function(err, docs){
         // close the database
         if(db != null){
             db.close()
+            db = null
         }
         // deal with callback
-        if(callback == null){
+        if(callback == null || typeof callback == 'undefined'){
             if(err){
-                console.error(JSON.stringify({'error':err, 'docs':[]}))
+                console.error(err)
+                console.log(JSON.stringify({'success': false, 'error': err, 'docs': []}))
             }
             else{
-                console.log(JSON.stringify({'error':err, 'docs':docs}))
+                console.log(JSON.stringify({'success': true, 'error': err, 'docs': docs}))
             }
         }
         else{
@@ -151,18 +172,21 @@ function findOne(cckConfig, query, projection, callback){
     cckConfig = preprocessCckConfig(cckConfig)
     let collection = initCollection(cckConfig)
     query = preprocessQuery(cckConfig, query)
+    projection = preprocessProjection(cckConfig, projection)
     return collection.findOne(query, projection, function(err, doc){
         // close the database
         if(db != null){
             db.close()
+            db = null
         }
         // deal with callback
-        if(callback == null){
+        if(callback == null || typeof callback == 'undefined'){
             if(err){
-                console.error(JSON.stringify({'error':err, 'doc':{} }))
+                console.error(err)
+                console.log(JSON.stringify({'success': false, 'error':err, 'doc':{} }))
             }
             else{
-                console.log(JSON.stringify({'error':err, 'doc':doc}))
+                console.log(JSON.stringify({'success': true, 'error':err, 'doc':doc}))
             }
         }
         else{
@@ -175,18 +199,21 @@ function insert(cckConfig, data, options, callback){
     cckConfig = preprocessCckConfig(cckConfig)
     let collection = initCollection(cckConfig)
     data = preprocessInsertData(cckConfig, data)
+    data[cckConfig.deletion_flag] = 0
     return collection.insert(data, options, function(err, doc){
         // close the database
         if(db != null){
             db.close()
+            db = null
         }
         // deal with callback
-        if(callback == null){
+        if(callback == null || typeof callback == 'undefined'){
             if(err){
-                console.error(JSON.stringify({'error':err, 'doc':{} }))
+                console.error(err)
+                console.log(JSON.stringify({'success': false, 'error': err, 'doc': {} }))
             }
             else{
-                console.log(JSON.stringify({'error':err, 'doc':doc}))
+                console.log(JSON.stringify({'success': true, 'error': err, 'doc': doc}))
             }
         }
         else{
@@ -204,25 +231,29 @@ function update(cckConfig, query, data, options, callback){
         // close the database
         if(db != null){
             db.close()
+            db = null
         }
         // deal with callback
-        if(callback == null){
+        if(callback == null || typeof callback == 'undefined'){
             if(err){
-                console.error(JSON.stringify({'error':err, 'result':result, 'docs':{}}))
+                console.error(err)
+                console.log(JSON.stringify({'success': false, 'error': err, 'result': result, 'docs':{}}))
             }
             else{
                 if(result.n > 0){
                     find(cckConfig, query, null, function(findErr, docs){
                         if(err){
-                            console.error(JSON.stringify({'error':findErr, 'result':result, 'docs':{}}))
+                            console.error(err)
+                            console.log(JSON.stringify({'success': true, 'error': findErr, 'result': result, 'docs': {}}))
                         }
                         else{
-                            console.log(JSON.stringify({'error':err, 'result':result, 'docs':docs}))
+                            console.log(JSON.stringify({'success': true, 'error': err, 'result': result, 'docs': docs}))
                         }
                     })
                 }
                 else{
-                    console.error(JSON.stringify({'error':err, 'result':result, 'docs':{}}))
+                    console.error(err)
+                    console.log(JSON.stringify({'success': true, 'error': err, 'result': result, 'docs': {}}))
                 }
             }
         }

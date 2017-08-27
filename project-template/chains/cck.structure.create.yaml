@@ -22,20 +22,15 @@ series:
             # if structure exists, update it
             - if: "('_id' in structure)"
               series:
-                - (structure_config, structure._id, schema.structure, user) -> node programs/cck.crud.js update -> update_result
+                - (structure_config, structure._id, schema.structure, user) -> node programs/cck.mongo.core.js update -> update_result
 
             # if the structure doesn't exist, insert it
             - if: "!('_id' in structure)"
               series:
-                - (structure_config, schema.structure, user_id) -> node programs/cck.crud.js insert -> insert_result
+                - (structure_config, schema.structure, user_id) -> node programs/cck.mongo.core.js insert -> insert_result
                 - (insert_result) -> (insert_result)=>{return insert_result.row} -> structure
 
         # insert data
-        - () -> ()=>{return 0;} -> i
         - if: "'data' in schema"
-          series: 
-            - (schema.data, i) -> (schema_data, i)=>{return schema_data[i]} -> new_data
-            - (table_config, new_data, user_id) -> node programs/cck.crud.js insert -> new_data
-            - (i) -> (i)=>{return i+1;} -> i
-          while: 'i<schema.data.length'
+          command: (schema.data)-> node programs/cck.mongo.core.js insert
 
