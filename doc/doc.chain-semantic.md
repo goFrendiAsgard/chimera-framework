@@ -101,6 +101,12 @@ command: [Command]
 [Command] -> [Output]
 ```
 
+```yaml
+([Input]) ->-> [Output]
+```
+
+__Note:__ without `Command` specified (i.e: when you use `([Input]) ->-> [Output]` syntax), the default command will be used (`(...args)=>{if(args.length==1){return args[0];}else{return args;}}`). Thus the `Input` will be copied into `Output` directly.
+
 ## Mode
 
 `Mode` is either `serial` or `parallel`
