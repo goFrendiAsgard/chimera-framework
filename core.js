@@ -122,6 +122,11 @@ function preprocessCommand(chain){
                 chain.out = commandParts[1]
             }
         }
+        // if chain is empty, then copy ins into output
+        if(chain.command == ''){
+            // if only single argument is present, then return it, otherwise combine the arguments as array 
+            chain.command = '(...args)=>{if(args.length==1){return args[0];}else{return args;}}';
+        }
     }
     return chain
 }
