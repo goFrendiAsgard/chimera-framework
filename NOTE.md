@@ -30,3 +30,8 @@ This note is intended for developers. You might not need it
     - `git commit -m 'commit description'`
     - `git push -u origin master`
 * `sudo npm publish`
+
+## Todo
+* [ ] Simpler error handling (i.e: introduce `error:`, `error_message:`, and `error_action` into YAML semantic)
+* [ ] More robust migration and CRUD
+* [ ] Completing CCK
