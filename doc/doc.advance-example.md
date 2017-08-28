@@ -244,6 +244,19 @@ series:
     - some_other_command -> some_variable
 ```
 
+The simpler way to do this is:
+
+```yaml
+ins: file, content
+series:
+    - ins: file, content
+      out: result
+      command: write-file.yaml
+      error: "!result.success"
+      error_message: "Cannot write to file"
+    - some_other_command -> some_variable
+```
+
 ## YAML string as argument
 
 You can also put your YAML content directly as argument.

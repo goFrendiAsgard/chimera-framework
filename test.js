@@ -52,6 +52,15 @@ function testExecuteChain(testName, chain, inputs, presets, expectedResult, call
 // Run the test
 async.series([
 
+    // run chimera server
+    (callback) => {
+        console.log('Run chimera-serve on port 3010')
+        serverProcess = cmd.get('PORT=3010 chimera-serve')
+        console.log('The process id was ' + serverProcess.pid)
+        callback()
+    },
+
+
     // test execute chain
 
     (callback) => {testExecuteChain('Test executeChain without presets',
@@ -67,6 +76,21 @@ async.series([
         'tests/chain-infinite-loop.yaml', [0], {}, '', callback)},
 
     // test execute command
+
+    (callback) => {testExecuteCommand('Test error handling: no error',
+        'chimera tests/chain-error-handling.yaml 6 6', 12, callback)},
+
+    (callback) => {testExecuteCommand('Test error handling: error less',
+        'chimera tests/chain-error-handling.yaml 5 6', '', callback)},
+
+    (callback) => {testExecuteCommand('Test error handling: error more',
+        'chimera tests/chain-error-handling.yaml 6 5', '', callback)},
+
+    (callback) => {testExecuteCommand('Test Empty process with single argument',
+        'chimera "(a)->-> b" 6', 6, callback)},
+
+    (callback) => {testExecuteCommand('Test Empty process with two argument',
+        'chimera "(a,b)->->(c)" 6 5', '[6,5]', callback)},
 
     (callback) => {testExecuteCommand('Test JSON instead of YAML',
         'chimera tests/chain-add.json 1 5', 6, callback)},
@@ -103,14 +127,6 @@ async.series([
 
     (callback) => {testExecuteCommand('Test chain-complex-vars',
         'chimera tests/chain-complex-vars.yaml 5 6', -176, callback)},
-
-    // run chimera server
-    (callback) => {
-        console.log('Run chimera-serve on port 3010')
-        serverProcess = cmd.get('PORT=3010 chimera-serve')
-        console.log('The process id was ' + serverProcess.pid)
-        callback()
-    },
 
     (callback) => {testExecuteCommand('Test chain-distributed',
         'chimera tests/chain-distributed.yaml 5 4 http://localhost:3010', 18, callback)},

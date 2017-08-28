@@ -32,6 +32,7 @@ This note is intended for developers. You might not need it
 * `sudo npm publish`
 
 ## Todo
-* [ ] Simpler error handling (i.e: introduce `error:`, `error_message:`, and `error_action` into YAML semantic)
-* [ ] More robust migration and CRUD
+* [x] Simpler error handling (i.e: introduce `error:`, `error_message:`, and `error_action` into YAML semantic)
+* [x] Add testing for error handling
+* [x] More robust migration and CRUD
 * [ ] Completing CCK

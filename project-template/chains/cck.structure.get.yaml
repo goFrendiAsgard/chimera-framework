@@ -10,4 +10,5 @@ series:
 
     # get result
     - (structure_config, query) -> node programs/cck.mongo.core.js getOne -> result
+    - error: "result.success==false"
     - (result.doc) -> (doc)=>{return doc} -> doc

@@ -5,6 +5,7 @@
 # There will be no output
 
 ins: config, schema, user_id
+out: structure
 verbose: true
 series:
 
@@ -23,14 +24,17 @@ series:
             - if: "('_id' in structure)"
               series:
                 - (structure_config, structure._id, schema.structure, user) -> node programs/cck.mongo.core.js update -> update_result
+                - error: "update_result.success==false"
 
             # if the structure doesn't exist, insert it
             - if: "!('_id' in structure)"
               series:
                 - (structure_config, schema.structure, user_id) -> node programs/cck.mongo.core.js insert -> insert_result
-                - (insert_result) -> (insert_result)=>{return insert_result.row} -> structure
+                - error: "insert_result.success==false || insert_result.docs.length == 0"
+                - (insert_result) -> (insert_result)=>{return insert_result.docs[0]} -> structure
 
         # insert data
         - if: "'data' in schema"
-          command: (schema.data)-> node programs/cck.mongo.core.js insert
+          command: (schema.data)-> node programs/cck.mongo.core.js insert -> insert_result
+          error: "insert_result.success==false" 
 

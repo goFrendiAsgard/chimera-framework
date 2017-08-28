@@ -124,7 +124,7 @@ function preprocessCommand(chain){
         }
         // if chain is empty, then copy ins into output
         if(chain.command == ''){
-            // if only single argument is present, then return it, otherwise combine the arguments as array 
+            // if only single argument is present, then return it, otherwise combine the arguments as array
             chain.command = '(...args)=>{if(args.length==1){return args[0];}else{return args;}}';
         }
     }
@@ -179,6 +179,35 @@ function preprocessChain(chain, isRoot){
             chain.mode = 'parallel'
             chain.chains = chain.parallel
             delete chain.parallel
+        }
+        // preprocess 'error'
+        if('error' in chain && (('mode' in chain && 'chains' in chain) || 'command' in chain)){
+            let subChain = {}
+            if('mode' in chain && 'chains' in chain){
+                subChain.mode = chain.mode
+                subChain.chains = chain.chains
+                delete chain.mode
+                delete chain.chains
+            }
+            else if('command' in chain){
+                subChain.mode = 'series'
+                subChain.command = chain.command
+                delete chain.command
+            }
+            chain.mode = 'series'
+            // create last chain
+            let lastChain = {'if': chain.error, 'mode': 'series', 'chains' : []}
+            if('error_message' in chain){
+                lastChain.chains.push('('+JSON.stringify(chain.error_message)+')->->_error_message')
+            }
+            if('error_actions' in chain){
+                for(let i=0; i<chain.error_actions.length; i++){
+                    let action = chain.error_actions[i]
+                    lastChain.chains.push(action)
+                }
+            }
+            lastChain.chains.push('("true")->->_error')
+            chain.chains = [subChain, lastChain]
         }
         // recursive preprocessing
         if('chains' in chain){
@@ -470,9 +499,10 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                         if(errorMessage == 0){
                             errorMessage = 'Chain execution stopped'
                         }
-                        showFailure(jsScript)
-                        console.error('Script: ' + jsScript)
-                        console.error(errorMessage)
+
+                        console.error('[ERROR] ERROR CONDITION DETECTED : _err=true')
+                        console.error('[ERROR] ERROR MESSAGE : '+errorMessage)
+                        console.error('[ERROR] SCRIPT : ' + jsScript)
                         executeCallback('', false, errorMessage)
                     }
                     else{
@@ -481,8 +511,8 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                 }
                 catch(e){
                     showFailure(jsScript)
-                    console.error('Script: ' + jsScript)
                     console.error(e)
+                    console.error('[ERROR] SCRIPT : ' + jsScript)
                     executeCallback('', false, e)
                 }
             }
@@ -515,8 +545,9 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                                 if(errorMessage == 0){
                                     errorMessage = 'Chain execution stopped'
                                 }
-                                showFailure(cmdCommand)
-                                console.error('Command: ' + cmdCommand)
+                                console.error('[ERROR] ERROR CONDITION DETECTED : _err=true')
+                                console.error('[ERROR] ERROR MESSAGE : '+errorMessage)
+                                console.error('[ERROR] COMMAND : ' + cmdCommand)
                                 console.error(errorMessage)
                                 executeCallback('', false, errorMessage)
                             }
@@ -526,7 +557,7 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                         }
                         else{
                             showFailure(cmdCommand)
-                            console.error('Command: ' + cmdCommand)
+                            console.error('[ERROR] COMMAND : ' + cmdCommand)
                             console.error(err)
                             executeCallback('', false, err)
                         }

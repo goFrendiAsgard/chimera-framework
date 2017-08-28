@@ -4,20 +4,16 @@ Chimera is a Component Based Software Engineering Framework. In order to define 
 
 All chain file should contains single `Root Process`. The semantic of YAML chain file is specified as follow:
 
+__Note:__ Everything between `[` and `]` are optional, but everything between `<` and `>` are mandatory. For example, a `Root_process` might contains `vars: <Variable_declaration>`. On the other hand, any `vars:` should be followed by `Variable_declaration`
+
 ## Root_process
 
 Complete `Root_process` is as follow:
 
 ```yaml
-vars: [Variable_declaration]
-verbose: [Boolean]
-[Process]
-```
-
-In some cases, you can ommit `Variable_declaration` and verbosity behavior.
-
-```yaml
-[Process]
+[vars: <Variable_declaration>]
+[verbose: <Boolean>]
+[<Process>]
 ```
 
 ## Boolean
@@ -37,8 +33,8 @@ false
 `Variable_declaration` consists of `Variable_name : Value` pairs
 
 ```yaml
-[Variable_name] : [Value]
-[Variable_name] : [Value]
+<Variable_name> : <Value>
+<Variable_name> : <Value>
 ...
 ```
 
@@ -47,7 +43,7 @@ false
 Any valid `String` can be used as `Variable_name`
 
 ```yaml
-[String]
+<String>
 ```
 
 ## Value
@@ -55,7 +51,7 @@ Any valid `String` can be used as `Variable_name`
 Any valid `String` can be used as `Value`
 
 ```yaml
-[String]
+<String>
 ```
 
 ## Process
@@ -63,49 +59,73 @@ Any valid `String` can be used as `Value`
 There are several ways to write `Process`
 
 ```yaml
-ins: [Input]
-out: [Output]
-mode: [Mode]
-chains:
-    - [Process]
-    - [Process]
-    - ...
+[ins: <Input>]
+[out: <Output>]
+[mode: <Mode>]
+[if: <Condition>]
+[chains:
+    - <Process>
+    - <Process>
+    - ...]
+[while: <Condition>]
+[error: <Condition>]
+[error_message: <String>]
+[error_action:
+    - <Process>
+    - <Process>
+    - ...]
 ```
 
 ```yaml
-ins: [Input]
-out: [Output]
-[Mode]:
-    - [Process]
-    - [Process]
-    - ...
+[ins: <Input>]
+[out: <Output>]
+[if: <Condition>]
+[<Mode>:
+    - <Process>
+    - <Process>
+    - ...]
+[while: <Condition>]
+[error: <Condition>]
+[error_message: <String>]
+[error_action:
+    - <Process>
+    - <Process>
+    - ...]
 ```
 
 ```yaml
-ins: [Input]
-out: [Output]
-command: [Command]
+[ins: <Input>]
+[out: <Output>]
+[if: <Condition>]
+[Command: <Command>]
+[while: <Condition>]
+[error: <Condition>]
+[error_message: <String>]
+[error_action:
+    - <Process>
+    - <Process>
+    - ...]
 ```
 
 `Process` can also be written in a single line
 
 ```yaml
-([Input]) -> [Command] -> [Output]
+(<Input>) -> <Command> -> <Output>
 ```
 
 ```yaml
-([Input]) -> [Command]
+(<Input>) -> <Command>
 ```
 
 ```yaml
-[Command] -> [Output]
+<Command> -> <Output>
 ```
 
 ```yaml
-([Input]) ->-> [Output]
+(<Input>) ->-> <Output>
 ```
 
-__Note:__ without `Command` specified (i.e: when you use `([Input]) ->-> [Output]` syntax), the default command will be used (`(...args)=>{if(args.length==1){return args[0];}else{return args;}}`). Thus the `Input` will be copied into `Output` directly.
+__Note:__ without `Command` specified (i.e: when you use `(<Input>) ->-> <Output>` syntax), the default command will be used (`(...args)=>{if(args.length==1){return args<0>;}else{return args;}}`). Thus the `Input` will be copied into `Output` directly.
 
 ## Mode
 
@@ -119,28 +139,31 @@ series
 parallel
 ```
 
+## Condition
+Any Javascript that return a `<Boolean>` value.
+
 ## Input
 
 `Input` is comma separated `Value` or `Variable_name`.
 
 ```yaml
-[Variable_name], [Variable_name], [Variable_name], ...
+<Variable_name>, <Variable_name>, <Variable_name>, ...
 ```
 
 ```yaml
-"[Value]", "[Value]", "[Value]", ...
+"<Value>", "<Value>", "<Value>", ...
 ```
 
 The combination of `Value` and `Variable_name` is also permitted.
 
 ```yaml
-[Variable_name], "[Value]", ...
+<Variable_name>, "<Value>", ...
 ```
 
 ## Output
 
 ```yaml
-[Variable_name]
+<Variable_name>
 ```
 
 ## Command
@@ -152,7 +175,7 @@ E.g: `cal`, `calc`, `php your-script.php`, `python your-script.py`, `node your-s
 Cmd_command
 ```
 
-Javascript arrow function [https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) can be used as `Command`
+Javascript arrow function <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions>(https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) can be used as `Command`
 
 ```yaml
 Javascript_arrow_function
