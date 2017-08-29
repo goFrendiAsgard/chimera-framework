@@ -1,4 +1,5 @@
-verbose: true
+#verbose: true
+out: output
 vars:
     config:
         mongo_url: mongodb://localhost/project-template
@@ -41,23 +42,4 @@ series:
     - ("get", sharingan_config, "{}", sharingan_projection) -> node cck.mongo.core.js -> get_sharingan_result
     - error: 'get_sharingan_result.success==false'
     # show the result
-    - ins: insert_result_1, get_one_result, update_result, insert_result_2, delete_result, get_result, get_sharingan_result, config
-      command: |
-          (insert_result_1, get_one_result, update_result, insert_result_2, delete_result, get_result, get_sharingan_result, config) => {
-              let output = '\n'
-              output += '* Insert Result 1\n'
-              output += JSON.stringify(insert_result_1, null, 2)+'\n\n'
-              output += '* Get One Result 1\n'
-              output += JSON.stringify(get_one_result, null, 2)+'\n\n'
-              output += '* Update Result\n'
-              output += JSON.stringify(update_result, null, 2)+'\n\n'
-              output += '* Insert Result 2\n'
-              output += JSON.stringify(insert_result_2, null, 2)+'\n\n'
-              output += '* Delete Result\n'
-              output += JSON.stringify(delete_result, null, 2)+'\n\n'
-              output += '* Get Result\n'
-              output += JSON.stringify(get_result, null, 2)+'\n\n'
-              output += '* Get Sharingan Result\n'
-              output += JSON.stringify(get_sharingan_result, null, 2)+'\n\n'
-              return output
-          }
+    - (insert_result_1, get_one_result, update_result, insert_result_2, delete_result, get_result, get_sharingan_result)->->output

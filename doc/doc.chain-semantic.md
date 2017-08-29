@@ -175,7 +175,7 @@ E.g: `cal`, `calc`, `php your-script.php`, `python your-script.py`, `node your-s
 Cmd_command
 ```
 
-Javascript arrow function <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions>(https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) can be used as `Command`
+Javascript arrow function [https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) can be used as `Command`
 
 ```yaml
 Javascript_arrow_function

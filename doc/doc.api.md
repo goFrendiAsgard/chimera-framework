@@ -44,7 +44,7 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
             high resolution real time in [seconds, nanoseconds], tuple. Usually result of <i>process.hrtime()</i>
         </td>
         <td>
-            Return nanoseconds as formatted number. See <a href="#getFormattedNanoSecond">example</a>
+            Return nanoseconds as formatted number. See <a href="#getformattednanosecond">example</a>
         </td>
     </tr>
     <tr>
@@ -54,7 +54,7 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
             object to be copied
         </td>
         <td>
-            Make a copy of an object. See <a href="#deepCopyObject">example</a>
+            Make a copy of an object. See <a href="#deepcopyobject">example</a>
         </td>
     </tr>
     <tr>
@@ -64,7 +64,7 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
             object to be patched
         </td>
         <td rowspan="2">
-            Patch an object with patcher. See <a href="#deepCopyObject">example</a>
+            Patch an object with patcher. See <a href="#patchobject">example</a>
         </td>
     </tr>
     <tr>
