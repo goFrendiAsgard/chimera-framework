@@ -60,7 +60,7 @@ function preprocessProjection(cckConfig, projection){
     if(projection === null || typeof projection == 'undefined'){
         projection = {}
     }
-    // if not show_deleted, don't show deletion_flag 
+    // if not show_deleted, don't show deletion_flag
     if(Object.keys(projection).length == 0 && !cckConfig.show_deleted){
         if(cckConfig.deletion_flag != '' ){
             projection[cckConfig.deletion_flag] = 0
@@ -135,18 +135,25 @@ function preprocessInsertData(cckConfig, data){
 }
 
 function initCollection(cckConfig){
+    let startTime = process.hrtime()
     if(db === null){
         db = monk(cckConfig.mongo_url)
     }
-    return db.get(cckConfig.table)
+    let collection = db.get(cckConfig.table)
+    let elapsedTime = process.hrtime(startTime)
+    console.warn('Time to initiate connection: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS');
+    return collection
 }
 
 function find(cckConfig, query, projection, callback){
+    let startTime = process.hrtime()
     cckConfig = preprocessCckConfig(cckConfig)
     let collection = initCollection(cckConfig)
     query = preprocessQuery(cckConfig, query)
     projection = preprocessProjection(cckConfig, projection)
     return collection.find(query, projection, function(err, docs){
+        let elapsedTime = process.hrtime(startTime)
+        console.warn('Time to execute "find" ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS');
         // close the database
         if(db != null){
             db.close()
@@ -169,11 +176,14 @@ function find(cckConfig, query, projection, callback){
 }
 
 function findOne(cckConfig, query, projection, callback){
+    let startTime = process.hrtime()
     cckConfig = preprocessCckConfig(cckConfig)
     let collection = initCollection(cckConfig)
     query = preprocessQuery(cckConfig, query)
     projection = preprocessProjection(cckConfig, projection)
     return collection.findOne(query, projection, function(err, doc){
+        let elapsedTime = process.hrtime(startTime)
+        console.warn('Time to execute "findOne" ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
         // close the database
         if(db != null){
             db.close()
@@ -196,11 +206,14 @@ function findOne(cckConfig, query, projection, callback){
 }
 
 function insert(cckConfig, data, options, callback){
+    let startTime = process.hrtime()
     cckConfig = preprocessCckConfig(cckConfig)
     let collection = initCollection(cckConfig)
     data = preprocessInsertData(cckConfig, data)
     data[cckConfig.deletion_flag] = 0
     return collection.insert(data, options, function(err, doc){
+        let elapsedTime = process.hrtime(startTime)
+        console.warn('Time to execute "insert" ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
         // close the database
         if(db != null){
             db.close()
@@ -223,11 +236,14 @@ function insert(cckConfig, data, options, callback){
 }
 
 function update(cckConfig, query, data, options, callback){
+    let startTime = process.hrtime()
     cckConfig = preprocessCckConfig(cckConfig)
     let collection = initCollection(cckConfig)
     data = preprocessUpdateData(cckConfig, data)
     query = preprocessQuery(cckConfig, query)
     return collection.update(query, data, options, function(err, result){
+        let elapsedTime = process.hrtime(startTime)
+        console.warn('Time to execute "update" ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
         // close the database
         if(db != null){
             db.close()
@@ -349,7 +365,6 @@ if(require.main === module){
                 let options = process.argv.length > 5? JSON.parse(process.argv[5]) : {}
                 remove(cckConfig, query, options)
             }
-        
         }catch(err){
             console.error(err)
             console.log(JSON.stringify({'success': false, 'error_message': 'Operation failure, invalid parameters'}))

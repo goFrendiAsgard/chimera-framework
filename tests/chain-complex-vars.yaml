@@ -2,7 +2,7 @@ ins: a, b
 out: c
 verbose: true
 series:
-    - ('{"x":4,"z":5}') -> php programs/echo.php -> tmp
+    - ('{"x":4,"z":5}') -> -> tmp
     - parallel:
         - series:
             - (a, b) -> php programs/add.php -> tmp.y.addResult

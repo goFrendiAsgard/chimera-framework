@@ -6,6 +6,7 @@ const cmd = require('node-cmd')
 const async = require('async')
 const fs = require('fs')
 const yaml = require('js-yaml')
+const clone = require('clone')
 
 // adjust JSON
 const stringify = require('json-stringify-safe')
@@ -16,14 +17,9 @@ function getFormattedNanoSecond(time){
     return nano.toLocaleString()
 }
 
-// deep copy and object
+// deep copy an object, now using clone rather than JSON.parse(JSON.stringify(obj))
 function deepCopyObject(obj){
-    let newObj = {}
-    if(typeof obj == 'object'){
-        // deep copy, avoiding by-ref call
-        newObj = JSON.parse(JSON.stringify(obj))
-    }
-    return newObj
+    return clone(obj)
 }
 
 // patch object with patcher
@@ -51,7 +47,7 @@ function smartSplit(string, delimiter){
     let word = ''
     for(let i=0; i<string.length; i++){
         let chr = string.charAt(i)
-        if(chr == ',' && doubleQuoteCount % 2 == 0 && singleQuoteCount % 2 == 0){
+        if(chr == delimiter && doubleQuoteCount % 2 == 0 && singleQuoteCount % 2 == 0){
             data.push(word.trim())
             word = ''
         }
@@ -111,13 +107,13 @@ function preprocessCommand(chain){
             chain.out = commandParts[2]
         }
         else if(commandParts.length == 2){
-            // input and process, input should be wrapped in parantheses and should not contains '=>'
-            if(commandParts[0].match(/^\([^(=>)]*\)$/g)){
+            if(commandParts[0].match(/^\(.*\)$/g)){
+                // input and process
                 chain.ins = commandParts[0]
                 chain.command = commandParts[1]
             }
-            // process and output
             else{
+                // process and output
                 chain.command = commandParts[0]
                 chain.out = commandParts[1]
             }
@@ -198,7 +194,7 @@ function preprocessChain(chain, isRoot){
             // create last chain
             let lastChain = {'if': chain.error, 'mode': 'series', 'chains' : []}
             if('error_message' in chain){
-                lastChain.chains.push('('+JSON.stringify(chain.error_message)+')->->_error_message')
+                lastChain.chains.push('('+stringify(chain.error_message)+')->->_error_message')
             }
             if('error_actions' in chain){
                 for(let i=0; i<chain.error_actions.length; i++){
@@ -286,13 +282,22 @@ function showVars(processName, vars){
     processName = trimProcessName(processName)
     console.warn('[INFO] STATE AFTER   ['+processName+'] : ')
     Object.keys(vars).forEach(function(key){
-        console.warn('        ' + key + ' : ' + JSON.stringify(vars[key]))
+        console.warn('        ' + key + ' : ' + stringify(vars[key]))
     })
 }
 
 function showFailure(processName){
     processName = trimProcessName(processName)
     console.error('[ERROR] FAILED TO PROCESS   ['+processName+']')
+}
+
+
+function processModule(inputs, moduleName, callback){
+    let m = require(moduleName)
+    let runner = m._run
+    let args = inputs
+    args.push(callback)
+    runner.apply(runner, args)
 }
 
 /**
@@ -444,28 +449,32 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                 let arg = 0
                 if(key.match(/^"(.*)"$/g) || key.match(/^'(.*)'$/g)){
                     // literal, remove quotes
-                    arg = JSON.stringify(key.substring(1, key.length-1))
+                    arg = stringify(key.substring(1, key.length-1))
                     arg = JSON.parse(arg)
                 }
                 else{
                     // non literal, get variable
                     arg = getVar(key)
                 }
-                arg = JSON.stringify(arg)
+                arg = stringify(arg)
                 // determine whether we need to add quote
                 let addQuote = false
-                if(!chainCommand.match(/.*=>.*/g)){
-                    // if it is not javascript, we need to add quote, except it is already quoted by JSON stringify function
-                    if(!arg.match(/^"(.*)"$/g) && !arg.match(/^'(.*)'$/g)){
-                        addQuote = true
-                    }
+                if(chainCommand.match(/^\[.*\]$/g)){
+                    // if it is module, don't add quote
+                    addQuote = false
                 }
-                else{
-                    // if it is javascript and the arg is not json qualified, we also need to add quote
+                else if(chainCommand.match(/.*=>.*/g)){
+                    // if it is javascript arrow function and the arg is not json qualified, we also need to add quote
                     try{
                         let tmp = JSON.parse(arg)
                     }
                     catch(err){
+                        addQuote = true
+                    }
+                }
+                else{
+                    // if it is not javascript, we need to add quote, except it is already quoted
+                    if(!arg.match(/^"(.*)"$/g) && !arg.match(/^'(.*)'$/g)){
                         addQuote = true
                     }
                 }
@@ -479,8 +488,43 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                 parameters.push(arg)
             })
             let startTime = 0
-            // if chainCommand is purely javascript's arrow function, we can simply use eval
-            if(chainCommand.match(/.*=>.*/g)){
+            if(chainCommand.match(/^\[.*\]$/g)){
+                let moduleName = chainCommand.substring(1, chainCommand.length-1)
+                // if chainCommand is module, we use processModule
+                if(verbose){
+                    startTime = showStartTime(jsScript, chainDescription)
+                }
+                try{
+                    processModule(parameters, moduleName, function(output, error, errorMessage){
+                        setVar(chainOut, output)
+                        if(verbose){
+                            showEndTime(jsScript, startTime)
+                            showVars(jsScript, vars)
+                        }
+                        if(getVar('_error')){
+                            let errorMessage = getVar('_error_message')
+                            if(errorMessage == 0){
+                                errorMessage = 'Chain execution stopped'
+                            }
+
+                            console.error('[ERROR] ERROR CONDITION DETECTED : _err=true')
+                            console.error('[ERROR] ERROR MESSAGE : '+errorMessage)
+                            console.error('[ERROR] MODULE : ' + moduleName)
+                            executeCallback('', false, errorMessage)
+                        }
+                        else{
+                            callback()
+                        }
+                    })
+                }catch(e){
+                    showFailure(moduleName)
+                    console.error(e)
+                    console.error('[ERROR] MODULE : ' + moduleName)
+                    executeCallback('', false, e)
+                }
+            }
+            else if(chainCommand.match(/.*=>.*/g)){
+                // if chainCommand is purely javascript's arrow function, we can simply use eval
                 let jsScript = '(' + chainCommand + ')(' + parameters.join(', ') + ')'
                 if(verbose){
                     startTime = showStartTime(jsScript, chainDescription)
@@ -516,8 +560,8 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                     executeCallback('', false, e)
                 }
             }
-            // if chainCommand is really external command, so we should use cmd.get
             else{
+                // if chainCommand is really external command, so we should use cmd.get
                 // add parameter to chainCommand
                 let cmdCommand = chainCommand + ' ' + parameters.join(' ')
                 // benchmarking
@@ -747,7 +791,7 @@ function executeChain(chain, argv, presets, executeCallback){
             else if(success){
                 // Object should be shown as json
                 if(typeof result == 'object'){
-                    console.log(JSON.stringify(result))
+                    console.log(stringify(result))
                 }
                 else{
                     console.log(result)
