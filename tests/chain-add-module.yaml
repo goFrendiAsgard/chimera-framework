@@ -1,1 +1,2 @@
-"('1', '5') -> [./add_module.js] -> output"
+verbose: true
+command: (a,b) -> [./programs/add.js] -> c

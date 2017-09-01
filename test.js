@@ -128,6 +128,12 @@ async.series([
     (callback) => {testExecuteCommand('Test chain-complex-vars',
         'chimera tests/chain-complex-vars.yaml 5 6', -176, callback)},
 
+    (callback) => {testExecuteCommand('Test chain-add',
+        'chimera tests/chain-add.yaml 5 6', 11, callback)},
+
+    (callback) => {testExecuteCommand('Test chain-add-module',
+        'chimera tests/chain-add-module.yaml 5 6', 11, callback)},
+
     (callback) => {testExecuteCommand('Test chain-distributed',
         'chimera tests/chain-distributed.yaml 5 4 http://localhost:3010', 18, callback)},
 

@@ -124,6 +124,8 @@ More advance example including:
 * Process control (loop and branch)
 * Nested variable
 * Yaml string as argument 
+* Arrow Function
+* Javascript Module
 
 are presented [here](doc/doc.advance-example.md)
 
@@ -152,7 +154,15 @@ The complete Utilities list is presented [here](doc/doc.utilities.md)
 
 Chimera web framework is still in development phase. The API might changed anytime.
 
-For more information about the web framework, please visit [this](doc/doc.web-framework.md)
+For more information about the web framework, please visit 
+
+# Documentation
+
+* [YAML Chain Semantic](doc/doc.chain-semantic.md)
+* [Advance Example](doc/doc.advance-example.md)
+* [API](doc/doc.api.md)
+* [Utilities](doc/doc.utilities.md)
+* [Web Framework](doc/doc.web-framework.md)
 
 # Similar projects, inspirations, and how chimera-framework different from them
 

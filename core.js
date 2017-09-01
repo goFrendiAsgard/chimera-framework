@@ -293,7 +293,8 @@ function showFailure(processName){
 
 
 function processModule(inputs, moduleName, callback){
-    let m = require(moduleName)
+    let cwd = process.cwd() + '/'
+    let m = require(cwd + moduleName)
     let runner = m._run
     let args = inputs
     args.push(callback)
@@ -456,7 +457,6 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                     // non literal, get variable
                     arg = getVar(key)
                 }
-                arg = stringify(arg)
                 // determine whether we need to add quote
                 let addQuote = false
                 if(chainCommand.match(/^\[.*\]$/g)){
@@ -465,6 +465,7 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                 }
                 else if(chainCommand.match(/.*=>.*/g)){
                     // if it is javascript arrow function and the arg is not json qualified, we also need to add quote
+                    arg = stringify(arg)
                     try{
                         let tmp = JSON.parse(arg)
                     }
@@ -474,6 +475,7 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                 }
                 else{
                     // if it is not javascript, we need to add quote, except it is already quoted
+                    arg = stringify(arg)
                     if(!arg.match(/^"(.*)"$/g) && !arg.match(/^'(.*)'$/g)){
                         addQuote = true
                     }
@@ -492,14 +494,14 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                 let moduleName = chainCommand.substring(1, chainCommand.length-1)
                 // if chainCommand is module, we use processModule
                 if(verbose){
-                    startTime = showStartTime(jsScript, chainDescription)
+                    startTime = showStartTime(moduleName, chainDescription)
                 }
                 try{
                     processModule(parameters, moduleName, function(output, error, errorMessage){
                         setVar(chainOut, output)
                         if(verbose){
-                            showEndTime(jsScript, startTime)
-                            showVars(jsScript, vars)
+                            showEndTime(moduleName, startTime)
+                            showVars(moduleName, vars)
                         }
                         if(getVar('_error')){
                             let errorMessage = getVar('_error_message')

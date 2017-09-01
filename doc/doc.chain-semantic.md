@@ -168,15 +168,38 @@ The combination of `Value` and `Variable_name` is also permitted.
 
 ## Command
 
-Any non-interactive command prompt program can be used as `Cmd_command`.
-E.g: `cal`, `calc`, `php your-script.php`, `python your-script.py`, `node your-script.js`, etc.
+Any valid non-interactive command prompt program, javascript arrow function, and Javascript module name can be used as command.
+
+Below are examples of valid non-interactive command prompt program:
 
 ```yaml
-Cmd_command
+cal
 ```
 
-Javascript arrow function [https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) can be used as `Command`
+```yaml
+ls
+```
 
 ```yaml
-Javascript_arrow_function
+php your-script.php
+```
+
+```yaml
+python your-script.py
+```
+
+```yaml
+java -cp your-class
+```
+
+Javascript arrow function is a way to write anonymous function. For more information about arrow function, please visit [https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions). Using arrow function is recommended if your `Command` only need to do a very simple operation. Performance based, Chimera-framework will parse arrow function faster than external command prompt programs
+
+```Javascript
+(input1, input2,... )=>{return something;}
+```
+
+You can also use a Javascript module as `Command`. Not only faster than external command prompt programs, Javacript module is also reusable (i.e: you don't need to write the same function over and over again). However, the module should contains `_run` function that takes callback as last parameter. For more information about this, please visit [advance example section](./doc.advance-example.md#javascriptmodule)
+
+```yaml
+[./your-module.js]
 ```

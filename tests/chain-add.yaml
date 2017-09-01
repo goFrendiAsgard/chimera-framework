@@ -1,1 +1,2 @@
-(a,b) -> php programs/add.php -> c
+verbose: true
+command: (a,b) -> node programs/add.js -> c

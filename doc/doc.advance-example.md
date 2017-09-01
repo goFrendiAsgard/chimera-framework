@@ -281,3 +281,61 @@ which is similar to
 chimera "cal 2017"
 ```
 
+# Better performance
+
+Since Chimera-framework is written in Node.Js, there is an internal mechanism to improve performance whenever your `Command` is either Javascript arrow function or Javascript module.
+
+## Arrow function
+
+Using arrow function is very easy. Here is the example:
+
+```yaml
+(a,b) -> (x,y)=>{return parseFloat(x)+parseFloat(y)} -> c
+```
+
+## Javascript module
+
+To use javascript module as `Command`, you should make sure, your module export a function named `_run`. The last parameter of `_run` should be a callback function.
+
+Here is an example of ideal Javascript module:
+
+```Javascript
+// File location: programs/add.js
+
+// process
+function add(n1, n2){
+    n1 = parseFloat(n1)
+    n2 = parseFloat(n2)
+    return n1+n2;
+}
+
+function run(a, b, callback){
+    let output = add(a,b)
+    callback(output)
+}
+
+
+module.exports = {
+    '_run': run,
+    'add' : add,
+}
+
+// executor
+if(require.main == module){
+    var n1 = process.argv[2];
+    var n2 = process.argv[3];
+    console.log(add(n1, n2));
+}
+```
+
+Your YAML chain could contains something like this:
+
+```yaml
+(a,b) -> node programs/add.js -> c
+```
+
+However, to achieve a better performance, you should do this:
+
+```yaml
+(a,b) -> [./programs/add.js] -> c
+```
