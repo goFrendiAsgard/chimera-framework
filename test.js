@@ -5,6 +5,7 @@ const async = require('async')
 const assert = require('assert')
 const cmd = require('node-cmd')
 const chimera = require('chimera-framework/core')
+const childProcess = require('child_process')
 
 const currentPath = process.cwd()
 let serverProcess = null
@@ -54,10 +55,27 @@ async.series([
 
     // run chimera server
     (callback) => {
-        console.log('Run chimera-serve on port 3010')
-        serverProcess = cmd.get('PORT=3010 chimera-serve')
-        console.log('The process id was ' + serverProcess.pid)
-        callback()
+        let callbackExecuted = false
+        let env = chimera.deepCopyObject(process.env)
+        env['PORT'] = 3010
+        serverProcess = childProcess.spawn('chimera-serve', [], {'env': env, 'cwd':process.cwd()})
+
+        serverProcess.on('error', (err)=>{
+            console.error(err)
+        })
+
+        serverProcess.stdout.on('data', function(stdout){
+            console.log(String(stdout))
+            if(!callbackExecuted){
+                callbackExecuted = true
+                callback()
+            }
+        })
+
+        serverProcess.stderr.on('data', function(stderr){
+            console.error(String(stderr))
+        })
+
     },
 
 
@@ -134,6 +152,9 @@ async.series([
     (callback) => {testExecuteCommand('Test chain-add-module',
         'chimera tests/chain-add-module.yaml 5 6', 11, callback)},
 
+    (callback) => {testExecuteCommand('Test chain-arithmetic-module',
+        'chimera tests/chain-arithmetic-module.yaml 5 6 "*"', 30, callback)},
+
     (callback) => {testExecuteCommand('Test chain-distributed',
         'chimera tests/chain-distributed.yaml 5 4 http://localhost:3010', 18, callback)},
 
@@ -148,5 +169,4 @@ async.series([
     console.log('ALL TEST SUCCESS: No error encountered or all errors were caught')
     console.log('NOTE: Please make sure you have run "sudo npm link first" before running the test')
     console.log('      Otherwise, please re-run the test.')
-    console.log('Press Ctrl+c to exit')
 })

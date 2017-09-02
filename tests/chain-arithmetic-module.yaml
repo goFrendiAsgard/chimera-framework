@@ -1,0 +1,2 @@
+verbose: true
+command: (a,b, operator) -> [./programs/arithmetic.js operation] -> c

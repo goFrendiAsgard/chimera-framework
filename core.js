@@ -47,8 +47,9 @@ function smartSplit(string, delimiter){
     let word = ''
     for(let i=0; i<string.length; i++){
         let chr = string.charAt(i)
-        if(chr == delimiter && doubleQuoteCount % 2 == 0 && singleQuoteCount % 2 == 0){
+        if(string.substring(i,i+delimiter.length) == delimiter && doubleQuoteCount % 2 == 0 && singleQuoteCount % 2 == 0){
             data.push(word.trim())
+            i+= delimiter.length-1
             word = ''
         }
         else{
@@ -93,12 +94,29 @@ function preprocessIns(ins){
     return ins
 }
 
+function unquote(string){
+    string = string.trim()
+    if(string.match(/^"(.*)"$/g) || string.match(/^'(.*)'$/g)){
+        string = string.substring(1, string.length-1)
+        string = string.replace(/\\\\/g, '\\')
+    }
+    return string
+}
+
+function quote(string){
+    string = string.replace(/"/g, '\\\"')
+    string = string.replace(/\n/g, '\\n')
+    string = string.trim()
+    string = '"'+string+'"'
+    return string
+}
+
 function preprocessCommand(chain){
     if('command' in chain){
         // split command by '->'
-        let commandParts = chain.command.split('->')
+        let commandParts = smartSplit(chain.command, '->')
         for(let i =0; i<commandParts.length; i++){
-            commandParts[i] = commandParts[i].trim()
+            commandParts[i] = unquote(commandParts[i].trim())
         }
         // if commandParts has 3 elements, then they must be input, process and output
         if(commandParts.length == 3){
@@ -293,9 +311,23 @@ function showFailure(processName){
 
 
 function processModule(inputs, moduleName, callback){
+    let moduleNameParts = smartSplit(moduleName, ' ')
+    for(let i=0; i<moduleNameParts.length; i++){
+        moduleNameParts[i] = unquote(moduleNameParts[i])
+    }
+    moduleName = moduleNameParts[0]
     let cwd = process.cwd() + '/'
     let m = require(cwd + moduleName)
-    let runner = m._run
+    // determine runner
+    let runner = null
+    if(moduleNameParts.length == 1){
+        runner = m
+    }
+    else{
+        let runnerParts = moduleNameParts.slice(1)
+        let runnerName = runnerParts.join(' ') 
+        runner = m[runnerName]
+    }
     let args = inputs
     args.push(callback)
     runner.apply(runner, args)
@@ -450,8 +482,7 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                 let arg = 0
                 if(key.match(/^"(.*)"$/g) || key.match(/^'(.*)'$/g)){
                     // literal, remove quotes
-                    arg = stringify(key.substring(1, key.length-1))
-                    arg = JSON.parse(arg)
+                    arg = JSON.parse(stringify(unquote(key)))
                 }
                 else{
                     // non literal, get variable
@@ -482,10 +513,7 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                 }
                 // add quote if necessary
                 if(addQuote){
-                    arg = arg.replace(/"/g, '\\\"')
-                    arg = arg.replace(/\n/g, '\\n')
-                    arg = arg.trim()
-                    arg = '"'+arg+'"'
+                    arg = quote(arg)
                 }
                 parameters.push(arg)
             })
@@ -508,7 +536,6 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                             if(errorMessage == 0){
                                 errorMessage = 'Chain execution stopped'
                             }
-
                             console.error('[ERROR] ERROR CONDITION DETECTED : _err=true')
                             console.error('[ERROR] ERROR MESSAGE : '+errorMessage)
                             console.error('[ERROR] MODULE : ' + moduleName)
@@ -545,7 +572,6 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                         if(errorMessage == 0){
                             errorMessage = 'Chain execution stopped'
                         }
-
                         console.error('[ERROR] ERROR CONDITION DETECTED : _err=true')
                         console.error('[ERROR] ERROR MESSAGE : '+errorMessage)
                         console.error('[ERROR] SCRIPT : ' + jsScript)

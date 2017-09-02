@@ -302,25 +302,19 @@ Here is an example of ideal Javascript module:
 ```Javascript
 // File location: programs/add.js
 
-// process
 function add(n1, n2){
     n1 = parseFloat(n1)
     n2 = parseFloat(n2)
     return n1+n2;
 }
 
-function run(a, b, callback){
+// executed when imported as module 
+module.exports = function(a, b, callback){
     let output = add(a,b)
     callback(output)
 }
 
-
-module.exports = {
-    '_run': run,
-    'add' : add,
-}
-
-// executor
+// executed from external command
 if(require.main == module){
     var n1 = process.argv[2];
     var n2 = process.argv[3];
