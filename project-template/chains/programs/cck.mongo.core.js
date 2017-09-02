@@ -170,7 +170,7 @@ function find(cckConfig, query, projection, callback){
             }
         }
         else{
-            callback(err, docs)
+            callback(JSON.stringify(docs), err!=null, err)
         }
     })
 }
@@ -200,7 +200,7 @@ function findOne(cckConfig, query, projection, callback){
             }
         }
         else{
-            callback(err, doc)
+            callback(JSON.stringify(doc), err!=null, err)
         }
     })
 }
@@ -230,7 +230,7 @@ function insert(cckConfig, data, options, callback){
             }
         }
         else{
-            callback(err, doc)
+            callback(JSON.stringify(doc), err!=null, err)
         }
     })
 }
@@ -274,7 +274,12 @@ function update(cckConfig, query, data, options, callback){
             }
         }
         else{
-            callback(err, result)
+            if(err){
+                callback('', err!=null, err)
+            }
+            else{
+                find(cckConfig, query, null, callback)
+            }
         }
     })
 }

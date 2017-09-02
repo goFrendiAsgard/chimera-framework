@@ -1,1 +1,2 @@
-command: (req, config) -> python programs/sample.responder.py
+#command: (req, config) -> python programs/sample.responder.py
+command: (req, config) -> [./programs/sample.responder.js]

@@ -536,6 +536,7 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                             showEndTime(moduleName, startTime)
                             showVars(moduleName, vars)
                         }
+                        // if error, just stop the chain, and call the last callback
                         if(getVar('_error') == true || !success){
                             if(!success){
                                 errorMessage = 'Chain execution stopped'
@@ -544,11 +545,12 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                                 errorMessage = getVar('_error_message')
                             }
                             console.error('[ERROR] ERROR CONDITION DETECTED : _err=true')
-                            console.error('[ERROR] ERROR MESSAGE : '+errorMessage)
+                            console.error('[ERROR] ERROR MESSAGE : ' + errorMessage)
                             console.error('[ERROR] MODULE : ' + moduleName)
                             executeCallback('', false, errorMessage)
                         }
                         else{
+                            // continue the chain
                             callback()
                         }
                     })
@@ -573,18 +575,19 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                         showEndTime(jsScript, startTime)
                         showVars(jsScript, vars)
                     }
-                    // run callback if there is no error
+                    // if error, just stop the chain, and call the last callback
                     if(getVar('_error')){
                         let errorMessage = getVar('_error_message')
                         if(errorMessage == 0){
                             errorMessage = 'Chain execution stopped'
                         }
                         console.error('[ERROR] ERROR CONDITION DETECTED : _err=true')
-                        console.error('[ERROR] ERROR MESSAGE : '+errorMessage)
+                        console.error('[ERROR] ERROR MESSAGE : ' + errorMessage)
                         console.error('[ERROR] SCRIPT : ' + jsScript)
                         executeCallback('', false, errorMessage)
                     }
                     else{
+                        // continue the chain
                         callback()
                     }
                 }
@@ -618,19 +621,20 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                                 showEndTime(cmdCommand, startTime)
                                 showVars(cmdCommand, vars)
                             }
-                            // run callback if there is no error
+                            // if error, just stop the chain, and call the last callback
                             if(getVar('_error')){
                                 let errorMessage = getVar('_error_message')
                                 if(errorMessage == 0){
                                     errorMessage = 'Chain execution stopped'
                                 }
                                 console.error('[ERROR] ERROR CONDITION DETECTED : _err=true')
-                                console.error('[ERROR] ERROR MESSAGE : '+errorMessage)
+                                console.error('[ERROR] ERROR MESSAGE : ' + errorMessage)
                                 console.error('[ERROR] COMMAND : ' + cmdCommand)
                                 console.error(errorMessage)
                                 executeCallback('', false, errorMessage)
                             }
                             else{
+                                // continue the chain
                                 callback()
                             }
                         }

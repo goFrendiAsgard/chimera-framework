@@ -155,6 +155,9 @@ async.series([
     (callback) => {testExecuteCommand('Test chain-add-module',
         'chimera tests/chain-add-module.yaml 5 6', 11, callback)},
 
+    (callback) => {testExecuteCommand('Test chain-add-module-twice',
+        'chimera tests/chain-add-module-twice.yaml 5 6', 17, callback)},
+
     (callback) => {testExecuteCommand('Test chain-arithmetic-module',
         'chimera tests/chain-arithmetic-module.yaml 5 6 "*"', 30, callback)},
 

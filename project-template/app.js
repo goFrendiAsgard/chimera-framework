@@ -62,7 +62,7 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
 serveAuthenticatedRoutes((req, res, next, chainObject)=>{
     process.chdir(CURRENTPATH)
-    chimera.executeChain(chainObject.chain, [shortenRequest(req), CONFIGS], {}, (data, success)=>{
+    chimera.executeChain(chainObject.chain, [shortenRequest(req), CONFIGS], {}, (data, success, errorMessage)=>{
         if(success){
             if(typeof data == 'object'){
                 // save cookies
@@ -96,6 +96,7 @@ serveAuthenticatedRoutes((req, res, next, chainObject)=>{
             }
         }
         else{
+            console.error(errorMessage)
             show500(req, res, next) // fail to execute chain
         }
     })
@@ -211,7 +212,7 @@ function setupApp(){
     app.engine('handlebars', engines.handlebars)
     app.engine('ejs', engines.ejs)
     app.use(session({
-        'secret': CONFIGS.session_secret, 
+        'secret': CONFIGS.session_secret,
         'resave': CONFIGS.session_resave,
         'saveUninitialized': CONFIGS.session_save_unitialized,
         'cookie': {'maxAge':CONFIGS.session_max_age}
@@ -241,7 +242,7 @@ function getChainObjectAndParams(req, verbRoute){
                 }
             }
             chainObject.access = accessList
-            // get host regex pattern 
+            // get host regex pattern
             let hostPattern = new RegExp('^' + chainObject.host + '$')
             let hostMatches = req.hostname.match(hostPattern)
             // the host also match
@@ -269,31 +270,31 @@ function loadConfigsAndRoutes(callback){
             callback(error)
             return false
         }
-        readChainResponse(CONFIGS.routes_chain, [], [], 
+        readChainResponse(CONFIGS.routes_chain, [], [],
             (obj) => {
                 // combine CONFIGS and configuration in user-defined chain, patch by environment
                 ROUTES = chimera.patchObject(ROUTES, obj)
                 callback(false)
-            }, 
+            },
             (errorMessage) => {callback(error)})
     })
 }
 
 function prepareConfigs(callback){
-    readYaml('config.yaml', 
+    readYaml('config.yaml',
         // read config success
         (obj) => {
             // combine DEFAULT_CONFIGS and obj, patch by environment
             CONFIGS = chimera.patchObject(DEFAULT_CONFIGS, obj)
             CONFIGS = patchConfigsByEnv(CONFIGS)
             // read additional config from user-defined chain
-            readChainResponse(CONFIGS.configs_chain, [], [], 
+            readChainResponse(CONFIGS.configs_chain, [], [],
                 (obj) => {
                     // combine CONFIGS and configuration in user-defined chain, patch by environment
                     CONFIGS = chimera.patchObject(CONFIGS, obj)
                     CONFIGS = patchConfigsByEnv(CONFIGS)
                     callback(false)
-                }, 
+                },
                 (errorMessage) => {callback(errorMessage);})
         },
         // read config failed
@@ -321,7 +322,7 @@ function patchConfigsByEnv(configs){
     let env = app.get('env')
     let pattern = new RegExp('^' + env + '\.(.*)$')
     for(let fullKey in configs){
-        let match = fullKey.match(pattern) 
+        let match = fullKey.match(pattern)
         if(match){
             let key = match[1]
             configs[key] = configs[fullKey]
@@ -335,7 +336,7 @@ function escapeHyphenAndDot(str){
     // hyphen should be translated literally
     str = str.replace(/\-/g, '\\-')
     // dots should be translated literally
-    str = str.replace(/\./g, '\\.') 
+    str = str.replace(/\./g, '\\.')
     return str
 }
 
@@ -355,7 +356,7 @@ function getParameterNames(route){
     if(typeof route == 'string'){
         route = escapeHyphenAndDot(route)
     }
-    let matches = route.match(/:([a-zA-Z_][a-zA-Z0-9_]*)/g) 
+    let matches = route.match(/:([a-zA-Z_][a-zA-Z0-9_]*)/g)
     if(matches === null){
         matches = []
     }
