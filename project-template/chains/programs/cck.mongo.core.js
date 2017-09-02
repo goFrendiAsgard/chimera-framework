@@ -73,6 +73,7 @@ function preprocessProjection(cckConfig, projection){
 }
 
 function preprocessUpdateData(cckConfig, data){
+    let updateData = chimera.deepCopyObject(data)
     // determine whether the data contains update operator or not
     let isContainOperator = false
     for(let key in data){
@@ -85,10 +86,10 @@ function preprocessUpdateData(cckConfig, data){
     if(!isContainOperator){
         let newData = {}
         newData['$set'] = data
-        data = newData
+        updateData = newData
     }
     // copy the data for historical purpose
-    let dataCopy = chimera.deepCopyObject(data)
+    let dataCopy = chimera.deepCopyObject(updateData)
     // remove $set, $push, and other update operators
     let newDataCopy = {}
     for(let key in dataCopy){
@@ -104,21 +105,22 @@ function preprocessUpdateData(cckConfig, data){
     dataCopy[cckConfig.modification_by] = cckConfig.user_id
     dataCopy[cckConfig.modification_time] = Date.now()
     // add dataCopy as history
-    if(!('$push' in data)){
-        data['$push'] = {}
+    if(!('$push' in updateData)){
+        updateData['$push'] = {}
     }
-    data['$push'][cckConfig.history] = dataCopy
-    return data
+    updateData['$push'][cckConfig.history] = dataCopy
+    return updateData
 }
 
 function preprocessSingleInsertData(cckConfig, data){
     // copy the data for historical purpose
+    let insertData = chimera.deepCopyObject(data)
     let dataCopy = chimera.deepCopyObject(data)
     let historyData = {'set' : dataCopy}
     historyData[cckConfig.modification_by] = cckConfig.user_id
     historyData[cckConfig.modification_time] = Date.now()
-    data[cckConfig.history] = [historyData]
-    return data
+    insertData[cckConfig.history] = [historyData]
+    return insertData
 }
 
 function preprocessInsertData(cckConfig, data){
@@ -170,7 +172,7 @@ function find(cckConfig, query, projection, callback){
             }
         }
         else{
-            callback(JSON.stringify(docs), err!=null, err)
+            callback(JSON.stringify(docs), err==null, err)
         }
     })
 }
@@ -200,7 +202,7 @@ function findOne(cckConfig, query, projection, callback){
             }
         }
         else{
-            callback(JSON.stringify(doc), err!=null, err)
+            callback(JSON.stringify(doc), err==null, err)
         }
     })
 }
@@ -230,7 +232,7 @@ function insert(cckConfig, data, options, callback){
             }
         }
         else{
-            callback(JSON.stringify(doc), err!=null, err)
+            callback(JSON.stringify(doc), err==null, err)
         }
     })
 }
@@ -275,7 +277,7 @@ function update(cckConfig, query, data, options, callback){
         }
         else{
             if(err){
-                callback('', err!=null, err)
+                callback('', err==null, err)
             }
             else{
                 find(cckConfig, query, null, callback)
@@ -330,6 +332,7 @@ function isParameterValid(){
 
 module.exports ={
     'find' : find,
+    'findOne' : findOne,
     'insert' : insert,
     'update' : update,
     'remove' : remove

@@ -22,17 +22,17 @@ vars:
         name: "Toni Stark"
 series:
     # insert new data
-    - (config, new_data, "null") -> [cck.mongo.core.js insert] -> insert_result_1
-    - ("getOne", config, insert_result_1.doc._id) -> node cck.mongo.core.js -> get_one_result
+    - (config, new_data, "{}") -> [cck.mongo.core.js insert] -> insert_result_1
+    - (config, insert_result_1._id, "{}") -> [cck.mongo.core.js findOne] -> get_one_result
     # update inserted data with a newer one
-    - ("update", config, insert_result_1.doc, newer_data) -> node cck.mongo.core.js -> update_result
+    - (config, insert_result_1._id, newer_data, "{}") -> [cck.mongo.core.js update] -> update_result
     # insert another data
-    - ("insert", config, new_data) -> node cck.mongo.core.js -> insert_result_2
+    - (config, new_data, "{}") -> [cck.mongo.core.js insert] -> insert_result_2
     # delete the last one
-    - ("delete", config, insert_result_2.doc._id) -> node cck.mongo.core.js -> delete_result
+    - (config, insert_result_2._id, "{}") -> [cck.mongo.core.js remove] -> delete_result
     # get the data
-    - ("get", config) -> node cck.mongo.core.js -> get_result
+    - (config, "{}", "{}") -> [cck.mongo.core.js find] -> get_result
     # get it with sharingan activated ...
-    - ("get", sharingan_config, "{}", sharingan_projection) -> node cck.mongo.core.js -> get_sharingan_result
+    - (sharingan_config, "{}", sharingan_projection) -> [cck.mongo.core.js find] -> get_sharingan_result
     # show the result
     - (insert_result_1, get_one_result, update_result, insert_result_2, delete_result, get_result, get_sharingan_result)->->output

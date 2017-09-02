@@ -481,8 +481,14 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
             chainIns.forEach(function(key){
                 let arg = 0
                 if(key.match(/^"(.*)"$/g) || key.match(/^'(.*)'$/g)){
+                    arg = unquote(key)
                     // literal, remove quotes
-                    arg = JSON.parse(stringify(unquote(key)))
+                    try{
+                        arg = JSON.parse(arg)
+                    }
+                    catch(err){
+                        arg = JSON.parse(stringify(arg))
+                    }
                 }
                 else{
                     // non literal, get variable

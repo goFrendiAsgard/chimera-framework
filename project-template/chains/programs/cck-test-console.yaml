@@ -27,7 +27,7 @@ series:
     - ("getOne", config, insert_result_1.doc._id) -> node cck.mongo.core.js -> get_one_result
     - error: 'get_one_result.success==false'
     # update inserted data with a newer one
-    - ("update", config, insert_result_1.doc, newer_data) -> node cck.mongo.core.js -> update_result
+    - ("update", config, insert_result_1.doc._id, newer_data) -> node cck.mongo.core.js -> update_result
     - error: 'update_result.success==false'
     # insert another data
     - ("insert", config, new_data) -> node cck.mongo.core.js -> insert_result_2
