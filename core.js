@@ -325,7 +325,7 @@ function processModule(inputs, moduleName, callback){
     }
     else{
         let runnerParts = moduleNameParts.slice(1)
-        let runnerName = runnerParts.join(' ') 
+        let runnerName = runnerParts.join(' ')
         runner = m[runnerName]
     }
     let args = inputs

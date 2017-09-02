@@ -11,6 +11,7 @@ const migrationCacheFile = migrationPath + 'migration.json'
 var globalError = ''
 var globalOutput = ''
 
+module.exports = processMigrationDir
 
 if(require.main == module){
     // get configs from CLI argument
