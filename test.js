@@ -60,10 +60,13 @@ async.series([
         env['PORT'] = 3010
         serverProcess = childProcess.spawn('chimera-serve', [], {'env': env, 'cwd':process.cwd()})
 
+        // if error, show message and kill
         serverProcess.on('error', (err)=>{
             console.error(err)
+            serverProcess.kill()
         })
 
+        // if success, run callback
         serverProcess.stdout.on('data', function(stdout){
             console.log(String(stdout))
             if(!callbackExecuted){
