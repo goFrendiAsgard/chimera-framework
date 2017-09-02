@@ -1,14 +1,12 @@
-ins: config, table
+ins: webConfig, table, user_id
 out: doc
 verbose: true
 series:
 
     # create configuration and query
     - parallel:
-        - (config, "cck.structure") -> chimera cck.config.create.yaml -> structure_config
+        - (webConfig, "cck.structure", user_id) -> [programs/cck.mongo.core.js createCckConfig] -> structure_config
         - (table) -> (t)=>{return JSON.stringify({'table':t})} -> query
 
     # get result
-    - (structure_config, query) -> node programs/cck.mongo.core.js getOne -> result
-    - error: "result.success==false"
-    - (result.doc) -> (doc)=>{return doc} -> doc
+    - (structure_config, query) -> [programs/cck.mongo.core.js findOne] -> doc

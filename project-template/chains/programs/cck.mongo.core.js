@@ -294,14 +294,20 @@ function remove(cckConfig, query, options, callback){
     return update(cckConfig, query, data, options, callback)
 }
 
+function createCckConfig(webConfig, table, userId, callback){
+    let url = 'mongo_url' in webConfig? webConfig.mongo_url: 'mongodb://localhost/test'
+    let cckConfig = {'mongo_url':url, 'table':table, 'user_id':userId}
+    callback(JSON.stringify(cckConfig), false, '')
+}
+
 function showUsage(){
     console.error('Missing or invalid parameters')
     console.error('Usage:')
     console.error(' * node '+process.argv[1]+' get [config] [query] [projection]')
     console.error(' * node '+process.argv[1]+' getOne [config] [pkValue]')
-    console.error(' * node '+process.argv[1]+' insert [config] [dataInJSON] [userId]')
-    console.error(' * node '+process.argv[1]+' update [config] [pkValue] [dataInJSON] [userId]')
-    console.error(' * node '+process.argv[1]+' delete [config] [pkValue] [userId]')
+    console.error(' * node '+process.argv[1]+' insert [config] [dataInJSON]')
+    console.error(' * node '+process.argv[1]+' update [config] [pkValue] [dataInJSON]')
+    console.error(' * node '+process.argv[1]+' delete [config] [pkValue]')
 }
 
 function isParameterValid(){
@@ -335,7 +341,8 @@ module.exports ={
     'findOne' : findOne,
     'insert' : insert,
     'update' : update,
-    'remove' : remove
+    'remove' : remove,
+    'createCckConfig': createCckConfig
 }
 
 if(require.main === module){

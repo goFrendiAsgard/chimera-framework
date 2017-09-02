@@ -3,8 +3,7 @@
 # - table: String, the table name
 # The output will be a JSON for config structure
 
-ins: config, table
-out: output
+ins: webConfig, table
 verbose: true
 series:
-    - (config.mongo_url, table) -> (url, table)=>{return {'mongo_url':url, 'table':table}} -> output
+    - (webConfig, table) -> [programs/cck.mongo.core.js createCckConfig]
