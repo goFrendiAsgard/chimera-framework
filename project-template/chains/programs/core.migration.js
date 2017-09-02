@@ -8,13 +8,19 @@ const async = require('async')
 const migrationPath = 'migrations/'
 const migrationCacheFile = migrationPath + 'migration.json'
 
-// get configs from CLI argument
-var configs = {}
-if(process.argv.length > 2){
-    configs = process.argv[2]
+var globalError = ''
+var globalOutput = ''
+
+
+if(require.main == module){
+    // get configs from CLI argument
+    var configs = {}
+    if(process.argv.length > 2){
+        configs = process.argv[2]
+    }
+    // run migration
+    processMigrationDir(migrationPath, migrationCacheFile, configs)
 }
-// run migration
-processMigrationDir(migrationPath, migrationCacheFile, configs)
 
 function processMigrationDir(migrationPath, migrationCacheFile, configs){
     // read migrationCacheFile, parse the content into migrationCache (should be array)

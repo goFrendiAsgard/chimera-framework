@@ -31,9 +31,9 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         <td>
             callback function, require 3 parameters
             <ul>
-                <li>result: string, output of the YAML chain</li>
-                <li>success: boolean, true if YAML chain yield no error</li>
-                <li>errorMessage: string, the error message</li>
+                <li><b>result (stdout)</b>: string, output of the YAML chain</li>
+                <li><b>success</b>: boolean, true if YAML chain yield no error</li>
+                <li><b>errorMessage (stderr)</b>: string, the error message</li>
             </ul>
         </td>
     </tr>

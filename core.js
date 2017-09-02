@@ -525,16 +525,23 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                     startTime = showStartTime(moduleName, chainDescription)
                 }
                 try{
-                    processModule(parameters, moduleName, function(output, error, errorMessage){
+                    processModule(parameters, moduleName, function(output, success, errorMessage){
+                        // set defaulut output, success, and errorMessage
+                        if(typeof output == 'undefined'){ output = 0; }
+                        if(typeof success == 'undefined'){ success = true; }
+                        if(typeof errorMessage == 'undefined'){ errorMessage = ''; }
+                        // set variable
                         setVar(chainOut, output)
                         if(verbose){
                             showEndTime(moduleName, startTime)
                             showVars(moduleName, vars)
                         }
-                        if(getVar('_error')){
-                            let errorMessage = getVar('_error_message')
-                            if(errorMessage == 0){
+                        if(getVar('_error') == true || !success){
+                            if(!success){
                                 errorMessage = 'Chain execution stopped'
+                            }
+                            else{
+                                errorMessage = getVar('_error_message')
                             }
                             console.error('[ERROR] ERROR CONDITION DETECTED : _err=true')
                             console.error('[ERROR] ERROR MESSAGE : '+errorMessage)
