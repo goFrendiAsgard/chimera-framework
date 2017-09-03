@@ -204,7 +204,7 @@ Javascript arrow function is a way to write anonymous function. For more informa
 (input1, input2,... )=>{return something;}
 ```
 
-You can also use a Javascript module as `Command`. Not only faster than external command prompt programs, Javacript module is also reusable compared to arrow function (i.e: you don't need to write the same function over and over again). However, the module should export function that takes callback as last parameter. For more information about this, please visit [advance example section](./doc.advance-example.md#javascriptmodule)
+You can also use a Javascript module as `Command`. Not only faster than external command prompt programs, Javacript module is also reusable compared to arrow function (i.e: you don't need to write the same function over and over again). However, the module should export function that takes callback as last parameter. For more information about this, please visit [advance example section](./doc.advance-example.md#javascript-module)
 
 ```yaml
 [./your-module.js]
