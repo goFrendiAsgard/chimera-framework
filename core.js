@@ -2,12 +2,12 @@
 'use strict';
 
 // imports
-//const cmd = require('node-cmd')
 const async = require('async')
 const fs = require('fs')
 const yaml = require('js-yaml')
 const clone = require('clone')
 const exec = require('child_process').exec;
+const path = require('path')
 
 // Stringify JSON and dealing with circular-reference
 const stringify = require('json-stringify-safe')
@@ -16,12 +16,6 @@ const stringify = require('json-stringify-safe')
 const cmd = {
     'run' : runCommand,
     'get' : getString
-}
-
-// this one is for benchamarking
-function getFormattedNanoSecond(time){
-    let nano = time[0] * 1e9 + time[1]
-    return nano.toLocaleString()
 }
 
 function runCommand(command, options){
@@ -50,6 +44,12 @@ function getString(command, options,callback){
             execCallback(err,data,stderr);
         }
     })(execCallback));
+}
+
+// this one is for benchamarking
+function getFormattedNanoSecond(time){
+    let nano = time[0] * 1e9 + time[1]
+    return nano.toLocaleString()
 }
 
 // deep copy an object, now using clone rather than JSON.parse(JSON.stringify(obj))
@@ -99,6 +99,13 @@ function smartSplit(string, delimiter){
     }
     data.push(word.trim())
     return data
+}
+
+function preprocessDirPath(dirPath){
+    if(dirPath.substring(dirPath.length-1) != '/'){
+        return dirPath + '/'
+    }
+    return dirPath
 }
 
 /**
@@ -307,14 +314,14 @@ function trimProcessName(processName){
  * Example:
  *  startTime = showStartTime('myProcess')
  */
-function showStartTime(processName, chainDescription){
+function showStartTime(processName, chainOptions){
     let trimmedProcessName = trimProcessName(processName)
     let startTime = process.hrtime();
-    if(chainDescription != ''){
-        console.warn('[INFO] ' + String(chainDescription))
+    if(chainOptions.description != ''){
+        console.warn('[INFO] ' + String(chainOptions.description))
     }
-    console.warn('[INFO] PROCESS : ' + processName)
-    console.warn('[INFO] START PROCESS [' + trimmedProcessName + '] AT    : ' + getFormattedNanoSecond(startTime))
+    console.warn('[INFO] PROCESS NAME : ' + processName)
+    console.warn('[INFO] START PROCESS  ' + trimmedProcessName + ' AT    : ' + getFormattedNanoSecond(startTime))
     return startTime
 }
 
@@ -327,13 +334,13 @@ function showEndTime(processName, startTime){
     processName = trimProcessName(processName)
     let diff = process.hrtime(startTime);
     let endTime = process.hrtime();
-    console.warn('[INFO] END PROCESS   ['+processName+'] AT    : ' + getFormattedNanoSecond(endTime))
-    console.warn('[INFO] PROCESS       ['+processName+'] TAKES : ' + getFormattedNanoSecond(diff) + ' NS')
+    console.warn('[INFO] END PROCESS    '+processName+' AT    : ' + getFormattedNanoSecond(endTime))
+    console.warn('[INFO] PROCESS        '+processName+' TAKES : ' + getFormattedNanoSecond(diff) + ' NS')
 }
 
 function showVars(processName, vars){
     processName = trimProcessName(processName)
-    console.warn('[INFO] STATE AFTER   ['+processName+'] : ')
+    console.warn('[INFO] STATE AFTER    '+processName+' : ')
     Object.keys(vars).forEach(function(key){
         console.warn('        ' + key + ' : ' + stringify(vars[key]))
     })
@@ -345,13 +352,15 @@ function showFailure(processName){
 }
 
 
-function processModule(inputs, moduleName, callback){
+function processModule(inputs, moduleName, cwd, callback){
+    // ensure cwd ended up with "/"
+    cwd = preprocessDirPath(cwd)
+    // get real moduleName
     let moduleNameParts = smartSplit(moduleName, ' ')
     for(let i=0; i<moduleNameParts.length; i++){
         moduleNameParts[i] = unquote(moduleNameParts[i])
     }
     moduleName = moduleNameParts[0]
-    let cwd = process.cwd() + '/'
     let m = require(cwd + moduleName)
     // determine runner
     let runner = null
@@ -363,8 +372,10 @@ function processModule(inputs, moduleName, callback){
         let runnerName = runnerParts.join(' ')
         runner = m[runnerName]
     }
+    // add callback as input argument
     let args = inputs
     args.push(callback)
+    // run runner with arguments inside cwd
     runner.apply(runner, args)
 }
 
@@ -385,7 +396,7 @@ function processModule(inputs, moduleName, callback){
  * @params {object} presets
  * @params {function} executeCallback
  */
-function execute(chainConfigs, argv, presets, executeCallback, chainDescription){
+function execute(chainConfigs, argv, presets, executeCallback, chainOptions){
     // argv should be array or object
     if(typeof(argv) != 'object'){
         argv = []
@@ -420,10 +431,13 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
             setVar(key, 0)
         }
     })
-    // populate "vars" with on "out"
+    // add "out" to "vars"
     if(!(out in vars)){
         setVar(out, '')
     }
+    // add "cwd"
+    setVar('_chain_cwd', preprocessDirPath(chainOptions.cwd))
+    setVar('_init_cwd', preprocessDirPath(process.cwd()))
     // run the chains
     try{
         runChains(chains, mode, true)
@@ -563,10 +577,10 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                 let moduleName = chainCommand.substring(1, chainCommand.length-1)
                 // if chainCommand is module, we use processModule
                 if(verbose){
-                    startTime = showStartTime(moduleName, chainDescription)
+                    startTime = showStartTime(moduleName, chainOptions)
                 }
                 try{
-                    processModule(parameters, moduleName, function(output, success, errorMessage){
+                    processModule(parameters, moduleName, chainOptions.cwd, function(output, success, errorMessage){
                         // set defaulut output, success, and errorMessage
                         if(typeof output == 'undefined'){ output = 0; }
                         if(typeof success == 'undefined'){ success = true; }
@@ -606,7 +620,7 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                 // if chainCommand is purely javascript's arrow function, we can simply use eval
                 let jsScript = '(' + chainCommand + ')(' + parameters.join(', ') + ')'
                 if(verbose){
-                    startTime = showStartTime(jsScript, chainDescription)
+                    startTime = showStartTime(jsScript, chainOptions.description)
                 }
                 try{
                     let output = eval(jsScript)
@@ -645,11 +659,11 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
                 let cmdCommand = chainCommand + ' ' + parameters.join(' ')
                 // benchmarking
                 if(verbose){
-                    startTime = showStartTime(cmdCommand, chainDescription)
+                    startTime = showStartTime(cmdCommand, chainOptions.description)
                 }
                 // run the command
                 try{
-                    cmd.get(cmdCommand, function(err, stdout, stderr){
+                    cmd.get(cmdCommand, {'cwd': chainOptions.cwd}, function(err, stdout, stderr){
                         // it might be no error, but stderr exists
                         if(stderr != ''){
                             console.warn(stderr)
@@ -819,25 +833,24 @@ function execute(chainConfigs, argv, presets, executeCallback, chainDescription)
 
 function executeChain(chain, argv, presets, executeCallback){
     fs.readFile(chain, function(err, data){
-        let currentPath = process.cwd()
         let chainString = ''
-        let chainDescription = ''
+        let chainOptions = {}
         if(!err){
             // chain is really a file
             let yamlParts = chain.split('/')
             if(yamlParts.length > 1){
                 // perform chdir if necessary
                 let pathParts = yamlParts.slice(0,-1)
-                let path = pathParts.join('/')
-                process.chdir(path)
+                let yamlPath = pathParts.join('/')
+                chainOptions.cwd = preprocessDirPath(path.resolve(yamlPath))
             }
             chainString = data
-            chainDescription = 'FILE    : ' + chain
+            chainOptions.description = 'CHAIN FILE   : ' + chain
         }
         else{
             // chain is actualy a string, not a file
             chainString = chain
-            chainDescription = 'CHAIN   : ' + chain
+            chainOptions.description = 'CHAIN SCRIPT : ' + chain
         }
         // get chainConfigs
         let chainConfigs = {}
@@ -856,14 +869,11 @@ function executeChain(chain, argv, presets, executeCallback){
                 console.warn(yamlError)
                 console.warn('\nJSON Error:')
                 console.warn(jsonError)
-                process.chdir(currentPath)
                 return null
             }
         }
         // ensure we going back to this directory
         let alteredCallback = function(result, success, errorMessage){
-            // ensure we return to current dir
-            process.chdir(currentPath)
             // execute callback
             if(typeof(executeCallback) === 'function'){
                 executeCallback(result, success, errorMessage)
@@ -878,7 +888,7 @@ function executeChain(chain, argv, presets, executeCallback){
                 }
             }
         }
-        execute(chainConfigs, argv, presets, alteredCallback, chainDescription)
+        execute(chainConfigs, argv, presets, alteredCallback, chainOptions)
     })
 }
 

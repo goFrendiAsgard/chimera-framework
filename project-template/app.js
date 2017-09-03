@@ -5,6 +5,7 @@ const DEFAULT_CONFIGS = {
     'mongo_url' : '',
     'public_path' : 'public',
     'migration_path' : 'chains/migrations',
+    'migration_cache_file' : 'chains/migrations/migration.json',
     'favicon_path' : 'public/favicon.ico',
     'view_path' : 'views',
     'error_template' : 'error.pug',
@@ -46,7 +47,6 @@ const yaml = require('js-yaml')
 const chimera = require('chimera-framework/core')
 const async = require('async')
 
-const CURRENTPATH = process.cwd()
 var app = express()
 var CONFIGS = {}
 var ROUTES = {}
@@ -61,7 +61,6 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
 serveAuthenticatedRoutes((req, res, next, chainObject)=>{
-    process.chdir(CURRENTPATH)
     chimera.executeChain(chainObject.chain, [shortenRequest(req), CONFIGS], {}, (data, success, errorMessage)=>{
         if(success){
             if(typeof data == 'object'){
@@ -126,7 +125,6 @@ function serveAuthenticatedRoutes(routeHandler){
             routeHandler(req, res, next, chainObject) // success
         }
         else{
-            process.chdir(CURRENTPATH)
             chimera.executeChain(CONFIGS.auth_chain, [shortenRequest(req)], [], function(data, success){
                 // get userInfo
                 let userInfo = chimera.patchObject(DEFAULT_USER_INFO, data.userInfo)
@@ -388,7 +386,6 @@ function readYaml(fileName, callbackSuccess, callbackError){
 // callbackSuccess should has one parameter containing the parsed object
 // callbackError should has one parameter containing error message
 function readChainResponse(fileName, inputs, presets, callbackSuccess, callbackError){
-    process.chdir(CURRENTPATH)
     chimera.executeChain(fileName, inputs, presets, function(data, success, errorMessage){
         if(success){
             if(typeof data == 'object'){

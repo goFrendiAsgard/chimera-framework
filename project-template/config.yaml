@@ -7,6 +7,8 @@ mongo_url: 'mongodb://localhost/project-template'
 # public_path: 'public'
 # favicon_path: 'public/favicon.ico'
 
+# migration_path: 'chains/migrations',
+# migration_cache_file: 'chains/migrations/migration.json',
 # view_path: 'views'
 # error_template: 'error.pug'
 

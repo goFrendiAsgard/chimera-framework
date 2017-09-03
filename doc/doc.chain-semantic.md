@@ -46,6 +46,12 @@ Any valid `String` can be used as `Variable_name`
 <String>
 ```
 
+By default, chimera-framework has 3 default variables:
+
+* `_ans` : If no `out` key specified in a `Process`, the default variable `_ans` will be used.
+* `_init_cwd` : Contains absolute current working directory path.
+* `_chain_cwd` : Contains absolute working directory path of current chain.
+
 ## Value
 
 Any valid `String` can be used as `Value`

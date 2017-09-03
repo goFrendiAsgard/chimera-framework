@@ -5,29 +5,21 @@ const fs = require('fs')
 const chimera = require('chimera-framework/core')
 const async = require('async')
 
-const migrationPath = 'migrations/'
-const migrationCacheFile = migrationPath + 'migration.json'
-
 var globalError = ''
 var globalOutput = ''
 
 module.exports = function(configs, lastCallback){
-    processMigrationDir(migrationPath, migrationCacheFile, configs, lastCallback)
+    processMigrationDir(configs, lastCallback)
 }
 
 if(require.main == module){
-    // get configs from CLI argument
-    var configs = {}
-    if(process.argv.length > 2){
-        configs = process.argv[2]
-    }
-    // run migration
-    processMigrationDir(migrationPath, migrationCacheFile, configs)
+    let configs = process.argv[2]
+    processMigrationDir(configs)
 }
 
-function processMigrationDir(migrationPath, migrationCacheFile, configs, lastCallback){
+function processMigrationDir(configs, lastCallback){
     // read migrationCacheFile, parse the content into migrationCache (should be array)
-    fs.readFile(migrationCacheFile, function(err, data){
+    fs.readFile(configs.migration_cache_file, function(err, data){
         let migrationCache = []
         if(!err){
             try{
@@ -37,17 +29,17 @@ function processMigrationDir(migrationPath, migrationCacheFile, configs, lastCal
                 }
             }
             catch(e){
-                console.error('[ERROR] '+migrationCacheFile+' doesn\'t contains valid JSON')
+                console.error('[ERROR] '+configs.migration_cache_file+' doesn\'t contains valid JSON')
             }
         }
         // process all migration files in migrationPath
-        processMigrationFiles(migrationPath, migrationCache, configs, lastCallback)
+        processMigrationFiles(migrationCache, configs, lastCallback)
     })
 }
 
-function processMigrationFiles(migrationPath, migrationCache, configs, lastCallback){
+function processMigrationFiles(migrationCache, configs, lastCallback){
     // get all the files and sort them
-    let allFiles = fs.readdirSync(migrationPath).sort()
+    let allFiles = fs.readdirSync(configs.migration_path).sort()
     let migrationFiles = []
     for(let i=0; i<allFiles.length; i++){
         let fileName = allFiles[i]
@@ -71,7 +63,7 @@ function createProcessAndRunMigration(migrationFiles, migrationCache, configs, l
     for(let i=0; i<migrationFiles.length; i++){
         let migrationFile = migrationFiles[i]
         processList.push((callback) => {
-            chimera.executeChain(migrationPath+'/'+migrationFile, [configs], {}, function(output, success, errorMessage){
+            chimera.executeChain(configs.migration_path+'/'+migrationFile, [configs], {}, function(output, success, errorMessage){
                 if(success){
                     // success
                     console.warn(output)
@@ -110,7 +102,7 @@ function createProcessAndRunMigration(migrationFiles, migrationCache, configs, l
         }
         // save cache
         if(succeedMigrations.length > 0){
-            saveCache(migrationCacheFile, migrationCache)
+            saveCache(configs.migration_cache_file, migrationCache)
         }
         // call lastCallback
         if(typeof lastCallback == 'function'){
