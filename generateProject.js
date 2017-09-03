@@ -2,7 +2,8 @@
 'use strict';
 
 const fse = require('fs-extra')
-const cmd = require('node-cmd')
+const chimera = require('chimera-framework/core')
+const cmd = chimera.cmd
 const path = require('path')
 
 // replace pattern by replacement in a file, and then do callback

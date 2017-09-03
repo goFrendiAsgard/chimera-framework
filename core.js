@@ -2,19 +2,54 @@
 'use strict';
 
 // imports
-const cmd = require('node-cmd')
+//const cmd = require('node-cmd')
 const async = require('async')
 const fs = require('fs')
 const yaml = require('js-yaml')
 const clone = require('clone')
+const exec = require('child_process').exec;
 
-// adjust JSON
+// Stringify JSON and dealing with circular-reference
 const stringify = require('json-stringify-safe')
+
+// use our own "cmd" instead of node-cmd
+const cmd = {
+    'run' : runCommand,
+    'get' : getString
+}
 
 // this one is for benchamarking
 function getFormattedNanoSecond(time){
     let nano = time[0] * 1e9 + time[1]
     return nano.toLocaleString()
+}
+
+function runCommand(command, options){
+    let execOptions
+    if(typeof options == 'undefined'){
+        execOptions = null
+    }
+    else{
+        execOptions = options
+    }
+    return exec(command, options);
+}
+
+function getString(command, options,callback){
+    let execOptions, execCallback
+    if(typeof options == 'function'){
+        execCallback = options
+        execOptions = null
+    }
+    else{
+        execOptions = options
+        execCallback = callback
+    }
+    return exec(command, execOptions, (function(){
+        return function(err,data,stderr){
+            execCallback(err,data,stderr);
+        }
+    })(execCallback));
 }
 
 // deep copy an object, now using clone rather than JSON.parse(JSON.stringify(obj))
@@ -874,4 +909,5 @@ module.exports = {
     'getFormattedNanoSecond' : getFormattedNanoSecond,
     'deepCopyObject' : deepCopyObject,
     'patchObject' : patchObject,
+    'cmd' : cmd,
 }

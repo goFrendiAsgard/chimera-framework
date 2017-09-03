@@ -3,7 +3,8 @@
 
 // imports
 const fs = require('fs')
-const cmd = require('node-cmd')
+const chimera = require('chimera-framework/core')
+const cmd = chimera.cmd
 
 // The program needs at least 3 parameter (excluding the default 3)
 // Example: node eisn.js src.java src.class javac src.java

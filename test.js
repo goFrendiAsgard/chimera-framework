@@ -3,8 +3,8 @@
 
 const async = require('async')
 const assert = require('assert')
-const cmd = require('node-cmd')
 const chimera = require('chimera-framework/core')
+const cmd = chimera.cmd
 const childProcess = require('child_process')
 
 const currentPath = process.cwd()

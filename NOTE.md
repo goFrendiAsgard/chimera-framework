@@ -35,4 +35,7 @@ This note is intended for developers. You might not need it
 * [x] Simpler error handling (i.e: introduce `error:`, `error_message:`, and `error_action` into YAML semantic)
 * [x] Add testing for error handling
 * [x] More robust migration and CRUD
+* [x] Better performance
+* [x] Implementing chimera's own cmd (with `options` parameter) to replace `node-cmd`
+* [ ] Get rid of `process.chdir`, use options instead 
 * [ ] Completing CCK
