@@ -7,16 +7,17 @@ const monk = require('monk')
 const chimera = require('chimera-framework/core')
 
 
-var DEFAULT_CCK_CONFIG = {
+const DEFAULT_CCK_CONFIG = {
     'mongo_url' : '',
     'table' : '',
     'history' : '_history',
-    'deletion_flag' : '_deleted',
-    'id' : '_id',
-    'modification_time' : '_modified_at',
-    'modification_by' : '_modified_by',
+    'deletion_flag_field' : '_deleted',
+    'id_field' : '_id',
+    'modification_time_field' : '_modified_at',
+    'modification_by_field' : '_modified_by',
     'show_deleted' : false,
     'user_id' : null,
+    'persistence_connection' : false,
 }
 var db = null
 
@@ -36,14 +37,14 @@ function preprocessQuery(cckConfig, query){
         }
         catch(e){
             let newQuery = {}
-            newQuery[cckConfig.id] = query
+            newQuery[cckConfig.id_field] = query
             query = newQuery
         }
     }
-    if(cckConfig.deletion_flag != '' && !cckConfig.show_deleted){
+    if(cckConfig.deletion_flag_field != '' && !cckConfig.show_deleted){
         // create "exists" query
         let existquery = {}
-        existquery[cckConfig.deletion_flag] = 0
+        existquery[cckConfig.deletion_flag_field] = 0
         // modify query
         if(Object.keys(query).length != 0){
             query = {'$and' : [existquery, query]}
@@ -60,10 +61,10 @@ function preprocessProjection(cckConfig, projection){
     if(projection === null || typeof projection == 'undefined'){
         projection = {}
     }
-    // if not show_deleted, don't show deletion_flag
+    // if not show_deleted, don't show deletion_flag_field
     if(Object.keys(projection).length == 0 && !cckConfig.show_deleted){
-        if(cckConfig.deletion_flag != '' ){
-            projection[cckConfig.deletion_flag] = 0
+        if(cckConfig.deletion_flag_field != '' ){
+            projection[cckConfig.deletion_flag_field] = 0
         }
         if(cckConfig.history != ''){
             projection[cckConfig.history] = 0
@@ -102,8 +103,8 @@ function preprocessUpdateData(cckConfig, data){
     }
     dataCopy = newDataCopy
     // set modifier and modification time
-    dataCopy[cckConfig.modification_by] = cckConfig.user_id
-    dataCopy[cckConfig.modification_time] = Date.now()
+    dataCopy[cckConfig.modification_by_field] = cckConfig.user_id
+    dataCopy[cckConfig.modification_time_field] = Date.now()
     // add dataCopy as history
     if(!('$push' in updateData)){
         updateData['$push'] = {}
@@ -117,9 +118,10 @@ function preprocessSingleInsertData(cckConfig, data){
     let insertData = chimera.deepCopyObject(data)
     let dataCopy = chimera.deepCopyObject(data)
     let historyData = {'set' : dataCopy}
-    historyData[cckConfig.modification_by] = cckConfig.user_id
-    historyData[cckConfig.modification_time] = Date.now()
+    historyData[cckConfig.modification_by_field] = cckConfig.user_id
+    historyData[cckConfig.modification_time_field] = Date.now()
     insertData[cckConfig.history] = [historyData]
+    insertData[cckConfig.deletion_flag_field] = 0
     return insertData
 }
 
@@ -156,11 +158,8 @@ function find(cckConfig, query, projection, callback){
     return collection.find(query, projection, function(err, docs){
         let elapsedTime = process.hrtime(startTime)
         console.warn('Time to execute "find" ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS');
-        // close the database
-        if(db != null){
-            db.close()
-            db = null
-        }
+        // close the database connection
+        if(!cckConfig.persistence_connection){closeConnection();}
         // deal with callback
         if(callback == null || typeof callback == 'undefined'){
             if(err){
@@ -186,11 +185,8 @@ function findOne(cckConfig, query, projection, callback){
     return collection.findOne(query, projection, function(err, doc){
         let elapsedTime = process.hrtime(startTime)
         console.warn('Time to execute "findOne" ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
-        // close the database
-        if(db != null){
-            db.close()
-            db = null
-        }
+        // close the database connection
+        if(!cckConfig.persistence_connection){closeConnection();}
         // deal with callback
         if(callback == null || typeof callback == 'undefined'){
             if(err){
@@ -212,15 +208,11 @@ function insert(cckConfig, data, options, callback){
     cckConfig = preprocessCckConfig(cckConfig)
     let collection = initCollection(cckConfig)
     data = preprocessInsertData(cckConfig, data)
-    data[cckConfig.deletion_flag] = 0
     return collection.insert(data, options, function(err, doc){
         let elapsedTime = process.hrtime(startTime)
         console.warn('Time to execute "insert" ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
-        // close the database
-        if(db != null){
-            db.close()
-            db = null
-        }
+        // close the database connection
+        if(!cckConfig.persistence_connection){closeConnection();}
         // deal with callback
         if(callback == null || typeof callback == 'undefined'){
             if(err){
@@ -246,11 +238,8 @@ function update(cckConfig, query, data, options, callback){
     return collection.update(query, data, options, function(err, result){
         let elapsedTime = process.hrtime(startTime)
         console.warn('Time to execute "update" ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
-        // close the database
-        if(db != null){
-            db.close()
-            db = null
-        }
+        // close the database connection
+        if(!cckConfig.persistence_connection){closeConnection();}
         // deal with callback
         if(callback == null || typeof callback == 'undefined'){
             if(err){
@@ -290,7 +279,7 @@ function remove(cckConfig, query, options, callback){
     cckConfig = preprocessCckConfig(cckConfig)
     cckConfig.show_deleted = true
     let data = {}
-    data[cckConfig.deletion_flag] = 1
+    data[cckConfig.deletion_flag_field] = 1
     return update(cckConfig, query, data, options, callback)
 }
 
@@ -298,6 +287,13 @@ function createCckConfig(webConfig, table, userId, callback){
     let url = 'mongo_url' in webConfig? webConfig.mongo_url: 'mongodb://localhost/test'
     let cckConfig = {'mongo_url':url, 'table':table, 'user_id':userId}
     callback(JSON.stringify(cckConfig), false, '')
+}
+
+function closeConnection(){
+    if(db != null){
+        db.close()
+        db = null
+    }
 }
 
 function showUsage(){
@@ -342,7 +338,8 @@ module.exports ={
     'insert' : insert,
     'update' : update,
     'remove' : remove,
-    'createCckConfig': createCckConfig
+    'createCckConfig' : createCckConfig
+    'closeConnection' : closeConnection
 }
 
 if(require.main === module){
