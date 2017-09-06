@@ -1,13 +1,12 @@
 verbose: true
-out: output
 vars:
     config:
         mongo_url: mongodb://localhost/project-template
-        table: person
+        collection_name: person
         user_id: "u001"
     sharingan_config:
         mongo_url: mongodb://localhost/project-template
-        table: person
+        collection_name: person
         show_deleted: true
         user_id: "u001"
     sharingan_projection:
@@ -15,24 +14,36 @@ vars:
         alias: 1
         _history: 1
         _deleted: 1
-    new_data:
+    insert_data:
         name: "Tono Stark"
         alias: "Ironman"
-    newer_data:
+    update_data:
         name: "Toni Stark"
+    bulk_insert_data:
+        - name: "Steve Roger"
+          alias: "Captain America"
+        - name: "Bruce Banner"
+          alias: "Hulk"
+    bulk_update_data:
+        affiliation: "Avenger"
 series:
     # insert new data
-    - (config, new_data, "{}") -> [cck.mongo.core.js insert] -> insert_result_1
-    - (config, insert_result_1._id, "{}") -> [cck.mongo.core.js findOne] -> get_one_result
+    - (config, insert_data) -> [cck.mongo.core.js insert] -> insert_doc
     # update inserted data with a newer one
-    - (config, insert_result_1._id, newer_data, "{}") -> [cck.mongo.core.js update] -> update_result
+    - (config, insert_doc._id, update_data) -> [cck.mongo.core.js update] -> update_doc
     # insert another data
-    - (config, new_data, "{}") -> [cck.mongo.core.js insert] -> insert_result_2
+    - (config, insert_data) -> [cck.mongo.core.js insert] -> another_insert_doc
     # delete the last one
-    - (config, insert_result_2._id, "{}") -> [cck.mongo.core.js remove] -> delete_result
+    - (config, another_insert_doc._id) -> [cck.mongo.core.js remove] -> remove_doc
+    # insert bulk
+    - (config, bulk_insert_data) -> [cck.mongo.core.js insert] -> insert_bulk_docs
+    # update bulk
+    - (config, "{}", bulk_update_data) -> [cck.mongo.core.js update] -> update_bulk_docs
     # get the data
-    - (config, "{}", "{}") -> [cck.mongo.core.js find] -> get_result
+    - (config) -> [cck.mongo.core.js find] -> find_docs
+    # get the data
+    - (config, '{"affiliation":"Avenger"}') -> [cck.mongo.core.js find] -> find_avenger_docs
     # get it with sharingan activated ...
-    - (sharingan_config, "{}", sharingan_projection) -> [cck.mongo.core.js find] -> get_sharingan_result
-    # show the result
-    - (insert_result_1, get_one_result, update_result, insert_result_2, delete_result, get_result, get_sharingan_result)->->output
+    - (sharingan_config, "{}", sharingan_projection) -> [cck.mongo.core.js find] -> find_sharingan_docs
+    # permanent remove
+    - (config) -> [cck.mongo.core.js permanentRemove] -> permanent_remove_result

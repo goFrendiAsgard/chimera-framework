@@ -352,7 +352,7 @@ function showFailure(processName){
 }
 
 
-function processModule(inputs, moduleName, cwd, callback){
+function processModule(moduleName, inputs, cwd, callback){
     // ensure cwd ended up with "/"
     cwd = preprocessDirPath(cwd)
     // get real moduleName
@@ -488,11 +488,11 @@ function execute(chainConfigs, argv, presets, executeCallback, chainOptions){
         if(typeof value == 'string'){
             // remove trailing new lines or trailing spaces
             value = value.replace(/[ \n]+$/g, '')
+            // If the value can be parsed into object, parse it
+            try{
+                value = JSON.parse(value);
+            } catch(e){}
         }
-        // If the value can be parsed into object, parse it
-        try{
-            value = JSON.parse(value);
-        } catch(e){}
         let keyParts = key.split('.')
         // bypass everything if the key is not nested
         if(keyParts.length == 1){
@@ -575,12 +575,13 @@ function execute(chainConfigs, argv, presets, executeCallback, chainOptions){
             let startTime = 0
             if(chainCommand.match(/^\[.*\]$/g)){
                 let moduleName = chainCommand.substring(1, chainCommand.length-1)
+                let logCommand = 'processModule('+stringify(moduleName)+', '+stringify(parameters)+', '+stringify(chainOptions.cwd)+', callback)'
                 // if chainCommand is module, we use processModule
                 if(verbose){
-                    startTime = showStartTime(moduleName, chainOptions)
+                    startTime = showStartTime(logCommand, chainOptions)
                 }
                 try{
-                    processModule(parameters, moduleName, chainOptions.cwd, function(output, success, errorMessage){
+                    processModule(moduleName, parameters, chainOptions.cwd, function(output, success, errorMessage){
                         // set defaulut output, success, and errorMessage
                         if(typeof output == 'undefined'){ output = 0; }
                         if(typeof success == 'undefined'){ success = true; }
@@ -593,10 +594,7 @@ function execute(chainConfigs, argv, presets, executeCallback, chainOptions){
                         }
                         // if error, just stop the chain, and call the last callback
                         if(getVar('_error') == true || !success){
-                            if(!success){
-                                errorMessage = 'Chain execution stopped'
-                            }
-                            else{
+                            if(getVar('_error') == true){
                                 errorMessage = getVar('_error_message')
                             }
                             console.error('[ERROR] ERROR CONDITION DETECTED : _err=true')
@@ -610,9 +608,9 @@ function execute(chainConfigs, argv, presets, executeCallback, chainOptions){
                         }
                     })
                 }catch(e){
-                    showFailure(moduleName)
+                    showFailure(logCommand)
                     console.error(e)
-                    console.error('[ERROR] MODULE : ' + moduleName)
+                    console.error('[ERROR] SCRIPT : ' + logCommand)
                     executeCallback('', false, e)
                 }
             }

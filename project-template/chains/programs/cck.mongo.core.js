@@ -7,73 +7,79 @@ const monk = require('monk')
 const chimera = require('chimera-framework/core')
 
 
-const DEFAULT_CCK_CONFIG = {
+const DEFAULT_DB_CONFIG = {
     'mongo_url' : '',
-    'table' : '',
+    'collection_name' : '',
     'history' : '_history',
     'deletion_flag_field' : '_deleted',
     'id_field' : '_id',
     'modification_time_field' : '_modified_at',
     'modification_by_field' : '_modified_by',
     'show_deleted' : false,
+    'process_deleted' : false,
     'user_id' : null,
     'persistence_connection' : false,
 }
 var db = null
+var lastMongoUrl = null
 
-function preprocessCckConfig(cckConfig){
-    return chimera.patchObject(DEFAULT_CCK_CONFIG, cckConfig)
+function preprocessDbConfig(dbConfig){
+    return chimera.patchObject(DEFAULT_DB_CONFIG, dbConfig)
 }
 
-function preprocessQuery(cckConfig, query){
-    cckConfig = preprocessCckConfig(cckConfig)
-    if(query === null || typeof query == 'undefined'){
-        query = {}
+function preprocessFilter(dbConfig, filter){
+    let filterCopy = chimera.deepCopyObject(filter)
+    let multi = true
+    dbConfig = preprocessDbConfig(dbConfig)
+    if(filterCopy === null || typeof filterCopy == 'undefined'){
+        filterCopy = {}
     }
-    // if query is string, assume it as primary key value and build appropriate query
-    if(typeof query == 'string'){
-        try{
-            query = JSON.parse(query)
-        }
-        catch(e){
-            let newQuery = {}
-            newQuery[cckConfig.id_field] = query
-            query = newQuery
+    // if filterCopy is string, assume it as primary key value and build appropriate filterCopy
+    if(typeof(filterCopy) == 'string'){
+        let newfilterCopy = {}
+        newfilterCopy[dbConfig.id_field] = filterCopy
+        filterCopy = newfilterCopy
+    }
+    // determine multi 
+    if(Object.keys(filterCopy).length == 1 && dbConfig.id_field in filterCopy){
+        multi = false
+    }
+    if(!dbConfig.process_deleted && !dbConfig.show_deleted){
+        if(dbConfig.deletion_flag_field != ''){
+            // create "exists" filter
+            let existFilter = {}
+            existFilter[dbConfig.deletion_flag_field] = 0
+            // modify filterCopy
+            if(Object.keys(filterCopy).length != 0){
+                filterCopy = {'$and' : [existFilter, filterCopy]}
+            }
+            else{
+                filterCopy = existFilter
+            }
         }
     }
-    if(cckConfig.deletion_flag_field != '' && !cckConfig.show_deleted){
-        // create "exists" query
-        let existquery = {}
-        existquery[cckConfig.deletion_flag_field] = 0
-        // modify query
-        if(Object.keys(query).length != 0){
-            query = {'$and' : [existquery, query]}
-        }
-        else{
-            query = existquery
-        }
-    }
-    return query
+    return [filterCopy, multi]
 }
 
-function preprocessProjection(cckConfig, projection){
-    cckConfig = preprocessCckConfig(cckConfig)
-    if(projection === null || typeof projection == 'undefined'){
-        projection = {}
+function preprocessProjection(dbConfig, projection){
+    let projectionCopy = chimera.deepCopyObject(projection)
+    dbConfig = preprocessDbConfig(dbConfig)
+    if(projectionCopy === null || typeof projectionCopy == 'undefined'){
+        projectionCopy = {}
     }
     // if not show_deleted, don't show deletion_flag_field
-    if(Object.keys(projection).length == 0 && !cckConfig.show_deleted){
-        if(cckConfig.deletion_flag_field != '' ){
-            projection[cckConfig.deletion_flag_field] = 0
+    if(Object.keys(projectionCopy).length == 0 && !dbConfig.show_deleted){
+        if(dbConfig.deletion_flag_field != '' ){
+            projectionCopy[dbConfig.deletion_flag_field] = 0
         }
-        if(cckConfig.history != ''){
-            projection[cckConfig.history] = 0
+        if(dbConfig.history != ''){
+            projectionCopy[dbConfig.history] = 0
         }
     }
-    return projection
+    return projectionCopy
 }
 
-function preprocessUpdateData(cckConfig, data){
+function preprocessUpdateData(dbConfig, data){
     let updateData = chimera.deepCopyObject(data)
     // determine whether the data contains update operator or not
     let isContainOperator = false
@@ -103,220 +109,273 @@ function preprocessUpdateData(cckConfig, data){
     }
     dataCopy = newDataCopy
     // set modifier and modification time
-    dataCopy[cckConfig.modification_by_field] = cckConfig.user_id
-    dataCopy[cckConfig.modification_time_field] = Date.now()
+    dataCopy[dbConfig.modification_by_field] = dbConfig.user_id
+    dataCopy[dbConfig.modification_time_field] = Date.now()
     // add dataCopy as history
     if(!('$push' in updateData)){
         updateData['$push'] = {}
     }
-    updateData['$push'][cckConfig.history] = dataCopy
+    updateData['$push'][dbConfig.history] = dataCopy
     return updateData
 }
 
-function preprocessSingleInsertData(cckConfig, data){
+function preprocessSingleInsertData(dbConfig, data){
     // copy the data for historical purpose
     let insertData = chimera.deepCopyObject(data)
     let dataCopy = chimera.deepCopyObject(data)
     let historyData = {'set' : dataCopy}
-    historyData[cckConfig.modification_by_field] = cckConfig.user_id
-    historyData[cckConfig.modification_time_field] = Date.now()
-    insertData[cckConfig.history] = [historyData]
-    insertData[cckConfig.deletion_flag_field] = 0
+    historyData[dbConfig.modification_by_field] = dbConfig.user_id
+    historyData[dbConfig.modification_time_field] = Date.now()
+    insertData[dbConfig.history] = [historyData]
+    insertData[dbConfig.deletion_flag_field] = 0
     return insertData
 }
 
-function preprocessInsertData(cckConfig, data){
-    cckConfig = preprocessCckConfig(cckConfig)
+function preprocessInsertData(dbConfig, data){
+    dbConfig = preprocessDbConfig(dbConfig)
     if(Array.isArray(data)){
-        newData = []
+        let newData = []
         for(let i=0; i<data.length; i++){
             let doc = data[i]
-            newData.push(preprocessSingleInsertData(cckConfig, data))
+            newData.push(preprocessSingleInsertData(dbConfig, doc))
         }
         return newData
     }
-    return preprocessSingleInsertData(cckConfig, data)
+    return preprocessSingleInsertData(dbConfig, data)
 }
 
-function initCollection(cckConfig){
-    let startTime = process.hrtime()
-    if(db === null){
-        db = monk(cckConfig.mongo_url)
+function preprocessCallback(callback){
+    if(typeof(callback) != 'function'){
+        callback = function(docs, success, error){
+            if(!success){
+                console.error(error)
+            }
+            console.log(JSON.stringify({'docs' : docs, 'success' : success, 'error' : error}))
+        }
     }
-    let collection = db.get(cckConfig.table)
+    return callback
+}
+
+function initCollection(dbConfig){
+    let startTime = process.hrtime()
+    if(db == null || lastMongoUrl == null){
+        db = monk(dbConfig.mongo_url)
+        lastMongoUrl = dbConfig.mongo_url
+        let elapsedTime = process.hrtime(startTime)
+        console.warn('Time to initiate connection: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS');
+    }
+    startTime = process.hrtime()
+    let collection = db.get(dbConfig.collection_name)
     let elapsedTime = process.hrtime(startTime)
-    console.warn('Time to initiate connection: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS');
+    console.warn('Time to initiate collection: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS');
     return collection
 }
 
-function find(cckConfig, query, projection, callback){
+function find(dbConfig, findFilter, projection, callback){
+    if(typeof(findFilter) == 'function'){
+        callback = findFilter
+        findFilter = {}
+        projection = {}
+    }
+    else if(typeof(projection) == 'function'){
+        callback = projection
+        projection = {}
+    }
     let startTime = process.hrtime()
-    cckConfig = preprocessCckConfig(cckConfig)
-    let collection = initCollection(cckConfig)
-    query = preprocessQuery(cckConfig, query)
-    projection = preprocessProjection(cckConfig, projection)
-    return collection.find(query, projection, function(err, docs){
+    dbConfig = preprocessDbConfig(dbConfig)
+    let collection = initCollection(dbConfig)
+    let [filter, multi] = preprocessFilter(dbConfig, findFilter)
+    projection = preprocessProjection(dbConfig, projection)
+    callback = preprocessCallback(callback)
+    return collection.find(filter, projection, function(err, docs){
         let elapsedTime = process.hrtime(startTime)
         console.warn('Time to execute "find" ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS');
         // close the database connection
-        if(!cckConfig.persistence_connection){closeConnection();}
-        // deal with callback
-        if(callback == null || typeof callback == 'undefined'){
-            if(err){
-                console.error(err)
-                console.log(JSON.stringify({'success': false, 'error': err, 'docs': []}))
+        if(!dbConfig.persistence_connection){closeConnection();}
+        // ensure that _ids are purely string
+        if(Array.isArray(docs)){
+            for(let i=0; i<docs.length; i++){
+                docs[i][dbConfig.id_field] = String(docs[i][dbConfig.id_field])
+            }
+        }
+        // use doc instead of docs if it is not multi
+        if(!multi){
+            if(Array.isArray(docs) && docs.length>0){
+                docs = docs[0]
             }
             else{
-                console.log(JSON.stringify({'success': true, 'error': err, 'docs': docs}))
+                docs = null
             }
         }
-        else{
-            callback(JSON.stringify(docs), err==null, err)
-        }
+        // deal with callback
+        callback(docs, err==null, err)
     })
 }
 
-function findOne(cckConfig, query, projection, callback){
-    let startTime = process.hrtime()
-    cckConfig = preprocessCckConfig(cckConfig)
-    let collection = initCollection(cckConfig)
-    query = preprocessQuery(cckConfig, query)
-    projection = preprocessProjection(cckConfig, projection)
-    return collection.findOne(query, projection, function(err, doc){
-        let elapsedTime = process.hrtime(startTime)
-        console.warn('Time to execute "findOne" ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
-        // close the database connection
-        if(!cckConfig.persistence_connection){closeConnection();}
-        // deal with callback
-        if(callback == null || typeof callback == 'undefined'){
-            if(err){
-                console.error(err)
-                console.log(JSON.stringify({'success': false, 'error':err, 'doc':{} }))
-            }
-            else{
-                console.log(JSON.stringify({'success': true, 'error':err, 'doc':doc}))
-            }
+function buildFilterForDocs(dbConfig, docs){
+    let findFilter = {}
+    if(Array.isArray(docs)){
+        findFilter = {'$or': []}
+        for(let i=0; i<docs.length; i++){
+            let doc = docs[i]
+            let subfindFilter = {}
+            subfindFilter[dbConfig.id_field] = doc[dbConfig.id_field]
+            findFilter['$or'].push(subfindFilter)
         }
-        else{
-            callback(JSON.stringify(doc), err==null, err)
-        }
-    })
+    }
+    else if(typeof(docs) != null){
+        findFilter[dbConfig.id_field] = docs[dbConfig.id_field]
+    }
+    else{
+        // hopefully no one make such a field
+        findFilter['_not_exists_' + Math.round(Math.random()*10000000000)] = false
+    }
+    return findFilter
 }
 
-function insert(cckConfig, data, options, callback){
+function insert(dbConfig, data, options, callback){
+    if(typeof(options) == 'function'){
+        callback = options
+        options = {}
+    }
     let startTime = process.hrtime()
-    cckConfig = preprocessCckConfig(cckConfig)
-    let collection = initCollection(cckConfig)
-    data = preprocessInsertData(cckConfig, data)
-    return collection.insert(data, options, function(err, doc){
+    dbConfig = preprocessDbConfig(dbConfig)
+    let collection = initCollection(dbConfig)
+    data = preprocessInsertData(dbConfig, data)
+    callback = preprocessCallback(callback)
+    return collection.insert(data, options, function(error, docs){
         let elapsedTime = process.hrtime(startTime)
         console.warn('Time to execute "insert" ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
         // close the database connection
-        if(!cckConfig.persistence_connection){closeConnection();}
-        // deal with callback
-        if(callback == null || typeof callback == 'undefined'){
-            if(err){
-                console.error(err)
-                console.log(JSON.stringify({'success': false, 'error': err, 'doc': {} }))
-            }
-            else{
-                console.log(JSON.stringify({'success': true, 'error': err, 'doc': doc}))
-            }
+        if(!dbConfig.persistence_connection){closeConnection();}
+        // not error
+        if(!error){
+            // build the findFilter
+            let findFilter = buildFilterForDocs(dbConfig, docs) 
+            // call find
+            find(dbConfig, findFilter, callback)
         }
         else{
-            callback(JSON.stringify(doc), err==null, err)
+            callback(null, false, error)
         }
     })
 }
 
-function update(cckConfig, query, data, options, callback){
+function update(dbConfig, updateFilter, data, options, callback){
+    if(typeof(options) == 'function'){
+        callback = options
+        options = {}
+    }
+    // preprocess options
+    if(typeof(options) == 'undefined'){
+        options = {}
+    }
+    options.multi = true
     let startTime = process.hrtime()
-    cckConfig = preprocessCckConfig(cckConfig)
-    let collection = initCollection(cckConfig)
-    data = preprocessUpdateData(cckConfig, data)
-    query = preprocessQuery(cckConfig, query)
-    return collection.update(query, data, options, function(err, result){
-        let elapsedTime = process.hrtime(startTime)
-        console.warn('Time to execute "update" ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
-        // close the database connection
-        if(!cckConfig.persistence_connection){closeConnection();}
-        // deal with callback
-        if(callback == null || typeof callback == 'undefined'){
-            if(err){
-                console.error(err)
-                console.log(JSON.stringify({'success': false, 'error': err, 'result': result, 'docs':{}}))
-            }
-            else{
-                if(result.n > 0){
-                    find(cckConfig, query, null, function(findErr, docs){
-                        if(err){
-                            console.error(err)
-                            console.log(JSON.stringify({'success': true, 'error': findErr, 'result': result, 'docs': {}}))
-                        }
-                        else{
-                            console.log(JSON.stringify({'success': true, 'error': err, 'result': result, 'docs': docs}))
-                        }
-                    })
+    dbConfig = preprocessDbConfig(dbConfig)
+    data = preprocessUpdateData(dbConfig, data)
+    let [filter, multi] = preprocessFilter(dbConfig, updateFilter)
+    callback = preprocessCallback(callback)
+    return find(dbConfig, updateFilter, function(docs, success, errorMessage){
+        if(success){
+            // build the findFilter
+            let findFilter = buildFilterForDocs(dbConfig, docs) 
+            let collection = initCollection(dbConfig)
+            collection.update(filter, data, options, function(error, result){
+                let elapsedTime = process.hrtime(startTime)
+                console.warn('Time to execute "update" ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
+                if(!error){
+                    find(dbConfig, findFilter, callback)
                 }
                 else{
-                    console.error(err)
-                    console.log(JSON.stringify({'success': true, 'error': err, 'result': result, 'docs': {}}))
+                    callback(null, false, error)
                 }
-            }
+            })
         }
         else{
-            if(err){
-                callback('', err==null, err)
-            }
-            else{
-                find(cckConfig, query, null, callback)
-            }
+            callback(null, false, errorMessage)
         }
     })
 }
 
-function remove(cckConfig, query, options, callback){
-    cckConfig = preprocessCckConfig(cckConfig)
-    cckConfig.show_deleted = true
+function remove(dbConfig, filter, options, callback){
+    dbConfig = preprocessDbConfig(dbConfig)
+    dbConfig.process_deleted = true
     let data = {}
-    data[cckConfig.deletion_flag_field] = 1
-    return update(cckConfig, query, data, options, callback)
+    data[dbConfig.deletion_flag_field] = 1
+    return update(dbConfig, filter, data, options, callback)
 }
 
-function createCckConfig(webConfig, table, userId, callback){
+function permanentRemove(dbConfig, removeFilter, options, callback){
+    if(typeof(removeFilter) == 'function'){
+        callback = removeFilter
+        removeFilter = {}
+        options = {}
+    }
+    else if(typeof(options) == 'function'){
+        callback = options
+        options = {}
+    }
+    let startTime = process.hrtime()
+    dbConfig = preprocessDbConfig(dbConfig)
+    dbConfig.process_deleted = true
+    let collection = initCollection(dbConfig)
+    let [filter, multi] = preprocessFilter(dbConfig, removeFilter)
+    return collection.remove(filter, options, function(err, result){
+        let elapsedTime = process.hrtime(startTime)
+        console.warn('Time to execute "permanentRemove" ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
+        // close the database connection
+        if(!dbConfig.persistence_connection){closeConnection();}
+        // deal with callback
+        if(callback == null || typeof callback == 'undefined'){
+            if(err){
+                console.error(err)
+                console.log(JSON.stringify({'success': false, 'error': err, 'result': result }))
+            }
+            else{
+                console.log(JSON.stringify({'success': true, 'error': err, 'result': result }))
+            }
+        }
+        else{
+            callback(result, err==null, err)
+        }
+    })
+}
+
+function createDbConfig(webConfig, collectionName, userId, callback){
     let url = 'mongo_url' in webConfig? webConfig.mongo_url: 'mongodb://localhost/test'
-    let cckConfig = {'mongo_url':url, 'table':table, 'user_id':userId}
-    callback(JSON.stringify(cckConfig), false, '')
+    let dbConfig = {'mongo_url':url, 'collection_name':collectionName, 'user_id':userId}
+    callback(JSON.stringify(dbConfig), false, '')
 }
 
 function closeConnection(){
     if(db != null){
         db.close()
         db = null
+        lastMongoUrl = null
+        console.warn('Connection closed')
     }
 }
 
 function showUsage(){
     console.error('Missing or invalid parameters')
     console.error('Usage:')
-    console.error(' * node '+process.argv[1]+' get [config] [query] [projection]')
-    console.error(' * node '+process.argv[1]+' getOne [config] [pkValue]')
-    console.error(' * node '+process.argv[1]+' insert [config] [dataInJSON]')
-    console.error(' * node '+process.argv[1]+' update [config] [pkValue] [dataInJSON]')
-    console.error(' * node '+process.argv[1]+' delete [config] [pkValue]')
+    console.error(' * node '+process.argv[1]+' find <config> [<filter> [<projection>]]')
+    console.error(' * node '+process.argv[1]+' insert <config> <dataInJSON>')
+    console.error(' * node '+process.argv[1]+' update <config> <pkValue> <dataInJSON>')
+    console.error(' * node '+process.argv[1]+' update <config> <filter> <dataInJSON>')
+    console.error(' * node '+process.argv[1]+' remove <config> <pkValue>')
+    console.error(' * node '+process.argv[1]+' remove <config> <filter>')
 }
 
 function isParameterValid(){
     if(process.argv.length >= 4){
         let action = process.argv[2]
-        let validAction = ['get', 'getOne', 'insert', 'update', 'delete']
+        let validAction = ['find', 'insert', 'update', 'remove']
         let actionIndex = validAction.indexOf(action)
         if(actionIndex > -1){
-            if(action == 'get'){
+            if(action == 'find'){
                 return true
-            }
-            else if(action == 'getOne'){
-                return process.argv.length >= 4
             }
             else if(action == 'insert'){
                 return process.argv.length >= 5
@@ -324,7 +383,7 @@ function isParameterValid(){
             else if(action == 'update'){
                 return process.argv.length >= 6
             }
-            else if(action == 'delete'){
+            else if(action == 'remove'){
                 return process.argv.length >= 5
             }
         }
@@ -334,11 +393,11 @@ function isParameterValid(){
 
 module.exports ={
     'find' : find,
-    'findOne' : findOne,
     'insert' : insert,
     'update' : update,
     'remove' : remove,
-    'createCckConfig' : createCckConfig
+    'permanentRemove' : permanentRemove,
+    'createDbConfig' : createDbConfig,
     'closeConnection' : closeConnection
 }
 
@@ -350,32 +409,27 @@ if(require.main === module){
     else{
         try{
             let action = process.argv[2]
-            let cckConfig = preprocessCckConfig(JSON.parse(process.argv[3]))
-            if(action == 'get'){
-                let query = process.argv.length > 4? process.argv[4] : {}
+            let dbConfig = preprocessDbConfig(JSON.parse(process.argv[3]))
+            if(action == 'find'){
+                let filter = process.argv.length > 4? process.argv[4] : {}
                 let projection = process.argv.length > 5? JSON.parse(process.argv[5]) : {}
-                find(cckConfig, query, projection)
-            }
-            else if(action == 'getOne'){
-                let query = process.argv.length > 4? process.argv[4] : {}
-                let projection = process.argv.length > 5? JSON.parse(process.argv[5]) : {}
-                findOne(cckConfig, query, projection)
+                find(dbConfig, filter, projection)
             }
             else if(action == 'insert'){
                 let data = process.argv.length > 4? JSON.parse(process.argv[4]) : {}
                 let options = process.argv.length > 5? JSON.parse(process.argv[5]) : {}
-                insert(cckConfig, data, options)
+                insert(dbConfig, data, options)
             }
             else if(action == 'update'){
-                let query = process.argv.length > 4? process.argv[4] : {}
+                let filter = process.argv.length > 4? process.argv[4] : {}
                 let data = process.argv.length > 5? JSON.parse(process.argv[5]) : {}
                 let options = process.argv.length > 6? JSON.parse(process.argv[6]) : {}
-                update(cckConfig, query, data, options)
+                update(dbConfig, filter, data, options)
             }
-            else if(action == 'delete'){
-                let query = process.argv.length > 4? process.argv[4] : {}
+            else if(action == 'remove'){
+                let filter = process.argv.length > 4? process.argv[4] : {}
                 let options = process.argv.length > 5? JSON.parse(process.argv[5]) : {}
-                remove(cckConfig, query, options)
+                remove(dbConfig, filter, options)
             }
         }catch(err){
             console.error(err)
