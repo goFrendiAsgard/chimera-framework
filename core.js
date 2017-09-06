@@ -832,7 +832,7 @@ function execute(chainConfigs, argv, presets, executeCallback, chainOptions){
 function executeChain(chain, argv, presets, executeCallback){
     fs.readFile(chain, function(err, data){
         let chainString = ''
-        let chainOptions = {}
+        let chainOptions = {'cwd' : process.cwd(), 'description' : ''}
         if(!err){
             // chain is really a file
             let yamlParts = chain.split('/')
