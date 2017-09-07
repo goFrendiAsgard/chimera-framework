@@ -37,11 +37,11 @@ npm link
 * npm
 * Interpreters/Compilers, depend on programming language you use.
 
-# Testing 
+# Testing
 
 Chimera-Framework was built with TDD in mind. You can run the test by executing `npm test`. The test require `python`, `php`, and `java` to be already installed.
 
-# Using Chimera-Framework 
+# Using Chimera-Framework
 
 To use Chimera-Framework, you need to define YAML chain file. Then you can invoke your process as follow:
 
@@ -67,7 +67,7 @@ On the other hand, process 3 depend on process 1 and process 2's output. Thus, w
 
 ![chimera-example-basic](doc/chimera-example-basic.png)
 
-To demonstrate language agnosticism, process 1 and process 2 was written in PHP (they have the same source code),while process 3 was written in Javascript. Each programs require two input arguments and return single output. The source code of process 1 and process 2 is presented below: 
+To demonstrate language agnosticism, process 1 and process 2 was written in PHP (they have the same source code),while process 3 was written in Javascript. Each programs require two input arguments and return single output. The source code of process 1 and process 2 is presented below:
 
 ```php
 <?php
@@ -77,7 +77,7 @@ $n2 = $argv[2];
 echo $n1 + $n2;
 ```
 
-While the source code of process 3 is shown below: 
+While the source code of process 3 is shown below:
 
 ```Javascript
 // File Location : tests/add.js
@@ -88,7 +88,7 @@ console.log n1 + n2;
 
 In order to assemble the process, we need to build a YAML chain file.  The complete semantic rule of YAML chain is presented [here](doc/doc.chain-semantic.md)
 ```yaml
-# file location process.yaml 
+# file location process.yaml
 ins: a,b
 out: e
 series:
@@ -123,13 +123,13 @@ More advance example including:
 * Shorthand
 * Process control (loop and branch)
 * Nested variable
-* Yaml string as argument 
+* Yaml string as argument
 * Arrow Function
 * Javascript Module
 
 are presented [here](doc/doc.advance-example.md)
 
-# Core API 
+# Core API
 
 Chimera-framework provides several core API:
 
@@ -140,7 +140,7 @@ Chimera-framework provides several core API:
 
 The complete core API list is presented [here](doc/doc.api.core.md)
 
-# MongoDb API 
+# MongoDb API
 
 Chimera-framework also provides several mongoDb API:
 
@@ -152,7 +152,7 @@ Chimera-framework also provides several mongoDb API:
 * `remove`
 * `permanentRemove`
 
-The complete core API list is presented [here](doc/doc.api.core.md)
+The complete core API list is presented [here](doc/doc.api.mongo.md)
 
 # Utilities
 
