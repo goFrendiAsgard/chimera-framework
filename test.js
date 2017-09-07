@@ -53,6 +53,38 @@ function testExecuteChain(testName, chain, inputs, presets, expectedResult, call
 // Run the test
 async.series([
 
+    // test database
+    (callback) => {
+        let startTime = process.hrtime();
+        let chain = 'tests/mongo-driver.yaml'
+        console.log('START mongo-driver testing ON nanosecond: ' + chimera.getFormattedNanoSecond(startTime) + '\n')
+        chimera.executeChain(chain, [], [], function(output, success){
+            let diff = process.hrtime(startTime);
+            let endTime = process.hrtime();
+            console.log(output);
+            console.log('END mongo-driver testing ON nanosecond: ' + chimera.getFormattedNanoSecond(endTime))
+            console.log('EXECUTION TIME: ' + chimera.getFormattedNanoSecond(diff) + ' nanosecond')
+            assert(output.insert_doc.name == 'Tono Stark', 'FAIL, insert_doc: ' + JSON.stringify(output.insert_doc) + '\n')
+            assert(output.update_doc.name == 'Toni Stark', 'FAIL, update_doc: ' + JSON.stringify(output.update_doc) + '\n')
+            assert(output.another_insert_doc.name == 'Tono Stark', 'FAIL, another_insert_doc: ' + JSON.stringify(output.another_insert_doc) + '\n')
+            console.log(output.insert_bulk_docs)
+            assert(output.insert_bulk_docs.length == 2, 'FAIL, insert_bulk_docs: ' + JSON.stringify(output.insert_bulk_docs) + '\n')
+            assert(output.update_bulk_docs.length == 3, 'FAIL, update_bulk_docs: ' + JSON.stringify(output.update_bulk_docs) + '\n')
+            for(let i=0; i<3; i++){
+                assert(output.update_bulk_docs[i].affiliation == 'Avenger', 'FAIL, update_bulk_docs['+i+']: ' + JSON.stringify(output.update_bulk_docs[i]) + '\n')
+            }
+            assert(output.superman_doc.name == 'Clark Kent', 'FAIL, insert_doc: ' + JSON.stringify(output.superman_doc) + '\n')
+            assert(output.find_docs.length == 4, 'FAIL, find_docs: ' + JSON.stringify(output.find_docs) + '\n')
+            assert(output.find_avenger_docs.length == 3, 'FAIL, find_avenger_docs: ' + JSON.stringify(output.find_avenger_docs) + '\n')
+            assert(output.find_sharingan_docs.length == 5, 'FAIL, find_sharingan_docs: ' + JSON.stringify(output.find_sharingan_docs) + '\n')
+            assert(output.permanent_remove_result.ok == 1, 'FAIL, permanent_remove_result: ' + JSON.stringify(output.permanent_remove_result) + '\n')
+            assert(output.permanent_remove_result.n == 5, 'FAIL, permanent_remove_result: ' + JSON.stringify(output.permanent_remove_result) + '\n')
+            console.log('SUCCESS\n')
+            // run callback
+            callback()
+        });
+    },
+
     // test execute chain
 
     (callback) => {testExecuteChain('Test executeChain without presets',

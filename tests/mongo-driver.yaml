@@ -1,4 +1,3 @@
-verbose: true
 out: out
 vars:
     config:
@@ -20,6 +19,9 @@ vars:
         alias: "Ironman"
     update_data:
         name: "Toni Stark"
+    superman_data:
+        name: "Clark Kent"
+        alias: "Superman"
     bulk_insert_data:
         - name: "Steve Roger"
           alias: "Captain America"
@@ -40,6 +42,8 @@ series:
     - (config, bulk_insert_data) -> [../mongo-driver.js insert] -> insert_bulk_docs
     # update bulk
     - (config, "{}", bulk_update_data) -> [../mongo-driver.js update] -> update_bulk_docs
+    # insert superman
+    - (config, superman_data) -> [../mongo-driver.js insert] -> superman_doc
     # get the data
     - (config) -> [../mongo-driver.js find] -> find_docs
     # get the data
@@ -49,10 +53,10 @@ series:
     # permanent remove
     - (config) -> [../mongo-driver.js permanentRemove] -> permanent_remove_result
     # combine
-    - ins: insert_doc, update_doc, another_insert_doc, remove_doc, insert_bulk_docs, update_bulk_docs, find_docs, find_avenger_docs, find_sharingan_docs, permanent_remove_result
+    - ins: insert_doc, update_doc, another_insert_doc, remove_doc, insert_bulk_docs, update_bulk_docs, superman_doc, find_docs, find_avenger_docs, find_sharingan_docs, permanent_remove_result
       out: out
       command: |
-          (insert_doc, update_doc, another_insert_doc, remove_doc, insert_bulk_docs, update_bulk_docs, find_docs, find_avenger_docs, find_sharingan_docs, permanent_remove_result)=>{
+          (insert_doc, update_doc, another_insert_doc, remove_doc, insert_bulk_docs, update_bulk_docs, superman_doc, find_docs, find_avenger_docs, find_sharingan_docs, permanent_remove_result)=>{
               return {
                   "insert_doc" : insert_doc,
                   "update_doc" : update_doc,
@@ -60,6 +64,7 @@ series:
                   "remove_doc" : remove_doc,
                   "insert_bulk_docs" : insert_bulk_docs,
                   "update_bulk_docs" : update_bulk_docs,
+                  "superman_doc" : superman_doc,
                   "find_docs" : find_docs,
                   "find_avenger_docs" : find_avenger_docs,
                   "find_sharingan_docs" : find_sharingan_docs,
