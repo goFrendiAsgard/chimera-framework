@@ -38,7 +38,7 @@ This note is intended for developers. You might not need it
 * [x] Better performance
 * [x] Implementing chimera's own cmd (with `options` parameter) to replace `node-cmd`
 * [x] Get rid of `process.chdir`, use options instead
-* [ ] Create test for `chimera.executeChain` with different amount of parameters
-* [ ] Add usage to Core API documentation
+* [x] Create test for `chimera.executeChain` with different amount of parameters
+* [x] Add usage to Core API documentation
 * [ ] Create Mongo db driver API documentation
 * [ ] Completing CCK
