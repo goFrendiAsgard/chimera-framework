@@ -3,6 +3,6 @@ out: e
 verbose: true
 series:
   - parallel:
-      - (server, 'tests/chain-add.yaml', a,b) -> chimera-send -> d
       - (a,b) -> php programs/add.php -> c
+      - (server, 'tests/add.yaml', a,b) -> chimera-send -> d
   - (c,d) -> node programs/add.js -> e

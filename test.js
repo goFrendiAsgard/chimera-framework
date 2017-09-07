@@ -85,27 +85,27 @@ async.series([
     // test execute chain
 
     (callback) => {testExecuteChain('Test executeChain without presets',
-        'tests/chain-minimal.yaml', [1, 5], {}, -23, callback)},
+        'tests/minimal.yaml', [1, 5], {}, -23, callback)},
 
     (callback) => {testExecuteChain('Test executeChain with presets',
-        'tests/chain-minimal.yaml', [1, 5], {'a':1, 'b':1}, -23, callback)},
+        'tests/minimal.yaml', [1, 5], {'a':1, 'b':1}, -23, callback)},
 
     (callback) => {testExecuteChain('Test executeChain containing empty object',
-        'tests/chain-empty.yaml', [0], {}, '', callback)},
+        'tests/empty.yaml', [0], {}, '', callback)},
 
     (callback) => {testExecuteChain('Test executeChain containing infinite loop, expect error',
-        'tests/chain-infinite-loop.yaml', [0], {}, '', callback)},
+        'tests/infinite-loop.yaml', [0], {}, '', callback)},
 
     // test execute command
 
     (callback) => {testExecuteCommand('Test error handling: no error',
-        'chimera tests/chain-error-handling.yaml 6 6', 12, callback)},
+        'chimera tests/error-handling.yaml 6 6', 12, callback)},
 
     (callback) => {testExecuteCommand('Test error handling: error less',
-        'chimera tests/chain-error-handling.yaml 5 6', '', callback)},
+        'chimera tests/error-handling.yaml 5 6', '', callback)},
 
     (callback) => {testExecuteCommand('Test error handling: error more',
-        'chimera tests/chain-error-handling.yaml 6 5', '', callback)},
+        'chimera tests/error-handling.yaml 6 5', '', callback)},
 
     (callback) => {testExecuteCommand('Test Empty process with single argument',
         'chimera "(a)->-> b" 6', 6, callback)},
@@ -114,55 +114,55 @@ async.series([
         'chimera "(a,b)->->(c)" 6 5', '[6,5]', callback)},
 
     (callback) => {testExecuteCommand('Test JSON instead of YAML',
-        'chimera tests/chain-add.json 1 5', 6, callback)},
+        'chimera tests/add.json 1 5', 6, callback)},
 
     (callback) => {testExecuteCommand('Test javascript arrow function',
-        'chimera tests/chain-add-js.yaml 1 5', 6, callback)},
+        'chimera tests/add-js.yaml 1 5', 6, callback)},
 
-    (callback) => {testExecuteCommand('Test chain-complete',
-        'chimera tests/chain-complete.yaml 1 5', -23, callback)},
+    (callback) => {testExecuteCommand('Test complete',
+        'chimera tests/complete.yaml 1 5', -23, callback)},
 
-    (callback) => {testExecuteCommand('Test chain-minimal',
-        'chimera tests/chain-minimal.yaml 1 5', -23, callback)},
+    (callback) => {testExecuteCommand('Test minimal',
+        'chimera tests/minimal.yaml 1 5', -23, callback)},
 
-    (callback) => {testExecuteCommand('Test chain-inline-1',
+    (callback) => {testExecuteCommand('Test inline-1',
         'chimera "(a, b) -> node tests/programs/add.js -> c" 1 5', 6, callback)},
 
-    (callback) => {testExecuteCommand('Test chain-inline-2',
+    (callback) => {testExecuteCommand('Test inline-2',
         'chimera "(a, b) -> node tests/programs/add.js" 1 5', 6, callback)},
 
-    (callback) => {testExecuteCommand('Test chain-implode',
-        'chimera tests/chain-implode.yaml 1 2 3', '1, 2, 3', callback)},
+    (callback) => {testExecuteCommand('Test implode',
+        'chimera tests/implode.yaml 1 2 3', '1, 2, 3', callback)},
 
-    (callback) => {testExecuteCommand('Test chain-control-1',
-        'chimera tests/chain-control.yaml 5', 8, callback)},
+    (callback) => {testExecuteCommand('Test control-1',
+        'chimera tests/control.yaml 5', 8, callback)},
 
-    (callback) => {testExecuteCommand('Test chain-control-2',
-        'chimera tests/chain-control.yaml 12', 11, callback)},
+    (callback) => {testExecuteCommand('Test control-2',
+        'chimera tests/control.yaml 12', 11, callback)},
 
-    (callback) => {testExecuteCommand('Test chain-simple-command',
-        'chimera tests/chain-simple-command.yaml 5 6', 11, callback)},
+    (callback) => {testExecuteCommand('Test simple-command',
+        'chimera tests/simple-command.yaml 5 6', 11, callback)},
 
-    (callback) => {testExecuteCommand('Test chain-nested-control',
-        'chimera tests/chain-nested-control.yaml','1112*1314**2122*2324**3132*3334**',callback)},
+    (callback) => {testExecuteCommand('Test nested-control',
+        'chimera tests/nested-control.yaml','1112*1314**2122*2324**3132*3334**',callback)},
 
-    (callback) => {testExecuteCommand('Test chain-complex-vars',
-        'chimera tests/chain-complex-vars.yaml 5 6', -176, callback)},
+    (callback) => {testExecuteCommand('Test complex-vars',
+        'chimera tests/complex-vars.yaml 5 6', -176, callback)},
 
-    (callback) => {testExecuteCommand('Test chain-add',
-        'chimera tests/chain-add.yaml 5 6', 11, callback)},
+    (callback) => {testExecuteCommand('Test add',
+        'chimera tests/add.yaml 5 6', 11, callback)},
 
-    (callback) => {testExecuteCommand('Test chain-add-module',
-        'chimera tests/chain-add-module.yaml 5 6', 11, callback)},
+    (callback) => {testExecuteCommand('Test add-module',
+        'chimera tests/add-module.yaml 5 6', 11, callback)},
 
-    (callback) => {testExecuteCommand('Test chain-add-module-twice',
-        'chimera tests/chain-add-module-twice.yaml 5 6', 17, callback)},
+    (callback) => {testExecuteCommand('Test add-module-twice',
+        'chimera tests/add-module-twice.yaml 5 6', 17, callback)},
 
-    (callback) => {testExecuteCommand('Test chain-arithmetic-module',
-        'chimera tests/chain-arithmetic-module.yaml 5 6 "*"', 30, callback)},
+    (callback) => {testExecuteCommand('Test arithmetic-module',
+        'chimera tests/arithmetic-module.yaml 5 6 "*"', 30, callback)},
 
-    (callback) => {testExecuteCommand('Test chain-distributed',
-        'chimera tests/chain-distributed.yaml 5 4 http://localhost:3010', 18, callback)},
+    (callback) => {testExecuteCommand('Test distributed',
+        'chimera tests/distributed.yaml 5 4 http://localhost:3010', 18, callback)},
 
     // kill chimera server
     (callback) => {

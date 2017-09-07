@@ -7,7 +7,8 @@
     "chimera-serve": "server.js",
     "chimera-send": "sender.js",
     "chimera-eisn": "eisn.js",
-    "chimera-init-web": "generateProject.js"
+    "chimera-init-web": "generateProject.js",
+    "chimera-mongo": "mongo-driver.js"
   },
   "scripts": {
     "test": "node test.js"
@@ -30,6 +31,8 @@
     "http": "0.0.0",
     "js-yaml": "^3.9.1",
     "json-stringify-safe": "^5.0.1",
+    "mongodb": "^2.2.31",
+    "monk": "^6.0.3",
     "path": "^0.12.7",
     "process": "^0.11.10",
     "querystring": "^0.2.0"

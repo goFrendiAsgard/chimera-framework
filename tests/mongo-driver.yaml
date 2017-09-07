@@ -1,4 +1,3 @@
-verbose: true
 vars:
     config:
         mongo_url: mongodb://localhost/project-template
@@ -28,22 +27,22 @@ vars:
         affiliation: "Avenger"
 series:
     # insert new data
-    - (config, insert_data) -> [cck.mongo.core.js insert] -> insert_doc
+    - (config, insert_data) -> [../mongo-driver.js insert] -> insert_doc
     # update inserted data with a newer one
-    - (config, insert_doc._id, update_data) -> [cck.mongo.core.js update] -> update_doc
+    - (config, insert_doc._id, update_data) -> [../mongo-driver.js update] -> update_doc
     # insert another data
-    - (config, insert_data) -> [cck.mongo.core.js insert] -> another_insert_doc
+    - (config, insert_data) -> [../mongo-driver.js insert] -> another_insert_doc
     # delete the last one
-    - (config, another_insert_doc._id) -> [cck.mongo.core.js remove] -> remove_doc
+    - (config, another_insert_doc._id) -> [../mongo-driver.js remove] -> remove_doc
     # insert bulk
-    - (config, bulk_insert_data) -> [cck.mongo.core.js insert] -> insert_bulk_docs
+    - (config, bulk_insert_data) -> [../mongo-driver.js insert] -> insert_bulk_docs
     # update bulk
-    - (config, "{}", bulk_update_data) -> [cck.mongo.core.js update] -> update_bulk_docs
+    - (config, "{}", bulk_update_data) -> [../mongo-driver.js update] -> update_bulk_docs
     # get the data
-    - (config) -> [cck.mongo.core.js find] -> find_docs
+    - (config) -> [../mongo-driver.js find] -> find_docs
     # get the data
-    - (config, '{"affiliation":"Avenger"}') -> [cck.mongo.core.js find] -> find_avenger_docs
+    - (config, '{"affiliation":"Avenger"}') -> [../mongo-driver.js find] -> find_avenger_docs
     # get it with sharingan activated ...
-    - (sharingan_config, "{}", sharingan_projection) -> [cck.mongo.core.js find] -> find_sharingan_docs
+    - (sharingan_config, "{}", sharingan_projection) -> [../mongo-driver.js find] -> find_sharingan_docs
     # permanent remove
-    - (config) -> [cck.mongo.core.js permanentRemove] -> permanent_remove_result
+    - (config) -> [../mongo-driver.js permanentRemove] -> permanent_remove_result
