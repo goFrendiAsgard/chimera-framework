@@ -12,9 +12,11 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
     <tr>
         <td rowspan="4">
             <b>executeChain</b><br />
-            <code>executeChain(&lt;YAML chain&gt;, &lt;callback&gt;)</code><br />
-            <code>executeChain(&lt;YAML chain&gt;, &lt;argv&gt;, &lt;callback&gt;)</code><br />
-            <code>executeChain(&lt;YAML chain&gt;, &lt;argv&gt;, &lt;presets&gt;, &lt;callback&gt;)</code>
+            <ul>
+                <li><code>executeChain(&lt;YAML chain&gt;, &lt;callback&gt;)</code><br /></li>
+                <li><code>executeChain(&lt;YAML chain&gt;, &lt;argv&gt;, &lt;callback&gt;)</code><br /></li>
+                <li><code>executeChain(&lt;YAML chain&gt;, &lt;argv&gt;, &lt;presets&gt;, &lt;callback&gt;)</code></li>
+            </ul>
         </td>
         <td>chain</td>
         <td>string, YAML chain</td>
