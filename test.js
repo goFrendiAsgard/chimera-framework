@@ -85,6 +85,29 @@ async.series([
         });
     },
 
+
+    (callback) => {
+        chimera.executeChain('tests/increment.yaml', function(output, error, errorMessage){
+            assert(output == 1, 'FAIL, Expected : 1, Actual : '+output)
+            console.log('Success: executeChain without input and preset')
+            callback()
+        })
+    },
+    (callback) => {
+        chimera.executeChain('tests/increment.yaml', {'inc':5}, function(output, error, errorMessage){
+            assert(output == 5, 'FAIL, Expected : 5, Actual : '+output)
+            console.log('Success: executeChain without input ')
+            callback()
+        })
+    },
+    (callback) => {
+        chimera.executeChain('tests/increment.yaml', [1], function(output, error, errorMessage){
+            assert(output == 2, 'FAIL, Expected : 2, Actual : '+output)
+            console.log('Success: executeChain without preset ')
+            callback()
+        })
+    },
+
     // test execute chain
 
     (callback) => {testExecuteChain('Test executeChain without presets',

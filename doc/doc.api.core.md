@@ -10,7 +10,12 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         <th>Function Description</th>
     </tr>
     <tr>
-        <td rowspan="4"><b>executeChain</b></td>
+        <td rowspan="4">
+            <b>executeChain</b><br />
+            <code>executeChain(&lt;YAML chain&gt;, &lt;callback&gt;)</code><br />
+            <code>executeChain(&lt;YAML chain&gt;, &lt;argv&gt;, &lt;callback&gt;)</code><br />
+            <code>executeChain(&lt;YAML chain&gt;, &lt;argv&gt;, &lt;presets&gt;, &lt;callback&gt;)</code>
+        </td>
         <td>chain</td>
         <td>string, YAML chain</td>
         <td rowspan="4">
@@ -27,7 +32,7 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         <td>Object, YAML chains's preset variables</td>
     </tr>
     <tr>
-        <td>executeCallback</td>
+        <td>callback</td>
         <td>
             callback function, require 3 parameters
             <ul>
@@ -38,7 +43,10 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         </td>
     </tr>
     <tr>
-        <td><b>getFormattedNanoSecond</b></td>
+        <td>
+            <b>getFormattedNanoSecond</b><br />
+            <code>getFormattedNanoSecond(&lt;time&gt;)</code>
+        </td>
         <td>time</td>
         <td>
             high resolution real time in [seconds, nanoseconds], tuple. Usually result of <i>process.hrtime()</i>
@@ -48,7 +56,10 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         </td>
     </tr>
     <tr>
-        <td><b>deepCopyObject</b></td>
+        <td>
+            <b>deepCopyObject</b><br />
+            <code>deepCopyObject(&lt;obj&gt;)</code>
+        </td>
         <td>obj</td>
         <td>
             object to be copied
@@ -58,7 +69,10 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         </td>
     </tr>
     <tr>
-        <td rowspan="2"><b>patchObject</b></td>
+        <td rowspan="2">
+            <b>patchObject</b><br />
+            <code>patchObject(&lt;obj&gt;, &lt;patcher&gt;)</code>
+        </td>
         <td>obj</td>
         <td>
             object to be patched
