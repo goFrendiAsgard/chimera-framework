@@ -53,35 +53,6 @@ function testExecuteChain(testName, chain, inputs, presets, expectedResult, call
 // Run the test
 async.series([
 
-    // run chimera server
-    (callback) => {
-        let callbackExecuted = false
-        let env = chimera.deepCopyObject(process.env)
-        env['PORT'] = 3010
-        serverProcess = childProcess.spawn('chimera-serve', [], {'env': env, 'cwd':process.cwd()})
-
-        // if error, show message and kill
-        serverProcess.on('error', (err)=>{
-            console.error(err)
-            serverProcess.kill()
-        })
-
-        // if success, run callback
-        serverProcess.stdout.on('data', function(stdout){
-            console.log(String(stdout))
-            if(!callbackExecuted){
-                callbackExecuted = true
-                callback()
-            }
-        })
-
-        serverProcess.stderr.on('data', function(stderr){
-            console.error(String(stderr))
-        })
-
-    },
-
-
     // test execute chain
 
     (callback) => {testExecuteChain('Test executeChain without presets',
@@ -161,6 +132,31 @@ async.series([
     (callback) => {testExecuteCommand('Test arithmetic-module',
         'chimera tests/arithmetic-module.yaml 5 6 "*"', 30, callback)},
 
+    // run chimera server
+    (callback) => {
+        let callbackExecuted = false
+        let env = chimera.deepCopyObject(process.env)
+        env['PORT'] = 3010
+        serverProcess = childProcess.spawn('chimera-serve', [], {'env': env, 'cwd':process.cwd()})
+        // if error, show message and kill
+        serverProcess.on('error', (err)=>{
+            console.error(err)
+            serverProcess.kill()
+        })
+        // if success, run callback
+        serverProcess.stdout.on('data', function(stdout){
+            console.log(String(stdout))
+            if(!callbackExecuted){
+                callbackExecuted = true
+                callback()
+            }
+        })
+        serverProcess.stderr.on('data', function(stderr){
+            console.error(String(stderr))
+        })
+    },
+
+    // test distributed
     (callback) => {testExecuteCommand('Test distributed',
         'chimera tests/distributed.yaml 5 4 http://localhost:3010', 18, callback)},
 

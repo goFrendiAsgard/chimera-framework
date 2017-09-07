@@ -164,14 +164,14 @@ function initCollection(dbConfig){
         db = monk(dbConfig.mongo_url)
         lastMongoUrl = dbConfig.mongo_url
         let elapsedTime = process.hrtime(startTime)
-        console.warn('Time to initiate connection: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS');
+        console.warn('[INFO] Connection openned in: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS');
     }
     if(lastCollectionName != dbConfig.collection_name || cachedCollection == null){
         startTime = process.hrtime()
         lastCollectionName = dbConfig.collection_name
         cachedCollection = db.get(lastCollectionName)
         let elapsedTime = process.hrtime(startTime)
-        console.warn('Time to initiate collection: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS');
+        console.warn('[INFO] Collection initialized in: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS');
     }
     return cachedCollection
 }
@@ -194,7 +194,7 @@ function find(dbConfig, findFilter, projection, callback){
     callback = preprocessCallback(callback)
     return collection.find(filter, projection, function(err, docs){
         let elapsedTime = process.hrtime(startTime)
-        console.warn('Time to execute "find" ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS');
+        console.warn('[INFO] Execute "find" in:' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS');
         // close the database connection
         if(!dbConfig.persistence_connection){closeConnection();}
         // ensure that _ids are purely string
@@ -213,7 +213,13 @@ function find(dbConfig, findFilter, projection, callback){
             }
         }
         // deal with callback
-        callback(docs, err==null, err)
+        if(err){
+            console.error('[ERROR] ' + err)
+            callback(null, false, err)
+        }
+        else{
+            callback(docs, true, err)
+        }
     })
 }
 
@@ -250,11 +256,11 @@ function insert(dbConfig, data, options, callback){
     callback = preprocessCallback(callback)
     return collection.insert(data, options, function(error, docs){
         let elapsedTime = process.hrtime(startTime)
-        console.warn('Time to execute "insert" ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
+        console.warn('[INFO] Execute "insert" in: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
         // not error
         if(!error){
             // build the findFilter
-            let findFilter = buildFilterForDocs(dbConfig, docs) 
+            let findFilter = buildFilterForDocs(dbConfig, docs)
             // call find
             find(dbConfig, findFilter, callback)
         }
@@ -262,6 +268,7 @@ function insert(dbConfig, data, options, callback){
             // close the database connection
             if(!dbConfig.persistence_connection){closeConnection();}
             // execute callback
+            console.error('[ERROR] ' + error)
             callback(null, false, error)
         }
     })
@@ -290,7 +297,7 @@ function update(dbConfig, updateFilter, data, options, callback){
             let collection = initCollection(dbConfig)
             collection.update(filter, data, options, function(error, result){
                 let elapsedTime = process.hrtime(startTime)
-                console.warn('Time to execute "update" ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
+                console.warn('[INFO] Execute "update" in: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
                 if(!error){
                     dbConfig.persistence_connection = false
                     find(dbConfig, findFilter, callback)
@@ -299,6 +306,7 @@ function update(dbConfig, updateFilter, data, options, callback){
                     // close the database connection
                     if(!dbConfig.persistence_connection){closeConnection();}
                     // execute callback
+                    console.error('[ERROR] ' + error)
                     callback(null, false, error)
                 }
             })
@@ -307,6 +315,7 @@ function update(dbConfig, updateFilter, data, options, callback){
             // close the database connection
             if(!dbConfig.persistence_connection){closeConnection();}
             // execute callback
+            console.error('[ERROR] ' + errorMessage)
             callback(null, false, errorMessage)
         }
     })
@@ -342,13 +351,13 @@ function permanentRemove(dbConfig, removeFilter, options, callback){
     }
     return collection.remove(filter, options, function(err, result){
         let elapsedTime = process.hrtime(startTime)
-        console.warn('Time to execute "permanentRemove" ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
+        console.warn('[INFO] Execute "permanentRemove" in: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
         // close the database connection
         if(!dbConfig.persistence_connection){closeConnection();}
         // deal with callback
         if(err){
-            console.error(err)
-            callback(null, false, error)
+            console.error('[ERROR] ' + err)
+            callback(null, false, err)
         }
         else{
             callback(result, true, '')
@@ -375,7 +384,7 @@ function closeConnection(){
         lastMongoUrl = null
         lastCollectionName = null
         cachedCollection = null
-        console.warn('Connection closed')
+        console.warn('[INFO] Connection closed')
     }
 }
 

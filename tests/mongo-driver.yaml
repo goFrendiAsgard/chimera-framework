@@ -1,3 +1,5 @@
+verbose: true
+out: out
 vars:
     config:
         mongo_url: mongodb://localhost/project-template
@@ -46,3 +48,21 @@ series:
     - (sharingan_config, "{}", sharingan_projection) -> [../mongo-driver.js find] -> find_sharingan_docs
     # permanent remove
     - (config) -> [../mongo-driver.js permanentRemove] -> permanent_remove_result
+    # combine
+    - ins: insert_doc, update_doc, another_insert_doc, remove_doc, insert_bulk_docs, update_bulk_docs, find_docs, find_avenger_docs, find_sharingan_docs, permanent_remove_result
+      out: out
+      command: |
+          (insert_doc, update_doc, another_insert_doc, remove_doc, insert_bulk_docs, update_bulk_docs, find_docs, find_avenger_docs, find_sharingan_docs, permanent_remove_result)=>{
+              return {
+                  "insert_doc" : insert_doc,
+                  "update_doc" : update_doc,
+                  "another_insert_doc" : another_insert_doc,
+                  "remove_doc" : remove_doc,
+                  "insert_bulk_docs" : insert_bulk_docs,
+                  "update_bulk_docs" : update_bulk_docs,
+                  "find_docs" : find_docs,
+                  "find_avenger_docs" : find_avenger_docs,
+                  "find_sharingan_docs" : find_sharingan_docs,
+                  "permanent_remove_result" : permanent_remove_result,
+              }
+          }
