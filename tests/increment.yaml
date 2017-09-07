@@ -1,0 +1,5 @@
+# TODO: create test for this
+ins: a
+vars:
+    inc: 1
+command: (a,inc) -> (x,y)=>{return x+y;}

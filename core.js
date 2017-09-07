@@ -830,6 +830,21 @@ function execute(chainConfigs, argv, presets, executeCallback, chainOptions){
  */
 
 function executeChain(chain, argv, presets, executeCallback){
+    if(typeof(argv) == 'function'){
+        executeCallback = argv
+        argv = []
+        presets = {}
+    }
+    else if(typeof(presets) == 'function'){
+        executeCallback = presets
+        if(Array.isArray(argv)){
+            presets = {}
+        }
+        else{
+            presets = argv
+            argv = []
+        }
+    }
     fs.readFile(chain, function(err, data){
         let chainString = ''
         let chainOptions = {'cwd' : process.cwd(), 'description' : ''}

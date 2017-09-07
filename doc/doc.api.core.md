@@ -1,4 +1,4 @@
-# API
+# Core API
 
 Chimera-framework offer several API you can use in your Node.Js scripts. In order to use the API, you need to import `chimera-framework/core`.
 

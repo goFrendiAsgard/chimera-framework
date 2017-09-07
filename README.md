@@ -129,16 +129,16 @@ More advance example including:
 
 are presented [here](doc/doc.advance-example.md)
 
-# API 
+# Core API 
 
-Chimera provide several API:
+Chimera provide several core API:
 
 * `executeChain`
 * `getFormattedNanoSecond`
 * `deepCopyObject`
 * `patchObject`
 
-The complete API list is presented [here](doc/doc.api.md)
+The complete core API list is presented [here](doc/doc.api.core.md)
 
 # Utilities
 
