@@ -131,12 +131,26 @@ are presented [here](doc/doc.advance-example.md)
 
 # Core API 
 
-Chimera provide several core API:
+Chimera-framework provides several core API:
 
 * `executeChain`
 * `getFormattedNanoSecond`
 * `deepCopyObject`
 * `patchObject`
+
+The complete core API list is presented [here](doc/doc.api.core.md)
+
+# MongoDb API 
+
+Chimera-framework also provides several mongoDb API:
+
+* `createDbConfig`
+* `closeConnection`
+* `find`
+* `insert`
+* `update`
+* `remove`
+* `permanentRemove`
 
 The complete core API list is presented [here](doc/doc.api.core.md)
 
@@ -154,13 +168,14 @@ The complete Utilities list is presented [here](doc/doc.utilities.md)
 
 Chimera web framework is still in development phase. The API might changed anytime.
 
-For more information about the web framework, please visit 
+For more information about the web framework, please visit [here](doc/doc.web-framework.md)
 
 # Documentation
 
 * [YAML Chain Semantic](doc/doc.chain-semantic.md)
 * [Advance Example](doc/doc.advance-example.md)
-* [API](doc/doc.api.md)
+* [Core API](doc/doc.api.core.md)
+* [MongoDb API](doc/doc.api.mongo.md)
 * [Utilities](doc/doc.utilities.md)
 * [Web Framework](doc/doc.web-framework.md)
 
