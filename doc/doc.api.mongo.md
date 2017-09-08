@@ -23,20 +23,36 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         <td rowspan="5"></td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>obj</td>
+        <td>Object with <code>mongo_url</code> key. Instead of literal string, you can pass an object with <code>mongo_url</code> key instead</td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>collectionName</td>
+        <td>string, name of collection</td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>userId</td>
+        <td>string, userId. Used for row versioning to fill up <code>_modified_by</code> column</td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>callback</td>
+        <td>
+            callback function, require 3 parameters:
+            <ul>
+                <li>
+                    <b>dbConfig</b>
+                    A newly created dbConfig object. This object is required for <code>find</code> <code>insert</code> <code>update</code> <code>remove</code> and <code>permanentRemove<code>
+                </li>
+                <li>
+                    <b>success</b>
+                    boolean, contains <code>true</code> if the operation succeed
+                </li>
+                <li>
+                    <b>errorMessage</b>
+                    string, error message
+                </li>
+            </ul>
+        </td>
     </tr>
     <!-- closeConnection -->
     <tr>
