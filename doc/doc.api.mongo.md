@@ -109,11 +109,11 @@ const DEFAULT_DB_CONFIG = {
     </tr>
     <tr>
         <td>query</td>
-        <td>object, MongoDB query [https://docs.mongodb.com/manual/tutorial/query-documents/](https://docs.mongodb.com/manual/tutorial/query-documents/)</td>
+        <td>object, <a href="https://docs.mongodb.com/manual/tutorial/query-documents/">MongoDB query</a></td>
     </tr>
     <tr>
         <td>projection</td>
-        <td>object or string, options and projection. [https://automattic.github.io/monk/docs/collection/find.html](https://automattic.github.io/monk/docs/collection/find.html)</td>
+        <td>object or string, <a href="https://automattic.github.io/monk/docs/collection/find.html">options and projection</a></td>
     </tr>
     <tr>
         <td>callback</td>
@@ -387,10 +387,10 @@ series:
     - (dbConfig) -> [mongo-bridge.js permanentRemove] -> out.permanent_remove_result
 ```
 
-After executing the YAML file (`chimera test-db.yaml`), the result will be as followed: 
+After executing the YAML file (`chimera test-db.yaml`), the result will be as followed:
 
 ```
-{ insert_doc: 
+{ insert_doc:
    { _id: '59b2b69a31ff37363b4e9a88',
      name: 'Tono Stark',
      alias: 'Ironman' },
