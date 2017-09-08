@@ -191,7 +191,7 @@ const DEFAULT_DB_CONFIG = {
     </tr>
     <tr>
         <td>query</td>
-        <td>object, MongoDB query [https://docs.mongodb.com/manual/tutorial/query-documents/](https://docs.mongodb.com/manual/tutorial/query-documents/)</td>
+        <td>object, <a href="https://docs.mongodb.com/manual/tutorial/query-documents/">MongoDB query</a></td>
     </tr>
     <tr>
         <td>data</td>
@@ -233,7 +233,7 @@ const DEFAULT_DB_CONFIG = {
     </tr>
     <tr>
         <td>query</td>
-        <td>object, MongoDB query [https://docs.mongodb.com/manual/tutorial/query-documents/](https://docs.mongodb.com/manual/tutorial/query-documents/)</td>
+        <td>object, <a href="https://docs.mongodb.com/manual/tutorial/query-documents/">MongoDB query</a></td>
     </tr>
     <tr>
         <td>options</td>
@@ -274,7 +274,7 @@ const DEFAULT_DB_CONFIG = {
     </tr>
     <tr>
         <td>query</td>
-        <td>object, MongoDB query [https://docs.mongodb.com/manual/tutorial/query-documents/](https://docs.mongodb.com/manual/tutorial/query-documents/)</td>
+        <td>object, <a href="https://docs.mongodb.com/manual/tutorial/query-documents/">MongoDB query</a></td>
     </tr>
     <tr>
         <td>options</td>
