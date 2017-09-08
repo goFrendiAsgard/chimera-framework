@@ -21,7 +21,12 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         <td>mongoUrl</td>
         <td>string, MongoDB connection string (e.g: <code>mongodb://localhost/test</code></td>
         <td rowspan="5">
-            Creating a dbConfig object, which is required for <code>find</code> <code>insert</code> <code>update</code> <code>remove</code> and <code>permanentRemove</code>
+            <p>
+                Creating a dbConfig object, which is required for <code>find</code> <code>insert</code> <code>update</code> <code>remove</code> and <code>permanentRemove</code>
+            </p>
+            <p>
+                If callback is empty, then the created dbConfig will be shown in stdout.
+            </p>
         </td>
     </tr>
     <tr>
@@ -62,15 +67,59 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
             <b>closeConnection</b><br />
             <code>closeConnection()</code>
         </td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>-</td>
+        <td>-</td>
+        <td>Close database connection manually</td>
     </tr>
     <!-- find -->
     <tr>
         <td rowspan="4">
             <b>find</b><br />
-            <code>find(&lt;dbConfig&gt;, &lt;query&gt;, &lt;projection&gt;, &lt;callback&gt;)</code>
+            <ul>
+                <li><code>find(&lt;dbConfig&gt;, &lt;query&gt;, &lt;projection&gt;, &lt;callback&gt;)</code></li>
+                <li><code>find(&lt;dbConfig&gt;, &lt;query&gt;, &lt;callback&gt;)</code></li>
+                <li><code>find(&lt;dbConfig&gt;, &lt;callback&gt;)</code></li>
+            </ul>
+        </td>
+        <td></td>
+        <td></td>
+        <td rowspan="4">
+            <p>Get documents based on query and projection</p> 
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>callback</td>
+        <td>
+            callback function, require 3 parameters:
+            <ul>
+                <li>
+                    <b>docs</b>
+                    Array of object or an object. If you put primary key value as query, a single object representing the document will be returned, otherwise an array containing list of documents matching the query will be returned
+                </li>
+                <li>
+                    <b>success</b>
+                    boolean, contains <code>true</code> if the operation succeed
+                </li>
+                <li>
+                    <b>errorMessage</b>
+                    string, error message
+                </li>
+            </ul>
+        </td>
+    </tr>
+    <!-- insert -->
+    <tr>
+        <td rowspan="4">
+            <b>insert</b><br />
+            <code>insert(&lt;dbConfig&gt;, &lt;data&gt;, &lt;options&gt;, &lt;callback&gt;)</code>
         </td>
         <td></td>
         <td></td>
@@ -85,18 +134,24 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         <td></td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
-    </tr>
-    <!-- insert -->
-    <tr>
+        <td>callback</td>
         <td>
-            <b>insert</b><br />
-            <code>insert(&lt;dbConfig&gt;, &lt;data&gt;, &lt;options&gt;, &lt;callback&gt;)</code>
+            callback function, require 3 parameters:
+            <ul>
+                <li>
+                    <b>docs</b>
+                    Array of object or an object. If you put and object as <code>data</code>, a single object representing the inserted document will be returned, otherwise an array containing list of inserted documents will be returned
+                </li>
+                <li>
+                    <b>success</b>
+                    boolean, contains <code>true</code> if the operation succeed
+                </li>
+                <li>
+                    <b>errorMessage</b>
+                    string, error message
+                </li>
+            </ul>
         </td>
-        <td></td>
-        <td></td>
-        <td></td>
     </tr>
     <!-- update -->
     <tr>
@@ -121,8 +176,24 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         <td></td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>callback</td>
+        <td>
+            callback function, require 3 parameters:
+            <ul>
+                <li>
+                    <b>docs</b>
+                    Array of object or an object. If you put and object as <code>data</code>, a single object representing the updated document will be returned, otherwise an array containing list of updated documents will be returned
+                </li>
+                <li>
+                    <b>success</b>
+                    boolean, contains <code>true</code> if the operation succeed
+                </li>
+                <li>
+                    <b>errorMessage</b>
+                    string, error message
+                </li>
+            </ul>
+        </td>
     </tr>
     <!-- remove -->
     <tr>
@@ -143,8 +214,24 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         <td></td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>callback</td>
+        <td>
+            callback function, require 3 parameters:
+            <ul>
+                <li>
+                    <b>docs</b>
+                    Array of object or an object. If you put and object as <code>data</code>, a single object representing the removed document will be returned, otherwise an array containing list of removed documents will be returned
+                </li>
+                <li>
+                    <b>success</b>
+                    boolean, contains <code>true</code> if the operation succeed
+                </li>
+                <li>
+                    <b>errorMessage</b>
+                    string, error message
+                </li>
+            </ul>
+        </td>
     </tr>
     <!-- permanentRemove -->
     <tr>
