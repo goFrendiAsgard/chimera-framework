@@ -9,6 +9,7 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         <th>Parameter Description</th>
         <th>Function Description</th>
     </tr>
+    <!-- executeChain -->
     <tr>
         <td rowspan="4">
             <b>executeChain</b><br />
@@ -44,6 +45,7 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
             </ul>
         </td>
     </tr>
+    <!-- getFormattedNanoSecond -->
     <tr>
         <td>
             <b>getFormattedNanoSecond</b><br />
@@ -57,6 +59,7 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
             Return nanoseconds as formatted number. See <a href="#getformattednanosecond">example</a>
         </td>
     </tr>
+    <!-- deepCopyObject -->
     <tr>
         <td>
             <b>deepCopyObject</b><br />
@@ -70,6 +73,7 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
             Make a copy of an object. See <a href="#deepcopyobject">example</a>
         </td>
     </tr>
+    <!-- patchObject -->
     <tr>
         <td rowspan="2">
             <b>patchObject</b><br />

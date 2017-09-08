@@ -10,13 +10,18 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         <th>Function Description</th>
     </tr>
     <tr>
-        <td>
+        <td rowspan="5">
             <b>createDbConfig</b><br />
-            <code>createDbConfig(&lt;mongoUrl&gt;, &lt;collectionName&gt;, &lt;userId&gt;, &lt;callback&gt;)</code>
+            <ul>
+                <li><code>createDbConfig(&lt;mongoUrl&gt;, &lt;collectionName&gt;, &lt;userId&gt;, &lt;callback&gt;)</code></li>
+                <li><code>createDbConfig(&lt;obj&gt;, &lt;collectionName&gt;, &lt;userId&gt;, &lt;callback&gt;)</code></li>
+            </ul>
         </td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>mongoUrl</td>
+        <td>string, MongoDB connection string (e.g: <code>mongodb://localhost/test</code></td>
+        <td rowspan="5"></td>
+    </tr>
+    <tr>
     </tr>
     <tr>
         <td>
