@@ -81,8 +81,8 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
                 <li><code>find(&lt;dbConfig&gt;, &lt;callback&gt;)</code></li>
             </ul>
         </td>
-        <td></td>
-        <td></td>
+        <td>dbConfig</td>
+        <td>DbConfig object contains <code>mongo_url</code>, <code>collection_name</code>, <code>user_id</code> and other configurations for document manipulation</td>
         <td rowspan="4">
             <p>Get documents based on query and projection</p>
         </td>
@@ -121,9 +121,9 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
             <b>insert</b><br />
             <code>insert(&lt;dbConfig&gt;, &lt;data&gt;, &lt;options&gt;, &lt;callback&gt;)</code>
         </td>
-        <td></td>
-        <td></td>
-        <td rowspan="4"></td>
+        <td>dbConfig</td>
+        <td>DbConfig object contains <code>mongo_url</code>, <code>collection_name</code>, <code>user_id</code> and other configurations for document manipulation</td>
+        <td rowspan="4">Insert new document/documents into collection</td>
     </tr>
     <tr>
         <td></td>
@@ -159,9 +159,9 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
             <b>update</b><br />
             <code>update(&lt;dbConfig&gt;, &lt;query&gt;, &lt;data&gt;, &lt;options&gt;, &lt;callback&gt;)</code>
         </td>
-        <td></td>
-        <td></td>
-        <td rowspan="5"></td>
+        <td>dbConfig</td>
+        <td>DbConfig object contains <code>mongo_url</code>, <code>collection_name</code>, <code>user_id</code> and other configurations for document manipulation</td>
+        <td rowspan="5">Update document/documents based on <code>query</code> and <code>data</code></td>
     </tr>
     <tr>
         <td></td>
@@ -201,9 +201,9 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
             <b>remove</b><br />
             <code>remove(&lt;dbConfig&gt;, &lt;query&gt;, &lt;options&gt;, &lt;callback&gt;)</code>
         </td>
-        <td></td>
-        <td></td>
-        <td rowspan="4"></td>
+        <td>dbConfig</td>
+        <td>DbConfig object contains <code>mongo_url</code>, <code>collection_name</code>, <code>user_id</code> and other configurations for document manipulation</td>
+        <td rowspan="4">Put deleted-flag into document/documents in collection</td>
     </tr>
     <tr>
         <td></td>
@@ -239,9 +239,9 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
             <b>permanentRemove</b><br />
             <code>permanentRemove(&lt;dbConfig&gt;, &lt;query&gt;, &lt;options&gt;, &lt;callback&gt;)</code>
         </td>
-        <td></td>
-        <td></td>
-        <td rowspan="4"></td>
+        <td>dbConfig</td>
+        <td>DbConfig object contains <code>mongo_url</code>, <code>collection_name</code>, <code>user_id</code> and other configurations for document manipulation</td>
+        <td rowspan="4">Remove document/documents from collection</td>
     </tr>
     <tr>
         <td></td>
