@@ -41,7 +41,7 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
             <ul>
                 <li>
                     <b>dbConfig</b>
-                    A newly created dbConfig object. This object is required for <code>find</code> <code>insert</code> <code>update</code> <code>remove</code> and <code>permanentRemove<code>
+                    A newly created dbConfig object. This object is required for <code>find</code> <code>insert</code> <code>update</code> <code>remove</code> and <code>permanentRemove</code>
                 </li>
                 <li>
                     <b>success</b>
