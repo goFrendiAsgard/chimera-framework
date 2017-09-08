@@ -9,6 +9,7 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         <th>Parameter Description</th>
         <th>Function Description</th>
     </tr>
+    <!-- createDbConfig -->
     <tr>
         <td rowspan="5">
             <b>createDbConfig</b><br />
@@ -22,7 +23,22 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         <td rowspan="5"></td>
     </tr>
     <tr>
+        <td></td>
+        <td></td>
     </tr>
+    <tr>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+    </tr>
+    <!-- closeConnection -->
     <tr>
         <td>
             <b>closeConnection</b><br />
@@ -32,15 +48,29 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         <td></td>
         <td></td>
     </tr>
+    <!-- find -->
     <tr>
-        <td>
+        <td rowspan="4">
             <b>find</b><br />
             <code>find(&lt;dbConfig&gt;, &lt;query&gt;, &lt;projection&gt;, &lt;callback&gt;)</code>
         </td>
         <td></td>
         <td></td>
+        <td rowspan="4"></td>
+    </tr>
+    <tr>
+        <td></td>
         <td></td>
     </tr>
+    <tr>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+    </tr>
+    <!-- insert -->
     <tr>
         <td>
             <b>insert</b><br />
@@ -50,30 +80,73 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         <td></td>
         <td></td>
     </tr>
+    <!-- update -->
     <tr>
-        <td>
+        <td rowspan="5">
             <b>update</b><br />
             <code>update(&lt;dbConfig&gt;, &lt;query&gt;, &lt;data&gt;, &lt;options&gt;, &lt;callback&gt;)</code>
         </td>
         <td></td>
         <td></td>
+        <td rowspan="5"></td>
+    </tr>
+    <tr>
+        <td></td>
         <td></td>
     </tr>
     <tr>
-        <td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+    </tr>
+    <!-- remove -->
+    <tr>
+        <td rowspan="4">
             <b>remove</b><br />
             <code>remove(&lt;dbConfig&gt;, &lt;query&gt;, &lt;options&gt;, &lt;callback&gt;)</code>
         </td>
         <td></td>
         <td></td>
+        <td rowspan="4"></td>
+    </tr>
+    <tr>
+        <td></td>
         <td></td>
     </tr>
     <tr>
-        <td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+    </tr>
+    <!-- permanentRemove -->
+    <tr>
+        <td rowspan="4">
             <b>permanentRemove</b><br />
             <code>permanentRemove(&lt;dbConfig&gt;, &lt;query&gt;, &lt;options&gt;, &lt;callback&gt;)</code>
         </td>
         <td></td>
+        <td></td>
+        <td rowspan="4"></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
         <td></td>
         <td></td>
     </tr>
