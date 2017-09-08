@@ -11,7 +11,7 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
     </tr>
     <!-- executeChain -->
     <tr>
-        <td rowspan="4">
+        <td rowspan="4" style="vertical-align:top;">
             <b>executeChain</b><br />
             <ul>
                 <li><code>executeChain(&lt;YAML chain&gt;, &lt;callback&gt;)</code><br /></li>
