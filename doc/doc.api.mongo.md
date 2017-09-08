@@ -1,6 +1,26 @@
 # MongoDB API
 
-Chimera-framework offer several API you can use in your Node.Js scripts. In order to use the API, you need to import `chimera-framework/mongo-driver`. This API supporting row-versioning automatically
+Chimera-framework offer several API you can use in your Node.Js scripts. In order to use the API, you need to import `chimera-framework/mongo-driver`. This API supporting row-versioning automatically.
+
+Most function in Chimera-framework mongoDB API rely on dbConfig.
+
+DbConfig is a javascript value, with several keys.
+
+```javascript
+const DEFAULT_DB_CONFIG = {
+    'mongo_url' : '<mongoDb-connection-string>',
+    'collection_name' : '<your-collection-name>',
+    'history' : '_history',
+    'deletion_flag_field' : '_deleted',
+    'id_field' : '_id',
+    'modification_time_field' : '_modified_at',
+    'modification_by_field' : '_modified_by',
+    'process_deleted' : false,
+    'show_history' : false,
+    'user_id' : '<user-id>',
+    'persistence_connection' : false,
+}
+```
 
 <table>
     <tr>
@@ -88,12 +108,12 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         </td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>query</td>
+        <td>object, MongoDB query [https://docs.mongodb.com/manual/tutorial/query-documents/](https://docs.mongodb.com/manual/tutorial/query-documents/)</td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>projection</td>
+        <td>object or string, options and projection. [https://automattic.github.io/monk/docs/collection/find.html](https://automattic.github.io/monk/docs/collection/find.html)</td>
     </tr>
     <tr>
         <td>callback</td>
@@ -129,12 +149,12 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         <td rowspan="4">Insert new document/documents into collection</td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>data</td>
+        <td>array of object or object, the document(s) you want to insert</td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>option</td>
+        <td>object, insert options</td>
     </tr>
     <tr>
         <td>callback</td>
@@ -170,16 +190,16 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         <td rowspan="5">Update document/documents based on <code>query</code> and <code>data</code></td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>query</td>
+        <td>object, MongoDB query [https://docs.mongodb.com/manual/tutorial/query-documents/](https://docs.mongodb.com/manual/tutorial/query-documents/)</td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>data</td>
+        <td>object, the update of the document</td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>options</td>
+        <td>object, update option</td>
     </tr>
     <tr>
         <td>callback</td>
@@ -212,12 +232,15 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         <td rowspan="4">Put deleted-flag into document/documents in collection</td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>query</td>
+        <td>object, MongoDB query [https://docs.mongodb.com/manual/tutorial/query-documents/](https://docs.mongodb.com/manual/tutorial/query-documents/)</td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>options</td>
+        <td>
+            object, update options <br />
+            <b>Note:</b> Remove is basically only update <code>_deleted</code> into <code>1</code>
+        </td>
     </tr>
     <tr>
         <td>callback</td>
@@ -250,12 +273,12 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         <td rowspan="4">Remove document/documents from collection</td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>query</td>
+        <td>object, MongoDB query [https://docs.mongodb.com/manual/tutorial/query-documents/](https://docs.mongodb.com/manual/tutorial/query-documents/)</td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>options</td>
+        <td>object, delete options</td>
     </tr>
     <tr>
         <td>callback</td>
@@ -279,3 +302,223 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
     </tr>
 </table>
 
+# Example
+
+First you need a javascript file as a bridge:
+
+```javascript
+// file location: mongo-bridge.js
+const mongoDriver = require('chimera-framework/mongo-driver')
+module.exports = mongoDriver
+```
+
+Then you can create a YAML file:
+
+```yaml
+# file location: test-db.yaml
+out: out
+vars:
+    mongo_url: mongodb://localhost/project-template
+    collection_name: person
+    user_id: u001
+series:
+    ## create config
+    - (mongo_url, collection_name, user_id) -> [mongo-bridge.js createDbConfig] -> dbConfig
+
+    ## insert new data
+    - ('{"name":"Tono Stark","alias":"Ironman"}') ->-> insert_data
+    - (dbConfig, insert_data) -> [mongo-bridge.js insert] -> out.insert_doc
+
+    ## update inserted data with a newer one
+    - (out.insert_doc._id) ->-> ironman_id
+    - ('{"name":"Toni Stark"}') ->-> update_data
+    - (dbConfig, ironman_id, update_data) -> [mongo-bridge.js update] -> out.update_doc
+
+    ## insert another data
+    - (dbConfig, insert_data) -> [mongo-bridge.js insert] -> out.another_insert_doc
+
+    ## delete the last one
+    - (dbConfig, out.another_insert_doc._id) -> [mongo-bridge.js remove] -> out.remove_doc
+
+    ## insert bulk
+    - ('[{"name":"Steve Roger","alias":"Captain America"},{"name":"Bruce Banner","alias":"Hulk"}]') ->-> bulk_insert_data
+    - (dbConfig, bulk_insert_data) -> [mongo-bridge.js insert] -> out.insert_bulk_docs
+
+    ## update bulk
+    - ('{"affiliation":"Avenger"}') ->-> bulk_update_data
+    - (dbConfig, "{}", bulk_update_data) -> [mongo-bridge.js update] -> out.update_bulk_docs
+
+    ## insert superman
+    - ('{"name":"Clark Kent","alias":"Superman"}') ->-> superman_data
+    - (dbConfig, superman_data) -> [mongo-bridge.js insert] -> out.superman_doc
+
+    ## get ironman
+    - (dbConfig, ironman_id) -> [mongo-bridge.js find] -> out.ironman_doc
+
+    ## get ironman, but only show name and alias (affiliation hidden)
+    - (dbConfig, ironman_id, 'name alias') -> [mongo-bridge.js find] -> out.ironman_doc_with_name_1
+    - (dbConfig, ironman_id, '{"name":1,"alias":1}') -> [mongo-bridge.js find] -> out.ironman_doc_with_name_2
+    - (dbConfig, ironman_id, '{"fields":{"name":1,"alias":1}}') -> [mongo-bridge.js find] -> out.ironman_doc_with_name_3
+    - (dbConfig, ironman_id, '-name -alias') -> [mongo-bridge.js find] -> out.ironman_doc_no_name_1
+    - (dbConfig, ironman_id, '{"name":0,"alias":0}') -> [mongo-bridge.js find] -> out.ironman_doc_no_name_2
+    - (dbConfig, ironman_id, '{"name":0,"alias":0}') -> [mongo-bridge.js find] -> out.ironman_doc_no_name_3
+
+    ## get all data
+    - (dbConfig) -> [mongo-bridge.js find] -> out.find_docs
+
+    ## get all data affiliate to Avenger
+    - (dbConfig, '{"affiliation":"Avenger"}') -> [mongo-bridge.js find] -> out.find_avenger_docs
+
+    ## get the data, limited by 2, skipped one document, and sorted by name
+    - (dbConfig, '{}', '{"sort":"name", "limit":2, "skip":1}') -> [mongo-bridge.js find] -> out.find_limited_skipped_sorted_docs
+
+    ## get the data affiliated with Avenger, limited by 2, sorted by alias, only show alias
+    - (dbConfig, '{"affiliation":"Avenger"}', '{"sort":"alias", "limit":2, "alias":1}') -> [mongo-bridge.js find] -> out.find_limited_sorted_filtered_docs
+
+    ## get all data, including the deleted one, plus it's histories
+    # get "sharingan" configuration
+    - (dbConfig) ->-> sharingan_config
+    - ("true") ->-> sharingan_config.process_deleted
+    - ("true") ->-> sharingan_config.show_history
+    # execute find
+    - (sharingan_config) -> [mongo-bridge.js find] -> out.find_sharingan_docs
+
+    ## permanent remove
+    - (dbConfig) -> [mongo-bridge.js permanentRemove] -> out.permanent_remove_result
+```
+
+After executing the YAML file (`chimera test-db.yaml`), the result will be as followed: 
+
+```
+{ insert_doc: 
+   { _id: '59b2b69a31ff37363b4e9a88',
+     name: 'Tono Stark',
+     alias: 'Ironman' },
+  update_doc: 
+   { _id: '59b2b69a31ff37363b4e9a88',
+     name: 'Toni Stark',
+     alias: 'Ironman' },
+  another_insert_doc: 
+   { _id: '59b2b69b31ff37363b4e9a89',
+     name: 'Tono Stark',
+     alias: 'Ironman' },
+  remove_doc: 
+   { _id: '59b2b69b31ff37363b4e9a89',
+     name: 'Tono Stark',
+     alias: 'Ironman',
+     _deleted: 1 },
+  insert_bulk_docs: 
+   [ { _id: '59b2b69b31ff37363b4e9a8a',
+       name: 'Steve Roger',
+       alias: 'Captain America' },
+     { _id: '59b2b69b31ff37363b4e9a8b',
+       name: 'Bruce Banner',
+       alias: 'Hulk' } ],
+  update_bulk_docs: 
+   [ { _id: '59b2b69a31ff37363b4e9a88',
+       name: 'Toni Stark',
+       alias: 'Ironman',
+       affiliation: 'Avenger' },
+     { _id: '59b2b69b31ff37363b4e9a8a',
+       name: 'Steve Roger',
+       alias: 'Captain America',
+       affiliation: 'Avenger' },
+     { _id: '59b2b69b31ff37363b4e9a8b',
+       name: 'Bruce Banner',
+       alias: 'Hulk',
+       affiliation: 'Avenger' } ],
+  superman_doc: 
+   { _id: '59b2b69b31ff37363b4e9a8c',
+     name: 'Clark Kent',
+     alias: 'Superman' },
+  ironman_doc: 
+   { _id: '59b2b69a31ff37363b4e9a88',
+     name: 'Toni Stark',
+     alias: 'Ironman',
+     affiliation: 'Avenger' },
+  ironman_doc_with_name_1: 
+   { _id: '59b2b69a31ff37363b4e9a88',
+     name: 'Toni Stark',
+     alias: 'Ironman' },
+  ironman_doc_with_name_2: 
+   { _id: '59b2b69a31ff37363b4e9a88',
+     name: 'Toni Stark',
+     alias: 'Ironman' },
+  ironman_doc_with_name_3: 
+   { _id: '59b2b69a31ff37363b4e9a88',
+     name: 'Toni Stark',
+     alias: 'Ironman' },
+  ironman_doc_no_name_1: { _id: '59b2b69a31ff37363b4e9a88', affiliation: 'Avenger' },
+  ironman_doc_no_name_2: { _id: '59b2b69a31ff37363b4e9a88', affiliation: 'Avenger' },
+  ironman_doc_no_name_3: { _id: '59b2b69a31ff37363b4e9a88', affiliation: 'Avenger' },
+  find_docs: 
+   [ { _id: '59b2b69a31ff37363b4e9a88',
+       name: 'Toni Stark',
+       alias: 'Ironman',
+       affiliation: 'Avenger' },
+     { _id: '59b2b69b31ff37363b4e9a8a',
+       name: 'Steve Roger',
+       alias: 'Captain America',
+       affiliation: 'Avenger' },
+     { _id: '59b2b69b31ff37363b4e9a8b',
+       name: 'Bruce Banner',
+       alias: 'Hulk',
+       affiliation: 'Avenger' },
+     { _id: '59b2b69b31ff37363b4e9a8c',
+       name: 'Clark Kent',
+       alias: 'Superman' } ],
+  find_avenger_docs: 
+   [ { _id: '59b2b69a31ff37363b4e9a88',
+       name: 'Toni Stark',
+       alias: 'Ironman',
+       affiliation: 'Avenger' },
+     { _id: '59b2b69b31ff37363b4e9a8a',
+       name: 'Steve Roger',
+       alias: 'Captain America',
+       affiliation: 'Avenger' },
+     { _id: '59b2b69b31ff37363b4e9a8b',
+       name: 'Bruce Banner',
+       alias: 'Hulk',
+       affiliation: 'Avenger' } ],
+  find_limited_skipped_sorted_docs: 
+   [ { _id: '59b2b69b31ff37363b4e9a8c',
+       name: 'Clark Kent',
+       alias: 'Superman' },
+     { _id: '59b2b69b31ff37363b4e9a8a',
+       name: 'Steve Roger',
+       alias: 'Captain America',
+       affiliation: 'Avenger' } ],
+  find_limited_sorted_filtered_docs: 
+   [ { _id: '59b2b69b31ff37363b4e9a8a', alias: 'Captain America' },
+     { _id: '59b2b69b31ff37363b4e9a8b', alias: 'Hulk' } ],
+  find_sharingan_docs: 
+   [ { _id: '59b2b69a31ff37363b4e9a88',
+       name: 'Toni Stark',
+       alias: 'Ironman',
+       _history: [Object],
+       _deleted: 0,
+       affiliation: 'Avenger' },
+     { _id: '59b2b69b31ff37363b4e9a89',
+       name: 'Tono Stark',
+       alias: 'Ironman',
+       _history: [Object],
+       _deleted: 1 },
+     { _id: '59b2b69b31ff37363b4e9a8a',
+       name: 'Steve Roger',
+       alias: 'Captain America',
+       _history: [Object],
+       _deleted: 0,
+       affiliation: 'Avenger' },
+     { _id: '59b2b69b31ff37363b4e9a8b',
+       name: 'Bruce Banner',
+       alias: 'Hulk',
+       _history: [Object],
+       _deleted: 0,
+       affiliation: 'Avenger' },
+     { _id: '59b2b69b31ff37363b4e9a8c',
+       name: 'Clark Kent',
+       alias: 'Superman',
+       _history: [Object],
+       _deleted: 0 } ],
+  permanent_remove_result: { ok: 1, n: 5 } }
+```

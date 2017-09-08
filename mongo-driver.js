@@ -64,7 +64,26 @@ function preprocessFilter(dbConfig, filter){
 }
 
 function preprocessProjection(dbConfig, projection){
+    let isAdditionalFilterNeeded = true
     if(typeof(projection) == 'string'){
+        let fieldList = projection.split(' ')
+        for(let i=0; i<fieldList.length; i++){
+            let field = fieldList[i].trim()
+            if(field != '' && field.substring(0,1) != '-'){
+                isAdditionalFilterNeeded = false
+                break
+            }
+        }
+        if(isAdditionalFilterNeeded){
+            // don't show deletion
+            if(dbConfig.deletion_flag_field != ''  && !dbConfig.process_deleted){
+                projection += ' -' + dbConfig.deletion_flag_field
+            }
+            // don't show history
+            if(dbConfig.history != '' && !dbConfig.show_history){
+                projection += ' -' + dbConfig.history
+            }
+        }
         return projection
     }
     let projectionCopy = chimera.deepCopyObject(projection)
@@ -73,12 +92,18 @@ function preprocessProjection(dbConfig, projection){
         projectionCopy = {}
     }
     // if not process_deleted, don't show deletion_flag_field
-    if(Object.keys(projectionCopy).length == 0 || !('fields' in projectionCopy)){
+    if(!('fields' in projectionCopy)){
         projectionCopy['fields'] = {}
     }
+    // move every key to fields
+    for(let key in projectionCopy){
+        if(key != 'fields' && key != 'rawCursor' && key != 'skip' && key != 'limit' && key != 'sort'){
+            projectionCopy['fields'][key] = projectionCopy[key]
+            delete projectionCopy[key]
+        }
+    }
     // determine whether additionalFilter needed or not
-    let isAdditionalFilterNeeded = true
-    for(key in projectionCopy['fields']){
+    for(let key in projectionCopy['fields']){
         if(projectionCopy['fields'][key] == 1){
             isAdditionalFilterNeeded = false
             break
