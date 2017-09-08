@@ -18,16 +18,33 @@ Chimera-framework is a language agnostic framework for standalone and distribute
 
 # Installation
 
-Chimera-Framework installation is very easy. First, you need to have `Node.Js` and `npm` installed. Then you can simply perform
-
+Using npm (You should have `Node.Js` and `npm` installed):
 ```sh
 npm install --global chimera-framework
 ```
+This method is recommended for framework user
 
-Another method to install Chimera-Framework is by using `git`. First, you should make sure you have `git` client installed.
+Using git (You should have `Node.Js`, `npm`, and `git client` installed):
 ```sh
-git clone git@github.com:goFrendiAsgard/chimera.git
-npm install
+git clone git@github.com:goFrendiAsgard/chimera-framework.git
+cd chimera-framework 
+npm install --global
+npm link
+```
+This method is recommended for framework tester/developer
+
+# Update
+
+Using npm:
+```
+npm update --global chimera-framework
+```
+
+Using git
+```sh
+cd chimera-frameowork
+git pull origin master
+npm install --global
 npm link
 ```
 

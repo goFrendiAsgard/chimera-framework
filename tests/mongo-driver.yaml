@@ -41,6 +41,8 @@ series:
     - (dbConfig, ironman_id, 'name alias') -> [../mongo-driver.js find] -> out.ironman_doc_with_name_1
     - (dbConfig, ironman_id, '{"name":1,"alias":1}') -> [../mongo-driver.js find] -> out.ironman_doc_with_name_2
     - (dbConfig, ironman_id, '{"fields":{"name":1,"alias":1}}') -> [../mongo-driver.js find] -> out.ironman_doc_with_name_3
+
+    ## get ironman, but only show name and affilication (name hidden)
     - (dbConfig, ironman_id, '-name -alias') -> [../mongo-driver.js find] -> out.ironman_doc_no_name_1
     - (dbConfig, ironman_id, '{"name":0,"alias":0}') -> [../mongo-driver.js find] -> out.ironman_doc_no_name_2
     - (dbConfig, ironman_id, '{"name":0,"alias":0}') -> [../mongo-driver.js find] -> out.ironman_doc_no_name_3
