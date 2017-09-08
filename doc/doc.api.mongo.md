@@ -20,7 +20,9 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         </td>
         <td>mongoUrl</td>
         <td>string, MongoDB connection string (e.g: <code>mongodb://localhost/test</code></td>
-        <td rowspan="5"></td>
+        <td rowspan="5">
+            Creating a dbConfig object, which is required for <code>find</code> <code>insert</code> <code>update</code> <code>remove</code> and <code>permanentRemove</code>
+        </td>
     </tr>
     <tr>
         <td>obj</td>
