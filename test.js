@@ -26,7 +26,6 @@ function testExecuteCommand(testName, command, expectedResult, callback){
         let diff = process.hrtime(startTime);
         let endTime = process.hrtime();
         data = data.trim('\n')
-        
         // show command
         console.warn(command)
         // show data
@@ -74,10 +73,12 @@ let mongoDbAsserter = (output)=>{
     }
     assert(output.superman_doc.name == 'Clark Kent', 'FAIL, superman_doc.name should be Clark Kent\n')
     assert(output.find_docs.length == 4, 'FAIL, find_docs.length should be 4\n')
+    assert(!('_history' in output.find_docs[0]), 'Fail, find_docs[0] should not contains _history\n')
     assert(output.find_limited_sorted_docs[0].name == 'Clark Kent', 'FAIL, find_limited_sorted_docs[0].name should be Clark Kent\n')
     assert(output.find_limited_sorted_docs.length == 2, 'FAIL, find_limited_sorted_docs.length should be 2\n')
     assert(output.find_avenger_docs.length == 3, 'FAIL, find_avenger_docs.length should be 3\n')
     assert(output.find_sharingan_docs.length == 5, 'FAIL, find_sharingan_docs.length should be 5\n')
+    assert(('_history' in output.find_sharingan_docs[0]), 'Fail, find_sharingan_docs[0] should contains _history\n')
     assert(output.permanent_remove_result.ok == 1, 'FAIL, permanent_remove_result.ok should be 1\n')
     assert(output.permanent_remove_result.n == 5, 'FAIL, permanent_remove_result.n should be 5\n')
 }
@@ -87,14 +88,14 @@ let mongoDbAsserter = (output)=>{
 async.series([
 
     // test database
-    (callback) => {testExecuteCommand('Test mongo driver', 
+    (callback) => {testExecuteCommand('Test mongo driver',
         'chimera "tests/mongo-driver.yaml"', mongoDbAsserter, callback)
     },
-    (callback) => {testExecuteChain('Test mongo driver', 
+    (callback) => {testExecuteChain('Test mongo driver',
         'tests/mongo-driver.yaml', [], {}, mongoDbAsserter, callback)
     },
 
-    // test executeChain with various 
+    // test executeChain with various
     (callback) => {
         chimera.executeChain('tests/increment.yaml', function(output, error, errorMessage){
             assert(output == 1, 'FAIL, Expected : 1, Actual : '+output)
