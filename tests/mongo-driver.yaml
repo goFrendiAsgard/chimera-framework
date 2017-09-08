@@ -1,73 +1,54 @@
 out: out
 vars:
-    config:
-        mongo_url: mongodb://localhost/project-template
-        collection_name: person
-        user_id: "u001"
-    sharingan_config:
-        mongo_url: mongodb://localhost/project-template
-        collection_name: person
-        show_deleted: true
-        user_id: "u001"
-    sharingan_projection:
-        name: 1
-        alias: 1
-        _history: 1
-        _deleted: 1
-    insert_data:
-        name: "Tono Stark"
-        alias: "Ironman"
-    update_data:
-        name: "Toni Stark"
-    superman_data:
-        name: "Clark Kent"
-        alias: "Superman"
-    bulk_insert_data:
-        - name: "Steve Roger"
-          alias: "Captain America"
-        - name: "Bruce Banner"
-          alias: "Hulk"
-    bulk_update_data:
-        affiliation: "Avenger"
+    mongo_url: mongodb://localhost/project-template
+    collection_name: person
+    user_id: u001
 series:
-    # insert new data
-    - (config, insert_data) -> [../mongo-driver.js insert] -> insert_doc
-    # update inserted data with a newer one
-    - (config, insert_doc._id, update_data) -> [../mongo-driver.js update] -> update_doc
-    # insert another data
-    - (config, insert_data) -> [../mongo-driver.js insert] -> another_insert_doc
-    # delete the last one
-    - (config, another_insert_doc._id) -> [../mongo-driver.js remove] -> remove_doc
-    # insert bulk
-    - (config, bulk_insert_data) -> [../mongo-driver.js insert] -> insert_bulk_docs
-    # update bulk
-    - (config, "{}", bulk_update_data) -> [../mongo-driver.js update] -> update_bulk_docs
-    # insert superman
-    - (config, superman_data) -> [../mongo-driver.js insert] -> superman_doc
-    # get the data
-    - (config) -> [../mongo-driver.js find] -> find_docs
-    # get the data
-    - (config, '{"affiliation":"Avenger"}') -> [../mongo-driver.js find] -> find_avenger_docs
-    # get it with sharingan activated ...
-    - (sharingan_config, "{}", sharingan_projection) -> [../mongo-driver.js find] -> find_sharingan_docs
-    # permanent remove
-    - (config) -> [../mongo-driver.js permanentRemove] -> permanent_remove_result
-    # combine
-    - ins: insert_doc, update_doc, another_insert_doc, remove_doc, insert_bulk_docs, update_bulk_docs, superman_doc, find_docs, find_avenger_docs, find_sharingan_docs, permanent_remove_result
-      out: out
-      command: |
-          (insert_doc, update_doc, another_insert_doc, remove_doc, insert_bulk_docs, update_bulk_docs, superman_doc, find_docs, find_avenger_docs, find_sharingan_docs, permanent_remove_result)=>{
-              return {
-                  "insert_doc" : insert_doc,
-                  "update_doc" : update_doc,
-                  "another_insert_doc" : another_insert_doc,
-                  "remove_doc" : remove_doc,
-                  "insert_bulk_docs" : insert_bulk_docs,
-                  "update_bulk_docs" : update_bulk_docs,
-                  "superman_doc" : superman_doc,
-                  "find_docs" : find_docs,
-                  "find_avenger_docs" : find_avenger_docs,
-                  "find_sharingan_docs" : find_sharingan_docs,
-                  "permanent_remove_result" : permanent_remove_result,
-              }
-          }
+    ## create config
+    - (mongo_url, collection_name, user_id) -> [../mongo-driver.js createDbConfig] -> dbConfig
+
+    ## insert new data
+    - ('{"name":"Tono Stark","alias":"Ironman"}') ->-> insert_data
+    - (dbConfig, insert_data) -> [../mongo-driver.js insert] -> out.insert_doc
+
+    ## update inserted data with a newer one
+    - ('{"name":"Toni Stark"}') ->-> update_data
+    - (dbConfig, out.insert_doc._id, update_data) -> [../mongo-driver.js update] -> out.update_doc
+
+    ## insert another data
+    - (dbConfig, insert_data) -> [../mongo-driver.js insert] -> out.another_insert_doc
+
+    ## delete the last one
+    - (dbConfig, out.another_insert_doc._id) -> [../mongo-driver.js remove] -> out.remove_doc
+
+    ## insert bulk
+    - ('[{"name":"Steve Roger","alias":"Captain America"},{"name":"Bruce Banner","alias":"Hulk"}]') ->-> bulk_insert_data
+    - (dbConfig, bulk_insert_data) -> [../mongo-driver.js insert] -> out.insert_bulk_docs
+
+    ## update bulk
+    - ('{"affiliation":"Avenger"}') ->-> bulk_update_data
+    - (dbConfig, "{}", bulk_update_data) -> [../mongo-driver.js update] -> out.update_bulk_docs
+
+    ## insert superman
+    - ('{"name":"Clark Kent","alias":"Superman"}') ->-> superman_data
+    - (dbConfig, superman_data) -> [../mongo-driver.js insert] -> out.superman_doc
+
+    ## get all data
+    - (dbConfig) -> [../mongo-driver.js find] -> out.find_docs
+
+    ## get all data
+    - (dbConfig, '{"affiliation":"Avenger"}') -> [../mongo-driver.js find] -> out.find_avenger_docs
+
+    ## get the data, limited, skipped, and sorted
+    - (dbConfig, '{}', '{"sort":"name", "limit":2, "skip":1}') -> [../mongo-driver.js find] -> out.find_limited_sorted_docs
+
+    ## get all data, including the deleted one, plus it's histories
+    # get "sharingan" configuration
+    - (dbConfig) ->-> sharingan_config
+    - ("true") ->-> sharingan_config.process_deleted
+    - ("true") ->-> sharingan_config.show_history
+    # execute find
+    - (sharingan_config) -> [../mongo-driver.js find] -> out.find_sharingan_docs
+
+    ## permanent remove
+    - (dbConfig) -> [../mongo-driver.js permanentRemove] -> out.permanent_remove_result

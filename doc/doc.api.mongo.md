@@ -76,7 +76,7 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
         <td rowspan="4">
             <b>find</b><br />
             <ul>
-                <li><code>find(&lt;dbConfig&gt;, &lt;query&gt;, &lt;projection&gt;, &lt;callback&gt;)</code></li>
+                <li><code>find(&lt;dbConfig&gt;, &lt;query&gt;, &lt;projection_and_options&gt;, &lt;callback&gt;)</code></li>
                 <li><code>find(&lt;dbConfig&gt;, &lt;query&gt;, &lt;callback&gt;)</code></li>
                 <li><code>find(&lt;dbConfig&gt;, &lt;callback&gt;)</code></li>
             </ul>
@@ -119,7 +119,10 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
     <tr>
         <td rowspan="4">
             <b>insert</b><br />
-            <code>insert(&lt;dbConfig&gt;, &lt;data&gt;, &lt;options&gt;, &lt;callback&gt;)</code>
+            <ul>
+                <li><code>insert(&lt;dbConfig&gt;, &lt;data&gt;, &lt;options&gt;, &lt;callback&gt;)</code></li>
+                <li><code>insert(&lt;dbConfig&gt;, &lt;data&gt;, &lt;callback&gt;)</code></li>
+            </ul>
         </td>
         <td>dbConfig</td>
         <td>DbConfig object contains <code>mongo_url</code>, <code>collection_name</code>, <code>user_id</code> and other configurations for document manipulation</td>
@@ -157,7 +160,10 @@ Chimera-framework offer several API you can use in your Node.Js scripts. In orde
     <tr>
         <td rowspan="5">
             <b>update</b><br />
-            <code>update(&lt;dbConfig&gt;, &lt;query&gt;, &lt;data&gt;, &lt;options&gt;, &lt;callback&gt;)</code>
+            <ul>
+                <li><code>update(&lt;dbConfig&gt;, &lt;query&gt;, &lt;data&gt;, &lt;options&gt;, &lt;callback&gt;)</code></li>
+                <li><code>update(&lt;dbConfig&gt;, &lt;query&gt;, &lt;data&gt;, &lt;callback&gt;)</code></li>
+            </ul>
         </td>
         <td>dbConfig</td>
         <td>DbConfig object contains <code>mongo_url</code>, <code>collection_name</code>, <code>user_id</code> and other configurations for document manipulation</td>

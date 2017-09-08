@@ -10,43 +10,76 @@ const childProcess = require('child_process')
 const currentPath = process.cwd()
 let serverProcess = null
 
+function createAsserter(expectedResult){
+    if(typeof(expectedResult) == 'function'){
+        return expectedResult
+    }
+    return function(output){
+        assert(output == expectedResult, 'FAIL, Expected: '+expectedResult+', Actual: '+output)
+    }
+}
+
 function testExecuteCommand(testName, command, expectedResult, callback){
     let startTime = process.hrtime();
-    console.log('START ' + testName + ' ON nanosecond: ' + chimera.getFormattedNanoSecond(startTime) + '\n')
+    console.warn('START ' + testName + ' ON nanosecond: ' + chimera.getFormattedNanoSecond(startTime) + '\n')
     cmd.get(command, function(err, data, stderr){
         let diff = process.hrtime(startTime);
         let endTime = process.hrtime();
+        data = data.trim('\n')
+        
         // show command
-        console.log(command)
+        console.warn(command)
         // show data
-        console.log(data)
-        // get the last line
-        let lines = data.trim().split('\n')
-        let lastLine = lines.length == 0? '': lines[lines.length - 1]
-        // show assertion or success
-        console.log('END ' + testName + ' ON nanosecond: ' + chimera.getFormattedNanoSecond(endTime))
-        console.log('EXECUTION TIME: ' + chimera.getFormattedNanoSecond(diff) + ' nanosecond')
-        assert(lastLine == expectedResult, 'FAIL, Expected: '+expectedResult+', Actual: '+lastLine+'\n')
-        console.log('SUCCESS\n')
-        // run callback
+        console.warn(data)
+        // do assertion
+        let asserter = createAsserter(expectedResult)
+        asserter(data)
+        console.warn('END ' + testName + ' ON nanosecond: ' + chimera.getFormattedNanoSecond(endTime))
+        console.warn('EXECUTION TIME: ' + chimera.getFormattedNanoSecond(diff) + ' nanosecond')
         callback()
     })
 }
 
 function testExecuteChain(testName, chain, inputs, presets, expectedResult, callback){
     let startTime = process.hrtime();
-    console.log('START ' + testName + ' ON nanosecond: ' + chimera.getFormattedNanoSecond(startTime) + '\n')
-    chimera.executeChain(chain, inputs, presets, function(output, success){
+    console.warn('START ' + testName + ' ON nanosecond: ' + chimera.getFormattedNanoSecond(startTime) + '\n')
+    chimera.executeChain(chain, inputs, presets, function(output, success, errorMessage){
         let diff = process.hrtime(startTime);
         let endTime = process.hrtime();
-        console.log(output);
-        console.log('END ' + testName + ' ON nanosecond: ' + chimera.getFormattedNanoSecond(endTime))
-        console.log('EXECUTION TIME: ' + chimera.getFormattedNanoSecond(diff) + ' nanosecond')
-        assert(output == expectedResult, 'FAIL, Expected: '+expectedResult+', Actual: '+output+'\n')
-        console.log('SUCCESS\n')
-        // run callback
+        // show chain
+        console.warn(chain)
+        // show output
+        console.warn(output);
+        // do assertion
+        let asserter = createAsserter(expectedResult)
+        asserter(output)
+        console.warn('END ' + testName + ' ON nanosecond: ' + chimera.getFormattedNanoSecond(endTime))
+        console.warn('EXECUTION TIME: ' + chimera.getFormattedNanoSecond(diff) + ' nanosecond')
         callback()
     });
+}
+
+let mongoDbAsserter = (output)=>{
+    try{
+        output = JSON.parse(output)
+    }
+    catch(error){}
+    assert(output.insert_doc.name == 'Tono Stark', 'FAIL, insert_doc.name should be Tono Stark\n')
+    assert(output.update_doc.name == 'Toni Stark', 'FAIL, update_doc.name should be Toni Stark\n')
+    assert(output.another_insert_doc.name == 'Tono Stark', 'FAIL, another_insert_doc should be Tono Stark\n')
+    assert(output.insert_bulk_docs.length == 2, 'FAIL, insert_bulk_docs\n')
+    assert(output.update_bulk_docs.length == 3, 'FAIL, update_bulk_docs\n')
+    for(let i=0; i<3; i++){
+        assert(output.update_bulk_docs[i].affiliation == 'Avenger', 'FAIL, update_bulk_docs['+i+'].affiliation should be Avenger\n')
+    }
+    assert(output.superman_doc.name == 'Clark Kent', 'FAIL, superman_doc.name should be Clark Kent\n')
+    assert(output.find_docs.length == 4, 'FAIL, find_docs.length should be 4\n')
+    assert(output.find_limited_sorted_docs[0].name == 'Clark Kent', 'FAIL, find_limited_sorted_docs[0].name should be Clark Kent\n')
+    assert(output.find_limited_sorted_docs.length == 2, 'FAIL, find_limited_sorted_docs.length should be 2\n')
+    assert(output.find_avenger_docs.length == 3, 'FAIL, find_avenger_docs.length should be 3\n')
+    assert(output.find_sharingan_docs.length == 5, 'FAIL, find_sharingan_docs.length should be 5\n')
+    assert(output.permanent_remove_result.ok == 1, 'FAIL, permanent_remove_result.ok should be 1\n')
+    assert(output.permanent_remove_result.n == 5, 'FAIL, permanent_remove_result.n should be 5\n')
 }
 
 
@@ -54,38 +87,14 @@ function testExecuteChain(testName, chain, inputs, presets, expectedResult, call
 async.series([
 
     // test database
-    (callback) => {
-        let startTime = process.hrtime();
-        let chain = 'tests/mongo-driver.yaml'
-        console.log('START mongo-driver testing ON nanosecond: ' + chimera.getFormattedNanoSecond(startTime) + '\n')
-        chimera.executeChain(chain, [], [], function(output, success){
-            let diff = process.hrtime(startTime);
-            let endTime = process.hrtime();
-            console.log(output);
-            console.log('END mongo-driver testing ON nanosecond: ' + chimera.getFormattedNanoSecond(endTime))
-            console.log('EXECUTION TIME: ' + chimera.getFormattedNanoSecond(diff) + ' nanosecond')
-            assert(output.insert_doc.name == 'Tono Stark', 'FAIL, insert_doc: ' + JSON.stringify(output.insert_doc) + '\n')
-            assert(output.update_doc.name == 'Toni Stark', 'FAIL, update_doc: ' + JSON.stringify(output.update_doc) + '\n')
-            assert(output.another_insert_doc.name == 'Tono Stark', 'FAIL, another_insert_doc: ' + JSON.stringify(output.another_insert_doc) + '\n')
-            console.log(output.insert_bulk_docs)
-            assert(output.insert_bulk_docs.length == 2, 'FAIL, insert_bulk_docs: ' + JSON.stringify(output.insert_bulk_docs) + '\n')
-            assert(output.update_bulk_docs.length == 3, 'FAIL, update_bulk_docs: ' + JSON.stringify(output.update_bulk_docs) + '\n')
-            for(let i=0; i<3; i++){
-                assert(output.update_bulk_docs[i].affiliation == 'Avenger', 'FAIL, update_bulk_docs['+i+']: ' + JSON.stringify(output.update_bulk_docs[i]) + '\n')
-            }
-            assert(output.superman_doc.name == 'Clark Kent', 'FAIL, insert_doc: ' + JSON.stringify(output.superman_doc) + '\n')
-            assert(output.find_docs.length == 4, 'FAIL, find_docs: ' + JSON.stringify(output.find_docs) + '\n')
-            assert(output.find_avenger_docs.length == 3, 'FAIL, find_avenger_docs: ' + JSON.stringify(output.find_avenger_docs) + '\n')
-            assert(output.find_sharingan_docs.length == 5, 'FAIL, find_sharingan_docs: ' + JSON.stringify(output.find_sharingan_docs) + '\n')
-            assert(output.permanent_remove_result.ok == 1, 'FAIL, permanent_remove_result: ' + JSON.stringify(output.permanent_remove_result) + '\n')
-            assert(output.permanent_remove_result.n == 5, 'FAIL, permanent_remove_result: ' + JSON.stringify(output.permanent_remove_result) + '\n')
-            console.log('SUCCESS\n')
-            // run callback
-            callback()
-        });
+    (callback) => {testExecuteCommand('Test mongo driver', 
+        'chimera "tests/mongo-driver.yaml"', mongoDbAsserter, callback)
+    },
+    (callback) => {testExecuteChain('Test mongo driver', 
+        'tests/mongo-driver.yaml', [], {}, mongoDbAsserter, callback)
     },
 
-
+    // test executeChain with various 
     (callback) => {
         chimera.executeChain('tests/increment.yaml', function(output, error, errorMessage){
             assert(output == 1, 'FAIL, Expected : 1, Actual : '+output)
@@ -111,7 +120,8 @@ async.series([
     // test execute chain
 
     (callback) => {testExecuteChain('Test executeChain without presets',
-        'tests/minimal.yaml', [1, 5], {}, -23, callback)},
+        'tests/minimal.yaml', [1, 5], {}, -23, callback)
+    },
 
     (callback) => {testExecuteChain('Test executeChain with presets',
         'tests/minimal.yaml', [1, 5], {'a':1, 'b':1}, -23, callback)},

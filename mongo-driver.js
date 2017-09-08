@@ -15,8 +15,8 @@ const DEFAULT_DB_CONFIG = {
     'id_field' : '_id',
     'modification_time_field' : '_modified_at',
     'modification_by_field' : '_modified_by',
-    'show_deleted' : false,
     'process_deleted' : false,
+    'show_history' : false,
     'user_id' : null,
     'persistence_connection' : false,
 }
@@ -42,11 +42,11 @@ function preprocessFilter(dbConfig, filter){
         newfilterCopy[dbConfig.id_field] = filterCopy
         filterCopy = newfilterCopy
     }
-    // determine multi 
+    // determine multi
     if(Object.keys(filterCopy).length == 1 && dbConfig.id_field in filterCopy){
         multi = false
     }
-    if(!dbConfig.process_deleted && !dbConfig.show_deleted){
+    if(!dbConfig.process_deleted){
         if(dbConfig.deletion_flag_field != ''){
             // create "exists" filter
             let existFilter = {}
@@ -64,18 +64,33 @@ function preprocessFilter(dbConfig, filter){
 }
 
 function preprocessProjection(dbConfig, projection){
+    if(typeof(projection) == 'string'){
+        return projection
+    }
     let projectionCopy = chimera.deepCopyObject(projection)
     dbConfig = preprocessDbConfig(dbConfig)
     if(projectionCopy === null || typeof projectionCopy == 'undefined'){
         projectionCopy = {}
     }
-    // if not show_deleted, don't show deletion_flag_field
-    if(Object.keys(projectionCopy).length == 0 && !dbConfig.show_deleted){
-        if(dbConfig.deletion_flag_field != '' ){
-            projectionCopy[dbConfig.deletion_flag_field] = 0
+    // if not process_deleted, don't show deletion_flag_field
+    if(Object.keys(projectionCopy).length == 0 || !('fields' in projectionCopy)){
+        projectionCopy['fields'] = {}
+    }
+    // determine whether additionalFilter needed or not
+    let isAdditionalFilterNeeded = true
+    for(key in projectionCopy['fields']){
+        if(projectionCopy['fields'][key] == 1){
+            isAdditionalFilterNeeded = false
+            break
         }
-        if(dbConfig.history != ''){
-            projectionCopy[dbConfig.history] = 0
+    }
+    // add additional filter if necessary
+    if(isAdditionalFilterNeeded){
+        if(dbConfig.deletion_flag_field != ''  && !dbConfig.process_deleted){
+            projectionCopy['fields'][dbConfig.deletion_flag_field] = 0
+        }
+        if(dbConfig.history != '' && !dbConfig.show_history){
+            projectionCopy['fields'][dbConfig.history] = 0
         }
     }
     return projectionCopy
@@ -293,7 +308,7 @@ function update(dbConfig, updateFilter, data, options, callback){
     return find(dbConfig, updateFilter, function(docs, success, errorMessage){
         if(success){
             // build the findFilter
-            let findFilter = buildFilterForDocs(dbConfig, docs) 
+            let findFilter = buildFilterForDocs(dbConfig, docs)
             let collection = initCollection(dbConfig)
             collection.update(filter, data, options, function(error, result){
                 let elapsedTime = process.hrtime(startTime)
@@ -354,6 +369,8 @@ function permanentRemove(dbConfig, removeFilter, options, callback){
         console.warn('[INFO] Execute "permanentRemove" in: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
         // close the database connection
         if(!dbConfig.persistence_connection){closeConnection();}
+        // we just want the "ok" and "n" key, not the full buffer, and JSON.parse(JSON.stringify()) solve the problem
+        result = JSON.parse(JSON.stringify(result))
         // deal with callback
         if(err){
             console.error('[ERROR] ' + err)
@@ -374,7 +391,7 @@ function createDbConfig(mongoUrl, collectionName, userId, callback){
         url = mongoUrl.mongo_url
     }
     let dbConfig = {'mongo_url':url, 'collection_name':collectionName, 'user_id':userId}
-    callback(JSON.stringify(dbConfig), false, '')
+    callback(JSON.stringify(dbConfig), true, '')
 }
 
 function closeConnection(){
