@@ -327,17 +327,31 @@ series:
     ## insert new data
     - ('{"name":"Tono Stark","alias":"Ironman","age":30}') ->-> insert_data
     - (dbConfig, insert_data) -> [mongo-bridge.js insert] -> out.insert_doc
+    # { _id: '59b2b69a31ff37363b4e9a88',
+    #   name: 'Tono Stark',
+    #   alias: 'Ironman' },
+
 
     ## update inserted data with a newer one
     - (out.insert_doc._id) ->-> ironman_id
     - ('{"name":"Toni Stark"}') ->-> update_data
     - (dbConfig, ironman_id, update_data) -> [mongo-bridge.js update] -> out.update_doc
+    # { _id: '59b2b69a31ff37363b4e9a88',
+    #   name: 'Toni Stark',
+    #   alias: 'Ironman' },
 
     ## insert another data
     - (dbConfig, insert_data) -> [mongo-bridge.js insert] -> out.another_insert_doc
+    # { _id: '59b2b69b31ff37363b4e9a89',
+    #   name: 'Tono Stark',
+    #   alias: 'Ironman' },
 
     ## delete the last one
     - (dbConfig, out.another_insert_doc._id) -> [mongo-bridge.js remove] -> out.remove_doc
+    # { _id: '59b2b69b31ff37363b4e9a89',
+    #   name: 'Tono Stark',
+    #   alias: 'Ironman',
+    #   _deleted: 1 },
 
     ## insert bulk
     - ('[{"name":"Steve Roger","alias":"Captain America","age":31},{"name":"Bruce Banner","alias":"Hulk","age":32}]') ->-> bulk_insert_data
