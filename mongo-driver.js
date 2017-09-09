@@ -19,6 +19,7 @@ const DEFAULT_DB_CONFIG = {
     'show_history' : false,
     'user_id' : null,
     'persistence_connection' : false,
+    'verbose' : false,
 }
 var db = null
 var lastMongoUrl = null
@@ -46,18 +47,16 @@ function preprocessFilter(dbConfig, filter){
     if(Object.keys(filterCopy).length == 1 && dbConfig.id_field in filterCopy){
         multi = false
     }
-    if(!dbConfig.process_deleted){
-        if(dbConfig.deletion_flag_field != ''){
-            // create "exists" filter
-            let existFilter = {}
-            existFilter[dbConfig.deletion_flag_field] = 0
-            // modify filterCopy
-            if(Object.keys(filterCopy).length != 0){
-                filterCopy = {'$and' : [existFilter, filterCopy]}
-            }
-            else{
-                filterCopy = existFilter
-            }
+    if(!dbConfig.process_deleted && dbConfig.deletion_flag_field != ''){
+        // create "exists" filter
+        let existFilter = {}
+        existFilter[dbConfig.deletion_flag_field] = 0
+        // modify filterCopy
+        if(Object.keys(filterCopy).length != 0){
+            filterCopy = {'$and' : [existFilter, filterCopy]}
+        }
+        else{
+            filterCopy = existFilter
         }
     }
     return [filterCopy, multi]
@@ -204,14 +203,18 @@ function initCollection(dbConfig){
         db = monk(dbConfig.mongo_url)
         lastMongoUrl = dbConfig.mongo_url
         let elapsedTime = process.hrtime(startTime)
-        console.warn('[INFO] Connection openned in: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS');
+        if(dbConfig.verbose){
+            console.warn('[INFO] Connection openned in: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS');
+        }
     }
     if(lastCollectionName != dbConfig.collection_name || cachedCollection == null){
         startTime = process.hrtime()
         lastCollectionName = dbConfig.collection_name
         cachedCollection = db.get(lastCollectionName)
         let elapsedTime = process.hrtime(startTime)
-        console.warn('[INFO] Collection initialized in: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS');
+        if(dbConfig.verbose){
+            console.warn('[INFO] Collection initialized in: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS');
+        }
     }
     return cachedCollection
 }
@@ -234,9 +237,11 @@ function find(dbConfig, findFilter, projection, callback){
     callback = preprocessCallback(callback)
     return collection.find(filter, projection, function(err, docs){
         let elapsedTime = process.hrtime(startTime)
-        console.warn('[INFO] Execute "find" in:' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS');
+        if(dbConfig.verbose){
+            console.warn('[INFO] Execute "find" in:' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS');
+        }
         // close the database connection
-        if(!dbConfig.persistence_connection){closeConnection();}
+        if(!dbConfig.persistence_connection){closeConnection(dbConfig.verbose);}
         // ensure that _ids are purely string
         if(Array.isArray(docs)){
             for(let i=0; i<docs.length; i++){
@@ -259,6 +264,170 @@ function find(dbConfig, findFilter, projection, callback){
         }
         else{
             callback(docs, true, err)
+        }
+    })
+}
+
+function preprocessPipeline(dbConfig, pipeline){
+    let newPipeline = []
+    if(Array.isArray(pipeline)){
+        newPipeline = chimera.deepCopyObject(pipeline)
+    }
+    if(!dbConfig.process_deleted && dbConfig.deletion_flag_field != ''){
+        newPipeline.unshift({"$match":{"_deleted":0}})
+    }
+    return newPipeline
+}
+
+function aggregate(dbConfig, pipeline, options, callback){
+    if(typeof(options) == 'function'){
+        callback = options
+        options = {}
+    }
+    let startTime = process.hrtime()
+    dbConfig = preprocessDbConfig(dbConfig)
+    pipeline = preprocessPipeline(dbConfig, pipeline)
+    let collection = initCollection(dbConfig)
+    callback = preprocessCallback(callback)
+    collection.aggregate(pipeline, options, function(err, docs){
+        let elapsedTime = process.hrtime(startTime)
+        if(dbConfig.verbose){
+            console.warn('[INFO] Execute "aggregate" in:' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS');
+        }
+        // close the database connection
+        if(!dbConfig.persistence_connection){closeConnection(dbConfig.verbose);}
+        // deal with callback
+        if(err){
+            console.error('[ERROR] ' + err)
+            callback(null, false, err)
+        }
+        else{
+            callback(docs, true, err)
+        }
+    })
+}
+
+function preprocessAggregationParameters(dbConfig, filter, groupBy, options, callback){
+    if(typeof(filter) == 'function'){
+        callback = filter
+        filter = null 
+        groupBy = ''
+        options = {}
+    }
+    else if(typeof(groupBy) == 'function'){
+        callback = groupBy
+        groupBy = ''
+        options = {}
+    }
+    else if(typeof(options) == 'function'){
+        callback = options
+        options = {}
+    }
+    dbConfig = preprocessDbConfig(dbConfig)
+    if(groupBy != ''){
+        groupBy = '$' + groupBy
+    }
+    return [filter, groupBy, options, callback]
+}
+
+function preprocessAggregationResult(result){
+    if(Array.isArray(result)){
+        if(result.length == 1 && result[0]._id == ''){
+            // no grouping
+            return result[0].result
+        }
+        else{
+            let newResult = {}
+            for(let i=0; i<result.length; i++){
+                let row = result[i]
+                newResult[row._id] = row.result
+            }
+            return newResult
+        }
+    }
+    return null
+}
+
+function getPipelineByFilter(filter){
+    let pipeline = []
+    // if filter is not null, add "match" operation as the first element of pipeline
+    if(filter != null){
+        pipeline.push({'$match':filter})
+    }
+    return pipeline
+}
+
+function sum(dbConfig, field, filter, groupBy, options, callback){
+    [filter, groupBy, options, callback] = preprocessAggregationParameters(dbConfig, filter, groupBy, options, callback)
+    let pipeline = getPipelineByFilter(filter)
+    pipeline.push( {"$group":{"_id":groupBy,"result":{"$sum":'$'+field}}} )
+    callback = preprocessCallback(callback)
+    aggregate(dbConfig, pipeline, options, function(result, success, errorMessage){
+        if(success){
+            callback(preprocessAggregationResult(result), true, '')
+        }
+        else{
+            callback(null, false, errorMessage)
+        }
+    })
+}
+
+function avg(dbConfig, field, filter, groupBy, options, callback){
+    [filter, groupBy, options, callback] = preprocessAggregationParameters(dbConfig, filter, groupBy, options, callback)
+    let pipeline = getPipelineByFilter(filter)
+    pipeline.push( {"$group":{"_id":groupBy,"result":{"$avg":'$'+field}}} )
+    callback = preprocessCallback(callback)
+    aggregate(dbConfig, pipeline, options, function(result, success, errorMessage){
+        if(success){
+            callback(preprocessAggregationResult(result), true, '')
+        }
+        else{
+            callback(null, false, errorMessage)
+        }
+    })
+}
+
+function max(dbConfig, field, filter, groupBy, options, callback){
+    [filter, groupBy, options, callback] = preprocessAggregationParameters(dbConfig, filter, groupBy, options, callback)
+    let pipeline = getPipelineByFilter(filter)
+    pipeline.push( {"$group":{"_id":groupBy,"result":{"$max":'$'+field}}} )
+    callback = preprocessCallback(callback)
+    aggregate(dbConfig, pipeline, options, function(result, success, errorMessage){
+        if(success){
+            callback(preprocessAggregationResult(result), true, '')
+        }
+        else{
+            callback(null, false, errorMessage)
+        }
+    })
+}
+
+function min(dbConfig, field, filter, groupBy, options, callback){
+    [filter, groupBy, options, callback] = preprocessAggregationParameters(dbConfig, filter, groupBy, options, callback)
+    let pipeline = getPipelineByFilter(filter)
+    pipeline.push( {"$group":{"_id":groupBy,"result":{"$min":'$'+field}}} )
+    callback = preprocessCallback(callback)
+    aggregate(dbConfig, pipeline, options, function(result, success, errorMessage){
+        if(success){
+            callback(preprocessAggregationResult(result), true, '')
+        }
+        else{
+            callback(null, false, errorMessage)
+        }
+    })
+}
+
+function count(dbConfig, filter, groupBy, options, callback){
+    [filter, groupBy, options, callback] = preprocessAggregationParameters(dbConfig, filter, groupBy, options, callback)
+    let pipeline = getPipelineByFilter(filter)
+    pipeline.push( {"$group":{"_id":groupBy,"result":{"$sum":1}}} )
+    callback = preprocessCallback(callback)
+    aggregate(dbConfig, pipeline, options, function(result, success, errorMessage){
+        if(success){
+            callback(preprocessAggregationResult(result), true, '')
+        }
+        else{
+            callback(null, false, errorMessage)
         }
     })
 }
@@ -296,7 +465,9 @@ function insert(dbConfig, data, options, callback){
     callback = preprocessCallback(callback)
     return collection.insert(data, options, function(error, docs){
         let elapsedTime = process.hrtime(startTime)
-        console.warn('[INFO] Execute "insert" in: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
+        if(dbConfig.verbose){
+            console.warn('[INFO] Execute "insert" in: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
+        }
         // not error
         if(!error){
             // build the findFilter
@@ -306,7 +477,7 @@ function insert(dbConfig, data, options, callback){
         }
         else{
             // close the database connection
-            if(!dbConfig.persistence_connection){closeConnection();}
+            if(!dbConfig.persistence_connection){closeConnection(dbConfig.verbose);}
             // execute callback
             console.error('[ERROR] ' + error)
             callback(null, false, error)
@@ -337,14 +508,16 @@ function update(dbConfig, updateFilter, data, options, callback){
             let collection = initCollection(dbConfig)
             collection.update(filter, data, options, function(error, result){
                 let elapsedTime = process.hrtime(startTime)
-                console.warn('[INFO] Execute "update" in: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
+                if(dbConfig.verbose){
+                    console.warn('[INFO] Execute "update" in: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
+                }
                 if(!error){
                     dbConfig.persistence_connection = false
                     find(dbConfig, findFilter, callback)
                 }
                 else{
                     // close the database connection
-                    if(!dbConfig.persistence_connection){closeConnection();}
+                    if(!dbConfig.persistence_connection){closeConnection(dbConfig.verbose);}
                     // execute callback
                     console.error('[ERROR] ' + error)
                     callback(null, false, error)
@@ -353,7 +526,7 @@ function update(dbConfig, updateFilter, data, options, callback){
         }
         else{
             // close the database connection
-            if(!dbConfig.persistence_connection){closeConnection();}
+            if(!dbConfig.persistence_connection){closeConnection(dbConfig.verbose);}
             // execute callback
             console.error('[ERROR] ' + errorMessage)
             callback(null, false, errorMessage)
@@ -391,9 +564,11 @@ function permanentRemove(dbConfig, removeFilter, options, callback){
     }
     return collection.remove(filter, options, function(err, result){
         let elapsedTime = process.hrtime(startTime)
-        console.warn('[INFO] Execute "permanentRemove" in: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
+        if(dbConfig.verbose){
+            console.warn('[INFO] Execute "permanentRemove" in: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
+        }
         // close the database connection
-        if(!dbConfig.persistence_connection){closeConnection();}
+        if(!dbConfig.persistence_connection){closeConnection(dbConfig.verbose);}
         // we just want the "ok" and "n" key, not the full buffer, and JSON.parse(JSON.stringify()) solve the problem
         result = JSON.parse(JSON.stringify(result))
         // deal with callback
@@ -419,14 +594,16 @@ function createDbConfig(mongoUrl, collectionName, userId, callback){
     callback(JSON.stringify(dbConfig), true, '')
 }
 
-function closeConnection(){
+function closeConnection(verbose=false){
     if(db != null){
         db.close()
         db = null
         lastMongoUrl = null
         lastCollectionName = null
         cachedCollection = null
-        console.warn('[INFO] Connection closed')
+        if(verbose){
+            console.warn('[INFO] Connection closed')
+        }
     }
 }
 
@@ -471,7 +648,13 @@ module.exports ={
     'remove' : remove,
     'permanentRemove' : permanentRemove,
     'createDbConfig' : createDbConfig,
-    'closeConnection' : closeConnection
+    'closeConnection' : closeConnection,
+    'aggregate' : aggregate,
+    'sum' : sum,
+    'avg' : avg,
+    'max' : max,
+    'min' : min,
+    'count' : count,
 }
 
 if(require.main === module){

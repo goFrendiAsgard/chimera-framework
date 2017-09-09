@@ -109,6 +109,28 @@ let mongoDbAsserter = (output)=>{
     assert(output.find_sharingan_docs.length == 5, 'FAIL, find_sharingan_docs.length should be 5\n')
     assert(('_history' in output.find_sharingan_docs[0]), 'Fail, find_sharingan_docs[0] should contains _history\n')
 
+    assert(output.aggregation_result[0].count == 4, 'FAIL, aggregation_result[0].count should be 4\n')
+
+    assert(output.sum_all_result == 126, 'FAIL, sum_all_result should be 126\n')
+    assert(output.sum_avenger_result == 93, 'FAIL, sum_avenger_result should be 93\n')
+    assert(output.sum_by_affiliation_result['Justice League'] == 33, 'FAIL, sum_by_affiliation_result["Justice League"] should be 33\n')
+    assert(output.sum_by_affiliation_result['Avenger'] == 93, 'FAIL, sum_by_affiliation_result["Avenger"] should be 93\n')
+
+    assert(output.avg_all_result == 31.5, 'FAIL, avg_all_result should be 31.5\n')
+    assert(output.avg_avenger_result == 31, 'FAIL, avg_avenger_result should be 31\n')
+    assert(output.avg_by_affiliation_result['Justice League'] == 33, 'FAIL, avg_by_affiliation_result["Justice League"] should be 33\n')
+    assert(output.avg_by_affiliation_result['Avenger'] == 31, 'FAIL, avg_by_affiliation_result["Avenger"] should be 31\n')
+
+    assert(output.max_all_result == 33, 'FAIL, max_all_result should be 33\n')
+    assert(output.max_avenger_result == 32, 'FAIL, max_avenger_result should be 32\n')
+    assert(output.max_by_affiliation_result['Justice League'] == 33, 'FAIL, max_by_affiliation_result["Justice League"] should be 33\n')
+    assert(output.max_by_affiliation_result['Avenger'] == 32, 'FAIL, max_by_affiliation_result["Avenger"] should be 32\n')
+
+    assert(output.min_all_result == 30, 'FAIL, min_all_result should be 30\n')
+    assert(output.min_avenger_result == 30, 'FAIL, min_avenger_result should be 30\n')
+    assert(output.min_by_affiliation_result['Justice League'] == 33, 'FAIL, min_by_affiliation_result["Justice League"] should be 33\n')
+    assert(output.min_by_affiliation_result['Avenger'] == 30, 'FAIL, min_by_affiliation_result["Avenger"] should be 30\n')
+
     assert(output.permanent_remove_result.ok == 1, 'FAIL, permanent_remove_result.ok should be 1\n')
     assert(output.permanent_remove_result.n == 5, 'FAIL, permanent_remove_result.n should be 5\n')
 }
