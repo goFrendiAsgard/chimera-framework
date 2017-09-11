@@ -85,7 +85,7 @@ console.log(chimera.getFormattedNanoSecond(elapsedTime));
 
 ## deepCopyObject
 
-Make a copy of an object. See <a href="#deepcopyobject">example</a>
+Make a copy of an object.
 
 ### Usage
 * `deepCopyObject(<obj>)`
@@ -111,7 +111,7 @@ console.log(c); // {x:5, b:7}
 
 ## patchObject
 
-Patch an object with patcher. See <a href="#patchobject">example</a>
+Patch an object with patcher.
 
 ### Usage
 * `patchObject(<obj>, <patcher>)`
@@ -134,6 +134,16 @@ console.log(newObj); // {x:5, b:6, c:7}
 
 ## cmd.run
 
+Execute a shell command asynchronously
+
+### Usage
+* `cmd.run(<command>, <options>)`
+* `cmd.run(<command>)`
+
+### Parameters
+* `command`: string, command to be executed
+* `options`: object, the options, see [https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback](https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback) for more information
+
 ### Example
 
 ```Javascript
@@ -142,6 +152,20 @@ chimera.cmd.run('cp a.txt b.txt');
 ```
 
 ## cmd.get
+
+Execute a shell command asynchronously, and run the callback
+
+### Usage
+* `cmd.run(<command>, <options>, <callback>)`
+* `cmd.run(<command>, <callback>)`
+
+### Parameters
+* `command`: string, command to be executed
+* `options`: object, the options, see [https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback](https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback) for more information
+* `callback`: callback function, require 3 parameters
+    - __error__: Javascript Error
+    - __result (stdout)__: string, output of the YAML chain
+    - __errorMessage (stderr)__: string, the error message
 
 ### Example
 
