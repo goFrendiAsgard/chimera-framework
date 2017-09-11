@@ -1,17 +1,15 @@
-# Core API
+Chimera-framework offer API you can use in your Node.Js scripts. In order to use the API, you need to import `chimera-framework/core` or `chimera-framework/eisn`.
 
-Chimera-framework offer several API you can use in your Node.Js scripts. In order to use the API, you need to import `chimera-framework/core`.
-
-## executeChain
+# executeChain
 
 Execute a YAML chain, and executing the callback. If callback is empty, then the result will be printed into stdout.
 
-### Usage
+## Usage
 * `executeChain(<YAML chain>, <callback>)`
 * `executeChain(<YAML chain>, <argv>, <callback>)`
 * `executeChain(<YAML chain>, <argv>, <presets>, <callback>)`
 
-### Parameters
+## Parameters
 * `YAML chain`: string, YAML chain
 * `argv`: array, YAML chain's input arguments
 * `presets`: object, YAML chains's pre-defined variables
@@ -20,7 +18,7 @@ Execute a YAML chain, and executing the callback. If callback is empty, then the
     - __success__: boolean, true if YAML chain yield no error
     - __errorMessage (stderr)__: string, the error message
 
-### Example
+## Example
 
 ```Javascript
 const chimera = require('chimera-framework/core');
@@ -51,18 +49,18 @@ chimera.executeChain('your-chain.yaml', {}, {a: 5, b: 1}, function(result, succe
 });
 ```
 
-## getFormattedNanoSecond
+# getFormattedNanoSecond
 
 Return nanoseconds as formatted number. See <a href="#getformattednanosecond">example</a>
 
-### Usage
+## Usage
 * `getFormattedNanoSecond(<time>)`
 
-### Parameters
+## Parameters
 
 * `time` high resolution real time in [seconds, nanoseconds], tuple. Usually result of `process.hrtime()`
 
-### Example
+## Example
 
 ```Javascript
 const chimera = require('chimera-framework/core');
@@ -83,17 +81,17 @@ let elapsedTime = process.hrtime(startTime);
 console.log(chimera.getFormattedNanoSecond(elapsedTime));
 ```
 
-## deepCopyObject
+# deepCopyObject
 
 Make a copy of an object.
 
-### Usage
+## Usage
 * `deepCopyObject(<obj>)`
 
-### Parameters
+## Parameters
 * `obj`: object to be copied
 
-### Example
+## Example
 
 ```Javascript
 const chimera = require('chimera-framework/core');
@@ -109,18 +107,18 @@ console.log(c); // {x:5, b:7}
 
 ```
 
-## patchObject
+# patchObject
 
 Patch an object with patcher.
 
-### Usage
+## Usage
 * `patchObject(<obj>, <patcher>)`
 
-### Parameters
+## Parameters
 * `obj`: object to be patched
 * `patcher`: the patcher
 
-### Example
+## Example
 
 ```Javascript
 const chimera = require('chimera-framework/core');
@@ -132,34 +130,34 @@ let newObj = chimera.patchObject(obj, patcher);
 console.log(newObj); // {x:5, b:6, c:7}
 ```
 
-## cmd.run
+# cmd.run
 
 Execute a shell command asynchronously
 
-### Usage
+## Usage
 * `cmd.run(<command>, <options>)`
 * `cmd.run(<command>)`
 
-### Parameters
+## Parameters
 * `command`: string, command to be executed
 * `options`: object, the options, see [https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback](https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback) for more information
 
-### Example
+## Example
 
 ```Javascript
 const chimera = require('chimera-framework/core');
 chimera.cmd.run('cp a.txt b.txt');
 ```
 
-## cmd.get
+# cmd.get
 
 Execute a shell command asynchronously, and run the callback
 
-### Usage
+## Usage
 * `cmd.run(<command>, <options>, <callback>)`
 * `cmd.run(<command>, <callback>)`
 
-### Parameters
+## Parameters
 * `command`: string, command to be executed
 * `options`: object, the options, see [https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback](https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback) for more information
 * `callback`: callback function, require 3 parameters
@@ -167,7 +165,7 @@ Execute a shell command asynchronously, and run the callback
     - __result (stdout)__: string, output of the YAML chain
     - __errorMessage (stderr)__: string, the error message
 
-### Example
+## Example
 
 ```Javascript
 const chimera = require('chimera-framework/core');
@@ -181,13 +179,13 @@ chimera.cmd.get('ls', function(error, stdout, stderr){
 })
 ```
 
-## eisn
+# eisn
 Execute command if source-file is newer than dst-file. Execute the callback whether the command executed or not
 
-### Usage
+## Usage
 * `eisn(<src-file>, <dst-file>, <command>, <callback>)`
 
-### Parameters
+## Parameters
 * `src-file`: string, name of source file
 * `dst-file`: string, name of destination file
 * `command`: string, command to be executed
@@ -196,7 +194,7 @@ Execute command if source-file is newer than dst-file. Execute the callback whet
     - __success__: boolean, true if no error encountered 
     - __errorMessage (stderr)__: string, the error message
 
-### Example
+## Example
 ```Javascript
 const eisn = require('chimera-framework/eisn');
 eisn('programs/Substract.java', 'programs/Substract.class', 'javac programs/Substract.java', function(result, success, errorMessage){
