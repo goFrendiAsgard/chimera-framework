@@ -180,3 +180,31 @@ chimera.cmd.get('ls', function(error, stdout, stderr){
     }
 })
 ```
+
+## eisn
+Execute command if source-file is newer than dst-file. Execute the callback whether the command executed or not
+
+### Usage
+* `eisn(<src-file>, <dst-file>, <command>, <callback>)`
+
+### Parameters
+* `src-file`: string, name of source file
+* `dst-file`: string, name of destination file
+* `command`: string, command to be executed
+* `callback`: callback function, require 3 parameters
+    - __result__: object, either `{is_command_executed:true}` or `{is_command_executed:false}`
+    - __success__: boolean, true if no error encountered 
+    - __errorMessage (stderr)__: string, the error message
+
+### Example
+```Javascript
+const eisn = require('chimera-framework/eisn');
+eisn('programs/Substract.java', 'programs/Substract.class', 'javac programs/Substract.java', function(result, success, errorMessage){
+    if(!error){
+        console.log(JSON.stringify(result));
+    }
+    else{
+        console.error(errorMessage);
+    }
+});
+```
