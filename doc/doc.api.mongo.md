@@ -19,290 +19,11 @@ const DEFAULT_DB_CONFIG = {
     'show_history' : false,
     'user_id' : '<user-id>',
     'persistence_connection' : false,
+    'verbose' : false,
 }
 ```
 
-<table>
-    <tr>
-        <th>Function</th>
-        <th>Parameter</th>
-        <th>Parameter Description</th>
-        <th>Function Description</th>
-    </tr>
-    <!-- createDbConfig -->
-    <tr>
-        <td rowspan="5">
-            <b>createDbConfig</b><br />
-            <ul>
-                <li><code>createDbConfig(&lt;mongoUrl&gt;, &lt;collectionName&gt;, &lt;userId&gt;, &lt;callback&gt;)</code></li>
-                <li><code>createDbConfig(&lt;obj&gt;, &lt;collectionName&gt;, &lt;userId&gt;, &lt;callback&gt;)</code></li>
-            </ul>
-        </td>
-        <td>mongoUrl</td>
-        <td>string, MongoDB connection string (e.g: <code>mongodb://localhost/test</code></td>
-        <td rowspan="5">
-            <p>
-                Creating a dbConfig object, which is required for <code>find</code> <code>insert</code> <code>update</code> <code>remove</code> and <code>permanentRemove</code>
-            </p>
-            <p>
-                If callback is empty, then the created dbConfig will be shown in stdout.
-            </p>
-        </td>
-    </tr>
-    <tr>
-        <td>obj</td>
-        <td>Object with <code>mongo_url</code> key. Instead of literal string, you can pass an object with <code>mongo_url</code> key instead</td>
-    </tr>
-    <tr>
-        <td>collectionName</td>
-        <td>string, name of collection</td>
-    </tr>
-    <tr>
-        <td>userId</td>
-        <td>string, userId. Used for row versioning to fill up <code>_modified_by</code> column</td>
-    </tr>
-    <tr>
-        <td>callback</td>
-        <td>
-            callback function, require 3 parameters:
-            <ul>
-                <li>
-                    <b>dbConfig</b>
-                    A newly created dbConfig object. This object is required for <code>find</code> <code>insert</code> <code>update</code> <code>remove</code> and <code>permanentRemove</code>
-                </li>
-                <li>
-                    <b>success</b>
-                    boolean, contains <code>true</code> if the operation succeed
-                </li>
-                <li>
-                    <b>errorMessage</b>
-                    string, error message
-                </li>
-            </ul>
-        </td>
-    </tr>
-    <!-- closeConnection -->
-    <tr>
-        <td>
-            <b>closeConnection</b><br />
-            <code>closeConnection()</code>
-        </td>
-        <td>-</td>
-        <td>-</td>
-        <td>Close database connection manually</td>
-    </tr>
-    <!-- find -->
-    <tr>
-        <td rowspan="4">
-            <b>find</b><br />
-            <ul>
-                <li><code>find(&lt;dbConfig&gt;, &lt;query&gt;, &lt;projection_and_options&gt;, &lt;callback&gt;)</code></li>
-                <li><code>find(&lt;dbConfig&gt;, &lt;query&gt;, &lt;callback&gt;)</code></li>
-                <li><code>find(&lt;dbConfig&gt;, &lt;callback&gt;)</code></li>
-            </ul>
-        </td>
-        <td>dbConfig</td>
-        <td>DbConfig object contains <code>mongo_url</code>, <code>collection_name</code>, <code>user_id</code> and other configurations for document manipulation</td>
-        <td rowspan="4">
-            <p>Get documents based on query and projection</p>
-        </td>
-    </tr>
-    <tr>
-        <td>query</td>
-        <td>object, <a href="https://docs.mongodb.com/manual/tutorial/query-documents/">MongoDB query</a></td>
-    </tr>
-    <tr>
-        <td>projection</td>
-        <td>object or string, <a href="https://automattic.github.io/monk/docs/collection/find.html">options and projection</a></td>
-    </tr>
-    <tr>
-        <td>callback</td>
-        <td>
-            callback function, require 3 parameters:
-            <ul>
-                <li>
-                    <b>docs</b>
-                    Array of object or an object. If you put primary key value as <code>query</code>, a single object representing the document will be returned, otherwise an array containing list of documents matching the <code>query</code> will be returned
-                </li>
-                <li>
-                    <b>success</b>
-                    boolean, contains <code>true</code> if the operation succeed
-                </li>
-                <li>
-                    <b>errorMessage</b>
-                    string, error message
-                </li>
-            </ul>
-        </td>
-    </tr>
-    <!-- insert -->
-    <tr>
-        <td rowspan="4">
-            <b>insert</b><br />
-            <ul>
-                <li><code>insert(&lt;dbConfig&gt;, &lt;data&gt;, &lt;options&gt;, &lt;callback&gt;)</code></li>
-                <li><code>insert(&lt;dbConfig&gt;, &lt;data&gt;, &lt;callback&gt;)</code></li>
-            </ul>
-        </td>
-        <td>dbConfig</td>
-        <td>DbConfig object contains <code>mongo_url</code>, <code>collection_name</code>, <code>user_id</code> and other configurations for document manipulation</td>
-        <td rowspan="4">Insert new document/documents into collection</td>
-    </tr>
-    <tr>
-        <td>data</td>
-        <td>array of object or object, the document(s) you want to insert</td>
-    </tr>
-    <tr>
-        <td>option</td>
-        <td>object, insert options</td>
-    </tr>
-    <tr>
-        <td>callback</td>
-        <td>
-            callback function, require 3 parameters:
-            <ul>
-                <li>
-                    <b>docs</b>
-                    Array of object or an object. If you put and object as <code>data</code>, a single object representing the inserted document will be returned, otherwise an array containing list of inserted documents will be returned
-                </li>
-                <li>
-                    <b>success</b>
-                    boolean, contains <code>true</code> if the operation succeed
-                </li>
-                <li>
-                    <b>errorMessage</b>
-                    string, error message
-                </li>
-            </ul>
-        </td>
-    </tr>
-    <!-- update -->
-    <tr>
-        <td rowspan="5">
-            <b>update</b><br />
-            <ul>
-                <li><code>update(&lt;dbConfig&gt;, &lt;query&gt;, &lt;data&gt;, &lt;options&gt;, &lt;callback&gt;)</code></li>
-                <li><code>update(&lt;dbConfig&gt;, &lt;query&gt;, &lt;data&gt;, &lt;callback&gt;)</code></li>
-            </ul>
-        </td>
-        <td>dbConfig</td>
-        <td>DbConfig object contains <code>mongo_url</code>, <code>collection_name</code>, <code>user_id</code> and other configurations for document manipulation</td>
-        <td rowspan="5">Update document/documents based on <code>query</code> and <code>data</code></td>
-    </tr>
-    <tr>
-        <td>query</td>
-        <td>object, <a href="https://docs.mongodb.com/manual/tutorial/query-documents/">MongoDB query</a></td>
-    </tr>
-    <tr>
-        <td>data</td>
-        <td>object, the update of the document</td>
-    </tr>
-    <tr>
-        <td>options</td>
-        <td>object, update option</td>
-    </tr>
-    <tr>
-        <td>callback</td>
-        <td>
-            callback function, require 3 parameters:
-            <ul>
-                <li>
-                    <b>docs</b>
-                    Array of object or an object. If you put and object as <code>data</code>, a single object representing the updated document will be returned, otherwise an array containing list of updated documents will be returned
-                </li>
-                <li>
-                    <b>success</b>
-                    boolean, contains <code>true</code> if the operation succeed
-                </li>
-                <li>
-                    <b>errorMessage</b>
-                    string, error message
-                </li>
-            </ul>
-        </td>
-    </tr>
-    <!-- remove -->
-    <tr>
-        <td rowspan="4">
-            <b>remove</b><br />
-            <code>remove(&lt;dbConfig&gt;, &lt;query&gt;, &lt;options&gt;, &lt;callback&gt;)</code>
-        </td>
-        <td>dbConfig</td>
-        <td>DbConfig object contains <code>mongo_url</code>, <code>collection_name</code>, <code>user_id</code> and other configurations for document manipulation</td>
-        <td rowspan="4">Put deleted-flag into document/documents in collection</td>
-    </tr>
-    <tr>
-        <td>query</td>
-        <td>object, <a href="https://docs.mongodb.com/manual/tutorial/query-documents/">MongoDB query</a></td>
-    </tr>
-    <tr>
-        <td>options</td>
-        <td>
-            object, update options <br />
-            <b>Note:</b> Remove is basically only update <code>_deleted</code> into <code>1</code>
-        </td>
-    </tr>
-    <tr>
-        <td>callback</td>
-        <td>
-            callback function, require 3 parameters:
-            <ul>
-                <li>
-                    <b>docs</b>
-                    Array of object or an object. If you put primary key value as <code>query</code>, a single object representing the document will be returned, otherwise an array containing list of documents matching the <code>query</code> will be returned
-                </li>
-                <li>
-                    <b>success</b>
-                    boolean, contains <code>true</code> if the operation succeed
-                </li>
-                <li>
-                    <b>errorMessage</b>
-                    string, error message
-                </li>
-            </ul>
-        </td>
-    </tr>
-    <!-- permanentRemove -->
-    <tr>
-        <td rowspan="4">
-            <b>permanentRemove</b><br />
-            <code>permanentRemove(&lt;dbConfig&gt;, &lt;query&gt;, &lt;options&gt;, &lt;callback&gt;)</code>
-        </td>
-        <td>dbConfig</td>
-        <td>DbConfig object contains <code>mongo_url</code>, <code>collection_name</code>, <code>user_id</code> and other configurations for document manipulation</td>
-        <td rowspan="4">Remove document/documents from collection</td>
-    </tr>
-    <tr>
-        <td>query</td>
-        <td>object, <a href="https://docs.mongodb.com/manual/tutorial/query-documents/">MongoDB query</a></td>
-    </tr>
-    <tr>
-        <td>options</td>
-        <td>object, delete options</td>
-    </tr>
-    <tr>
-        <td>callback</td>
-        <td>
-            callback function, require 3 parameters:
-            <ul>
-                <li>
-                    <b>result</b>
-                    Deletion result object. Typically contains something like <code>{'ok':1, 'n':4}</code> depending on your server version.
-                </li>
-                <li>
-                    <b>success</b>
-                    boolean, contains <code>true</code> if the operation succeed
-                </li>
-                <li>
-                    <b>errorMessage</b>
-                    string, error message
-                </li>
-            </ul>
-        </td>
-    </tr>
-</table>
-
-# Example
+# Full Example
 
 First you need a javascript file as a bridge:
 
@@ -545,3 +266,113 @@ series:
     - (dbConfig) -> [mongo-driver.js permanentRemove] -> out.permanent_remove_result
     # { ok: 1, n: 5 }
 ```
+
+# createDbConfig
+
+Creating a dbConfig object, which is required for `find` `insert` `update` `remove` and `permanentRemove`
+
+If callback is empty, then the created dbConfig will be shown in stdout.
+
+## Usage
+
+* `createDbConfig(<mongoUrl>, <collectionName>, <userId>, <callback>)`
+* `createDbConfig(<obj>, <collectionName>, <userId>, <callback>)`
+
+## Parameters
+* `mongoUrl`: string, MongoDB connection string (e.g: `mongodb://localhost/test`
+* `obj`: Object with `mongo_url` key. Instead of literal string, you can pass an object with `mongo_url` key instead
+* `collectionName`: string, name of collection
+* `userId`: string, userId. Used for row versioning to fill up `_modified_by` column
+* `callback`: callback function, require 3 parameters:
+    - __dbConfig__: A newly created dbConfig object. This object is required for `find` `insert` `update` `remove` and `permanentRemove`
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+# closeConnection
+Close database connection manually
+
+## Usage
+* `closeConnection()`
+
+# find
+Get document(s) based on query and projection
+
+## Usage
+* `find(<dbConfig>, <query>, <projection_and_options>, <callback>)`
+* `find(<dbConfig>, <query>, <callback>)`
+* `find(<dbConfig>, <callback>)`
+
+## Parameters
+* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
+* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
+* `projection_and_options`: object or string, [https://automattic.github.io/monk/docs/collection/find.html](Options and projection)
+* `callback`: callback function, require 3 parameters:
+    - __docs__: Array of object or an object. If you put primary key value as `query`, a single object representing the document will be returned, otherwise an array containing list of documents matching the `query` will be returned
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+# insert
+Insert new document(s) into collection
+
+## Usage
+* `insert(<dbConfig>, <data>, <options>, <callback>)`
+* `insert(<dbConfig>, <data>, <callback>)`
+
+## Parameters
+* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
+* `data`: array of object or object, the document(s) you want to insert
+* `options`: object, insert options
+* `callback`: callback function, require 3 parameters:
+    - __docs__: Array of object or an object. If you put primary key value as `query`, a single object representing the document will be returned, otherwise an array containing list of documents matching the `query` will be returned
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+# update
+Update document(s) based on `query` and `data`
+
+## Usage
+* `update(<dbConfig>, <query>, <data>, <options>, <callback>)`
+* `update(<dbConfig>, <query>, <data>, <callback>)`
+
+## Parameters
+* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
+* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
+* `data`: array of object or object, the document(s) you want to insert
+* `options`: object, update options
+* `callback`: callback function, require 3 parameters:
+    - __docs__: Array of object or an object. If you put primary key value as `query`, a single object representing the document will be returned, otherwise an array containing list of documents matching the `query` will be returned
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+# remove
+Put deletion-flag into document/documents in collection
+
+## Usage
+* `remove(<dbConfig>, <query>, <options>, <callback>)`
+* `remove(<dbConfig>, <query>, <callback>)`
+
+## Parameters
+* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
+* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
+* `options`: object, update options
+* `callback`: callback function, require 3 parameters:
+    - __docs__: Array of object or an object. If you put primary key value as `query`, a single object representing the document will be returned, otherwise an array containing list of documents matching the `query` will be returned
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+# permanentRemove
+Remove document(s) from collection
+
+## Usage
+* `permanentRemove(<dbConfig>, <query>, <options>, <callback>)`
+* `permanentRemove(<dbConfig>, <query>, <callback>)`
+
+## Parameters
+* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
+* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
+* `options`: object, delete options
+* `callback`: callback function, require 3 parameters:
+    - __result__: Deletion result object. Typically contains something like `{'ok':1, 'n':4}` depending on your server version.
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+

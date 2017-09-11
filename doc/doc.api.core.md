@@ -1,3 +1,5 @@
+# Core API
+
 Chimera-framework offer API you can use in your Node.Js scripts. In order to use the API, you need to import `chimera-framework/core` or `chimera-framework/eisn`.
 
 # executeChain
