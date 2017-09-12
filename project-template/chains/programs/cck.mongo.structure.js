@@ -1,31 +1,32 @@
 #! /usr/bin/env node
 'use strict';
 
-const core = require('cck-mongo-core.js')
+const db = require('cck-mongo-db.js')
 
 function insertData(tableConfig, data){
-    core.insert(tableConfig, data, function(doc, error, errorMessage){
+    db.insert(tableConfig, data, function(docs, error, errorMessage){
+        console.error(docs)
         // not sure -_-
     })
 }
 
 module.exports = function(webConfig, schema, userId){
-    let stuctureConfig = core.createCckConfig(webConfig, 'cck.structure', userId)
-    let tableConfig = core.createCckConfig(webConfig, schema.structure.table, userId)
+    let stuctureConfig = db.createCckConfig(webConfig, 'cck.structure', userId)
+    let tableConfig = db.createCckConfig(webConfig, schema.structure.table, userId)
     let query = {'table':schema.structure.table}
 
-    core.find(structureConfig, query, function(structures, success, errorMessage){
+    db.find(structureConfig, query, function(structures, success, errorMessage){
         let structure = structures[0]
         if('_id' in structure){
             // the structure exists
-            core.update(structureConfig, structure._id, schema.structure, function(updateResult, success, errorMessage){
-                structure = updateResult[0]
+            db.update(structureConfig, structure._id, schema.structure, function(updateResult, success, errorMessage){
+                structure = updateResult
                 insertData(tableConfig, schema.data)
             })
         }
         else{
             // the structure doesn't exist
-            core.insert(structureConfig, schema.structure, function(insertResult, success, error){
+            db.insert(structureConfig, schema.structure, function(insertResult, success, error){
                 structure = insertResult
                 insertData(tableConfig, schema.data)
             })
