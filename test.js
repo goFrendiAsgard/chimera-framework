@@ -202,6 +202,13 @@ async.series([
     (callback) => {testExecuteCommand('Test Empty process with two argument',
         'chimera "(a,b)->->(c)" 6 5', '[6,5]', callback)},
 
+    (callback) => {testExecuteCommand('Test Empty process with single argument and shorthand',
+        'chimera "(a)--> b" 6', 6, callback)},
+
+    (callback) => {testExecuteCommand('Test Empty process with two argument and shorthand',
+        'chimera "(a,b)-->(c)" 6 5', '[6,5]', callback)},
+
+
     (callback) => {testExecuteCommand('Test JSON instead of YAML',
         'chimera tests/add.json 1 5', 6, callback)},
 

@@ -202,26 +202,34 @@ function quote(string){
 function preprocessCommand(chain){
     if('command' in chain){
         // split command by '->'
-        let commandParts = smartSplit(chain.command, '->')
-        for(let i =0; i<commandParts.length; i++){
-            commandParts[i] = unquote(commandParts[i].trim())
-        }
-        // if commandParts has 3 elements, then they must be input, process and output
-        if(commandParts.length == 3){
+        let commandParts = smartSplit(chain.command, '-->')
+        if(commandParts.length == 2){
             chain.ins = commandParts[0]
-            chain.command = commandParts[1]
-            chain.out = commandParts[2]
+            chain.out = commandParts[1]
+            chain.command = ''
         }
-        else if(commandParts.length == 2){
-            if(commandParts[0].match(/^\(.*\)$/g)){
-                // input and process
+        else{
+            commandParts = smartSplit(chain.command, '->')
+            for(let i =0; i<commandParts.length; i++){
+                commandParts[i] = unquote(commandParts[i].trim())
+            }
+            // if commandParts has 3 elements, then they must be input, process and output
+            if(commandParts.length == 3){
                 chain.ins = commandParts[0]
                 chain.command = commandParts[1]
+                chain.out = commandParts[2]
             }
-            else{
-                // process and output
-                chain.command = commandParts[0]
-                chain.out = commandParts[1]
+            else if(commandParts.length == 2){
+                if(commandParts[0].match(/^\(.*\)$/g)){
+                    // input and process
+                    chain.ins = commandParts[0]
+                    chain.command = commandParts[1]
+                }
+                else{
+                    // process and output
+                    chain.command = commandParts[0]
+                    chain.out = commandParts[1]
+                }
             }
         }
         // if chain is empty, then copy ins into output
