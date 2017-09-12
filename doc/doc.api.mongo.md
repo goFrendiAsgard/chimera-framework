@@ -376,3 +376,124 @@ Remove document(s) from collection
     - __success__: boolean, contains `true` if the operation succeed
     - __errorMessage__: string, error message
 
+# agregate
+Perform low level aggregation. For `sum`, `count`, `avg`, `max`, and `min`, please you the provided functions.
+
+## Usage
+* `aggregate(<dbConfig>, <pipeline>, <options>, <callback>)`
+* `aggregate(<dbConfig>, <pipeline>, <callback>)`
+
+## Parameters
+
+* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
+* `pipeline`: object, the pipeline
+* `options`: object, aggregation object
+* `callback`: callback function, require 3 parameters:
+    - __result__: object, aggregation result
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+# sum
+Sum the `field` based on `query` and `groupBy`
+
+## Usage
+* `sum(<dbConfig>, <field>, <query>, <groupBy>, <options>, <callback>)`
+* `sum(<dbConfig>, <field>, <query>, <groupBy>, <callback>)`
+* `sum(<dbConfig>, <field>, <query>, <callback>)`
+* `sum(<dbConfig>, <field>, <callback>)`
+
+## Parameters
+* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
+* `field`: string, aggregation field
+* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
+* `groupBy`: string, field for grouping
+* `options`: object, delete options
+* `callback`: callback function, require 3 parameters:
+    - __result__: number or array. If `groupBy` is given, `result` will be object with grouping-field value as key and the sum as value, otherwise, `result` will be `number`
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+
+# avg
+Average value the `field` based on `query` and `groupBy`
+
+## Usage
+* `avg(<dbConfig>, <field>, <query>, <groupBy>, <options>, <callback>)`
+* `avg(<dbConfig>, <field>, <query>, <groupBy>, <callback>)`
+* `avg(<dbConfig>, <field>, <query>, <callback>)`
+* `avg(<dbConfig>, <field>, <callback>)`
+
+## Parameters
+* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
+* `field`: string, aggregation field
+* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
+* `groupBy`: string, field for grouping
+* `options`: object, delete options
+* `callback`: callback function, require 3 parameters:
+    - __result__: number or array. If `groupBy` is given, `result` will be object with grouping-field value as key and the average as value, otherwise, `result` will be `number`
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+
+# max
+Maximum value of the `field` based on `query` and `groupBy`
+
+## Usage
+* `max(<dbConfig>, <field>, <query>, <groupBy>, <options>, <callback>)`
+* `max(<dbConfig>, <field>, <query>, <groupBy>, <callback>)`
+* `max(<dbConfig>, <field>, <query>, <callback>)`
+* `max(<dbConfig>, <field>, <callback>)`
+
+## Parameters
+* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
+* `field`: string, aggregation field
+* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
+* `groupBy`: string, field for grouping
+* `options`: object, delete options
+* `callback`: callback function, require 3 parameters:
+    - __result__: number or array. If `groupBy` is given, `result` will be object with grouping-field value as key and the maximum-value as value, otherwise, `result` will be `number`
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+
+# min
+Minimum value of the `field` based on `query` and `groupBy`
+
+## Usage
+* `min(<dbConfig>, <field>, <query>, <groupBy>, <options>, <callback>)`
+* `min(<dbConfig>, <field>, <query>, <groupBy>, <callback>)`
+* `min(<dbConfig>, <field>, <query>, <callback>)`
+* `min(<dbConfig>, <field>, <callback>)`
+
+## Parameters
+* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
+* `field`: string, aggregation field
+* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
+* `groupBy`: string, field for grouping
+* `options`: object, delete options
+* `callback`: callback function, require 3 parameters:
+    - __result__: number or array. If `groupBy` is given, `result` will be object with grouping-field value as key and the minimum-value as value, otherwise, `result` will be `number`
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+
+# count
+Count of document based on `query` and `groupBy`
+
+## Usage
+* `count(<dbConfig>, <query>, <groupBy>, <options>, <callback>)`
+* `count(<dbConfig>, <query>, <groupBy>, <callback>)`
+* `count(<dbConfig>, <query>, <callback>)`
+* `count(<dbConfig>, <callback>)`
+
+## Parameters
+* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
+* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
+* `groupBy`: string, field for grouping
+* `options`: object, delete options
+* `callback`: callback function, require 3 parameters:
+    - __result__: number or array. If `groupBy` is given, `result` will be object with grouping-field value as key and the count as value, otherwise, `result` will be `number`
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+
