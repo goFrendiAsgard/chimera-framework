@@ -288,6 +288,12 @@ If callback is empty, then the created dbConfig will be shown in stdout.
     - __success__: boolean, contains `true` if the operation succeed
     - __errorMessage__: string, error message
 
+## Example
+
+```Javascript
+let dbConfig = createDbConfig('mongodb://localhost/test', 'person')
+```
+
 # closeConnection
 Close database connection manually
 
