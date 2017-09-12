@@ -91,7 +91,7 @@ Get document(s) based on query and projection
 let db = require('chimera/mongo-driver');
 let dbConfig = db.createDbConfig('mongodb://localhost/test', 'person')
 
-// SELECT * FROM person
+// SELECT * FROM person WHERE _deleted=0
 db.find(dbConfig, function(docs, success, errorMessage){
     console.log(docs);
     // [ { _id: '59b2b69a31ff37363b4e9a88',
@@ -112,7 +112,7 @@ db.find(dbConfig, function(docs, success, errorMessage){
     //     affiliation: 'Avenger' } ]
 });
 
-// SELECT * FROM person WHERE _id='59b2b69a31ff37363b4e9a88'
+// SELECT * FROM person WHERE _id='59b2b69a31ff37363b4e9a88' AND _deleted=0
 db.find(dbConfig, '59b2b69a31ff37363b4e9a88', function(doc, success, errorMessage){
     console.log(doc);
     // { _id: '59b2b69a31ff37363b4e9a88',
@@ -121,14 +121,14 @@ db.find(dbConfig, '59b2b69a31ff37363b4e9a88', function(doc, success, errorMessag
     //   affiliation: 'Avenger' }
 });
 
-// SELECT _id, name FROM person WHERE _id='59b2b69a31ff37363b4e9a88'
+// SELECT _id, name FROM person WHERE _id='59b2b69a31ff37363b4e9a88' AND _deleted=0
 db.find(dbConfig, '59b2b69a31ff37363b4e9a88', 'name', function(doc, success, errorMessage){
     console.log(doc);
     // { _id: '59b2b69a31ff37363b4e9a88', name: 'Toni Stark' }
 });
 
 
-// SELECT name FROM person WHERE affiliation='Avenger'
+// SELECT name FROM person WHERE affiliation='Avenger' AND _deleted=0
 db.find(dbConfig, {'affiliation': 'Avenger'}, 'name', function(docs, success, errorMessage){
     console.log(docs);
     // [ { _id: '59b2b69a31ff37363b4e9a88',
@@ -217,11 +217,31 @@ Update document(s) based on `query` and `data`
 let db = require('chimera/mongo-driver');
 let dbConfig = db.createDbConfig('mongodb://localhost/test', 'person');
 
-db.update(dbConfig, '59b2b69a31ff37363b4e9a88', {"name":"Toni Stark"}, function(doc, success, errorMessage){
+// UPDATE person SET name='Toni Stark' 
+// WHERE _id='59b2b69a31ff37363b4e9a88' AND _deleted=0
+db.update(dbConfig, '59b2b69a31ff37363b4e9a88', {"name":"Toni Stark"}, 
+function(doc, success, errorMessage){
     console.log(doc);
     // { _id: '59b2b69a31ff37363b4e9a88',
     //   name: 'Toni Stark',
     //   alias: 'Ironman' }
+});
+
+// UPDATE person SET affiliation='Avenger' WHERE _deleted=0
+db.update(dbConfig, {}, {"affiliation":"Avenger"}, function(docs, success, errorMessage){
+    console.log(docs);
+    // [ { _id: '59b2b69a31ff37363b4e9a88',
+    //     name: 'Toni Stark',
+    //     alias: 'Ironman',
+    //     affiliation: 'Avenger' },
+    //   { _id: '59b2b69b31ff37363b4e9a8a',
+    //     name: 'Steve Roger',
+    //     alias: 'Captain America',
+    //     affiliation: 'Avenger' },
+    //   { _id: '59b2b69b31ff37363b4e9a8b',
+    //     name: 'Bruce Banner',
+    //     alias: 'Hulk',
+    //     affiliation: 'Avenger' } ]
 });
 ```
 
@@ -245,6 +265,15 @@ Put deletion-flag into document/documents in collection
 ```Javascript
 let db = require('chimera/mongo-driver');
 let dbConfig = db.createDbConfig('mongodb://localhost/test', 'person');
+
+// UPDATE person SET _deleted=1 WHERE _id='59b2b69b31ff37363b4e9a89'
+db.remove('59b2b69b31ff37363b4e9a89', function(doc, success, errorMessage){
+    console.log(doc);
+    // { _id: '59b2b69b31ff37363b4e9a89',
+    //   name: 'Tono Stark',
+    //   alias: 'Ironman',
+    //   _deleted: 1 }
+});
 ```
 
 # permanentRemove
@@ -267,6 +296,12 @@ Remove document(s) from collection
 ```Javascript
 let db = require('chimera/mongo-driver');
 let dbConfig = db.createDbConfig('mongodb://localhost/test', 'person');
+
+// DELETE FROM person WHERE _id='59b2b69b31ff37363b4e9a89'
+db.remove('59b2b69b31ff37363b4e9a89', function(result, success, errorMessage){
+    console.log(result);
+    // { ok: 1, n: 1 }
+});
 ```
 
 # agregate
