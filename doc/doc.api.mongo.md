@@ -23,7 +23,373 @@ const DEFAULT_DB_CONFIG = {
 }
 ```
 
-# Full Example
+
+
+# createDbConfig
+
+Creating a dbConfig object, which is required for `find` `insert` `update` `remove` and `permanentRemove`
+
+If callback is empty, then the created dbConfig will be shown in stdout.
+
+## Usage
+
+* `createDbConfig(<mongoUrl>, <collectionName>, <userId>, <callback>)`
+* `createDbConfig(<obj>, <collectionName>, <userId>, <callback>)`
+
+## Parameters
+* `mongoUrl`: string, MongoDB connection string (e.g: `mongodb://localhost/test`
+* `obj`: Object with `mongo_url` key. Instead of literal string, you can pass an object with `mongo_url` key instead
+* `collectionName`: string, name of collection
+* `userId`: string, userId. Used for row versioning to fill up `_modified_by` column
+* `callback`: callback function, require 3 parameters:
+    - __dbConfig__: A newly created dbConfig object. This object is required for `find` `insert` `update` `remove` and `permanentRemove`
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+## Example
+```Javascript
+let db = require('chimera/mongo-driver');
+let dbConfig = db.createDbConfig('mongodb://localhost/test', 'person');
+```
+
+# closeConnection
+Close database connection manually. Only used if `dbConfig.persistence_connection` is set to true.
+
+## Usage
+* `closeConnection()`
+
+## Example
+```Javascript
+let db = require('chimera/mongo-driver');
+let dbConfig = db.createDbConfig('mongodb://localhost/test', 'person');
+dbConfig.persistence_connection = true;
+db.find(dbConfig, function(docs, success, errorMessage){
+    console.log(docs);
+    db.closeConnection();
+});
+```
+
+# find
+Get document(s) based on query and projection
+
+## Usage
+* `find(<dbConfig>, <query>, <projection_and_options>, <callback>)`
+* `find(<dbConfig>, <query>, <callback>)`
+* `find(<dbConfig>, <callback>)`
+
+## Parameters
+* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
+* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
+* `projection_and_options`: object or string, [https://automattic.github.io/monk/docs/collection/find.html](Options and projection)
+* `callback`: callback function, require 3 parameters:
+    - __docs__: Array of object or an object. If you put primary key value as `query`, a single object representing the document will be returned, otherwise an array containing list of documents matching the `query` will be returned
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+## Example
+```Javascript
+let db = require('chimera/mongo-driver');
+let dbConfig = db.createDbConfig('mongodb://localhost/test', 'person')
+
+// SELECT * FROM person
+db.find(dbConfig, function(docs, success, errorMessage){
+    console.log(docs);
+    // [ { _id: '59b2b69a31ff37363b4e9a88',
+    //     name: 'Toni Stark',
+    //     alias: 'Ironman',
+    //     affiliation: 'Avenger' },
+    //   { _id: '59b2b69b31ff37363b4e9a8a',
+    //     name: 'Steve Roger',
+    //     alias: 'Captain America',
+    //     affiliation: 'Avenger' },
+    //   { _id: '59b2b69b31ff37363b4e9a8c',
+    //     name: 'Clark Kent',
+    //     alias: 'Superman',
+    //     affiliation: 'Justice League'},
+    //   { _id: '59b2b69b31ff37363b4e9a8b',
+    //     name: 'Bruce Banner',
+    //     alias: 'Hulk',
+    //     affiliation: 'Avenger' } ]
+});
+
+// SELECT * FROM person WHERE _id='59b2b69a31ff37363b4e9a88'
+db.find(dbConfig, '59b2b69a31ff37363b4e9a88', function(doc, success, errorMessage){
+    console.log(doc);
+    // { _id: '59b2b69a31ff37363b4e9a88',
+    //   name: 'Toni Stark',
+    //   alias: 'Ironman',
+    //   affiliation: 'Avenger' }
+});
+
+// SELECT _id, name FROM person WHERE _id='59b2b69a31ff37363b4e9a88'
+db.find(dbConfig, '59b2b69a31ff37363b4e9a88', 'name', function(doc, success, errorMessage){
+    console.log(doc);
+    // { _id: '59b2b69a31ff37363b4e9a88', name: 'Toni Stark' }
+});
+
+
+// SELECT name FROM person WHERE affiliation='Avenger'
+db.find(dbConfig, {'affiliation': 'Avenger'}, 'name', function(docs, success, errorMessage){
+    console.log(docs);
+    // [ { _id: '59b2b69a31ff37363b4e9a88',
+    //     name: 'Toni Stark',
+    //     alias: 'Ironman',
+    //     affiliation: 'Avenger' },
+    //   { _id: '59b2b69b31ff37363b4e9a8a',
+    //     name: 'Steve Roger',
+    //     alias: 'Captain America',
+    //     affiliation: 'Avenger' },
+    //   { _id: '59b2b69b31ff37363b4e9a8b',
+    //     name: 'Bruce Banner',
+    //     alias: 'Hulk',
+    //     affiliation: 'Avenger' } ]
+});
+```
+
+# insert
+Insert new document(s) into collection
+
+## Usage
+* `insert(<dbConfig>, <data>, <options>, <callback>)`
+* `insert(<dbConfig>, <data>, <callback>)`
+
+## Parameters
+* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
+* `data`: array of object or object, the document(s) you want to insert
+* `options`: object, insert options
+* `callback`: callback function, require 3 parameters:
+    - __docs__: Array of object or an object. If you put primary key value as `query`, a single object representing the document will be returned, otherwise an array containing list of documents matching the `query` will be returned
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+## Example
+
+```Javascript
+let db = require('chimera/mongo-driver');
+let dbConfig = db.createDbConfig('mongodb://localhost/test', 'person')
+
+// INSERT INTO person(name, alias, age) VALUES('Tono Stark', 'Ironman');
+db.insert(dbConfig, {"name":"Tono Stark", "alias":"Ironman"}, function(doc, success, errorMessage){
+    console.log(doc);
+    // { _id: '59b2b69a31ff37363b4e9a88',
+    //   name: 'Tono Stark',
+    //   age: 30,
+    //   alias: 'Ironman' }
+});
+
+
+// INSERT INTO person(name, alias, age) 
+// VALUES ('Steve Roger', 'Captain America', 31), 
+//        ('Bruce Banner', 'Hulk', 32);
+let data = [{"name":"Steve Roger","alias":"Captain America","age":31},
+    {"name":"Bruce Banner","alias":"Hulk","age":32}];
+db.insert(dbConfig, data, "alias":"Ironman"}, function(docs, success, errorMessage){
+    console.log(docs);
+    // [ { _id: '59b2b69b31ff37363b4e9a8a',
+    //     name: 'Steve Roger',
+    //     alias: 'Captain America' },
+    //   { _id: '59b2b69b31ff37363b4e9a8b',
+    //     name: 'Bruce Banner',
+    //     alias: 'Hulk' } ]
+});
+
+```
+
+# update
+Update document(s) based on `query` and `data`
+
+## Usage
+* `update(<dbConfig>, <query>, <data>, <options>, <callback>)`
+* `update(<dbConfig>, <query>, <data>, <callback>)`
+
+## Parameters
+* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
+* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
+* `data`: array of object or object, the document(s) you want to insert
+* `options`: object, update options
+* `callback`: callback function, require 3 parameters:
+    - __docs__: Array of object or an object. If you put primary key value as `query`, a single object representing the document will be returned, otherwise an array containing list of documents matching the `query` will be returned
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+## Example
+```Javascript
+let db = require('chimera/mongo-driver');
+let dbConfig = db.createDbConfig('mongodb://localhost/test', 'person');
+
+db.update(dbConfig, '59b2b69a31ff37363b4e9a88', {"name":"Toni Stark"}, function(doc, success, errorMessage){
+    console.log(doc);
+    // { _id: '59b2b69a31ff37363b4e9a88',
+    //   name: 'Toni Stark',
+    //   alias: 'Ironman' }
+});
+```
+
+# remove
+Put deletion-flag into document/documents in collection
+
+## Usage
+* `remove(<dbConfig>, <query>, <options>, <callback>)`
+* `remove(<dbConfig>, <query>, <callback>)`
+
+## Parameters
+* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
+* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
+* `options`: object, update options
+* `callback`: callback function, require 3 parameters:
+    - __docs__: Array of object or an object. If you put primary key value as `query`, a single object representing the document will be returned, otherwise an array containing list of documents matching the `query` will be returned
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+## Example
+```Javascript
+let db = require('chimera/mongo-driver');
+let dbConfig = db.createDbConfig('mongodb://localhost/test', 'person');
+```
+
+# permanentRemove
+Remove document(s) from collection
+
+## Usage
+* `permanentRemove(<dbConfig>, <query>, <options>, <callback>)`
+* `permanentRemove(<dbConfig>, <query>, <callback>)`
+
+## Parameters
+* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
+* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
+* `options`: object, delete options
+* `callback`: callback function, require 3 parameters:
+    - __result__: Deletion result object. Typically contains something like `{'ok':1, 'n':4}` depending on your server version.
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+## Example
+```Javascript
+let db = require('chimera/mongo-driver');
+let dbConfig = db.createDbConfig('mongodb://localhost/test', 'person');
+```
+
+# agregate
+Perform low level aggregation. For `sum`, `count`, `avg`, `max`, and `min`, please you the provided functions.
+
+## Usage
+* `aggregate(<dbConfig>, <pipeline>, <options>, <callback>)`
+* `aggregate(<dbConfig>, <pipeline>, <callback>)`
+
+## Parameters
+
+* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
+* `pipeline`: object, the pipeline
+* `options`: object, aggregation object
+* `callback`: callback function, require 3 parameters:
+    - __result__: object, aggregation result
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+# sum
+Sum the `field` based on `query` and `groupBy`
+
+## Usage
+* `sum(<dbConfig>, <field>, <query>, <groupBy>, <options>, <callback>)`
+* `sum(<dbConfig>, <field>, <query>, <groupBy>, <callback>)`
+* `sum(<dbConfig>, <field>, <query>, <callback>)`
+* `sum(<dbConfig>, <field>, <callback>)`
+
+## Parameters
+* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
+* `field`: string, aggregation field
+* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
+* `groupBy`: string, field for grouping
+* `options`: object, delete options
+* `callback`: callback function, require 3 parameters:
+    - __result__: number or array. If `groupBy` is given, `result` will be object with grouping-field value as key and the sum as value, otherwise, `result` will be `number`
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+
+# avg
+Average value the `field` based on `query` and `groupBy`
+
+## Usage
+* `avg(<dbConfig>, <field>, <query>, <groupBy>, <options>, <callback>)`
+* `avg(<dbConfig>, <field>, <query>, <groupBy>, <callback>)`
+* `avg(<dbConfig>, <field>, <query>, <callback>)`
+* `avg(<dbConfig>, <field>, <callback>)`
+
+## Parameters
+* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
+* `field`: string, aggregation field
+* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
+* `groupBy`: string, field for grouping
+* `options`: object, delete options
+* `callback`: callback function, require 3 parameters:
+    - __result__: number or array. If `groupBy` is given, `result` will be object with grouping-field value as key and the average as value, otherwise, `result` will be `number`
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+
+# max
+Maximum value of the `field` based on `query` and `groupBy`
+
+## Usage
+* `max(<dbConfig>, <field>, <query>, <groupBy>, <options>, <callback>)`
+* `max(<dbConfig>, <field>, <query>, <groupBy>, <callback>)`
+* `max(<dbConfig>, <field>, <query>, <callback>)`
+* `max(<dbConfig>, <field>, <callback>)`
+
+## Parameters
+* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
+* `field`: string, aggregation field
+* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
+* `groupBy`: string, field for grouping
+* `options`: object, delete options
+* `callback`: callback function, require 3 parameters:
+    - __result__: number or array. If `groupBy` is given, `result` will be object with grouping-field value as key and the maximum-value as value, otherwise, `result` will be `number`
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+
+# min
+Minimum value of the `field` based on `query` and `groupBy`
+
+## Usage
+* `min(<dbConfig>, <field>, <query>, <groupBy>, <options>, <callback>)`
+* `min(<dbConfig>, <field>, <query>, <groupBy>, <callback>)`
+* `min(<dbConfig>, <field>, <query>, <callback>)`
+* `min(<dbConfig>, <field>, <callback>)`
+
+## Parameters
+* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
+* `field`: string, aggregation field
+* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
+* `groupBy`: string, field for grouping
+* `options`: object, delete options
+* `callback`: callback function, require 3 parameters:
+    - __result__: number or array. If `groupBy` is given, `result` will be object with grouping-field value as key and the minimum-value as value, otherwise, `result` will be `number`
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+
+# count
+Count of document based on `query` and `groupBy`
+
+## Usage
+* `count(<dbConfig>, <query>, <groupBy>, <options>, <callback>)`
+* `count(<dbConfig>, <query>, <groupBy>, <callback>)`
+* `count(<dbConfig>, <query>, <callback>)`
+* `count(<dbConfig>, <callback>)`
+
+## Parameters
+* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
+* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
+* `groupBy`: string, field for grouping
+* `options`: object, delete options
+* `callback`: callback function, require 3 parameters:
+    - __result__: number or array. If `groupBy` is given, `result` will be object with grouping-field value as key and the count as value, otherwise, `result` will be `number`
+    - __success__: boolean, contains `true` if the operation succeed
+    - __errorMessage__: string, error message
+
+# Full YAML Example
 
 First you need a javascript file as a bridge:
 
@@ -50,6 +416,7 @@ series:
     - (dbConfig, insert_data) -> [mongo-driver.js insert] -> out.insert_doc
     # { _id: '59b2b69a31ff37363b4e9a88',
     #   name: 'Tono Stark',
+    #   age: 30,
     #   alias: 'Ironman' }
 
 
@@ -267,311 +634,3 @@ series:
     - (dbConfig) -> [mongo-driver.js permanentRemove] -> out.permanent_remove_result
     # { ok: 1, n: 5 }
 ```
-
-# createDbConfig
-
-Creating a dbConfig object, which is required for `find` `insert` `update` `remove` and `permanentRemove`
-
-If callback is empty, then the created dbConfig will be shown in stdout.
-
-## Usage
-
-* `createDbConfig(<mongoUrl>, <collectionName>, <userId>, <callback>)`
-* `createDbConfig(<obj>, <collectionName>, <userId>, <callback>)`
-
-## Parameters
-* `mongoUrl`: string, MongoDB connection string (e.g: `mongodb://localhost/test`
-* `obj`: Object with `mongo_url` key. Instead of literal string, you can pass an object with `mongo_url` key instead
-* `collectionName`: string, name of collection
-* `userId`: string, userId. Used for row versioning to fill up `_modified_by` column
-* `callback`: callback function, require 3 parameters:
-    - __dbConfig__: A newly created dbConfig object. This object is required for `find` `insert` `update` `remove` and `permanentRemove`
-    - __success__: boolean, contains `true` if the operation succeed
-    - __errorMessage__: string, error message
-
-## Example
-
-```Javascript
-let dbConfig = createDbConfig('mongodb://localhost/test', 'person');
-```
-
-# closeConnection
-Close database connection manually. Only used if `dbConfig.persistence_connection` is set to true.
-
-## Usage
-* `closeConnection()`
-
-## Example
-```Javascript
-let dbConfig = createDbConfig('mongodb://localhost/test', 'person')
-dbConfig.persistence_connection = true;
-find(dbConfig, function(docs, success, errorMessage){
-    console.log(docs);
-    closeConnection();
-})
-```
-
-# find
-Get document(s) based on query and projection
-
-## Usage
-* `find(<dbConfig>, <query>, <projection_and_options>, <callback>)`
-* `find(<dbConfig>, <query>, <callback>)`
-* `find(<dbConfig>, <callback>)`
-
-## Parameters
-* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
-* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
-* `projection_and_options`: object or string, [https://automattic.github.io/monk/docs/collection/find.html](Options and projection)
-* `callback`: callback function, require 3 parameters:
-    - __docs__: Array of object or an object. If you put primary key value as `query`, a single object representing the document will be returned, otherwise an array containing list of documents matching the `query` will be returned
-    - __success__: boolean, contains `true` if the operation succeed
-    - __errorMessage__: string, error message
-
-## Example
-```Javascript
-let dbConfig = createDbConfig('mongodb://localhost/test', 'person')
-
-// select * from person
-find(dbConfig, function(docs, success, errorMessage){
-    console.log(docs);
-    // [ { _id: '59b2b69a31ff37363b4e9a88',
-    //     name: 'Toni Stark',
-    //     alias: 'Ironman',
-    //     affiliation: 'Avenger' },
-    //   { _id: '59b2b69b31ff37363b4e9a8a',
-    //     name: 'Steve Roger',
-    //     alias: 'Captain America',
-    //     affiliation: 'Avenger' },
-    //   { _id: '59b2b69b31ff37363b4e9a8c',
-    //     name: 'Clark Kent',
-    //     alias: 'Superman',
-    //     affiliation: 'Justice League'},
-    //   { _id: '59b2b69b31ff37363b4e9a8b',
-    //     name: 'Bruce Banner',
-    //     alias: 'Hulk',
-    //     affiliation: 'Avenger' } ]
-})
-
-// select * from person where _id='59b2b69a31ff37363b4e9a88'
-find(dbConfig, '59b2b69a31ff37363b4e9a88', function(doc, success, errorMessage){
-    console.log(doc);
-    // { _id: '59b2b69a31ff37363b4e9a88',
-    //   name: 'Toni Stark',
-    //   alias: 'Ironman',
-    //   affiliation: 'Avenger' }
-})
-
-// select _id, name from person where _id='59b2b69a31ff37363b4e9a88'
-find(dbConfig, '59b2b69a31ff37363b4e9a88', 'name', function(doc, success, errorMessage){
-    console.log(doc);
-    // { _id: '59b2b69a31ff37363b4e9a88', name: 'Toni Stark' }
-})
-
-
-// select name from person where affiliation='Avenger'
-find(dbConfig, {'affiliation': 'Avenger'}, 'name', function(docs, success, errorMessage){
-    console.log(docs);
-    // [ { _id: '59b2b69a31ff37363b4e9a88',
-    //     name: 'Toni Stark',
-    //     alias: 'Ironman',
-    //     affiliation: 'Avenger' },
-    //   { _id: '59b2b69b31ff37363b4e9a8a',
-    //     name: 'Steve Roger',
-    //     alias: 'Captain America',
-    //     affiliation: 'Avenger' },
-    //   { _id: '59b2b69b31ff37363b4e9a8b',
-    //     name: 'Bruce Banner',
-    //     alias: 'Hulk',
-    //     affiliation: 'Avenger' } ]
-})
-})
-
-```
-
-# insert
-Insert new document(s) into collection
-
-## Usage
-* `insert(<dbConfig>, <data>, <options>, <callback>)`
-* `insert(<dbConfig>, <data>, <callback>)`
-
-## Parameters
-* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
-* `data`: array of object or object, the document(s) you want to insert
-* `options`: object, insert options
-* `callback`: callback function, require 3 parameters:
-    - __docs__: Array of object or an object. If you put primary key value as `query`, a single object representing the document will be returned, otherwise an array containing list of documents matching the `query` will be returned
-    - __success__: boolean, contains `true` if the operation succeed
-    - __errorMessage__: string, error message
-
-# update
-Update document(s) based on `query` and `data`
-
-## Usage
-* `update(<dbConfig>, <query>, <data>, <options>, <callback>)`
-* `update(<dbConfig>, <query>, <data>, <callback>)`
-
-## Parameters
-* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
-* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
-* `data`: array of object or object, the document(s) you want to insert
-* `options`: object, update options
-* `callback`: callback function, require 3 parameters:
-    - __docs__: Array of object or an object. If you put primary key value as `query`, a single object representing the document will be returned, otherwise an array containing list of documents matching the `query` will be returned
-    - __success__: boolean, contains `true` if the operation succeed
-    - __errorMessage__: string, error message
-
-# remove
-Put deletion-flag into document/documents in collection
-
-## Usage
-* `remove(<dbConfig>, <query>, <options>, <callback>)`
-* `remove(<dbConfig>, <query>, <callback>)`
-
-## Parameters
-* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
-* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
-* `options`: object, update options
-* `callback`: callback function, require 3 parameters:
-    - __docs__: Array of object or an object. If you put primary key value as `query`, a single object representing the document will be returned, otherwise an array containing list of documents matching the `query` will be returned
-    - __success__: boolean, contains `true` if the operation succeed
-    - __errorMessage__: string, error message
-
-# permanentRemove
-Remove document(s) from collection
-
-## Usage
-* `permanentRemove(<dbConfig>, <query>, <options>, <callback>)`
-* `permanentRemove(<dbConfig>, <query>, <callback>)`
-
-## Parameters
-* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
-* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
-* `options`: object, delete options
-* `callback`: callback function, require 3 parameters:
-    - __result__: Deletion result object. Typically contains something like `{'ok':1, 'n':4}` depending on your server version.
-    - __success__: boolean, contains `true` if the operation succeed
-    - __errorMessage__: string, error message
-
-# agregate
-Perform low level aggregation. For `sum`, `count`, `avg`, `max`, and `min`, please you the provided functions.
-
-## Usage
-* `aggregate(<dbConfig>, <pipeline>, <options>, <callback>)`
-* `aggregate(<dbConfig>, <pipeline>, <callback>)`
-
-## Parameters
-
-* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
-* `pipeline`: object, the pipeline
-* `options`: object, aggregation object
-* `callback`: callback function, require 3 parameters:
-    - __result__: object, aggregation result
-    - __success__: boolean, contains `true` if the operation succeed
-    - __errorMessage__: string, error message
-
-# sum
-Sum the `field` based on `query` and `groupBy`
-
-## Usage
-* `sum(<dbConfig>, <field>, <query>, <groupBy>, <options>, <callback>)`
-* `sum(<dbConfig>, <field>, <query>, <groupBy>, <callback>)`
-* `sum(<dbConfig>, <field>, <query>, <callback>)`
-* `sum(<dbConfig>, <field>, <callback>)`
-
-## Parameters
-* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
-* `field`: string, aggregation field
-* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
-* `groupBy`: string, field for grouping
-* `options`: object, delete options
-* `callback`: callback function, require 3 parameters:
-    - __result__: number or array. If `groupBy` is given, `result` will be object with grouping-field value as key and the sum as value, otherwise, `result` will be `number`
-    - __success__: boolean, contains `true` if the operation succeed
-    - __errorMessage__: string, error message
-
-
-# avg
-Average value the `field` based on `query` and `groupBy`
-
-## Usage
-* `avg(<dbConfig>, <field>, <query>, <groupBy>, <options>, <callback>)`
-* `avg(<dbConfig>, <field>, <query>, <groupBy>, <callback>)`
-* `avg(<dbConfig>, <field>, <query>, <callback>)`
-* `avg(<dbConfig>, <field>, <callback>)`
-
-## Parameters
-* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
-* `field`: string, aggregation field
-* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
-* `groupBy`: string, field for grouping
-* `options`: object, delete options
-* `callback`: callback function, require 3 parameters:
-    - __result__: number or array. If `groupBy` is given, `result` will be object with grouping-field value as key and the average as value, otherwise, `result` will be `number`
-    - __success__: boolean, contains `true` if the operation succeed
-    - __errorMessage__: string, error message
-
-
-# max
-Maximum value of the `field` based on `query` and `groupBy`
-
-## Usage
-* `max(<dbConfig>, <field>, <query>, <groupBy>, <options>, <callback>)`
-* `max(<dbConfig>, <field>, <query>, <groupBy>, <callback>)`
-* `max(<dbConfig>, <field>, <query>, <callback>)`
-* `max(<dbConfig>, <field>, <callback>)`
-
-## Parameters
-* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
-* `field`: string, aggregation field
-* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
-* `groupBy`: string, field for grouping
-* `options`: object, delete options
-* `callback`: callback function, require 3 parameters:
-    - __result__: number or array. If `groupBy` is given, `result` will be object with grouping-field value as key and the maximum-value as value, otherwise, `result` will be `number`
-    - __success__: boolean, contains `true` if the operation succeed
-    - __errorMessage__: string, error message
-
-
-# min
-Minimum value of the `field` based on `query` and `groupBy`
-
-## Usage
-* `min(<dbConfig>, <field>, <query>, <groupBy>, <options>, <callback>)`
-* `min(<dbConfig>, <field>, <query>, <groupBy>, <callback>)`
-* `min(<dbConfig>, <field>, <query>, <callback>)`
-* `min(<dbConfig>, <field>, <callback>)`
-
-## Parameters
-* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
-* `field`: string, aggregation field
-* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
-* `groupBy`: string, field for grouping
-* `options`: object, delete options
-* `callback`: callback function, require 3 parameters:
-    - __result__: number or array. If `groupBy` is given, `result` will be object with grouping-field value as key and the minimum-value as value, otherwise, `result` will be `number`
-    - __success__: boolean, contains `true` if the operation succeed
-    - __errorMessage__: string, error message
-
-
-# count
-Count of document based on `query` and `groupBy`
-
-## Usage
-* `count(<dbConfig>, <query>, <groupBy>, <options>, <callback>)`
-* `count(<dbConfig>, <query>, <groupBy>, <callback>)`
-* `count(<dbConfig>, <query>, <callback>)`
-* `count(<dbConfig>, <callback>)`
-
-## Parameters
-* `dbConfig`: DbConfig object contains `mongo_url`, `collection_name`, `user_id` and other configurations for document manipulation
-* `query`: object, [https://docs.mongodb.com/manual/tutorial/query-documents/](MongoDB query)
-* `groupBy`: string, field for grouping
-* `options`: object, delete options
-* `callback`: callback function, require 3 parameters:
-    - __result__: number or array. If `groupBy` is given, `result` will be object with grouping-field value as key and the count as value, otherwise, `result` will be `number`
-    - __success__: boolean, contains `true` if the operation succeed
-    - __errorMessage__: string, error message
-
-
