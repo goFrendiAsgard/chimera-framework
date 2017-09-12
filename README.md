@@ -56,7 +56,7 @@ npm link
 
 # Testing
 
-Chimera-Framework was built with TDD in mind. You can run the test by executing `npm test`. The test require `python`, `php`, and `java` to be already installed.
+Chimera-Framework was built with TDD in mind. You can run the test by executing `npm test`. The test require `python`, `php`, `java`, and `mongodb` to be already installed.
 
 # Using Chimera-Framework
 

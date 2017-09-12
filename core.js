@@ -46,6 +46,52 @@ function getString(command, options,callback){
     })(execCallback));
 }
 
+function eisn(srcFile, dstFile, command, callback){
+    // preprocess callback
+    if(typeof(callback) != 'function'){
+        callback = function(result, success, errorMessage){
+            console.log(JSON.stringify({'result':result, 'success':success, 'errorMessage':errorMessage}))
+        }
+    }
+    // get status of source file
+    fs.stat(srcFile, function(err, srcStat){
+        let result = {'is_command_executed':true}
+        if(err){
+            // cannot get stat of srcFile
+            console.error('[ERROR] Cannot get file stat of ' + srcFile)
+            console.error(err)
+            result.is_command_executed = false
+            calback(result, false, err)
+        }
+        else{
+            // get status of destination file
+            fs.access(dstFile, function(err){
+                if(err){
+                    // cannot access dstFile (probably doesn't exists)
+                    cmd.get(command, function(err, data, stderr){
+                        callback(result, true, err)
+                    }) // compile
+                }
+                else{
+                    // dstFile exists and accessible
+                    fs.stat(dstFile, function(err, dstStat){
+                        // only compile if dstFile modification time is older than srcFile modification time or if dstFile is not exists
+                        if(err || (!err && srcStat.mtime > dstStat.mtime)){
+                            cmd.get(command, function(err, data, stderr){
+                                callback(result, true, err)
+                            })
+                        }
+                        else{
+                            result.is_command_executed = false
+                            callback(result, true, err)
+                        }
+                    })
+                }
+            })
+        }
+    })
+}
+
 // this one is for benchamarking
 function getFormattedNanoSecond(time){
     let nano = time[0] * 1e9 + time[1]
@@ -933,4 +979,5 @@ module.exports = {
     'deepCopyObject' : deepCopyObject,
     'patchObject' : patchObject,
     'cmd' : cmd,
+    'eisn': eisn
 }

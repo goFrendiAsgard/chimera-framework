@@ -198,8 +198,8 @@ Execute command if source-file is newer than dst-file. Execute the callback whet
 
 ## Example
 ```Javascript
-const eisn = require('chimera-framework/eisn');
-eisn('programs/Substract.java', 'programs/Substract.class', 'javac programs/Substract.java', function(result, success, errorMessage){
+const chimera = require('chimera-framework/core');
+chimera.eisn('programs/Substract.java', 'programs/Substract.class', 'javac programs/Substract.java', function(result, success, errorMessage){
     if(!error){
         console.log(JSON.stringify(result));
     }
