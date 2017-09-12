@@ -308,7 +308,7 @@ function add(n1, n2){
     return n1+n2;
 }
 
-// executed when imported as module 
+// executed when imported as module
 module.exports = function(a, b, callback){
     let output = add(a,b)
     callback(output)
@@ -333,3 +333,5 @@ However, to achieve a better performance, you should do this:
 ```yaml
 (a,b) -> [./programs/add.js] -> c
 ```
+
+## Run another chain as process

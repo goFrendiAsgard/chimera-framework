@@ -415,7 +415,13 @@ function processModule(moduleName, inputs, cwd, callback){
         moduleNameParts[i] = unquote(moduleNameParts[i])
     }
     moduleName = moduleNameParts[0]
-    let m = require(cwd + moduleName)
+    let m
+    try{
+        m = require(moduleName)
+    }
+    catch(error){
+        m = require(cwd + moduleName)
+    }
     // determine runner
     let runner = null
     if(moduleNameParts.length == 1){
@@ -672,7 +678,7 @@ function execute(chainConfigs, argv, presets, executeCallback, chainOptions){
                 // if chainCommand is purely javascript's arrow function, we can simply use eval
                 let jsScript = '(' + chainCommand + ')(' + parameters.join(', ') + ')'
                 if(verbose){
-                    startTime = showStartTime(jsScript, chainOptions.description)
+                    startTime = showStartTime(jsScript, chainOptions)
                 }
                 try{
                     let output = eval(jsScript)
@@ -711,7 +717,7 @@ function execute(chainConfigs, argv, presets, executeCallback, chainOptions){
                 let cmdCommand = chainCommand + ' ' + parameters.join(' ')
                 // benchmarking
                 if(verbose){
-                    startTime = showStartTime(cmdCommand, chainOptions.description)
+                    startTime = showStartTime(cmdCommand, chainOptions)
                 }
                 // run the command
                 try{
@@ -901,7 +907,7 @@ function executeChain(chain, argv, presets, executeCallback){
     }
     fs.readFile(chain, function(err, data){
         let chainString = ''
-        let chainOptions = {'cwd' : process.cwd(), 'description' : ''}
+        let chainOptions = {'cwd' : process.cwd(), 'description' : 'No description available'}
         if(!err){
             // chain is really a file
             let yamlParts = chain.split('/')

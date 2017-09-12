@@ -1,0 +1,13 @@
+ins: a,b
+out: e
+verbose: true
+series:
+  # prepare inputs for sub-chimera
+  - parallel:
+      - (a,b) --> sub_inputs
+      - (_chain_cwd, "add.yaml") -> (path, file)=>{return path+file;} -> sub_chain
+  - parallel:
+      - (a,b) -> [programs/add.js] -> c
+      # run sub-chimera
+      - (sub_chain, sub_inputs) -> [chimera-framework/core executeChain] -> d
+  - (c,d) -> [programs/add.js] -> e

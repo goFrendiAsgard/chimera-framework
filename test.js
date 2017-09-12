@@ -257,6 +257,9 @@ async.series([
     (callback) => {testExecuteCommand('Test arithmetic-module',
         'chimera tests/arithmetic-module.yaml 5 6 "*"', 30, callback)},
 
+    (callback) => {testExecuteCommand('Test sub-chimera',
+        'chimera tests/sub-chimera.yaml 5 4', 18, callback)},
+
     // run chimera server
     (callback) => {
         let callbackExecuted = false
