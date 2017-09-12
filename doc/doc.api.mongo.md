@@ -97,7 +97,8 @@ series:
     #     affiliation: 'Avenger' },
     #   { _id: '59b2b69b31ff37363b4e9a8b',
     #     name: 'Bruce Banner',
-    #     alias: 'Hulk'
+    #     alias: 'Hulk',
+    #     affiliation: 'Avenger' } ]
 
     ## insert superman
     - ('{"name":"Clark Kent","alias":"Superman","age":33,"affiliation":"Justice League"}') ->-> superman_data
@@ -291,14 +292,24 @@ If callback is empty, then the created dbConfig will be shown in stdout.
 ## Example
 
 ```Javascript
-let dbConfig = createDbConfig('mongodb://localhost/test', 'person')
+let dbConfig = createDbConfig('mongodb://localhost/test', 'person');
 ```
 
 # closeConnection
-Close database connection manually
+Close database connection manually. Only used if `dbConfig.persistence_connection` is set to true.
 
 ## Usage
 * `closeConnection()`
+
+## Example
+```Javascript
+let dbConfig = createDbConfig('mongodb://localhost/test', 'person')
+dbConfig.persistence_connection = true;
+find(dbConfig, function(docs, success, errorMessage){
+    console.log(docs);
+    closeConnection();
+})
+```
 
 # find
 Get document(s) based on query and projection
@@ -316,6 +327,67 @@ Get document(s) based on query and projection
     - __docs__: Array of object or an object. If you put primary key value as `query`, a single object representing the document will be returned, otherwise an array containing list of documents matching the `query` will be returned
     - __success__: boolean, contains `true` if the operation succeed
     - __errorMessage__: string, error message
+
+## Example
+```Javascript
+let dbConfig = createDbConfig('mongodb://localhost/test', 'person')
+
+// select * from person
+find(dbConfig, function(docs, success, errorMessage){
+    console.log(docs);
+    // [ { _id: '59b2b69a31ff37363b4e9a88',
+    //     name: 'Toni Stark',
+    //     alias: 'Ironman',
+    //     affiliation: 'Avenger' },
+    //   { _id: '59b2b69b31ff37363b4e9a8a',
+    //     name: 'Steve Roger',
+    //     alias: 'Captain America',
+    //     affiliation: 'Avenger' },
+    //   { _id: '59b2b69b31ff37363b4e9a8c',
+    //     name: 'Clark Kent',
+    //     alias: 'Superman',
+    //     affiliation: 'Justice League'},
+    //   { _id: '59b2b69b31ff37363b4e9a8b',
+    //     name: 'Bruce Banner',
+    //     alias: 'Hulk',
+    //     affiliation: 'Avenger' } ]
+})
+
+// select * from person where _id='59b2b69a31ff37363b4e9a88'
+find(dbConfig, '59b2b69a31ff37363b4e9a88', function(doc, success, errorMessage){
+    console.log(doc);
+    // { _id: '59b2b69a31ff37363b4e9a88',
+    //   name: 'Toni Stark',
+    //   alias: 'Ironman',
+    //   affiliation: 'Avenger' }
+})
+
+// select _id, name from person where _id='59b2b69a31ff37363b4e9a88'
+find(dbConfig, '59b2b69a31ff37363b4e9a88', 'name', function(doc, success, errorMessage){
+    console.log(doc);
+    // { _id: '59b2b69a31ff37363b4e9a88', name: 'Toni Stark' }
+})
+
+
+// select name from person where affiliation='Avenger'
+find(dbConfig, {'affiliation': 'Avenger'}, 'name', function(docs, success, errorMessage){
+    console.log(docs);
+    // [ { _id: '59b2b69a31ff37363b4e9a88',
+    //     name: 'Toni Stark',
+    //     alias: 'Ironman',
+    //     affiliation: 'Avenger' },
+    //   { _id: '59b2b69b31ff37363b4e9a8a',
+    //     name: 'Steve Roger',
+    //     alias: 'Captain America',
+    //     affiliation: 'Avenger' },
+    //   { _id: '59b2b69b31ff37363b4e9a8b',
+    //     name: 'Bruce Banner',
+    //     alias: 'Hulk',
+    //     affiliation: 'Avenger' } ]
+})
+})
+
+```
 
 # insert
 Insert new document(s) into collection
