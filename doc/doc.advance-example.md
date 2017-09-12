@@ -335,3 +335,16 @@ However, to achieve a better performance, you should do this:
 ```
 
 ## Run another chain as process
+
+You can surely do this:
+
+```yaml
+() -> chimera add.yaml 5 5 -> out
+```
+
+However, this is less efficient, since chimera-framework will start another shell in the background. The better way to do this is:
+
+```yaml
+- (_chain_cwd, "add.yaml") -> (path, file)=>{return path+file;} -> sub_chain_path
+- (sub_chain_path, '[5,5]') -> [chimera-framework/core executeChain] -> d
+```

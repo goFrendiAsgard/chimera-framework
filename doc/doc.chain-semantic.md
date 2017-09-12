@@ -1,4 +1,4 @@
-# YAML chain Semantic
+# YAML Chain Semantic
 
 Chimera is a Component Based Software Engineering Framework. In order to define the orchestration of the components, a YAML chain file is required.
 
