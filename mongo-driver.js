@@ -259,11 +259,11 @@ function find(dbConfig, findFilter, projection, callback){
         }
         // deal with callback
         if(err){
-            console.error('[ERROR] ' + err)
-            callback(null, false, err)
+            console.error('[ERROR] ' + err.stack)
+            callback(null, false, err.stack)
         }
         else{
-            callback(docs, true, err)
+            callback(docs, true, '')
         }
     })
 }
@@ -298,11 +298,11 @@ function aggregate(dbConfig, pipeline, options, callback){
         if(!dbConfig.persistence_connection){closeConnection(dbConfig.verbose);}
         // deal with callback
         if(err){
-            console.error('[ERROR] ' + err)
-            callback(null, false, err)
+            console.error('[ERROR] ' + err.stack)
+            callback(null, false, err.stack)
         }
         else{
-            callback(docs, true, err)
+            callback(docs, true, '')
         }
     })
 }
@@ -479,8 +479,8 @@ function insert(dbConfig, data, options, callback){
             // close the database connection
             if(!dbConfig.persistence_connection){closeConnection(dbConfig.verbose);}
             // execute callback
-            console.error('[ERROR] ' + error)
-            callback(null, false, error)
+            console.error('[ERROR] ' + error.stack)
+            callback(null, false, error.stack)
         }
     })
 }
@@ -519,8 +519,8 @@ function update(dbConfig, updateFilter, data, options, callback){
                     // close the database connection
                     if(!dbConfig.persistence_connection){closeConnection(dbConfig.verbose);}
                     // execute callback
-                    console.error('[ERROR] ' + error)
-                    callback(null, false, error)
+                    console.error('[ERROR] ' + error.stack)
+                    callback(null, false, error.stack)
                 }
             })
         }
@@ -573,8 +573,8 @@ function permanentRemove(dbConfig, removeFilter, options, callback){
         result = JSON.parse(JSON.stringify(result))
         // deal with callback
         if(err){
-            console.error('[ERROR] ' + err)
-            callback(null, false, err)
+            console.error('[ERROR] ' + err.stack)
+            callback(null, false, err.stack)
         }
         else{
             callback(result, true, '')
@@ -591,7 +591,10 @@ function createDbConfig(mongoUrl, collectionName, userId, callback){
         url = mongoUrl.mongo_url
     }
     let dbConfig = {'mongo_url':url, 'collection_name':collectionName, 'user_id':userId}
-    callback(JSON.stringify(dbConfig), true, '')
+    if(typeof(callback) == 'function'){
+        return callback(JSON.stringify(dbConfig), true, '')
+    }
+    return dbConfig
 }
 
 function closeConnection(verbose=false){
@@ -688,7 +691,7 @@ if(require.main === module){
                 remove(dbConfig, filter, options)
             }
         }catch(err){
-            console.error(err)
+            console.error(err.stack)
             console.log(JSON.stringify({'success': false, 'error_message': 'Operation failure, invalid parameters'}))
             if(db != null){
                 db.close()

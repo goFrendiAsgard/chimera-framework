@@ -37,7 +37,7 @@ vars:
                 - 'email_address'
                 - 'groups'
         data:
-            - _id: 'cms_system'
+            - _id: 'f00000000000000000000001' 
               user_name: 'cms_system'
 
     # group structure
@@ -49,16 +49,16 @@ vars:
                 - 'group_name'
                 - 'description'
         data:
-            - _id: 'cms_super_admin'
+            - _id: 'e00000000000000000000001'
               group_name: 'Super Admin of CMS'
-            - _id: 'cms_admin'
+            - _id: 'e00000000000000000000002'
               group_name: 'Admin of CMS'
 
 series:
 
     # create structure
-    - (config, structure, 'cms.system') -> chimera ../cck.structure.create.yaml
-
-    #- parallel:
-    #   - (config, user, 'cms.system') -> chimera ../cck.structure.create.yaml
-    #   - (config, group, 'cms.system') -> chimera ../cck.structure.create.yaml
+    - (config, structure, 'f00000000000000000000001') -> [../programs/cck.structure.js create] -> output.structure
+    # create other structure
+    - parallel:
+        - (config, user, 'f00000000000000000000001') -> [../programs/cck.structure.js create] -> output.user
+        - (config, group, 'f00000000000000000000001') -> [../programs/cck.structure.js create] -> output.group

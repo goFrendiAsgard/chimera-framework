@@ -517,8 +517,8 @@ function execute(chainConfigs, argv, presets, executeCallback, chainOptions){
     }
     catch(e){
         console.error('[ERROR] Chain execution failed')
-        console.error(e)
-        executeCallback('', false, e)
+        console.error(e.stack)
+        executeCallback('', false, e.stack)
         return null
     }
 
@@ -682,9 +682,9 @@ function execute(chainConfigs, argv, presets, executeCallback, chainOptions){
                     })
                 }catch(e){
                     showFailure(logCommand)
-                    console.error(e)
+                    console.error(e.stack)
                     console.error('[ERROR] SCRIPT : ' + logCommand)
-                    executeCallback('', false, e)
+                    executeCallback('', false, e.stack)
                 }
             }
             else if(chainCommand.match(/.*=>.*/g)){
@@ -719,9 +719,9 @@ function execute(chainConfigs, argv, presets, executeCallback, chainOptions){
                 }
                 catch(e){
                     showFailure(jsScript)
-                    console.error(e)
+                    console.error(e.stack)
                     console.error('[ERROR] SCRIPT : ' + jsScript)
-                    executeCallback('', false, e)
+                    executeCallback('', false, e.stack)
                 }
             }
             else{
@@ -774,8 +774,8 @@ function execute(chainConfigs, argv, presets, executeCallback, chainOptions){
                 }
                 catch(e){
                     showFailure(cmdCommand)
-                    console.error(e)
-                    executeCallback('', false, e)
+                    console.error(e.stack)
+                    executeCallback('', false, e.stack)
                 }
             }
         }
@@ -823,7 +823,7 @@ function execute(chainConfigs, argv, presets, executeCallback, chainOptions){
         catch(error){
             console.error('[ERROR] Failed to evaluate condition')
             console.error(script)
-            console.error(error)
+            console.error(error.stack)
         }
         return truth
     }
@@ -952,9 +952,9 @@ function executeChain(chain, argv, presets, executeCallback){
                 console.warn('\nString:')
                 console.warn(String(chainString))
                 console.warn('\nYAML Error:')
-                console.warn(yamlError)
+                console.warn(yamlError.stack)
                 console.warn('\nJSON Error:')
-                console.warn(jsonError)
+                console.warn(jsonError.stack)
                 return null
             }
         }
