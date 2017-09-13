@@ -1,9 +1,0 @@
-# This chain takes 2 inputs
-# - config: JSON, the configuration of chimera web framework, at least contains a key, 'mongo_url'
-# - table: String, the table name
-# The output will be a JSON for config structure
-
-ins: webConfig, table
-verbose: true
-series:
-    - (webConfig, table) -> [programs/cck.mongo.core.js createCckConfig]

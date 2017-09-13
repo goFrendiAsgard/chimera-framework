@@ -61,4 +61,4 @@ series:
     # create other structure
     - parallel:
         - (config, user, 'f00000000000000000000001') -> [../programs/cck.structure.js create] -> output.user
-        - (config, group, 'f00000000000000000000001') -> [../programs/cck.structure.js create] -> output.group
+        #- (config, group, 'f00000000000000000000001') -> [../programs/cck.structure.js create] -> output.group
