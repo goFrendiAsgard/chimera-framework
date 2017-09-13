@@ -348,3 +348,8 @@ However, this is less efficient, since chimera-framework will start another shel
 - (_chain_cwd, "add.yaml") -> (path, file)=>{return path+file;} -> sub_chain_path
 - (sub_chain_path, '[5,5]') -> [chimera-framework/core executeChain] -> d
 ```
+
+Starting from version 0.0.40, you can also do this:
+```yaml
+- (_chain_cwd, "add.yaml", 5, 5) -> [chimera-framework/core util.sprout] -> d
+```

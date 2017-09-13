@@ -132,6 +132,34 @@ let newObj = chimera.patchObject(obj, patcher);
 console.log(newObj); // {x:5, b:6, c:7}
 ```
 
+# eisn
+Execute command if source-file is newer than dst-file. Execute the callback whether the command executed or not
+
+## Usage
+* `eisn(<src-file>, <dst-file>, <command>, <callback>)`
+
+## Parameters
+* `src-file`: string, name of source file
+* `dst-file`: string, name of destination file
+* `command`: string, command to be executed
+* `callback`: callback function, require 3 parameters
+    - __result__: object, either `{is_command_executed:true}` or `{is_command_executed:false}`
+    - __success__: boolean, true if no error encountered 
+    - __errorMessage (stderr)__: string, the error message
+
+## Example
+```Javascript
+const chimera = require('chimera-framework/core');
+chimera.eisn('programs/Substract.java', 'programs/Substract.class', 'javac programs/Substract.java', function(result, success, errorMessage){
+    if(!error){
+        console.log(JSON.stringify(result));
+    }
+    else{
+        console.error(errorMessage);
+    }
+});
+```
+
 # cmd.run
 
 Execute a shell command asynchronously
@@ -181,29 +209,33 @@ chimera.cmd.get('ls', function(error, stdout, stderr){
 })
 ```
 
-# eisn
-Execute command if source-file is newer than dst-file. Execute the callback whether the command executed or not
+# util.sprout
+Execute `executeChain` without creating new shell
 
 ## Usage
-* `eisn(<src-file>, <dst-file>, <command>, <callback>)`
+* `util.sprout(<path>, <chain>, <input1>, <input2>,... <inputN>, <callback>)`
+* `util.sprout(<path>, <chain>, <callback>)`
+* `util.sprout(<path>, <chain>, <callback>)`
 
 ## Parameters
-* `src-file`: string, name of source file
-* `dst-file`: string, name of destination file
-* `command`: string, command to be executed
+* `path`: string, path to the chain file location, should be ended with `/`
+* `chain`: chain file name
+* `input1`, `input2`,... `inputN`: any, process's input
 * `callback`: callback function, require 3 parameters
-    - __result__: object, either `{is_command_executed:true}` or `{is_command_executed:false}`
-    - __success__: boolean, true if no error encountered 
+    - __result (stdout)__: string, output of the YAML chain
+    - __success__: boolean, true if YAML chain yield no error
     - __errorMessage (stderr)__: string, the error message
 
 ## Example
 ```Javascript
-const chimera = require('chimera-framework/core');
-chimera.eisn('programs/Substract.java', 'programs/Substract.class', 'javac programs/Substract.java', function(result, success, errorMessage){
-    if(!error){
-        console.log(JSON.stringify(result));
+
+chimera.executeChain('/home/your-user/', 'your-chain.yaml', 5, 1, function(result, success, errorMessage){
+    if(success){
+        // no error
+        console.log(result);
     }
     else{
+        // error
         console.error(errorMessage);
     }
 });

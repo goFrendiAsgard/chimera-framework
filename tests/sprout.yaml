@@ -1,0 +1,9 @@
+ins: a,b
+out: e
+verbose: true
+series:
+  - parallel:
+      - (a,b) -> [programs/add.js] -> c
+      # run sub-chimera
+      - (_chain_cwd, "add.yaml", a, b) -> [chimera-framework/core util.sprout] -> d
+  - (c,d) -> [programs/add.js] -> e

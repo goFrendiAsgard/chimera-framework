@@ -423,20 +423,33 @@ function processModule(moduleName, inputs, cwd, callback){
         m = require(cwd + moduleName)
     }
     // determine runner
-    let runner = null
-    if(moduleNameParts.length == 1){
-        runner = m
+    let runner
+    if(m != null && typeof(m) != 'undefined'){
+        if(moduleNameParts.length == 1){
+            runner = m
+        }
+        else{
+            let runnerParts = moduleNameParts.slice(1)
+            let runnerName = runnerParts.join(' ')
+            let runnerNameParts = runnerName.split('.')
+            runner = m
+            for(let i=0; i<runnerNameParts.length; i++){
+                runner = runner[runnerNameParts[i]]
+            }
+        }
+    }
+    if(runner == null || typeof(runner) == 'undefined'){
+        // if cannot find runner, ditch it
+        console.error('[ERROR] Cannot get executable function from: ' + moduleName)
+        callback('', false, 'Cannot get executable function from: ' + moduleName)
     }
     else{
-        let runnerParts = moduleNameParts.slice(1)
-        let runnerName = runnerParts.join(' ')
-        runner = m[runnerName]
+        // add callback as input argument
+        let args = inputs
+        args.push(callback)
+        // run runner with arguments inside cwd
+        runner.apply(runner, args)
     }
-    // add callback as input argument
-    let args = inputs
-    args.push(callback)
-    // run runner with arguments inside cwd
-    runner.apply(runner, args)
 }
 
 /**
@@ -965,6 +978,49 @@ function executeChain(chain, argv, presets, executeCallback){
     })
 }
 
+function sprout(...args){
+    let chain, argvStartIndex
+    let argv = []
+    let callback = null
+    // get chain and argvStartIndex
+    if(args.length > 1 && args[0].substring(args[0].length-1) == '/'){
+        chain = args[0] + args[1]
+        argvStartIndex = 2
+    }
+    else{
+        chain = args[0]
+        argvStartIndex = 1
+    }
+    // get argv
+    let index = argvStartIndex
+    while(index < args.length){
+        if(typeof(args[index]) != 'function'){
+            argv.push(args[index])
+        }
+        else{
+            callback = args[index]
+            break
+        }
+        index++
+    }
+    // callback
+    if(callback === null){
+        callback = function(output, success, errorMessage){
+            if(success){
+                console.log(output)
+            }
+            else{
+                console.error(errorMessage)
+            }
+        }
+    }
+    executeChain(chain, argv, callback)
+}
+
+let util = {
+    'sprout' : sprout
+}
+
 // This will be executed when someone run this module manually
 if(require.main === module){
     if(process.argv.length > 2){
@@ -987,11 +1043,12 @@ if(require.main === module){
 // The exported resources
 module.exports = {
     'executeYaml' : executeChain, // gonna be deprecated, solely here for historical purpose
-    'executeChain' : executeChain,
-    'execute' : executeChain,
+    'executeChain' : executeChain, // official way to do it :)
+    'execute' : executeChain, // in case of typo
     'getFormattedNanoSecond' : getFormattedNanoSecond,
     'deepCopyObject' : deepCopyObject,
     'patchObject' : patchObject,
     'cmd' : cmd,
-    'eisn': eisn
+    'eisn': eisn,
+    'util': util,
 }
