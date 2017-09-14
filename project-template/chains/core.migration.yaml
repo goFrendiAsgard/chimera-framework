@@ -1,2 +1,1 @@
 command: (config) -> [./programs/core.migration.js]
-#command: (config) -> node programs/core.migration.js
