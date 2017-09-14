@@ -2,7 +2,6 @@
 'use strict';
 
 const db = require('chimera-framework/mongo-driver')
-const async = require('async')
 const structureCollectionName = 'cck.structure'
 
 function createStructure(webConfig, schema, userId, callback){
@@ -13,64 +12,46 @@ function createStructure(webConfig, schema, userId, callback){
     let dataProcessingCallback = function(structure, success, errorMessage){
         if(success){
             if(Array.isArray(schema.data) && schema.data.length > 0){
-                // afterDataProcessingCallback
+                // prepare final callback
+                let counter = 0
                 let processedData = []
                 let processSuccess = true
-                let processErrorMessage = ''
-                let lastCallback = function(err, result){
-                    callback({'structure':structure, 'data':processedData}, processSuccess, processErrorMessage)
+                let processErorrMessage = ''
+                let wrappedCallback = function(doc, success, errorMessage){
+                    // adjust counter, processedData, processSuccess, and processErrorMessage' value
+                    if(counter < schema.data.length){
+                        counter ++
+                        processedData.push(doc)
+                        if(!success){
+                            processSuccess = false
+                        }
+                        processErorrMessage += errorMessage + '\n'
+                    }
+                    // run the real callback once all data processed
+                    if(counter == schema.data.length){
+                        callback({'structure':structure, 'data':processedData, processSuccess, processErorrMessage})
+                    }
                 }
-                // determine actions based on schema.data
-                let actions = []
-                for(let i=0; i<schema.data.length; i++){
-                    let data = schema.data[i]
-                    // define updateCallback
-                    let updateCallback = function(localCallback){
-                        db.update(tableConfig, data._id, data, function(doc, success, errorMessage){
-                            console.error([doc, success, errorMessage])
-                            if(success){
-                                processedData.push(doc)
-                            }
-                            else{
-                                console.error(errorMessage)
-                                processSuccess = false
-                            }
-                            localCallback()
-                        })
-                    }
-                    // define insertCallback
-                    let insertCallback = function(localCallback){
-                        db.insert(tableConfig, data, function(doc, success, errorMessage){
-                            console.error([doc, success, errorMessage])
-                            if(success){
-                                processedData.push(doc)
-                            }
-                            else{
-                                console.error(errorMessage)
-                                processSuccess = false
-                            }
-                            localCallback()
-                        })
-                    }
-                    // determine which callback to be added to actions
-                    if('_id' in data){
-                        db.find(tableConfig, data._id, function(doc, success, errorMessage){
-                            if(doc != null && '_id' in doc){
-                                actions.push(updateCallback)
-                            }
-                            else{
-                                actions.push(insertCallback)
-                            }
-                        })
+                // loop for each row in data
+                schema.data.forEach(function(row){
+                    if(!('_id' in row)){
+                        // if row has no _id, worry not. Just insert
+                        db.insert(tableConfig, row, wrappedCallback)
                     }
                     else{
-                        actions.push(updateCallback)
+                        // if row has _id, look whether there is a document in collection with the same _id or not
+                        db.find(tableConfig, row._id, function(doc, success, message){
+                            if(success && doc!=null && '_id' in doc){
+                                // the document has already exists, update
+                                db.update(tableConfig, row._id, row, wrappedCallback)
+                            }
+                            else{
+                                // the document doesn't exists yet, insert
+                                db.insert(tableConfig, row, wrappedCallback)
+                            }
+                        })
                     }
-                    console.error(actions)
-                }
-                console.error(actions)
-                // run the actions, and then run the lastCallback
-                async.parallel(actions, lastCallback)
+                })
             }
             else{
                 callback({'structure':structure, 'data':[]}, true, '')
