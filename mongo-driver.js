@@ -17,7 +17,7 @@ const DEFAULT_DB_CONFIG = {
     'modification_by_field' : '_modified_by',
     'process_deleted' : false,
     'show_history' : false,
-    'user_id' : null,
+    'user_id' : '1',
     'persistence_connection' : false,
     'verbose' : false,
 }
@@ -27,7 +27,9 @@ var lastCollectionName = null
 var cachedCollection = null
 
 function preprocessDbConfig(dbConfig){
-    return chimera.patchObject(DEFAULT_DB_CONFIG, dbConfig)
+    dbConfig = chimera.patchObject(DEFAULT_DB_CONFIG, dbConfig)
+    dbConfig.user_id = preprocessId(dbConfig.user_id)
+    return dbConfig
 }
 
 function preprocessFilter(dbConfig, filter){
@@ -160,9 +162,27 @@ function preprocessUpdateData(dbConfig, data){
     return updateData
 }
 
+function preprocessId(id, callback){
+    id = String(id)
+    while(id.length < 24){
+        id = '0' + id
+    }
+    id = id.substring(0, 24)
+    if(typeof(callback) == 'function'){
+        return callback(id, true, '')
+    }
+    return id
+}
+
 function preprocessSingleInsertData(dbConfig, data){
     // copy the data for historical purpose
     let insertData = chimera.deepCopyObject(data)
+    let idField = dbConfig.id_field
+    // idField
+    if(idField in insertData){
+        insertData[idField] = preprocessId(insertData[idField])
+    }
+    // copy data
     let dataCopy = chimera.deepCopyObject(data)
     let historyData = {'set' : dataCopy}
     historyData[dbConfig.modification_by_field] = dbConfig.user_id
@@ -590,7 +610,7 @@ function createDbConfig(mongoUrl, collectionName, userId, callback){
     else if(typeof(mongoUrl) == 'object' && 'mongo_url' in mongoUrl){
         url = mongoUrl.mongo_url
     }
-    let dbConfig = {'mongo_url':url, 'collection_name':collectionName, 'user_id':userId}
+    let dbConfig = {'mongo_url':url, 'collection_name':collectionName, 'user_id':preprocessId(userId)}
     if(typeof(callback) == 'function'){
         return callback(JSON.stringify(dbConfig), true, '')
     }
@@ -658,6 +678,7 @@ module.exports ={
     'max' : max,
     'min' : min,
     'count' : count,
+    'preprocessId' : preprocessId,
 }
 
 if(require.main === module){

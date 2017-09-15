@@ -1,5 +1,5 @@
 verbose: true
-ins: config
+ins: webConfig
 out: output
 vars:
 
@@ -8,19 +8,19 @@ vars:
         structure:
             name: 'structure'
             table: 'cck_structure'
+            script_preprocess_row: 'chains/cck.structure.preprocess.row.yaml'
             valid_fields:
                 - 'name' # name of entity
                 - 'table' # table name of entity
                 - 'valid_fields' # list of valid fields
-                - 'script_insert' # insert action (YAML script); input: table, data; output: row
-                - 'script_update' # update action (YAML script); input: table, pk, data; output: row
-                - 'script_delete' # delete action (YAML script); input: table, pk
-                - 'script_get' #  get action (YAML script); input: table, query
-                - 'script_getOne' # getOne action (YAML script); input: table, pk
-                - 'script_preprocess_insert' # preprocess insert (YAML script); input: data; output: data or boolean
-                - 'script_preprocess_update' # preprocess update (YAML script); input: data; output: data or boolean
-                - 'script_preprocess_delete' # preprocess delete (YAML script); input: data; output: data or boolean
-                - 'script_preprocess_query' # preprocess query (YAML script); input: query; output: query
+                - 'script_insert' # insert action (YAML script); input: structure, data; output: row
+                - 'script_update' # update action (YAML script); input: structure, pk, data; output: row
+                - 'script_delete' # delete action (YAML script); input: structure, pk; output: row
+                - 'script_get' #  get action (YAML script); input: structure, query; output: rows
+                - 'script_getOne' # getOne action (YAML script); input: structure, pk; output: row
+                - 'script_preprocess_insert' # preprocess insert (YAML script); input: structure, data; output: data or boolean
+                - 'script_preprocess_update' # preprocess update (YAML script); input: structure, data; output: data or boolean
+                - 'script_preprocess_delete' # preprocess delete (YAML script); input: structure, data; output: data or boolean
                 - 'script_preprocess_row' # preprocess row (YAML script); input: row; output: row
                 - 'presentations'
 
@@ -29,6 +29,7 @@ vars:
         structure:
             name: 'user'
             table: 'cms_user'
+            script_preprocess_insert: 'chains/cck.user.preproecess.insert.yaml'
             valid_fields:
                 - 'user_name'
                 - 'hashed_password'
@@ -36,8 +37,9 @@ vars:
                 - 'last_name'
                 - 'email_address'
                 - 'groups'
+
         data:
-            - _id: 'f00000000000000000000001' 
+            - _id: '1' 
               user_name: 'cms_system'
 
     # group structure
@@ -49,16 +51,30 @@ vars:
                 - 'group_name'
                 - 'description'
         data:
-            - _id: 'e00000000000000000000001'
+            - _id: '1'
               group_name: 'Super Admin of CMS'
-            - _id: 'e00000000000000000000002'
+            - _id: '2'
               group_name: 'Admin of CMS'
 
-series:
+    # config
+    config:
+        structure:
+            name: 'config'
+            table: 'cms_config'
+            valid_fields:
+                - 'name'
+                - 'value'
+    route:
+        structure:
+            name: 'route'
+            table: 'cms_route'
+            valid_fields:
+                - 'route'
+                - 'chain'
 
-    # create structure
-    - (config, structure, 'f00000000000000000000001') -> [../programs/cck.structure.js create] -> output.structure
-    # create other structure
-    - parallel:
-        - (config, user, 'f00000000000000000000001') -> [../programs/cck.structure.js create] -> output.user
-        #- (config, group, 'f00000000000000000000001') -> [../programs/cck.structure.js create] -> output.group
+series:
+    - (webConfig, structure, '1') -> [../programs/cck.structure.js create] -> output.structure
+    - (webConfig, user, '1') -> [../programs/cck.structure.js create] -> output.user
+    - (webConfig, group, '1') -> [../programs/cck.structure.js create] -> output.group
+    - (webConfig, config, '1') -> [../programs/cck.structure.js create] -> output.config
+    - (webConfig, route, '1') -> [../programs/cck.structure.js create] -> output.route

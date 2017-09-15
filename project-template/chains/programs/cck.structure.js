@@ -8,6 +8,7 @@ function createStructure(webConfig, schema, userId, callback){
     let query = {'table':schema.structure.table}
     let structureConfig = db.createDbConfig(webConfig, structureCollectionName, userId)
     let tableConfig = db.createDbConfig(webConfig, schema.structure.table, userId)
+    tableConfig.persistence_connection = true
     // dataProcessingCallback
     let dataProcessingCallback = function(structure, success, errorMessage){
         if(success){
@@ -16,7 +17,7 @@ function createStructure(webConfig, schema, userId, callback){
                 let counter = 0
                 let processedData = []
                 let processSuccess = true
-                let processErorrMessage = ''
+                let processErrorMessage = ''
                 let wrappedCallback = function(doc, success, errorMessage){
                     // adjust counter, processedData, processSuccess, and processErrorMessage' value
                     if(counter < schema.data.length){
@@ -25,11 +26,14 @@ function createStructure(webConfig, schema, userId, callback){
                         if(!success){
                             processSuccess = false
                         }
-                        processErorrMessage += errorMessage + '\n'
+                        if(errorMessage != ''){
+                            processErrorMessage += errorMessage + '\n'
+                        }
                     }
                     // run the real callback once all data processed
                     if(counter == schema.data.length){
-                        callback({'structure':structure, 'data':processedData, processSuccess, processErorrMessage})
+                        db.closeConnection()
+                        callback({'structure':structure, 'data':processedData, processSuccess, processErrorMessage})
                     }
                 }
                 // loop for each row in data
@@ -40,6 +44,7 @@ function createStructure(webConfig, schema, userId, callback){
                     }
                     else{
                         // if row has _id, look whether there is a document in collection with the same _id or not
+                        row._id = db.preprocessId(row._id)
                         db.find(tableConfig, row._id, function(doc, success, message){
                             if(success && doc!=null && '_id' in doc){
                                 // the document has already exists, update
@@ -78,7 +83,7 @@ function createStructure(webConfig, schema, userId, callback){
     })
 }
 
-function getStructure(webConfig, table, callback){
+function getStructure(webConfig, table, userId, callback){
     let stuctureConfig = db.createDbConfig(webConfig, structureCollectionName, userId)
     let query = {'table':schema.structure.table}
     db.find(structureConfig, query, function(structures, success, errorMessage){
