@@ -13,14 +13,14 @@ vars:
                 - 'name' # name of entity
                 - 'table' # table name of entity
                 - 'valid_fields' # list of valid fields
-                - 'script_insert' # insert action (YAML script); input: structure, data; output: row
-                - 'script_update' # update action (YAML script); input: structure, pk, data; output: row
-                - 'script_delete' # delete action (YAML script); input: structure, pk; output: row
-                - 'script_get' #  get action (YAML script); input: structure, query; output: rows
-                - 'script_getOne' # getOne action (YAML script); input: structure, pk; output: row
-                - 'script_preprocess_insert' # preprocess insert (YAML script); input: structure, data; output: data or boolean
-                - 'script_preprocess_update' # preprocess update (YAML script); input: structure, data; output: data or boolean
-                - 'script_preprocess_delete' # preprocess delete (YAML script); input: structure, data; output: data or boolean
+                - 'script_insert' # insert action (YAML script); input: table, data; output: row
+                - 'script_update' # update action (YAML script); input: table, pk, data; output: row
+                - 'script_delete' # delete action (YAML script); input: table, pk; output: row
+                - 'script_get' #  get action (YAML script); input: table, query; output: rows
+                - 'script_getOne' # getOne action (YAML script); input: table, pk; output: row
+                - 'script_preprocess_insert' # preprocess insert (YAML script); input: table, data; output: data or boolean
+                - 'script_preprocess_update' # preprocess update (YAML script); input: table, data; output: data or boolean
+                - 'script_preprocess_delete' # preprocess delete (YAML script); input: table, data; output: data or boolean
                 - 'script_preprocess_row' # preprocess row (YAML script); input: row; output: row
                 - 'presentations'
 

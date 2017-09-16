@@ -1,1 +1,2 @@
-command: ()=>{ return {"_session":{"user_id":null,"is_logged_in":false}}; }
+ins: webConfig
+command: (webConfig)=>{ return {"_session":{"user_id":null,"is_logged_in":false}}; }

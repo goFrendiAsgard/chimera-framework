@@ -1,6 +1,6 @@
-ins: req
+ins: webConfig, req
 command: |
-    (req)=>{
+    (webConfig, req)=>{
         let userId = null
         let userName = null
         let groups = [] 

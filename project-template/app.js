@@ -61,7 +61,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
 serveAuthenticatedRoutes((req, res, next, chainObject)=>{
-    chimera.executeChain(chainObject.chain, [shortenRequest(req), CONFIGS], {}, (data, success, errorMessage)=>{
+    chimera.executeChain(chainObject.chain, [CONFIGS, shortenRequest(req)], {}, (data, success, errorMessage)=>{
         if(success){
             if(typeof data == 'object'){
                 // save cookies
@@ -125,7 +125,7 @@ function serveAuthenticatedRoutes(routeHandler){
             routeHandler(req, res, next, chainObject) // success
         }
         else{
-            chimera.executeChain(CONFIGS.auth_chain, [shortenRequest(req)], [], function(data, success){
+            chimera.executeChain(CONFIGS.auth_chain, [CONFIGS, shortenRequest(req)], [], function(data, success){
                 // get userInfo
                 let userInfo = chimera.patchObject(DEFAULT_USER_INFO, data.userInfo)
                 if(success && (typeof userInfo == 'object')){
@@ -268,7 +268,7 @@ function loadConfigsAndRoutes(callback){
             callback(error)
             return false
         }
-        readChainResponse(CONFIGS.routes_chain, [], [],
+        readChainResponse(CONFIGS.routes_chain, [CONFIGS], [],
             (obj) => {
                 // combine CONFIGS and configuration in user-defined chain, patch by environment
                 ROUTES = chimera.patchObject(ROUTES, obj)
@@ -286,7 +286,7 @@ function prepareConfigs(callback){
             CONFIGS = chimera.patchObject(DEFAULT_CONFIGS, obj)
             CONFIGS = patchConfigsByEnv(CONFIGS)
             // read additional config from user-defined chain
-            readChainResponse(CONFIGS.configs_chain, [], [],
+            readChainResponse(CONFIGS.configs_chain, [CONFIGS], [],
                 (obj) => {
                     // combine CONFIGS and configuration in user-defined chain, patch by environment
                     CONFIGS = chimera.patchObject(CONFIGS, obj)

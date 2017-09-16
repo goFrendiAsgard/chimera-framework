@@ -1,8 +1,8 @@
 import sys, json
 
 # get request and config from the framework
-req = json.loads(sys.argv[1])
-config = json.loads(sys.argv[2])
+config = json.loads(sys.argv[1])
+req = json.loads(sys.argv[2])
 params = req['params']
 
 # create response

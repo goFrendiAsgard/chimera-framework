@@ -1,1 +1,1 @@
-command: (config) -> [./programs/core.migration.js]
+command: (webConfig) -> [./programs/core.migration.js]

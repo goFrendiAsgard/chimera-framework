@@ -1,2 +1,2 @@
-ins: structure, query
+ins: webConfig, table, query
 out: rows

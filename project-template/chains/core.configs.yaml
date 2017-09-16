@@ -1,1 +1,2 @@
-command: ()=>{ return {"site_title":"My Website"}; }
+ins: webConfig
+command: ('{"site_title":"My Website"}') --> _ans

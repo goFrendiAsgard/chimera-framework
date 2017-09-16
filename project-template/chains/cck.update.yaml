@@ -1,2 +1,2 @@
-ins: structure, pk, data
+ins: webConfig, table, pk, data
 out: row

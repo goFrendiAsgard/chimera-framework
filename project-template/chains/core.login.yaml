@@ -1,14 +1,14 @@
-ins: request
+ins: webConfig, request
 command: |
-    (req)=>{
+    (webConfig, request)=>{
         let input = null
         let userId = null
         let isLoggedIn = false
-        if( 'body' in req && 'user_name' in req.body && 'password' in req.body){
-            input = req.body
+        if( 'body' in request && 'user_name' in request.body && 'password' in request.body){
+            input = request.body
         }
-        else if( 'query' in req && 'user_name' in req.query && 'password' in req.query){
-            input = req.query
+        else if( 'query' in request && 'user_name' in request.query && 'password' in request.query){
+            input = request.query
         }
         if(input != null){
             if(input.user_name == 'Admin' && input.password == 'admin'){
