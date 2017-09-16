@@ -90,7 +90,7 @@ By default, the value will be `true`
 
 * `route_chain` 
 
-Route list chain.
+Route list chain, require webConfig.
 
 The output of the chain should be routes in JSON format.
 
@@ -98,7 +98,7 @@ By default, the value will be `chains/core.routes.yaml`
 
 * `config_chain` 
 
-Config list chain.
+Config list chain, require webConfig.
 
 The output of the chain should be configs in JSON format.
 
@@ -106,7 +106,7 @@ By default, the value will be `chains/core.configs.yaml`
 
 * `auth_chain` 
 
-Authorization chain, require request.
+Authorization chain, require webConfig and request.
 
 The output of the chain should be user info in JSON format.
 
@@ -114,7 +114,7 @@ By default, the value will be `chains/core.auth.yaml`
 
 * `migration_chain` 
 
-Migration chain, require config.
+Migration chain, require webConfig.
 
 The output of the chain should be migration info in JSON format.
 
