@@ -1,2 +1,2 @@
-ins: webConfig, table, pk
+ins: webConfig, request, table, pk
 out: row

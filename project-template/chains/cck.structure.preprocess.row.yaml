@@ -1,2 +1,22 @@
-ins: webConfig, table, data
+ins: webConfig, request, table, data
 out: result
+series:
+    - parallel:
+        - if: "!('script_insert') in data'"
+          command: ('chains/cck.insert.yaml') --> data.script_insert
+        - if: "!('script_update') in data'"
+          command: ('chains/cck.update.yaml') --> data.script_update
+        - if: "!('script_delete') in data'"
+          command: ('chains/cck.delete.yaml') --> data.script_delete
+        - if: "!('script_get') in data'"
+          command: ('chains/cck.get.yaml') --> data.script_get
+        - if: "!('script_getOne') in data'"
+          command: ('chains/cck.getOne.yaml') --> data.script_getOne
+        - if: "!('script_preprocess_insert') in data'"
+          command: ('chains/cck.preprocess.insert.yaml') --> data.script_preprocess_insert
+        - if: "!('script_preprocess_update') in data'"
+          command: ('chains/cck.preprocess.update.yaml') --> data.script_preprocess_update
+        - if: "!('script_preprocess_delete') in data'"
+          command: ('chains/cck.preprocess.delete.yaml') --> data.script_preprocess_delete
+        - if: "!('script_preprocess_row') in data'"
+          command: ('chains/cck.preprocess.row.yaml') --> data.script_preprocess_row

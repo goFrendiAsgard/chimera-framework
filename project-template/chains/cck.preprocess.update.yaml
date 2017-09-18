@@ -1,2 +1,2 @@
-ins: webConfig, table, data
+ins: webConfig, request, table, data
 out: result

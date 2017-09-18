@@ -520,6 +520,7 @@ function update(dbConfig, updateFilter, data, options, callback){
     data = preprocessUpdateData(dbConfig, data)
     let [filter, multi] = preprocessFilter(dbConfig, updateFilter)
     callback = preprocessCallback(callback)
+    let tmpPersistenceConnection = dbConfig.persistence_connection
     dbConfig.persistence_connection = true
     return find(dbConfig, updateFilter, function(docs, success, errorMessage){
         if(success){
@@ -532,7 +533,7 @@ function update(dbConfig, updateFilter, data, options, callback){
                     console.warn('[INFO] Execute "update" in: ' + chimera.getFormattedNanoSecond(elapsedTime) + ' NS')
                 }
                 if(!error){
-                    dbConfig.persistence_connection = false
+                    dbConfig.persistence_connection = tmpPersistenceConnection
                     find(dbConfig, findFilter, callback)
                 }
                 else{

@@ -1,2 +1,6 @@
-ins: webConfig, table, pk
+ins: webConfig, request, table, pk
 out: row
+series:
+    - (webConfig.mongo_url) --> mongo_url
+    - (mongo_url, 'cck.structure', userId) -> [chimera-framework/mongo-driver createDbConfig] -> structureConfig
+    - (mongo_url, table, userId) -> [chimera-framework/mongo-driver createDbConfig] -> tableConfig

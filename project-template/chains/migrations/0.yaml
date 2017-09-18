@@ -13,15 +13,15 @@ vars:
                 - 'name' # name of entity
                 - 'table' # table name of entity
                 - 'valid_fields' # list of valid fields
-                - 'script_insert' # insert action (YAML script); input: table, data; output: row
-                - 'script_update' # update action (YAML script); input: table, pk, data; output: row
-                - 'script_delete' # delete action (YAML script); input: table, pk; output: row
-                - 'script_get' #  get action (YAML script); input: table, query; output: rows
-                - 'script_getOne' # getOne action (YAML script); input: table, pk; output: row
-                - 'script_preprocess_insert' # preprocess insert (YAML script); input: table, data; output: data or boolean
-                - 'script_preprocess_update' # preprocess update (YAML script); input: table, data; output: data or boolean
-                - 'script_preprocess_delete' # preprocess delete (YAML script); input: table, data; output: data or boolean
-                - 'script_preprocess_row' # preprocess row (YAML script); input: row; output: row
+                - 'script_insert' # insert action (YAML script); input: webConfig, request, table, data; output: row
+                - 'script_update' # update action (YAML script); input: webConfig, request, table, pk, data; output: row
+                - 'script_delete' # delete action (YAML script); input: webConfig, request, table, pk; output: row
+                - 'script_get' #  get action (YAML script); input: webConfig, request, table, query; output: rows
+                - 'script_getOne' # getOne action (YAML script); input: webConfig, request, table, pk; output: row
+                - 'script_preprocess_insert' # preprocess insert (YAML script); input: webConfig, request, table, data; output: data or boolean
+                - 'script_preprocess_update' # preprocess update (YAML script); input: webConfig, request, table, data; output: data or boolean
+                - 'script_preprocess_delete' # preprocess delete (YAML script); input: webConfig, request, table, data; output: data or boolean
+                - 'script_preprocess_row' # preprocess row (YAML script); input: webConfig, request, row; output: row
                 - 'presentations'
 
     # user
@@ -72,7 +72,7 @@ vars:
                 - 'route'
                 - 'chain'
 
-series:
+parallel:
     - (webConfig, structure, '1') -> [../programs/cck.structure.js create] -> output.structure
     - (webConfig, user, '1') -> [../programs/cck.structure.js create] -> output.user
     - (webConfig, group, '1') -> [../programs/cck.structure.js create] -> output.group

@@ -18,6 +18,18 @@ const cmd = {
     'get' : getString
 }
 
+/**
+ * Run command
+ * Example:
+ *  runCommand('ls -al')
+ *  runCommand('ls -al', {'cwd': '/home/myUser'})
+ *
+ * For more information about options, please visit (https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback)
+ *
+ * @param (string) command
+ * @param (object) options
+ *
+ */
 function runCommand(command, options){
     let execOptions
     if(typeof options == 'undefined'){
@@ -29,6 +41,20 @@ function runCommand(command, options){
     return exec(command, options);
 }
 
+/**
+ * Run command
+ * Example:
+ *  getString('ls -al', {'cwd':'/home/myUser'}, function(error, data, stderr){
+ *      console.log('data');
+ *  })
+ *
+ * For more information about options, please visit (https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback)
+ *
+ * @param (string) command
+ * @param (object) options
+ * @param (function) callback
+ *
+ */
 function getString(command, options,callback){
     let execOptions, execCallback
     if(typeof options == 'function'){
@@ -47,6 +73,7 @@ function getString(command, options,callback){
 }
 
 /**
+ * Execute command if srcFile is newer than dstFile
  * Example:
  *  eisn('Program.java', 'Program.class', 'javac Program.java', function(result, success, errorMessage){
  *     console.log(result)
@@ -107,6 +134,13 @@ function eisn(srcFile, dstFile, command, callback){
 }
 
 // this one is for benchamarking
+/**
+ * Get formatted nano second
+ * Example:
+ *  getFormattedNanoSecond(process.hrtime())
+ * Output:
+ *  string, formatted nano second
+ */
 function getFormattedNanoSecond(time){
     let nano = time[0] * 1e9 + time[1]
     return nano.toLocaleString()

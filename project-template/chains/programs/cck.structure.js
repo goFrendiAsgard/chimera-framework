@@ -7,8 +7,11 @@ const structureCollectionName = 'cck.structure'
 function createStructure(webConfig, schema, userId, callback){
     let query = {'table':schema.structure.table}
     let structureConfig = db.createDbConfig(webConfig, structureCollectionName, userId)
+    structureConfig.persistence_connection = true
+    structureConfig.verbose = true
     let tableConfig = db.createDbConfig(webConfig, schema.structure.table, userId)
     tableConfig.persistence_connection = true
+    tableConfig.verbose = true
     // dataProcessingCallback
     let dataProcessingCallback = function(structure, success, errorMessage){
         if(success){
