@@ -46,6 +46,20 @@ function getString(command, options,callback){
     })(execCallback));
 }
 
+/**
+ * Example:
+ *  eisn('Program.java', 'Program.class', 'javac Program.java', function(result, success, errorMessage){
+ *     console.log(result)
+ *  })
+ * Output:
+ *  {'is_command_executed' : true} 
+ *
+ * @param {string} srcFile
+ * @param {string} dstFile
+ * @param {string} command
+ * @param {function} callback
+ *
+ */
 function eisn(srcFile, dstFile, command, callback){
     // preprocess callback
     if(typeof(callback) != 'function'){
@@ -147,6 +161,16 @@ function smartSplit(string, delimiter){
     return data
 }
 
+/**
+ * Preprocess dirPath by adding '/' at the end of dirPath
+ * Example:
+ *  preprocessDirPath('dir/anotherDir')
+ *  preprocessDirPath('dir/anotherDir/')
+ * Output:
+ *  'dir/anotherDir/'
+ *
+ * @param {string} dirPath
+ */
 function preprocessDirPath(dirPath){
     if(dirPath.substring(dirPath.length-1) != '/'){
         return dirPath + '/'
@@ -182,6 +206,16 @@ function preprocessIns(ins){
     return ins
 }
 
+/**
+ * unquote a string 
+ * Example:
+ *  unquote('"string"')
+ *  unquote("'string'")
+ * Output:
+ *  'string'
+ *
+ * @param {string} string
+ */
 function unquote(string){
     string = string.trim()
     if(string.match(/^"(.*)"$/g) || string.match(/^'(.*)'$/g)){
@@ -191,6 +225,15 @@ function unquote(string){
     return string
 }
 
+/**
+ * quote a string 
+ * Example:
+ *  quote('string')
+ * Output:
+ *  '"string"'
+ *
+ * @param {string} string
+ */
 function quote(string){
     string = string.replace(/"/g, '\\\"')
     string = string.replace(/\n/g, '\\n')
@@ -200,6 +243,10 @@ function quote(string){
 }
 
 function preprocessCommand(chain){
+    if('process' in chain){
+        chain.command = chain.process
+        delete(chain.process)
+    }
     if('command' in chain){
         // split command by '->'
         let commandParts = smartSplit(chain.command, '-->')
