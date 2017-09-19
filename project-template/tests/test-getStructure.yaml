@@ -1,0 +1,4 @@
+verbose: true
+ins: webConfig
+out: output
+command: (webConfig, 'cms_group', '1')->[../chains/programs/cck.structure.js get] -> output

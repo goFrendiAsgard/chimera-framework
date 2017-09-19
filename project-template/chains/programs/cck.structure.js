@@ -87,8 +87,8 @@ function createStructure(webConfig, schema, userId, callback){
 }
 
 function getStructure(webConfig, table, userId, callback){
-    let stuctureConfig = db.createDbConfig(webConfig, structureCollectionName, userId)
-    let query = {'table':schema.structure.table}
+    let structureConfig = db.createDbConfig(webConfig, structureCollectionName, userId)
+    let query = {'table':table}
     db.find(structureConfig, query, function(structures, success, errorMessage){
         if(!success){
             callback(null, false, errorMessage)
