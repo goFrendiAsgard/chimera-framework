@@ -73,8 +73,8 @@ vars:
                 - 'chain'
 
 parallel:
-    - (webConfig, structure, '1') -> [../programs/cck.structure.js create] -> output.structure
-    - (webConfig, user, '1') -> [../programs/cck.structure.js create] -> output.user
-    - (webConfig, group, '1') -> [../programs/cck.structure.js create] -> output.group
-    - (webConfig, config, '1') -> [../programs/cck.structure.js create] -> output.config
-    - (webConfig, route, '1') -> [../programs/cck.structure.js create] -> output.route
+    - (webConfig, structure, '1') -> [../chains/programs/cck.structure.js create] -> output.structure
+    - (webConfig, user, '1') -> [../chains/programs/cck.structure.js create] -> output.user
+    - (webConfig, group, '1') -> [../chains/programs/cck.structure.js create] -> output.group
+    - (webConfig, config, '1') -> [../chains/programs/cck.structure.js create] -> output.config
+    - (webConfig, route, '1') -> [../chains/programs/cck.structure.js create] -> output.route
