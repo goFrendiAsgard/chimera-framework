@@ -8,6 +8,7 @@ const yaml = require('js-yaml')
 const clone = require('clone')
 const exec = require('child_process').exec;
 const path = require('path')
+const assert = require('assert')
 
 // Stringify JSON and dealing with circular-reference
 const stringify = require('json-stringify-safe')
@@ -15,7 +16,17 @@ const stringify = require('json-stringify-safe')
 // use our own "cmd" instead of node-cmd
 const cmd = {
     'run' : runCommand,
-    'get' : getString
+    'get' : getString,
+}
+
+const util = {
+    'sprout' : sprout,
+}
+
+const test = {
+    'createAsserter' : createAsserter,
+    'testExecuteChain' : testExecuteChain,
+    'testExecuteCmd' : testExecuteCmd,
 }
 
 /**
@@ -1098,8 +1109,52 @@ function sprout(...args){
     executeChain(chain, argv, callback)
 }
 
-let util = {
-    'sprout' : sprout
+function createAsserter(expectedResult){
+    if(typeof(expectedResult) == 'function'){
+        return expectedResult
+    }
+    return function(output){
+        assert(output == expectedResult, 'FAIL, Expected: '+expectedResult+', Actual: '+output)
+    }
+}
+
+function testExecuteChain(testName, chain, inputs, presets, expectedResult, callback){
+    let startTime = process.hrtime();
+    console.warn('START ' + testName + ' ON nanosecond: ' + getFormattedNanoSecond(startTime) + '\n')
+    executeChain(chain, inputs, presets, function(output, success, errorMessage){
+        let diff = process.hrtime(startTime);
+        let endTime = process.hrtime();
+        // show chain
+        console.warn(chain)
+        // show output
+        console.warn(output);
+        // do assertion
+        let asserter = createAsserter(expectedResult)
+        asserter(output)
+        console.warn('END ' + testName + ' ON nanosecond: ' + getFormattedNanoSecond(endTime))
+        console.warn('EXECUTION TIME: ' + getFormattedNanoSecond(diff) + ' nanosecond')
+        callback()
+    });
+}
+
+function testExecuteCmd(testName, command, expectedResult, callback){
+    let startTime = process.hrtime();
+    console.warn('START ' + testName + ' ON nanosecond: ' + getFormattedNanoSecond(startTime) + '\n')
+    cmd.get(command, function(err, data, stderr){
+        let diff = process.hrtime(startTime);
+        let endTime = process.hrtime();
+        data = data.trim('\n')
+        // show command
+        console.warn(command)
+        // show data
+        console.warn(data)
+        // do assertion
+        let asserter = createAsserter(expectedResult)
+        asserter(data)
+        console.warn('END ' + testName + ' ON nanosecond: ' + getFormattedNanoSecond(endTime))
+        console.warn('EXECUTION TIME: ' + getFormattedNanoSecond(diff) + ' nanosecond')
+        callback()
+    })
 }
 
 // This will be executed when someone run this module manually
@@ -1132,4 +1187,5 @@ module.exports = {
     'cmd' : cmd,
     'eisn': eisn,
     'util': util,
+    'test': test,
 }
