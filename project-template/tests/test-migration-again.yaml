@@ -5,7 +5,7 @@ vars:
 
     # user
     user:
-        structure:
+        structure_filter:
             table: 'cms_user'
         data:
             - _id: '1' 
@@ -13,11 +13,11 @@ vars:
 
     # group structure
     group:
-        structure:
+        structure_filter:
             table: 'cms_group'
+        data_filter_field: 'group_name'
         data:
-            - _id: '3'
-              group_name: 'Employee'
+            - group_name: 'Employee'
 
 parallel:
     - (webConfig, user, '1') -> [../chains/programs/cck.structure.js create] -> output.user

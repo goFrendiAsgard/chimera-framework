@@ -29,7 +29,7 @@ vars:
         structure:
             name: 'user'
             table: 'cms_user'
-            script_preprocess_insert: 'chains/cck.user.preproecess.insert.yaml'
+            script_preprocess_insert: 'chains/cck.user.preprocess.insert.yaml'
             valid_fields:
                 - 'user_name'
                 - 'hashed_password'
@@ -37,7 +37,7 @@ vars:
                 - 'last_name'
                 - 'email_address'
                 - 'groups'
-
+        data_filter: '_id'
         data:
             - _id: '1' 
               user_name: 'cms_system'
@@ -50,6 +50,7 @@ vars:
             valid_fields:
                 - 'group_name'
                 - 'description'
+        data_filter: '_id'
         data:
             - _id: '1'
               group_name: 'Super Admin of CMS'

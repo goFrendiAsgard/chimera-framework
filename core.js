@@ -484,12 +484,23 @@ function showEndTime(processName, startTime){
     console.warn('[INFO] PROCESS        '+processName+' TAKES : ' + getFormattedNanoSecond(diff) + ' NS')
 }
 
+function showKeyVal(vars, spaces){
+    Object.keys(vars).forEach(function(key){
+        let strVal = stringify(vars[key])
+        if(strVal.length <= 250 || typeof(vars[key]) == 'string' || vars[key] instanceof String){
+            console.warn(spaces + key + ' : ' + strVal)
+        }
+        else{
+            console.warn(spaces + key + ' :')
+            showKeyVal(vars[key], spaces + '  ')
+        }
+    })
+}
+
 function showVars(processName, vars){
     processName = trimProcessName(processName)
     console.warn('[INFO] STATE AFTER    '+processName+' : ')
-    Object.keys(vars).forEach(function(key){
-        console.warn('        ' + key + ' : ' + stringify(vars[key]))
-    })
+    showKeyVal(vars, '        ')
 }
 
 function showFailure(processName){
