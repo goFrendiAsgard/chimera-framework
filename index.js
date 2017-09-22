@@ -3,13 +3,14 @@
 
 let cmd = require('./lib/cmd.js')
 let core = require('./lib/core.js')
-let mongoDriver = require('./lib/mongoDriver.js')
+let db = require('./lib/db.js')
 let test = require('./lib/test.js')
 let util = require('./lib/util.js')
 
 // The exported resources
 module.exports = {
     'executeChain' : core.executeChain,
+    'run' : core.run,
     'formatNanoSecond' : util.formatNanoSecond,
     'deepCopy' : util.deepCopy,
     'patchObject' : util.patchObject,
@@ -18,5 +19,6 @@ module.exports = {
     'util': util,
     'test': test,
     'db' : db,
+    'core' : core,
 }
 
