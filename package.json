@@ -16,10 +16,11 @@
   "keywords": [
     "framework",
     "chain",
-    "multiple-programming-language"
+    "multiple-programming-language",
+    "language agnostic"
   ],
   "author": "goFrendi",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "assert": "^1.4.1",
     "async": "^2.4.1",
