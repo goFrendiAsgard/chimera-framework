@@ -6,6 +6,7 @@ let core = require('./lib/core.js')
 let db = require('./lib/db.js')
 let test = require('./lib/test.js')
 let util = require('./lib/util.js')
+let web = require('./lib/web.js')
 
 // The exported resources
 module.exports = {
@@ -20,5 +21,6 @@ module.exports = {
     'test': test,
     'db' : db,
     'core' : core,
+    'web' : web,
 }
 
