@@ -2,5 +2,5 @@ verbose: true
 ins: a, b
 out: d
 series:
-    - (a, b) -> node programs/add.js -> c
-    - (c, b) -> node programs/add.js -> d
+    - (a, b) -> [./programs/add.js] -> c
+    - (c, b) -> [./programs/add.js] -> d
