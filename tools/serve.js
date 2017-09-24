@@ -5,11 +5,13 @@ let chimera = require('../index.js')
 let port = 3000
 
 let webConfig = {
-    'routes': {
-        'route' : '/',
-        'method' : 'all',
-        'chain' : '',
-    }
+    'routes': [
+        {
+            'route' : '/',
+            'method' : 'all',
+            'chain' : '',
+        }
+    ]
 }
 
 let app = chimera.web.createApp(webConfig)
