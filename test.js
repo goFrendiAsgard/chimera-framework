@@ -176,7 +176,7 @@ async.series([
     // run chimera server
     (callback) => {
         let callbackExecuted = false
-        let env = chimera.deepCopyObject(process.env)
+        let env = chimera.util.deepCopy(process.env)
         env['PORT'] = 3010
         serverProcess = childProcess.spawn('chimera-serve', [], {'env': env, 'cwd':process.cwd()})
         // if error, show message and kill
