@@ -2,20 +2,9 @@
 'use strict';
 
 let chimera = require('../index.js')
-let port = 3000
 
-let webConfig = {
-    'routes': [
-        {
-            'route' : '/',
-            'method' : 'all',
-            'chain' : '',
-        }
-    ]
+if(require.main === module){
+    chimera.server(function(result, error, errorMessage){
+        // do nothing. Probably we will need this someday
+    })
 }
-
-let app = chimera.web.createApp(webConfig)
-
-app.listen(port, function () {
-    console.log('Chimera service started at port ' + port)
-})

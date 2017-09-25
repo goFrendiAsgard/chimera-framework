@@ -7,6 +7,8 @@ let db = require('./lib/db.js')
 let test = require('./lib/test.js')
 let util = require('./lib/util.js')
 let web = require('./lib/web.js')
+let sender = require('./lib/sender.js')
+let server = require('./lib/server.js')
 
 // The exported resources
 module.exports = {
@@ -22,5 +24,7 @@ module.exports = {
     'db' : db,
     'core' : core,
     'web' : web,
+    'sender' : sender,
+    'server': server,
 }
 

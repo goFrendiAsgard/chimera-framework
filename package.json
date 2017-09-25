@@ -1,14 +1,14 @@
 {
   "name": "chimera-framework",
   "version": "0.0.41",
-  "description": "Chimera-framework is a nodejs based framework that let you write any task in any language, and combine them for a greater good.",
+  "description": "Language agnostic framework for stand-alone and distributed computing",
   "bin": {
-    "chimera": "core.js",
-    "chimera-serve": "server.js",
-    "chimera-send": "sender.js",
-    "chimera-eisn": "eisn.js",
-    "chimera-init-web": "generateProject.js",
-    "chimera-mongo": "mongo-driver.js"
+    "chimera": "tools/run.js",
+    "chimera-serve": "tools/serve.js",
+    "chimera-send": "tools/send.js",
+    "chimera-eisn": "tools/eisn.js",
+    "chimera-init-web": "tools/init-web.js",
+    "chimera-db": "tools/db.js"
   },
   "scripts": {
     "test": "node test.js"
