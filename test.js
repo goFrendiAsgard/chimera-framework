@@ -3,15 +3,14 @@
 
 const async = require('async')
 const assert = require('assert')
-const chimera = require('chimera-framework/core')
+const chimera = require('./index.js')
 const cmd = chimera.cmd
 const childProcess = require('child_process')
 
 const currentPath = process.cwd()
 let serverProcess = null
-let createAsserter = chimera.test.createAsserter
-let testExecuteChain = chimera.test.testExecuteChain
-let testExecuteCmd = chimera.test.testExecuteCmd
+let testChain = chimera.test.testChain
+let testCmd = chimera.test.testCmd
 
 let mongoDbAsserter = (output)=>{
     try{
@@ -87,10 +86,10 @@ let mongoDbAsserter = (output)=>{
 // Run the test
 async.series([
     // test database
-    (callback) => {testExecuteCmd('Test mongo driver',
+    (callback) => {testCmd('Test mongo driver',
         'chimera "tests/mongo-driver.yaml"', mongoDbAsserter, callback)
     },
-    (callback) => {testExecuteChain('Test mongo driver',
+    (callback) => {testChain('Test mongo driver',
         'tests/mongo-driver.yaml', [], {}, mongoDbAsserter, callback)
     },
     // test executeChain with various
@@ -116,63 +115,63 @@ async.series([
         })
     },
     // test execute chain
-    (callback) => {testExecuteChain('Test executeChain without presets',
+    (callback) => {testChain('Test executeChain without presets',
         'tests/minimal.yaml', [1, 5], {}, -23, callback)
     },
-    (callback) => {testExecuteChain('Test executeChain with presets',
+    (callback) => {testChain('Test executeChain with presets',
         'tests/minimal.yaml', [1, 5], {'a':1, 'b':1}, -23, callback)},
-    (callback) => {testExecuteChain('Test executeChain containing empty object',
+    (callback) => {testChain('Test executeChain containing empty object',
         'tests/empty.yaml', [0], {}, '', callback)},
-    (callback) => {testExecuteChain('Test executeChain containing infinite loop, expect error',
+    (callback) => {testChain('Test executeChain containing infinite loop, expect error',
         'tests/infinite-loop.yaml', [0], {}, '', callback)},
     // test execute command
-    (callback) => {testExecuteCmd('Test error handling: no error',
+    (callback) => {testCmd('Test error handling: no error',
         'chimera tests/error-handling.yaml 6 6', 12, callback)},
-    (callback) => {testExecuteCmd('Test error handling: error less',
+    (callback) => {testCmd('Test error handling: error less',
         'chimera tests/error-handling.yaml 5 6', '', callback)},
-    (callback) => {testExecuteCmd('Test error handling: error more',
+    (callback) => {testCmd('Test error handling: error more',
         'chimera tests/error-handling.yaml 6 5', '', callback)},
-    (callback) => {testExecuteCmd('Test Empty process with single argument',
+    (callback) => {testCmd('Test Empty process with single argument',
         'chimera "(a)->-> b" 6', 6, callback)},
-    (callback) => {testExecuteCmd('Test Empty process with two argument',
+    (callback) => {testCmd('Test Empty process with two argument',
         'chimera "(a,b)->->(c)" 6 5', '[6,5]', callback)},
-    (callback) => {testExecuteCmd('Test Empty process with single argument and shorthand',
+    (callback) => {testCmd('Test Empty process with single argument and shorthand',
         'chimera "(a)--> b" 6', 6, callback)},
-    (callback) => {testExecuteCmd('Test Empty process with two argument and shorthand',
+    (callback) => {testCmd('Test Empty process with two argument and shorthand',
         'chimera "(a,b)-->(c)" 6 5', '[6,5]', callback)},
-    (callback) => {testExecuteCmd('Test JSON instead of YAML',
+    (callback) => {testCmd('Test JSON instead of YAML',
         'chimera tests/add.json 1 5', 6, callback)},
-    (callback) => {testExecuteCmd('Test javascript arrow function',
+    (callback) => {testCmd('Test javascript arrow function',
         'chimera tests/add-js.yaml 1 5', 6, callback)},
-    (callback) => {testExecuteCmd('Test complete',
+    (callback) => {testCmd('Test complete',
         'chimera tests/complete.yaml 1 5', -23, callback)},
-    (callback) => {testExecuteCmd('Test minimal',
+    (callback) => {testCmd('Test minimal',
         'chimera tests/minimal.yaml 1 5', -23, callback)},
-    (callback) => {testExecuteCmd('Test inline-1',
+    (callback) => {testCmd('Test inline-1',
         'chimera "(a, b) -> node tests/programs/add.js -> c" 1 5', 6, callback)},
-    (callback) => {testExecuteCmd('Test inline-2',
+    (callback) => {testCmd('Test inline-2',
         'chimera "(a, b) -> node tests/programs/add.js" 1 5', 6, callback)},
-    (callback) => {testExecuteCmd('Test implode',
+    (callback) => {testCmd('Test implode',
         'chimera tests/implode.yaml 1 2 3', '1, 2, 3', callback)},
-    (callback) => {testExecuteCmd('Test control-1',
+    (callback) => {testCmd('Test control-1',
         'chimera tests/control.yaml 5', 8, callback)},
-    (callback) => {testExecuteCmd('Test control-2',
+    (callback) => {testCmd('Test control-2',
         'chimera tests/control.yaml 12', 11, callback)},
-    (callback) => {testExecuteCmd('Test simple-command',
+    (callback) => {testCmd('Test simple-command',
         'chimera tests/simple-command.yaml 5 6', 11, callback)},
-    (callback) => {testExecuteCmd('Test nested-control',
+    (callback) => {testCmd('Test nested-control',
         'chimera tests/nested-control.yaml','1112*1314**2122*2324**3132*3334**',callback)},
-    (callback) => {testExecuteCmd('Test complex-vars',
+    (callback) => {testCmd('Test complex-vars',
         'chimera tests/complex-vars.yaml 5 6', -176, callback)},
-    (callback) => {testExecuteCmd('Test add',
+    (callback) => {testCmd('Test add',
         'chimera tests/add.yaml 5 6', 11, callback)},
-    (callback) => {testExecuteCmd('Test add-module',
+    (callback) => {testCmd('Test add-module',
         'chimera tests/add-module.yaml 5 6', 11, callback)},
-    (callback) => {testExecuteCmd('Test add-module-twice',
+    (callback) => {testCmd('Test add-module-twice',
         'chimera tests/add-module-twice.yaml 5 6', 17, callback)},
-    (callback) => {testExecuteCmd('Test arithmetic-module',
+    (callback) => {testCmd('Test arithmetic-module',
         'chimera tests/arithmetic-module.yaml 5 6 "*"', 30, callback)},
-    (callback) => {testExecuteCmd('Test sub-chimera',
+    (callback) => {testCmd('Test sub-chimera',
         'chimera tests/sub-chimera.yaml 5 4', 18, callback)},
     // run chimera server
     (callback) => {
@@ -198,7 +197,7 @@ async.series([
         })
     },
     // test distributed
-    (callback) => {testExecuteCmd('Test distributed',
+    (callback) => {testCmd('Test distributed',
         'chimera tests/distributed.yaml 5 4 http://localhost:3010', 18, callback)},
     // kill chimera server
     (callback) => {
