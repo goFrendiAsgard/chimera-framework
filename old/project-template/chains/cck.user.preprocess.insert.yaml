@@ -1,6 +1,0 @@
-ins: webConfig, request, table, data
-out: result
-series:
-    - if: "'password' in data"
-      command: (data.password) -> (passwd)=>{let crypto = require('bcrypt'); return bcrypt.hashSync(passwd, 10)} -> data.password
-    - (_chain_cwd, 'cck.preprocess.insert.yaml', table, data) -> [chimera-framework/core sprout] -> result

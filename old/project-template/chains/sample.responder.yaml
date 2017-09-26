@@ -1,2 +1,0 @@
-#command: (webConfig, request) -> python programs/sample.responder.py
-command: (webConfig, request) -> [./programs/sample.responder.js]

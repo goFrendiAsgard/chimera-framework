@@ -1,1 +1,0 @@
-command: (webConfig) -> [./programs/core.migration.js]
