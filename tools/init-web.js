@@ -62,8 +62,8 @@ if(require.main === module){
             },
             // run npm install
             (callback) => {
-                cmd.get('npm install', function(error, result){
-                    if(error){
+                cmd.get('npm install', function(result, success){
+                    if(!success){
                         console.error('[ERROR] Cannot perform npm install')
                         console.error(error.stack)
                     }

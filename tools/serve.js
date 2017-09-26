@@ -4,7 +4,7 @@
 let chimera = require('../index.js')
 
 if(require.main === module){
-    chimera.server(function(result, error, errorMessage){
+    chimera.server.serve(function(result, success, errorMessage){
         // do nothing. Probably we will need this someday
     })
 }
