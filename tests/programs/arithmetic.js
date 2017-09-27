@@ -28,7 +28,7 @@ function operation(n1, n2, operator){
 // This one will be required when imported by using "require"
 module.exports = {'operation': function(n1, n2, operator, callback){
     let output = operation(n1, n2, operator)
-    callback(output)
+    callback(null, output)
 }}
 
 // This one will be executed when called from cmd

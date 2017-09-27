@@ -7,7 +7,7 @@ function add(n1, n2){
 // This one will be required when imported by using "require"
 module.exports = (a, b, callback) => {
     let output = add(a, b)
-    callback(output)
+    callback(null, output)
 }
 
 // This one will be executed when called from cmd

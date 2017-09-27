@@ -7,7 +7,7 @@ if(require.main === module){
         let host = process.argv[2]
         let chain = process.argv[3]
         let parameters = process.argv.slice(4)
-        chimera.sender.send(host, chain, parameters, function(output, success, errorMessage){
+        chimera.sender.send(host, chain, parameters, function(error, output){
             console.log(output)
         })
     }

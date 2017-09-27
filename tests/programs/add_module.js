@@ -3,7 +3,7 @@ function add(a, b){
 }
 
 function run(a, b, callback){
-    callback(add(a,b))
+    callback(null, add(a,b))
 }
 
 module.exports = {

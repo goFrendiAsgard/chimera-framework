@@ -146,7 +146,7 @@ More advance example including:
 
 are presented [here](doc/doc.advance-example.md)
 
-# Core API
+# API
 
 Chimera-framework provides several core API:
 
