@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 'use strict';
 
-const async = require('async')
+const async = require('neo-async')
 const assert = require('assert')
 const chimera = require('./index.js')
 const cmd = chimera.cmd
