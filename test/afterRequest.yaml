@@ -1,0 +1,8 @@
+ins: webState
+out: webState
+verbose: true
+if: webState.request.body.chain == 'tests/add.json'
+series: 
+    - ('{"status":401,"errorMessage":"No","test":"true"}') --> webState.response.response
+    - ("No") --> webState.response.errorMessage
+    - ("401") --> webState.response.status

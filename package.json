@@ -11,7 +11,7 @@
     "chimera-db": "tools/db.js"
   },
   "scripts": {
-    "test": "node test.js"
+    "test": "cd test && node test.js"
   },
   "keywords": [
     "framework",

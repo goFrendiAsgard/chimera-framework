@@ -3,7 +3,7 @@
 
 const async = require('neo-async')
 const assert = require('assert')
-const chimera = require('./index.js')
+const chimera = require('../index.js')
 const cmd = chimera.cmd
 const childProcess = require('child_process')
 
@@ -142,7 +142,7 @@ async.series([
             }
         })
         serverProcess.stderr.on('data', function(stderr){
-            console.error(String(stderr))
+            console.error(String(stderr).trim('\n'))
         })
     },
     // test distributed
