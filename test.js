@@ -11,38 +11,38 @@ const currentPath = process.cwd()
 let serverProcess = null
 let testChain = chimera.test.testChain
 let testCmd = chimera.test.testCmd
-let testFunction = chimera.test.testFunction
+let testFunctionWithCallback = chimera.test.testFunctionWithCallback
 let dbAsserter = require('./tests/programs/db-asserter.js') 
 
 // Run the test
 async.series([
     // test create HttpOptions
-    (callback) => {testFunction('Test createHttpOption 1', 
+    (callback) => {testFunctionWithCallback('Test createHttpOption 1', 
         chimera.sender.createHttpOption, 
         'http://facebook.com/abc/def', '',
         {'protocol':'http:', 'host':'facebook.com', 'port':80, 'path':'/abc/def'}, callback)
     },
-    (callback) => {testFunction('Test createHttpOption 2', 
+    (callback) => {testFunctionWithCallback('Test createHttpOption 2', 
         chimera.sender.createHttpOption, 
         'http://facebook.com:80/abc/def', '',
         {'protocol':'http:', 'host':'facebook.com', 'port':80, 'path':'/abc/def'}, callback)
     },
-    (callback) => {testFunction('Test createHttpOption 3', 
+    (callback) => {testFunctionWithCallback('Test createHttpOption 3', 
         chimera.sender.createHttpOption, 
         'https://facebook.com/abc/def', '',
         {'protocol':'https:', 'host':'facebook.com', 'port':443, 'path':'/abc/def'}, callback)
     },
-    (callback) => {testFunction('Test createHttpOption 4', 
+    (callback) => {testFunctionWithCallback('Test createHttpOption 4', 
         chimera.sender.createHttpOption, 
         'https://facebook.com:80/abc/def', '',
         {'protocol':'https:', 'host':'facebook.com', 'port':80, 'path':'/abc/def'}, callback)
     },
-    (callback) => {testFunction('Test createHttpOption 5', 
+    (callback) => {testFunctionWithCallback('Test createHttpOption 5', 
         chimera.sender.createHttpOption, 
         'facebook.com', '',
         {'protocol':'http:', 'host':'facebook.com', 'port':80, 'path':'/'}, callback)
     },
-    (callback) => {testFunction('Test createHttpOption 6', 
+    (callback) => {testFunctionWithCallback('Test createHttpOption 6', 
         chimera.sender.createHttpOption, 
         'localhost:3000', '',
         {'protocol':'http:', 'host':'localhost', 'port':3000, 'path':'/'}, callback)
@@ -55,26 +55,20 @@ async.series([
         'tests/mongo-driver.yaml', [], {}, dbAsserter, callback)
     },
     // test executeChain with various parameters
-    (callback) => {
-        chimera.executeChain('tests/increment.yaml', function(error, output){
-            assert(output == 1, 'FAIL, Expected : 1, Actual : '+output)
-            console.log('Success: executeChain without input and preset')
-            callback()
-        })
+    (callback) => {testFunctionWithCallback('Test executeChain 1',
+        chimera.executeChain,
+        'tests/increment.yaml',
+        1, callback)
     },
-    (callback) => {
-        chimera.executeChain('tests/increment.yaml', {'inc':5}, function(error, output){
-            assert(output == 5, 'FAIL, Expected : 5, Actual : '+output)
-            console.log('Success: executeChain without input ')
-            callback()
-        })
+    (callback) => {testFunctionWithCallback('Test executeChain 2',
+        chimera.executeChain,
+        'tests/increment.yaml', {'inc':5},
+        5, callback)
     },
-    (callback) => {
-        chimera.executeChain('tests/increment.yaml', [1], function(error, output){
-            assert(output == 2, 'FAIL, Expected : 2, Actual : '+output)
-            console.log('Success: executeChain without preset ')
-            callback()
-        })
+    (callback) => {testFunctionWithCallback('Test executeChain 3',
+        chimera.executeChain,
+        'tests/increment.yaml', [1],
+        2, callback)
     },
     // test execute chain
     (callback) => {testChain('Test executeChain without presets',
