@@ -1,63 +1,75 @@
-# Utilities 
+`Chimera-framework` comes with several CLI utilities
 
-Chimera-framework has several CLI utilities
+# chimera
 
-<table>
-    <tr>
-        <th>Utility</th>
-        <th>Usage</th>
-        <th>Description</th>
-    </tr>
-    <tr>
-        <td>chimera</td>
-        </td>
-        <td>
-            <code>chimera [yaml-chain] [input1, [input2], [input3],... [inputN]]</code>
-        </td>
-        <td>
-            Executing YAML chain
-        </td>
-    </tr>
-    <tr>
-        <td>chimera-serve</td>
-        </td>
-        <td>
-            <code>chimera-serve</code><br />
-            Or<br />
-            <code>TIMEOUT=[timeout-in-microseconds] PUBLISHED=[published-directory] PORT=[directory] chimera-serve</code>
-        </td>
-        <td>
-            Initiate chimera web service, so that any YAML chain in the current directory will be accessible from the network
-        </td>
-    </tr>
-    <tr>
-        <td>chimera-send</td>
-        </td>
-        <td>
-            <code>chimera-send [http(s)://server-address:port] [yaml-chain] [input1, [input2], [input3],... [inputN]]</code>
-        </td>
-        <td>
-            Executing YAML chain remotely. <code>chimera-serve</code> process should be already available in the server.
-        </td>
-    </tr>
-    <tr>
-        <td>chimera-eisn</td>
-        </td>
-        <td>
-            <code>chimera-eisn [source-code-file] [target-file] [compiling-command]</code>
-        </td>
-        <td>
-            Execute compiing-command if source-code-file's modification time is newer than target-file's modification time
-        </td>
-    </tr>
-    <tr>
-        <td>chimera-init-web</td>
-        </td>
-        <td>
-            <code>chimera-init-web [project-name]</code>
-        </td>
-        <td>
-            Create a chimera web framework project
-        </td>
-    </tr>
-</table>
+## Usage
+
+`chimera <chain> [input1, [input2, [input3, .... [inputN]]]]`
+
+## Description
+
+Execute `chain`, set `stdout` to the output of the `chain`, and put any error/warning into `stderr`
+
+## Example
+
+`chimera add.yaml 5 6`
+
+# chimera-serve
+
+## Usage
+
+`[PORT=<port> [PUBLISHED=<publishedDirectory>]] chimera-serve`
+
+## Example
+
+`PORT=3000 PUBLISHED=. chimera-serve`
+
+Or
+
+`chimera-serve`
+
+## Description
+
+Expose all chain in `publishedDirectory` so that it is accessible by other computers in the network through `chimera-send`
+
+# chimera-send
+
+## Usage
+
+`chimera-send <http[s]://serverAddress:[port]> <remoteChain> [input1, [input2, [input3,... [inputN]]]]`
+
+## Example
+
+`chimera-send http://development.server:3000 add.yaml 5 6`
+
+## Description
+
+Execute `remoteChain` in other computer in the network exposed by `chimera-serve`, set `stdout` to the output of the `chain`, and put any error/warning into `stderr`
+
+# chimera-eisn
+
+## Usage
+
+`chimera-eisn <sourceFile> <destinationFile> <command>`
+
+## Example
+
+`chimera-eisn Substract.java Substract.class javac Substract.java`
+
+## Description
+
+Execute compiing-command if source-code-file's modification time is newer than target-file's modification time
+
+# chimera-init-web
+
+## Usage
+
+`chimera-init-web <projectName>`
+
+## Example
+
+`chimera-init-web myProject`
+
+## Description
+
+Create a new web chimera-web application
