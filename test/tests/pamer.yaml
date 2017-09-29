@@ -1,0 +1,13 @@
+ins: a, b
+out: c
+verbose: true
+series:
+    - ('{"x":4,"z":5}') -> -> tmp
+    - parallel:
+        - series:
+            - (a, b) -> php programs/add.php -> tmp.y.addResult
+            - (tmp.y.addResult, tmp.x) -> php programs/multiply.php -> tmp.y.addResult
+        - series:
+            - (a, b) -> php programs/substract.php -> tmp.y.substractResult
+            - (tmp.y.substractResult, tmp.x) -> php programs/multiply.php -> tmp.y.substractResult
+    - (tmp.y.addResult, tmp.y.substractResult) -> php programs/multiply.php -> c
