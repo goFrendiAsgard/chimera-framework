@@ -1,0 +1,1 @@
+(str, num, fill) -> [@util.stretchString]

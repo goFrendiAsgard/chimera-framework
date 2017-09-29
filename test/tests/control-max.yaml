@@ -1,0 +1,38 @@
+out: out
+series:
+
+    # assign multi values into "data" variable
+    - (1,4,5,3,1,2) --> data
+
+    - parallel:
+        - series:
+            #############################################
+            ## IMPERATIVE WAY
+            #############################################
+            # assign -1 to "max" variable
+            - -1 --> max1
+            # do some action if length of data is greater than 0
+            - if: data.length > 0
+              series:
+                  # assign 0 to i
+                  - 0 --> i
+                  # do some action while i < length of data
+                  - while: i<data.length
+                    series:
+                        # if i==0 or data[i] is greater than max, assign data[i] to max
+                        - if: i==0 || data[i] > max1
+                          command: (data[i]) --> max1
+                        # increase i
+                        - (i) -> (i)=>{return i+1} -> i
+
+
+        - series:
+            #############################################
+            ## ROCKET SCIENTIST WAY
+            #############################################
+            - ins: data
+              out: max2
+              command: (data)=>{return data.reduce((a, b)=>{return 0.5 * (a+b+Math.abs(a-b))})}
+
+    # assign multi values into "data" variable
+    - (max1, max2) --> out

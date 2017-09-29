@@ -1,0 +1,8 @@
+ins: webState
+out: webState
+series:
+
+    - (webState.config.localBeforeRequestHook) --> hook
+
+    - if: hook 
+      command: (_init_cwd, hook, webState) -> [chimera-framework run] ->webState

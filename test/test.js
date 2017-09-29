@@ -16,7 +16,15 @@ let dbAsserter = require('./tests/programs/db-asserter.js')
 
 // Run the test
 async.series([
-    // test smartSplit
+    // test control-max
+    (next) => {testChain('Test control max',
+        'tests/control-max.yaml', [5,5], next)},
+    // test sprout
+    (next) => {testChain('Test Sprout',
+        'tests/sprout.yaml', [4,5], 18, next)},
+    // test stretch string
+    (next) => {testChain('Test Stretch-string',
+        'tests/stretch-string.yaml', ['a', 3, '.'], 'a..', next)},
     (next) => {testFunctionWithCallback('Test smart split 1',
         chimera.util.smartSplit,
         'a, "{\"b\":\"c,d,e,f\",\"g\":\"h,i,j\"}", k', ',',
@@ -50,7 +58,7 @@ async.series([
     (next) => {testCmd('Test mongo driver',
         'chimera "tests/mongo-driver.yaml"', dbAsserter, next)},
     (next) => {testChain('Test mongo driver',
-        'tests/mongo-driver.yaml', [], {}, dbAsserter, next)},
+        'tests/mongo-driver.yaml', dbAsserter, next)},
     // test executeChain with various parameters
     (next) => {testFunctionWithCallback('Test executeChain 1',
         chimera.executeChain,
@@ -145,6 +153,12 @@ async.series([
             console.error(String(stderr).trim('\n'))
         })
     },
+    // test chimera send authorized
+    (next) => {testCmd('Test chimera-send authorized',
+        'chimera-send http://localhost:3010 tests/add.yaml 2 3', 5, next)},
+    // test chimera send unauthorized
+    (next) => {testCmd('Test chimera-send unauthorized',
+        'chimera-send http://localhost:3010 tests/add.json 2 3', '', next)},
     // test distributed
     (next) => {testCmd('Test distributed',
         'chimera tests/distributed.yaml 5 4 http://localhost:3010', 18, next)},
