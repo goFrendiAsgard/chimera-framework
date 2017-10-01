@@ -1,4 +1,5 @@
 out: out
+verbose: true
 series:
     # assign multi values into "data" variable
     - (1,4,5,3,1,2) --> data
@@ -25,7 +26,6 @@ series:
         - ins: data
           out: max2
           command: (data)=>{return data.reduce((a, b)=>{return 0.5 * (a+b+Math.abs(a-b))})}
-        - (a,b) -> php programs/add.php -> c
 
     # assign max1 and max2 into "out" variable
     - (max1, max2) --> out
