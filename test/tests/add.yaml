@@ -1,2 +1,2 @@
-verbose: true
+verbose: 10
 command: (a,b) -> node programs/add.js -> c
