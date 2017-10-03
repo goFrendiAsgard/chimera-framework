@@ -1,2 +1,2 @@
 verbose: true
-command: (a,b) -> [$.core.load('./programs/add.js')] -> c
+command: (a,b) -> [$.load(_chain_cwd, './programs/add.js')] -> c
