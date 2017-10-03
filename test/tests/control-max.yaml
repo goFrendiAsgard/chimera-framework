@@ -1,5 +1,5 @@
 out: out
-verbose: true
+verbose: 4
 series:
     # assign multi values into "data" variable
     - (1,4,5,3,1,2) --> data
