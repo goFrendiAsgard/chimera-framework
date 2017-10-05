@@ -1,2 +1,2 @@
-array = process.argv.slice(2);
-console.log(array.join(', '));
+array = process.argv.slice(2)
+console.log(array.join(', '))

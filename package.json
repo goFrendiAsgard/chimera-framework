@@ -47,6 +47,7 @@
     "process": "^0.11.10",
     "pug": "^2.0.0-rc.4",
     "querystring": "^0.2.0",
+    "safe-eval": "^0.3.0",
     "serve-favicon": "^2.4.4"
   },
   "repository": {
@@ -61,5 +62,9 @@
   "directories": {
     "test": "tests"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "eslint": "^4.8.0",
+    "eslint-config-google": "^0.9.1",
+    "eslint-plugin-react": "^7.4.0"
+  }
 }

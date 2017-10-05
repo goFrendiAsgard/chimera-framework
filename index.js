@@ -1,5 +1,5 @@
 #! /usr/bin/env node
-'use strict';
+'use strict'
 
 let cmd = require('./lib/cmd.js')
 let core = require('./lib/core.js')
@@ -12,19 +12,18 @@ let server = require('./lib/server.js')
 
 // The exported resources
 module.exports = {
-    'executeChain' : core.executeChain,
-    'run' : core.run,
-    'formatNanoSecond' : util.formatNanoSecond,
-    'deepCopy' : util.deepCopy,
-    'patchObject' : util.patchObject,
-    'eisn' : util.eisn,
-    'cmd' : cmd,
-    'util': util,
-    'test': test,
-    'db' : db,
-    'core' : core,
-    'web' : web,
-    'sender' : sender,
-    'server': server,
+  'executeChain': core.executeChain,
+  'run': core.run,
+  'formatNanoSecond': util.formatNanoSecond,
+  'deepCopy': util.deepCopy,
+  'patchObject': util.patchObject,
+  'eisn': util.eisn,
+  'cmd': cmd,
+  'util': util,
+  'test': test,
+  'db': db,
+  'core': core,
+  'web': web,
+  'sender': sender,
+  'server': server
 }
-

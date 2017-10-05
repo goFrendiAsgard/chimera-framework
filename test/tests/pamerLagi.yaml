@@ -1,0 +1,19 @@
+masukan: angka1, angka2
+keluaran: angkaAngkaGenap
+serial:
+
+    # jika angka2 < angka1, maka tukar nilainya
+    - jika: angka2 < angka1
+      serial:
+          - angka2 --> angka3
+          - angka1 --> angka2
+          - angka3 --> angka1
+
+    - angka1 --> x
+
+    - serial:
+        # nambahin ke array nya masih harus minta bantuan javascript -_-
+        - jika: x%2 == 0
+          perintah: (x, angkaAngkaGenap) -> (a,l) => {l.push(a); return l;} -> angkaAngkaGenap
+        - x+1 --> x
+      selama: x <= angka2

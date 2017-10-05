@@ -14,13 +14,14 @@ series:
                   # assign 0 to i
                   - 0 --> i
                   # do some action while i < length of data
-                  - while: i<data.length
-                    series:
+                  - series:
                         # if i==0 or data[i] is greater than max, assign data[i] to max
                         - if: i==0 || data[i] > max1
                           command: (data[i]) --> max1
                         # increase i
                         - (i) -> (i)=>{return i+1} -> i
+                    while: i<data.length
+
         #############################################
         ## ROCKET SCIENTIST WAY
         - ins: data
