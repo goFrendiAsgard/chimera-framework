@@ -1,19 +1,35 @@
 masukan: angka1, angka2
-keluaran: angkaAngkaGenap
-serial:
+keluaran: tampilan
+verbose: 1
+lakukan:
 
-    # jika angka2 < angka1, maka tukar nilainya
-    - jika: angka2 < angka1
-      serial:
-          - angka2 --> angka3
-          - angka1 --> angka2
-          - angka3 --> angka1
+    - ('Siapa Namamu') -> [$.prompt] -> nama
 
-    - angka1 --> x
+    # tentukan batas bawah dan batas atas
+    - jika: angka1 >= angka2
+      lakukan:
+          - angka2 --> batasBawah
+          - angka1 --> batasAtas
+      selainItu:
+          - angka1 --> batasBawah
+          - angka2 --> batasAtas
 
-    - serial:
-        # nambahin ke array nya masih harus minta bantuan javascript -_-
-        - jika: x%2 == 0
-          perintah: (x, angkaAngkaGenap) -> (a,l) => {l.push(a); return l;} -> angkaAngkaGenap
+    # buat array listGenap, copykan nilai bataBawah ke x
+    - ([]) --> listGenap
+    - batasBawah --> x
+
+    # isi listGenap (notice, I use Javanese keyword loh...) 
+    - nindakake:
+        # tambahkan x ke listGenap jika x habis dibagi 2
+        - yen: x%2 == 0
+          nindakake: (listGenap, x) -> [$.push] -> listGenap
+        # tambahkan nilai x dengan 1
         - x+1 --> x
-      selama: x <= angka2
+      nalika: x <= batasAtas
+
+    # dapatkan kalender bulan ini
+    - cal -> kalender
+
+    - (listGenap, ', ') -> [$.join] -> stringGenap
+    - ( 'Halo ', nama) -> [$.concat] -> salam
+    - ([salam, kalender, listGenap], '\n') -> [$.join] -> tampilan
