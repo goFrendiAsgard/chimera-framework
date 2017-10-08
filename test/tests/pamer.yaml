@@ -1,35 +1,29 @@
-out: out
-verbose: 4
-series:
-    # assign multi values into "data" variable
-    - (1,4,5,3,1,2) --> data
-    - parallel:
-        - series:
-            #############################################
-            # assign -1 to "max" variable
-            - -1 --> max1
-            # do some action if length of data is greater than 0
-            - if: data.length > 0
-              series:
-                  # assign 0 to i
-                  - 0 --> i
-                  # do some action while i < length of data
-                  - series:
-                        # if i==0 or data[i] is greater than max, assign data[i] to max
-                        - if: i==0 || data[i] > max1
-                          command: (data[i]) --> max1
-                        # increase i
-                        - (i) -> (i)=>{return i+1} -> i
-                    while: i<data.length
+ins: angka1, angka2
+out: tampilan
+verbose: 0
+do:
 
-        #############################################
-        ## ROCKET SCIENTIST WAY
-        - ins: data
-          out: max2
-          command: (data)=>{return data.reduce((a, b)=>{return 0.5 * (a+b+Math.abs(a-b))})}
+    - ('What is your name?') -> [$.prompt] -> nama
 
-        - ins: "{}"
-          out: emptyObject
+    - if: angka1 >= angka2
+      do:
+          - angka2 --> batasBawah
+          - angka1 --> batasAtas
+      else:
+          - angka1 --> batasBawah
+          - angka2 --> batasAtas
 
-    # assign max1 and max2 into "out" variable
-    - (max1, max2) --> out
+    - ([]) --> listGenap
+    - batasBawah --> x
+
+    - do:
+        - if: x%2 == 0
+          do: x --> listGenap[listGenap.length]
+        - x+1 --> x 
+      while: x <= batasAtas
+
+    - cal -> info.kalender
+
+    - (listGenap, ', ') -> [$.join] -> info.genap
+    - ( 'Halo ', nama) -> [$.concat] -> info['salam']
+    - ([info.salam, info.kalender, info.genap], '\n') -> [$.join] -> tampilan
