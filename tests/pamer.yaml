@@ -2,11 +2,8 @@ ins: angka1, angka2
 out: tampilan
 verbose: 0
 do:
-
     - parallel: # do these three things in parallel
-
         - ('What is your name?') -> [$.prompt] -> nama
-
         - do:
             - if: angka1 >= angka2
               do:
@@ -24,9 +21,7 @@ do:
                   do: x --> listGenap[listGenap.length]
                 - x+1 --> x 
               while: x <= batasAtas
-
         - do: cal -> info.kalender
-
     - (listGenap, ', ') -> [$.join] -> info.genap
     - ( 'Halo ', nama) -> [$.concat] -> info['salam']
     - ([info.salam, info.kalender, info.genap], '\n') -> [$.join] -> tampilan
