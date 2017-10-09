@@ -8,6 +8,7 @@ let util = require('./lib/util.js')
 let web = require('./lib/web.js')
 let sender = require('./lib/sender.js')
 let server = require('./lib/server.js')
+let eisn = require('./lib/eisn.js')
 
 // The exported resources
 module.exports = {
@@ -20,5 +21,6 @@ module.exports = {
   'core': core,
   'web': web,
   'sender': sender,
-  'server': server
+  'server': server,
+  'eisn': eisn
 }

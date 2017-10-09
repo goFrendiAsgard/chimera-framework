@@ -11,7 +11,7 @@ if (require.main === module) {
     let srcFile = process.argv[2]
     let dstFile = process.argv[3]
     let command = process.argv.slice(4).join(' ')
-    chimera.util.eisn(srcFile, dstFile, command)
+    chimera.eisn(srcFile, dstFile, command)
   } else {
         // show missing argument warning
     console.error('Missing Arguments')
