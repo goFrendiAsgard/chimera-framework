@@ -5,6 +5,6 @@ series:
     - (webState.config.localAfterRequestHook) --> hook
 
     - if: hook 
-      command: (_init_cwd, hook, webState) -> [chimera-framework run] -> webState
+      command: (_init_cwd, hook, webState) -> [$.loadJs('chimera-framework', 'run')] -> webState
 
-    - (webState.response) -> [./js/afterRequestProcessor.js] -> webState.response
+    - (webState.response) -> [$.loadJs( _chain_cwd + './js/afterRequestProcessor.js')] -> webState.response
