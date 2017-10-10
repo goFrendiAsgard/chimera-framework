@@ -12,7 +12,6 @@ lakukan:
         selainItu:
           - angka1 --> batasBawah
           - angka2 --> batasAtas
-
       - ([]) --> listGenap
       - batasBawah --> x
       - lakukan:
@@ -22,7 +21,7 @@ lakukan:
         selama: x <= batasAtas
     - lakukan: cal -> info.kalender
     - "[$.loadJs(_chain_cwd+'circle.js')] -> info.circle"
-    - "[$.loadJs(_chain_cwd+'circle.js', 'area')] -> info.area"
+    - "(7) -> [$.loadJs(_chain_cwd+'circle.js', 'area')] -> info.area"
   - (listGenap, ', ') -> [$.join] -> info.genap
   - ( 'Halo ', nama) -> [$.concat] -> info['salam']
   - ([info.salam, info.kalender, info.genap], '\n') -> [$.join] -> tampilan
