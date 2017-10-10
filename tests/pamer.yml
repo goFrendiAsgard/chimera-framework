@@ -1,6 +1,6 @@
 ins: num1, num2
 out: output
-verbose: 1
+verbose: 0
 do:
   - parallel: # do these things in parallel
     - |'What is your name?' -> [$.prompt] -> name

@@ -1,7 +1,7 @@
 {
   "ins": "num1, num2",
   "out": "output",
-  "verbose": 1,
+  "verbose": 0,
   "do": [
     {
       "parallel": [
