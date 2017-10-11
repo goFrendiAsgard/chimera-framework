@@ -3,6 +3,8 @@
 
 let cmd = require('./lib/cmd.js')
 let core = require('./lib/core.js')
+let corePreprocessor = require('./lib/core-preprocessor.js')
+let coreDollar = require('./lib/core-dollar.js')
 let db = require('./lib/db.js')
 let util = require('./lib/util.js')
 let web = require('./lib/web.js')
@@ -12,6 +14,8 @@ let eisn = require('./lib/eisn.js')
 
 // The exported resources
 module.exports = {
+  'preprocessor': corePreprocessor,
+  'dollar': coreDollar,
   'executeChain': core.executeChain,
   'runChain': core.runChain,
   'eisn': util.eisn,
