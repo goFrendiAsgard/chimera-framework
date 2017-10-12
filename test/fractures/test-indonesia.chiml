@@ -1,0 +1,29 @@
+masukan: num1, num2
+keluaran: output
+verbose: 0
+lakukan:
+  - parallel: # do these things in parallel
+    - |'What is your name?' -> [$.prompt] -> name
+    - lakukan:
+      - jika: |num1 >= num2
+        lakukan:
+          - |num2 --> bottom
+          - |num1 --> top
+        sebaliknya:
+          - |num1 --> bottom
+          - |num2 --> top
+      - |[] --> evens
+      - |bottom --> x
+      - lakukan:
+        - jika: |x%2 == 0
+          lakukan: |x --> evens[evens.length]
+        - x+1 --> x 
+        selama: |x <= top
+    - |cal -> info.kalender
+    - |[$.loadJs(_chain_cwd+'circle.js')] -> info.circle
+    - |(7) -> [$.loadJs(_chain_cwd+'circle.js', 'area')] -> info.area
+  - |(evens, ', ') -> [$.join] -> info.genap
+  - |('Halo ', name) -> [$.concat] -> info['salam']
+  - |([info.salam, info.kalender, info.genap, info.circle, info.area], '\n') -> [$.join] -> output
+catch: |typeof(num1) !== 'number' || typeof(num2) !== 'number'
+throw: |num1 dan num2 harus bertipe number

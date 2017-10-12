@@ -24,6 +24,7 @@
   "dependencies": {
     "assert": "^1.4.1",
     "body-parser": "^1.17.2",
+    "chai": "^4.1.2",
     "child_process": "^1.0.2",
     "chimera-web-framework": "0.0.0",
     "clone": "^2.1.1",

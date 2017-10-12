@@ -3,27 +3,27 @@ out: output
 verbose: 0
 do:
   - parallel: # do these things in parallel
-    - |'What is your name?' -> [$.prompt] -> name
+    - "'What is your name?' -> [$.prompt] -> name"
     - do:
-      - if: |num1 >= num2
+      - if: "num1 >= num2"
         do:
-          - |num2 --> bottom
-          - |num1 --> top
+          - "num2 --> bottom"
+          - "num1 --> top"
         else:
-          - |num1 --> bottom
-          - |num2 --> top
-      - |[] --> evens
-      - |bottom --> x
+          - "num1 --> bottom"
+          - "num2 --> top"
+      - "[] --> evens"
+      - "bottom --> x"
       - do:
-        - if: |x%2 == 0
-          do: |x --> evens[evens.length]
+        - if: "x%2 == 0"
+          do: "x --> evens[evens.length]"
         - x+1 --> x 
-        while: |x <= top
-    - |cal -> info.kalender
-    - |[$.loadJs(_chain_cwd+'circle.js')] -> info.circle
-    - |(7) -> [$.loadJs(_chain_cwd+'circle.js', 'area')] -> info.area
-  - |evens, ', ' -> [$.join] -> info.genap
-  - |('Halo ', name) -> [$.concat] -> info['salam']
-  - |([info.salam, info.kalender, info.genap, info.circle, info.area], '\n') -> [$.join] -> output
-catch: |typeof(num1) !== 'number' || typeof(num2) !== 'number'
-throw: |num1 dan num2 harus bertipe number
+        while: "x <= top"
+    - "cal -> info.kalender"
+    - "[$.loadJs(_chain_cwd+'circle.js')] -> info.circle"
+    - "(7) -> [$.loadJs(_chain_cwd+'circle.js', 'area')] -> info.area"
+  - "(evens, ', ') -> [$.join] -> info.genap"
+  - "('Halo ', name) -> [$.concat] -> info['salam']"
+  - "([info.salam, info.kalender, info.genap, info.circle, info.area], '\n') -> [$.join] -> output"
+catch: "typeof(num1) !== 'number' || typeof(num2) !== 'number'"
+throw: "num1 dan num2 harus bertipe number"
