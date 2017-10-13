@@ -43,3 +43,4 @@ This note is intended for developers. You might not need it
 * [x] Create Mongo db driver API documentation
 * [ ] Create aggregate function
 * [ ] Completing CCK
+* [ ] Fix getChainWithTrueCommand
