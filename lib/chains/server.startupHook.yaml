@@ -2,7 +2,7 @@ ins: webState
 out: webState
 series:
 
-    - |(webState.config.localStartupHook) --> hook
+  - |(webState.config.localStartupHook) --> hook
 
-    - if: hook 
-      command: |(_init_cwd, hook, webState) -> [chimera-framework run] -> webState
+  - if: hook 
+    command: |(_init_cwd, hook, webState) -> [$.loadJs('chimera-framework', 'run')] -> webState

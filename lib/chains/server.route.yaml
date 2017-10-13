@@ -1,1 +1,1 @@
-(webState) -> [chimera-framework server.processChain]
+(webState) -> [$.loadJs('chimera-framework', 'server.processChain')]
