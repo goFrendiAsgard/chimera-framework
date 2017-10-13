@@ -6,7 +6,6 @@ const chai = require('chai');
 const chimera = require('../index.js')
 const assert = chai.assert; 
 
-
 // core-preprocessor
 describe('core-preprocessor', function () {
   // getTrueRootChain

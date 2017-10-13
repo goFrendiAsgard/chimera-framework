@@ -1,9 +1,8 @@
 masukan: num1, num2
-keluar: output
+keluaran: output
 verbose: 0
 nindakake:
-  - parallel: # nindakake these things in parallel
-    - |'What is your name?' -> [$.prompt] -> name
+  - paralel: # do these things in parallel
     - nindakake:
       - yen: |num1 >= num2
         nindakake:
@@ -17,13 +16,18 @@ nindakake:
       - nindakake:
         - yen: |x%2 == 0
           nindakake: |x --> evens[evens.length]
-        - x+1 --> x 
+        - x+1 --> x
         nalika: |x <= top
-    - |cal -> info.kalender
     - |[$.loadJs(_chain_cwd+'circle.js')] -> info.circle
     - |(7) -> [$.loadJs(_chain_cwd+'circle.js', 'area')] -> info.area
-  - |(evens, ', ') -> [$.join] -> info.genap
-  - |('Halo ', name) -> [$.concat] -> info['salam']
-  - |([info.salam, info.kalender, info.genap, info.circle, info.area], '\n') -> [$.join] -> output
+  - |(evens, ', ') -> [$.join] -> info.evens
+  - |('Hello ', 'world') -> [$.concat] -> info['helloWorld']
+  - masukan:
+    - 'Hello '
+    - 'sekai'
+    keluaran: info['helloSekai']
+    nindakake: |[$.concat]
+  - |(_chain_cwd+'square.chiml', 10) -> [$.runChain] -> info.square
+  - |([info.helloWorld, info.helloSekai, info.evens, info.circle, info.area, info.square], '\n') -> [$.join] -> output
 catch: |typeof(num1) !== 'number' || typeof(num2) !== 'number'
-throw: |num1 dan num2 harus bertipe number
+throw: num1 dan num2 should be number

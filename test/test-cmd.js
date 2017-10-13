@@ -9,11 +9,11 @@ describe('cmd', function () {
   // cmd.get
   describe('cmd.get', function () {
     it('should run command line and get the result', function (done) {
-      chimera.cmd.get('factor 10', function (error, result) {
+      chimera.cmd.get('node ' + __dirname + '/fractures/square.js 10', function (error, result) {
         if (error) {
           return done(error)
         }
-        assert.equal(result, '10: 2 5\n')
+        assert.equal(result, '100\n')
         done()
       })
     })
@@ -21,7 +21,7 @@ describe('cmd', function () {
   // cmd.run
   describe('cmd.run', function() {
     it('should return an object with process id', function (done) {
-      let result = chimera.cmd.run('factor 10')
+      let result = chimera.cmd.run('node ' + __dirname + '/fractures/square.js 10')
       assert.exists(result.pid)
       done()
     })
