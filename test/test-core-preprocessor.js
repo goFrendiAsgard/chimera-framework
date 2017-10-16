@@ -2,9 +2,9 @@
 
 const fs = require('fs')
 const path = require('path')
-const chai = require('chai');  
+const chai = require('chai')
 const chimera = require('../index.js')
-const assert = chai.assert; 
+const assert = chai.assert
 
 // core-preprocessor
 describe('core-preprocessor', function () {
@@ -22,7 +22,7 @@ describe('core-preprocessor', function () {
           }
           standardChainScript = String(standardChainScript)
           assert.equal(JSON.stringify(trueChain), JSON.stringify(JSON.parse(standardChainScript)))
-          //assert.deepInclude(trueChain, JSON.parse(standardChainScript))
+          // assert.deepInclude(trueChain, JSON.parse(standardChainScript))
           done()
         })
       })

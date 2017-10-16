@@ -1,9 +1,9 @@
 /* eslint-env mocha */
 
 const path = require('path')
-const chai = require('chai');  
+const chai = require('chai')
 const chimera = require('../index.js')
-const assert = chai.assert; 
+const assert = chai.assert
 
 const expectedTestResult = 'Hello world\nHello sekai\n6, 8, 10\nstring from circle.js\n76.96902001294993\n100'
 
