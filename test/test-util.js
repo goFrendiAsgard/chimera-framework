@@ -13,6 +13,8 @@ const functionSample = ()=>{return null}
 const nullSample = null
 const undefinedSample = undefined
 
+const jsonFileName = path.join(__dirname, '/tmp/test.json')
+
 // cmd
 describe('util', function () {
   describe('getInspectedObject', function () {
@@ -343,4 +345,56 @@ describe('util', function () {
       done()
     })
   })
+  describe('getStretchedString', function () {
+    it('should add filler characters if string length is less than expected length', function (done) {
+      assert.equal(chimera.util.getStretchedString('abc', 6, '.'), 'abc...')
+      done()
+    })
+    it('should should not do anything if string length is more than expected length', function (done) {
+      assert.equal(chimera.util.getStretchedString('abc', 2, '.'), 'abc')
+      done()
+    })
+  })
+  describe('getSlicedString', function () {
+    it('should not do anything if string length is less than expected length', function (done) {
+      assert.equal(chimera.util.getSlicedString('abc', 6), 'abc')
+      done()
+    })
+    it('should should slice string if string length is more than expected length', function (done) {
+      assert.equal(chimera.util.getSlicedString('abcdefghijklmn', 9), 'abcdef...')
+      done()
+    })
+  })
+  describe('writeJsonFile', function () {
+    let obj = {a:1,b:2,c:[1,2,3],d:{e:4,f:5},g:'string'}
+    it('should write JSON object to a file', function (done) {
+      chimera.util.writeJsonFile(jsonFileName, obj, function (error, result) {
+        if (error) {
+          return done(error)
+        }
+        chimera.cmd.get('cat ' + jsonFileName, function (error, result) {
+          assert.equal(result, '{"a":1,"b":2,"c":[1,2,3],"d":{"e":4,"f":5},"g":"string"}')
+          done()
+        })
+      })
+    })
+  })
+  describe('readJsonFile', function () {
+    let obj = {a:1,b:2,c:[1,2,3],d:{e:4,f:5},g:'string'}
+    it('should read JSOn object from a file', function (done) {
+      chimera.util.readJsonFile(jsonFileName, function (error, result) {
+        if (error) {
+          return done(error)
+        }
+        assert.deepEqual(result, obj)
+        chimera.cmd.get('rm ' + jsonFileName, function (error, result) {
+          if (error) {
+            return done(error)
+          }
+          done()
+        })
+      })
+    })
+  })
+
 })
