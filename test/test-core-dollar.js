@@ -8,7 +8,7 @@ const assert = chai.assert
 
 describe('chain dollar', function () {
   describe('runChain', function () {
-    it('execute runChain(square.chiml, 4) successfully', function (done) {
+    it('should runChain(square.chiml, 4) successfully', function (done) {
       chimera.dollar.runChain(path.resolve(__dirname, 'fractures/square.chiml'), 4, function (error, result) {
         if (error) {
           return done(error)
@@ -19,7 +19,7 @@ describe('chain dollar', function () {
     })
   })
   describe('assignValue', function () {
-    it('execute assignValue(5) successfully', function (done) {
+    it('should assignValue(5) successfully', function (done) {
       chimera.dollar.assignValue(5, function (error, result) {
         if (error) {
           return done(error)
@@ -28,7 +28,7 @@ describe('chain dollar', function () {
         done()
       })
     })
-    it('execute assignValue(5, 6, 7) successfully', function (done) {
+    it('should assignValue(5, 6, 7) successfully', function (done) {
       chimera.dollar.assignValue(5, 6, 7, function (error, result) {
         if (error) {
           return done(error)
@@ -39,7 +39,7 @@ describe('chain dollar', function () {
     })
   })
   describe('concat', function () {
-    it('execute concat("Hello ", "world") successfully', function (done) {
+    it('should concat("Hello ", "world") successfully', function (done) {
       chimera.dollar.concat('Hello ', 'world', function (error, result) {
         if (error) {
           return done(error)
@@ -50,7 +50,7 @@ describe('chain dollar', function () {
     })
   })
   describe('join', function () {
-    it('execute join(["a", "b", "c"], ", ") successfully', function (done) {
+    it('should join(["a", "b", "c"], ", ") successfully', function (done) {
       chimera.dollar.join(['a', 'b', 'c'], ', ', function (error, result) {
         if (error) {
           return done(error)
@@ -61,7 +61,7 @@ describe('chain dollar', function () {
     })
   })
   describe('split', function () {
-    it('execute split("a, b, c", ", ") successfully', function (done) {
+    it('should split("a, b, c", ", ") successfully', function (done) {
       chimera.dollar.split('a, b, c', ', ', function (error, result) {
         if (error) {
           return done(error)
@@ -72,7 +72,7 @@ describe('chain dollar', function () {
     })
   })
   describe('push', function () {
-    it('execute push(["a", "b", "c"], "d") successfully', function (done) {
+    it('should push(["a", "b", "c"], "d") successfully', function (done) {
       chimera.dollar.push(['a', 'b', 'c'], 'd', function (error, result) {
         if (error) {
           return done(error)

@@ -33,7 +33,7 @@ async.series([
   },
   (next) => {
     testFunctionWithCallback('Test smart split 1',
-        chimera.util.smartSplit,
+        chimera.util.getSmartSplitted,
         'a, "{\"b\":\"c,d,e,f\",\"g\":\"h,i,j\"}", k', ',',
         ['a', '{"b":"c,d,e,f","g":"h,i,j"}', 'k'], next)
   },
@@ -219,7 +219,7 @@ async.series([
     // run chimera server
   (next) => {
     let nextExecuted = false
-    let env = chimera.util.deepCopy(process.env)
+    let env = chimera.util.getDeepCopiedObject(process.env)
     env['PORT'] = 3010
     serverProcess = childProcess.spawn('chimera-serve', [], {'env': env, 'cwd': process.cwd()})
         // if error, show message and kill

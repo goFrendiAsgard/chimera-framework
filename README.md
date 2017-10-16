@@ -152,8 +152,8 @@ Chimera-framework provides several core API:
 
 * `executeChain`
 * `getFormattedNanoSecond`
-* `deepCopyObject`
-* `patchObject`
+* `getDeepCopiedObjectObject`
+* `getPatchedObject`
 * `cmd.get`
 * `cmd.run`
 * `eisn`

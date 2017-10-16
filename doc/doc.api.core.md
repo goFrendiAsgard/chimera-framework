@@ -83,12 +83,12 @@ let elapsedTime = process.hrtime(startTime);
 console.log(chimera.getFormattedNanoSecond(elapsedTime));
 ```
 
-# deepCopyObject
+# getDeepCopiedObjectObject
 
 Make a copy of an object.
 
 ## Usage
-* `deepCopyObject(<obj>)`
+* `getDeepCopiedObjectObject(<obj>)`
 
 ## Parameters
 * `obj`: object to be copied
@@ -100,7 +100,7 @@ const chimera = require('chimera-framework/core');
 
 let a = {x:5, b:7};
 let b = a; // b refer to a. So, if b changed, a will be affected as well
-let c = chimera.deepCopyObject(a); // c is a copy of a, modification of c will not affect a
+let c = chimera.getDeepCopiedObjectObject(a); // c is a copy of a, modification of c will not affect a
 
 a.x = 7;
 console.log(a); // {x:7, b:7}
@@ -109,12 +109,12 @@ console.log(c); // {x:5, b:7}
 
 ```
 
-# patchObject
+# getPatchedObject
 
 Patch an object with patcher.
 
 ## Usage
-* `patchObject(<obj>, <patcher>)`
+* `getPatchedObject(<obj>, <patcher>)`
 
 ## Parameters
 * `obj`: object to be patched
@@ -127,7 +127,7 @@ const chimera = require('chimera-framework/core');
 
 let obj = {x:5, b:7};
 let patcher = {b:6, c:7};
-let newObj = chimera.patchObject(obj, patcher);
+let newObj = chimera.getPatchedObject(obj, patcher);
 
 console.log(newObj); // {x:5, b:6, c:7}
 ```

@@ -48,13 +48,13 @@ function initWeb (projectDir) {
     },
         // read package-template.json and rewrite package.json
     (callback) => {
-      util.readJson('package-template.json', function (error, obj) {
+      util.readJsonFile('package-template.json', function (error, obj) {
         if (error) {
           console.error('[ERROR] Cannot read package-template.json')
           finalCallback(error)
         } else {
           obj.name = projectDir
-          util.writeJson('package.json', obj, function (error) {
+          util.writeJsonFile('package.json', obj, function (error) {
             if (error) {
               console.error('[ERROR] Cannot write package.json')
               finalCallback(error)
