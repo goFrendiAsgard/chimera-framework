@@ -32,15 +32,6 @@ This note is intended for developers. You might not need it
 * `sudo npm publish`
 
 ## Todo
-* [x] Simpler error handling (i.e: introduce `error:`, `error_message:`, and `error_action` into YAML semantic)
-* [x] Add testing for error handling
-* [x] More robust migration and CRUD
-* [x] Better performance
-* [x] Implementing chimera's own cmd (with `options` parameter) to replace `node-cmd`
-* [x] Get rid of `process.chdir`, use options instead
-* [x] Create test for `chimera.executeChain` with different amount of parameters
-* [x] Add usage to Core API documentation
-* [x] Create Mongo db driver API documentation
-* [ ] Create aggregate function
-* [ ] Completing CCK
-* [ ] Fix getChainWithTrueCommand
+* [x] Fix getChainWithTrueCommand
+* [ ] Find a way to test `chimera.dollar.prompt`
+* [ ] Find a way to test `chimera.dollar.print`
