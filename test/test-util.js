@@ -9,36 +9,37 @@ const stringSample = '4.8'
 const numberSample = 4.8
 const arraySample = []
 const objectSample = {}
-const functionSample = ()=>{return null}
+const functionSample = () => { return null }
 const nullSample = null
 const undefinedSample = undefined
 
 const jsonFileName = path.join(__dirname, '/tmp/test.json')
+const quotedJsonFileName = chimera.util.getQuoted(jsonFileName)
 
 // cmd
 describe('util', function () {
   describe('getInspectedObject', function () {
     it('should get inspected object of array', function (done) {
-      result = chimera.util.getInspectedObject([1,2,3])
+      let result = chimera.util.getInspectedObject([1, 2, 3])
       assert.equal(result, '[ 1, 2, 3 ]')
       done()
     })
     it('should get inspected object of object', function (done) {
-      result = chimera.util.getInspectedObject({a:1, b:2, c:3, d: 'abc'})
+      let result = chimera.util.getInspectedObject({a: 1, b: 2, c: 3, d: 'abc'})
       assert.equal(result, '{ a: 1, b: 2, c: 3, d: \'abc\' }')
       done()
     })
     it('should get inspected object of long object', function (done) {
-      result = chimera.util.getInspectedObject({a:'abcdef', b:'abcdef', c:'abcdef', d:'abcdef', e:'abcdef', f:'abcdef'})
+      let result = chimera.util.getInspectedObject({a: 'abcdef', b: 'abcdef', c: 'abcdef', d: 'abcdef', e: 'abcdef', f: 'abcdef'})
       assert.equal(result, '{ a: \'abcdef\',\n  b: \'abcdef\',\n  c: \'abcdef\',\n  d: \'abcdef\',\n  e: \'abcdef\',\n  f: \'abcdef\' }')
       done()
     })
   })
   describe('getFilteredObject', function () {
-    let originalObject = {a:1,b:2,c:3,d:4,e:{f:5}}
-    let filteredObject = chimera.util.getFilteredObject(originalObject, ['b','d'])
+    let originalObject = {a: 1, b: 2, c: 3, d: 4, e: {f: 5}}
+    let filteredObject = chimera.util.getFilteredObject(originalObject, ['b', 'd'])
     it('should return an object without filtered key', function (done) {
-      assert.deepEqual(filteredObject, {a:1,c:3,e:{f:5}})
+      assert.deepEqual(filteredObject, {a: 1, c: 3, e: {f: 5}})
       done()
     })
     it('should maintain the reference between original object and filtered object', function (done) {
@@ -49,13 +50,13 @@ describe('util', function () {
   })
   describe('getUnwrapped', function () {
     it('should return an unwrapped string', function (done) {
-      result = chimera.util.getUnwrapped('  (abc) ')
+      let result = chimera.util.getUnwrapped('  (abc) ')
       assert.equal(result, 'abc')
       done()
     })
   })
   describe('getDeepCopiedObject', function () {
-    let originalObject = {a:1,b:2,c:3,d:4,e:{f:5}}
+    let originalObject = {a: 1, b: 2, c: 3, d: 4, e: {f: 5}}
     let copiedObject = chimera.util.getDeepCopiedObject(originalObject)
     it('should return the identic copied object', function (done) {
       assert.deepEqual(copiedObject, originalObject)
@@ -72,10 +73,10 @@ describe('util', function () {
     })
   })
   describe('getPatchedObject', function () {
-    let originalObject = {a:1,b:2,c:3,d:4,e:{f:5}}
-    let patchedObject = chimera.util.getPatchedObject(originalObject, {d:6, e:{g:7}, h:8})
+    let originalObject = {a: 1, b: 2, c: 3, d: 4, e: {f: 5}}
+    let patchedObject = chimera.util.getPatchedObject(originalObject, {d: 6, e: {g: 7}, h: 8})
     it('should return patched object', function (done) {
-      assert.deepEqual(patchedObject, {a:1, b:2, c:3, d:6, e:{f:5, g:7}, h:8})
+      assert.deepEqual(patchedObject, {a: 1, b: 2, c: 3, d: 6, e: {f: 5, g: 7}, h: 8})
       done()
     })
     it('patched object should be independent to originalObject', function (done) {
@@ -366,13 +367,16 @@ describe('util', function () {
     })
   })
   describe('writeJsonFile', function () {
-    let obj = {a:1,b:2,c:[1,2,3],d:{e:4,f:5},g:'string'}
+    let obj = {a: 1, b: 2, c: [1, 2, 3], d: {e: 4, f: 5}, g: 'string'}
     it('should write JSON object to a file', function (done) {
       chimera.util.writeJsonFile(jsonFileName, obj, function (error, result) {
         if (error) {
           return done(error)
         }
-        chimera.cmd.get('cat ' + jsonFileName, function (error, result) {
+        chimera.cmd.get('cat ' + quotedJsonFileName, function (error, result) {
+          if (error) {
+            done(error)
+          }
           assert.equal(result, '{"a":1,"b":2,"c":[1,2,3],"d":{"e":4,"f":5},"g":"string"}')
           done()
         })
@@ -380,14 +384,14 @@ describe('util', function () {
     })
   })
   describe('readJsonFile', function () {
-    let obj = {a:1,b:2,c:[1,2,3],d:{e:4,f:5},g:'string'}
+    let obj = {a: 1, b: 2, c: [1, 2, 3], d: {e: 4, f: 5}, g: 'string'}
     it('should read JSOn object from a file', function (done) {
       chimera.util.readJsonFile(jsonFileName, function (error, result) {
         if (error) {
           return done(error)
         }
         assert.deepEqual(result, obj)
-        chimera.cmd.get('rm ' + jsonFileName, function (error, result) {
+        chimera.cmd.get('rm ' + quotedJsonFileName, function (error, result) {
           if (error) {
             return done(error)
           }
@@ -396,5 +400,4 @@ describe('util', function () {
       })
     })
   })
-
 })
