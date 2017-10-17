@@ -351,7 +351,7 @@ describe('util', function () {
       assert.equal(chimera.util.getStretchedString('abc', 6, '.'), 'abc...')
       done()
     })
-    it('should should not do anything if string length is more than expected length', function (done) {
+    it('should not do anything if string length is more than expected length', function (done) {
       assert.equal(chimera.util.getStretchedString('abc', 2, '.'), 'abc')
       done()
     })
@@ -361,7 +361,7 @@ describe('util', function () {
       assert.equal(chimera.util.getSlicedString('abc', 6), 'abc')
       done()
     })
-    it('should should slice string if string length is more than expected length', function (done) {
+    it('should slice string if string length is more than expected length', function (done) {
       assert.equal(chimera.util.getSlicedString('abcdefghijklmn', 9), 'abcdef...')
       done()
     })

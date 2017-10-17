@@ -16,7 +16,7 @@ describe('core', function () {
         if (error) {
           return done(error)
         }
-        assert.equal(result, '100')
+        assert.strictEqual(result, 100)
         done()
       })
     })
