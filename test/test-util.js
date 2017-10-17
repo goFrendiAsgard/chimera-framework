@@ -333,7 +333,7 @@ describe('util', function () {
       assert.equal(chimera.util.isFunction(objectSample), false)
       done()
     })
-    it('should not recognize function as function', function (done) {
+    it('should recognize function as function', function (done) {
       assert.equal(chimera.util.isFunction(functionSample), true)
       done()
     })
