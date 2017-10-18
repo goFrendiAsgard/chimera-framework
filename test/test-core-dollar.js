@@ -81,4 +81,15 @@ describe('chain dollar', function () {
       })
     })
   })
+  describe('merge', function () {
+    it('should push(["a", "b", "c"], ["d", "e", "f"]) successfully', function (done) {
+      chimera.dollar.merge(['a', 'b', 'c'], ['d', 'e', 'f'], function (error, result) {
+        if (error) {
+          return done(error)
+        }
+        assert.deepEqual(result, ['a', 'b', 'c', 'd', 'e', 'f'])
+        done()
+      })
+    })
+  })
 })

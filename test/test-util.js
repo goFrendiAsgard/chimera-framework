@@ -251,7 +251,7 @@ describe('util', function () {
       assert.equal(chimera.util.isUndefined(nullSample), false)
       done()
     })
-    it('should not recognize undefined as undefined', function (done) {
+    it('should recognize undefined as undefined', function (done) {
       assert.equal(chimera.util.isUndefined(undefinedSample), true)
       done()
     })

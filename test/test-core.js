@@ -74,5 +74,16 @@ describe('core', function () {
         done()
       })
     })
+    it('should be able to parse inputs correctly, either as string or as block array', function (done) {
+      chimera.executeChain(path.join(__dirname, 'fractures/input-variation.chiml'), [], {}, function (error, result) {
+        if (error) {
+          return done(error)
+        }
+        let input = {"a":"emiya","b":"name","c":{"d":"emiya","e":"name"},"f":["emiya","name",["emiya","name"]]}
+        let expectedTestResult = {'str':input, 'dict':input} 
+        assert.deepEqual(result, expectedTestResult)
+        done()
+      })
+    })
   })
 })

@@ -1,0 +1,19 @@
+out: output
+verbose: 0
+do:
+  - |"emiya" --> name
+  - |{} --> output
+  - |{"a":name,"b":"name","c":{"d":name,"e":"name"}, "f":[name,"name", [name,"name"]]} --> output.str
+  - ins:
+      - a: name
+        b: |"name"
+        c:
+          d: name
+          e: |"name"
+        f:
+          - name
+          - |"name"
+          -
+            - name
+            - |"name"
+    out: output.dict
