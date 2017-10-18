@@ -34,5 +34,14 @@ describe('core-chiml-parser', function () {
         })
       })
     })
+    it('should quote one line chiml containing a string with block delimiter', function (done) {
+      chimera.chimlParser.parseChiml('|"Hello"-->', function (error, chainScript) {
+        if (error) {
+          return done(error)
+        }
+        assert.equal('"Hello"-->', chainScript)
+        done()
+      })
+    })
   })
 })

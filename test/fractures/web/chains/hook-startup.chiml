@@ -1,0 +1,25 @@
+ins: webState
+out: webState
+verbose: 0
+do:
+  
+  # plus-one-request
+  - ins:
+    - webState.config.routes
+    - '{"route":"/plus-one-request", "method":"all", "chain":_chain_cwd+"plus-one-request.chiml"}'
+    out: webState.config.routes
+    do: |[$.push]
+
+  # hello-hook
+  - ins:
+    - webState.config.routes
+    - '{"route":"/hello-hook", "method":"all", "chain":_chain_cwd+"hello-string.chiml"}'
+    out: webState.config.routes
+    do: |[$.push]
+
+  # hello-hook/name
+  - ins:
+    - webState.config.routes
+    - '{"route":"/hello-hook/:name", "method":"all", "chain":_chain_cwd+"hello-param.chiml"}'
+    out: webState.config.routes
+    do: |[$.push]

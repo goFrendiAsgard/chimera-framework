@@ -27,7 +27,9 @@ const webConfig = {
   'staticPath': path.join(__dirname,  'public'),
   'faviconPath': path.join(__dirname, 'public/favicon.ico'),
   'viewPath': path.join(__dirname, 'views'),
-  'errorTemplate': path.join(__dirname, 'views/error.pug')
+  'errorTemplate': path.join(__dirname, 'views/error.pug'),
+  'startupHook': path.join(__dirname, 'chains/hook-startup.chiml'),
+  'verbose': 0
 }
 
 let app = chimera.web.createApp(webConfig)
