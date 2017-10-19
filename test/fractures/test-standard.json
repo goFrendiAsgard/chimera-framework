@@ -27,7 +27,7 @@
         {
           "id": 29,
           "branch": "true",
-          "ins": true,
+          "ins": [true],
           "out": "_error",
           "command": "[$.assignValue]",
           "loop": "false"
@@ -232,7 +232,7 @@
         {
           "id": 29,
           "branch": "true",
-          "ins": true,
+          "ins": [true],
           "out": "_error",
           "command": "[$.assignValue]",
           "loop": "false"

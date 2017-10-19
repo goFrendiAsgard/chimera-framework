@@ -11,10 +11,11 @@ const dstFile = path.join(__dirname, 'tmp/Substract.class')
 const quotedOriginalSrcFile = chimera.util.getQuoted(originalSrcFile)
 const quotedSrcFile = chimera.util.getQuoted(srcFile)
 const quotedDstFile = chimera.util.getQuoted(dstFile)
-const copySrcFileCmd = 'cp ' + quotedOriginalSrcFile + ' ' + quotedSrcFile
-const removeSrcAndDstFileCmd = 'rm '+quotedSrcFile + ' && rm ' + quotedDstFile
+const copySrcFileCmd = 'cp ' + quotedOriginalSrcFile + ' ' + quotedSrcFile + ' && sleep 0.001'
+const removeSrcAndDstFileCmd = 'rm '+quotedSrcFile + ' && rm ' + quotedDstFile + ' && sleep 0.001'
 
 describe('eisn', function () {
+  this.timeout(5000)
   it('should run command if dstFile does not exist', function (done) {
     chimera.cmd.get(copySrcFileCmd, function (error, result) {
       if (error) {
@@ -60,6 +61,7 @@ describe('eisn', function () {
 })
 
 describe('dollar.eisn', function () {
+  this.timeout(5000)
   it('should run command if dstFile does not exist', function (done) {
     chimera.cmd.get(copySrcFileCmd, function (error, result) {
       if (error) {
