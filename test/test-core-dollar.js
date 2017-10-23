@@ -82,7 +82,7 @@ describe('chain dollar', function () {
     })
   })
   describe('merge', function () {
-    it('should push(["a", "b", "c"], ["d", "e", "f"]) successfully', function (done) {
+    it('should merge(["a", "b", "c"], ["d", "e", "f"]) successfully', function (done) {
       chimera.dollar.merge(['a', 'b', 'c'], ['d', 'e', 'f'], function (error, result) {
         if (error) {
           return done(error)
