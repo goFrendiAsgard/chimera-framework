@@ -1,16 +1,11 @@
-public class Substract
-{
-    // process
-    public static int substract(int n1, int n2)
-    {
-        return n1-n2;
+public class Substract {
+  public static void main(String[] args) {
+    if (args.length < 2) {
+      System.out.println("Invalid argument");
+      System.out.println("Usage: java Substract <num1> <num2>");
     }
-
-    // executor
-    public static void main(String[] args)
-    {
-        int n1 = Integer.parseInt(args[0]);
-        int n2 = Integer.parseInt(args[1]);
-        System.out.println(substract(n1, n2));
-    }
+    int n1 = Integer.parseInt(args[0]);
+    int n2 = Integer.parseInt(args[1]);
+    System.out.println(n1 - n2);
+  }
 }
