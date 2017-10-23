@@ -5,6 +5,7 @@ const chai = require('chai')
 const chimera = require('../index.js')
 const assert = chai.assert
 
+const clearCompilationFileCommand = 'cd '+path.join(__dirname+'/fractures') + ' && rm '+path.join(__dirname, 'fractures/*.cjson')
 const expectedTestResult = 'Hello world\nHello sekai\n6, 8, 10\nstring from circle.js\n76.96902001294993\n100'
 
 // core-preprocessor
@@ -80,9 +81,14 @@ describe('core', function () {
           return done(error)
         }
         let input = {"a":"emiya","b":"name","c":{"d":"emiya","e":"name"},"f":["emiya","name",["emiya","name"]]}
-        let expectedTestResult = {'str':input, 'dict':input} 
+        let expectedTestResult = {'str':input, 'dict':input}
         assert.deepEqual(result, expectedTestResult)
-        done()
+        chimera.cmd.get(clearCompilationFileCommand, function (error, result) {
+          if (error) {
+            return done(error)
+          }
+          done()
+        })
       })
     })
   })
