@@ -2,12 +2,13 @@ ins: webState
 out: webState
 verbose: 0
 do:
-  
-  # plus-one-request
   - ins:
     - webState.config.routes
     - [
-        {"route":"/plus-one-request", "method":"all", "chain":_chain_cwd+"plus-one-request.chiml"},
+        {"route":"/plus-one-body", "method":"post", "chain":_chain_cwd+"plus-one-body.chiml"},
+        {"route":"/plus-one-cookie", "method":"all", "chain":_chain_cwd+"plus-one-cookie.chiml"},
+        {"route":"/plus-one-query", "method":"get", "chain":_chain_cwd+"plus-one-query.chiml"},
+        {"route":"/plus-one-session", "method":"all", "chain":_chain_cwd+"plus-one-session.chiml"},
         {"route":"/hello-hook", "method":"all", "chain":_chain_cwd+"hello-string.chiml"},
         {"route":"/hello-hook/:name", "method":"all", "chain":_chain_cwd+"hello-param.chiml"}
       ]

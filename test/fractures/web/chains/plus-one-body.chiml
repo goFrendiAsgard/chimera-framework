@@ -1,0 +1,3 @@
+ins: webState
+out: output
+do: (webState.query.data+1) --> output.data
