@@ -29,7 +29,7 @@ const webConfig = {
   'viewPath': path.join(__dirname, 'views'),
   'errorTemplate': path.join(__dirname, 'views/error.pug'),
   'startupHook': path.join(__dirname, 'chains/hook-startup.chiml'),
-  'verbose': 0
+  'verbose': 3
 }
 
 let app = chimera.web.createApp(webConfig)

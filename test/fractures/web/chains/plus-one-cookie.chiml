@@ -1,3 +1,5 @@
 ins: webState
 out: output
-do: (webState.query.body+1) --> output.data
+do:
+  - (webState.cookie.data+1) --> output.cookie.data
+  - output.cookie.data --> output.datains: webState
