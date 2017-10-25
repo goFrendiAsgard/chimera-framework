@@ -15,7 +15,7 @@ describe('core-preprocessor', function () {
         if (error) {
           return done(error)
         }
-        let trueChain = chimera.preprocessor.getTrueRootChain(JSON.parse(chainScript))
+        let trueChain = chimera.corePreprocessor.getTrueRootChain(JSON.parse(chainScript))
         fs.readFile(path.join(__dirname, 'fractures/test-standard.json'), function (error, standardChainScript) {
           if (error) {
             return done(error)

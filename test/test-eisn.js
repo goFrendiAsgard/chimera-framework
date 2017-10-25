@@ -70,7 +70,7 @@ describe('dollar.eisn', function () {
       if (error) {
         return done(error)
       }
-      chimera.dollar.eisn(srcFile, dstFile, command, function (error, result) {
+      chimera.coreDollar.eisn(srcFile, dstFile, command, function (error, result) {
         if (error) {
           return done(error)
         }
@@ -84,7 +84,7 @@ describe('dollar.eisn', function () {
       if (error) {
         return done(error)
       }
-      chimera.dollar.eisn(srcFile, dstFile, command, function (error, result) {
+      chimera.coreDollar.eisn(srcFile, dstFile, command, function (error, result) {
         if (error) {
           return done(error)
         }
@@ -94,7 +94,7 @@ describe('dollar.eisn', function () {
     })
   })
   it('should not run command if dstFile exist and newer than srcFile', function (done) {
-    chimera.dollar.eisn(srcFile, dstFile, command, function (error, result) {
+    chimera.coreDollar.eisn(srcFile, dstFile, command, function (error, result) {
       if (error) {
         return done(error)
       }

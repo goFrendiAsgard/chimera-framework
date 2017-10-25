@@ -15,7 +15,7 @@ describe('core-chiml-parser', function () {
         if (error) {
           return done(error)
         }
-        chimera.chimlParser.parseChiml(chainScript, function (error, chimlChain) {
+        chimera.coreChimlParser.parseChiml(chainScript, function (error, chimlChain) {
           if (error) {
             return done(error)
           }
@@ -23,7 +23,7 @@ describe('core-chiml-parser', function () {
             if (error) {
               return done(error)
             }
-            chimera.chimlParser.parseChiml(chainScript, function (error, jsonChain) {
+            chimera.coreChimlParser.parseChiml(chainScript, function (error, jsonChain) {
               if (error) {
                 return done(error)
               }
@@ -35,7 +35,7 @@ describe('core-chiml-parser', function () {
       })
     })
     it('should quote one line chiml containing a string with block delimiter', function (done) {
-      chimera.chimlParser.parseChiml('|"Hello"-->', function (error, chainScript) {
+      chimera.coreChimlParser.parseChiml('|"Hello"-->', function (error, chainScript) {
         if (error) {
           return done(error)
         }

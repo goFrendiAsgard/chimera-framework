@@ -8,7 +8,7 @@ const assert = chai.assert
 describe('chain dollar', function () {
   describe('runChain', function () {
     it('should runChain(square.chiml, 4) successfully', function (done) {
-      chimera.dollar.runChain(path.resolve(__dirname, 'fractures/square.chiml'), 4, function (error, result) {
+      chimera.coreDollar.runChain(path.resolve(__dirname, 'fractures/square.chiml'), 4, function (error, result) {
         if (error) {
           return done(error)
         }
@@ -19,7 +19,7 @@ describe('chain dollar', function () {
   })
   describe('assignValue', function () {
     it('should assignValue(5) successfully', function (done) {
-      chimera.dollar.assignValue(5, function (error, result) {
+      chimera.coreDollar.assignValue(5, function (error, result) {
         if (error) {
           return done(error)
         }
@@ -28,7 +28,7 @@ describe('chain dollar', function () {
       })
     })
     it('should assignValue(5, 6, 7) successfully', function (done) {
-      chimera.dollar.assignValue(5, 6, 7, function (error, result) {
+      chimera.coreDollar.assignValue(5, 6, 7, function (error, result) {
         if (error) {
           return done(error)
         }
@@ -39,7 +39,7 @@ describe('chain dollar', function () {
   })
   describe('concat', function () {
     it('should concat("Hello ", "world") successfully', function (done) {
-      chimera.dollar.concat('Hello ', 'world', function (error, result) {
+      chimera.coreDollar.concat('Hello ', 'world', function (error, result) {
         if (error) {
           return done(error)
         }
@@ -50,7 +50,7 @@ describe('chain dollar', function () {
   })
   describe('join', function () {
     it('should join(["a", "b", "c"], ", ") successfully', function (done) {
-      chimera.dollar.join(['a', 'b', 'c'], ', ', function (error, result) {
+      chimera.coreDollar.join(['a', 'b', 'c'], ', ', function (error, result) {
         if (error) {
           return done(error)
         }
@@ -61,7 +61,7 @@ describe('chain dollar', function () {
   })
   describe('split', function () {
     it('should split("a, b, c", ", ") successfully', function (done) {
-      chimera.dollar.split('a, b, c', ', ', function (error, result) {
+      chimera.coreDollar.split('a, b, c', ', ', function (error, result) {
         if (error) {
           return done(error)
         }
@@ -72,7 +72,7 @@ describe('chain dollar', function () {
   })
   describe('push', function () {
     it('should push(["a", "b", "c"], "d") successfully', function (done) {
-      chimera.dollar.push(['a', 'b', 'c'], 'd', function (error, result) {
+      chimera.coreDollar.push(['a', 'b', 'c'], 'd', function (error, result) {
         if (error) {
           return done(error)
         }
@@ -83,7 +83,7 @@ describe('chain dollar', function () {
   })
   describe('merge', function () {
     it('should merge(["a", "b", "c"], ["d", "e", "f"]) successfully', function (done) {
-      chimera.dollar.merge(['a', 'b', 'c'], ['d', 'e', 'f'], function (error, result) {
+      chimera.coreDollar.merge(['a', 'b', 'c'], ['d', 'e', 'f'], function (error, result) {
         if (error) {
           return done(error)
         }
