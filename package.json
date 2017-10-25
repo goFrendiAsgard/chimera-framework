@@ -7,8 +7,7 @@
     "chimera-serve": "tools/serve.js",
     "chimera-send": "tools/send.js",
     "chimera-eisn": "tools/eisn.js",
-    "chimera-init-web": "tools/init-web.js",
-    "chimera-db": "tools/db.js"
+    "chimera-init-web": "tools/init-web.js"
   },
   "scripts": {
     "test": "mocha"
@@ -24,6 +23,7 @@
   "dependencies": {
     "assert": "^1.4.1",
     "body-parser": "^1.17.2",
+    "cache-require-paths": "^0.3.0",
     "chai": "^4.1.2",
     "child_process": "^1.0.2",
     "clone": "^2.1.1",

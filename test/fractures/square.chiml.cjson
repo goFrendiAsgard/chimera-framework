@@ -1,0 +1,1 @@
+{"id":1,"branch":"true","vars":{"_verbose":0},"ins":"i","out":"_ans","command":"{(i) => i*i}","loop":"false"}

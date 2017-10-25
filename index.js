@@ -1,5 +1,6 @@
 #! /usr/bin/env node
 'use strict'
+require('cache-require-paths')
 
 let cmd = require('./lib/cmd.js')
 let core = require('./lib/core.js')
@@ -15,12 +16,9 @@ let eisn = require('./lib/eisn.js')
 
 // The exported resources
 module.exports = {
-  'preprocessor': corePreprocessor,
-  'chimlParser': coreChimlParser,
-  'dollar': coreDollar,
-  'executeChain': core.executeChain,
-  'runChain': core.runChain,
-  'eisn': util.eisn,
+  'corePreprocessor': corePreprocessor,
+  'coreChimlParser': coreChimlParser,
+  'coreDollar': coreDollar,
   'cmd': cmd,
   'util': util,
   'db': db,

@@ -1,11 +1,11 @@
 #! /usr/bin/env node
 'use strict'
 
+require('cache-require-paths')
 let fse = require('fs-extra')
-let chimera = require('../index.js')
 let async = require('neo-async')
-let cmd = chimera.cmd
-let util = chimera.util
+let cmd = require('../lib/cmd.js')
+let util = require('../lib/util.js')
 let path = require('path')
 
 function finalCallback (error, result) {

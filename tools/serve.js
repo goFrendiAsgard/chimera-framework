@@ -1,10 +1,13 @@
 #! /usr/bin/env node
 'use strict'
 
-let chimera = require('../index.js')
+require('cache-require-paths')
+let server = require('../lib/server.js')
 
 if (require.main === module) {
-  chimera.server.serve(function (error, result) {
-        // do nothing. Probably we will need this someday
+  server.serve(function (error, result) {
+    if (error) {
+      console.error(error)
+    }
   })
 }
