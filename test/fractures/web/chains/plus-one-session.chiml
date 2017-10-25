@@ -1,5 +1,5 @@
 ins: webState
 out: output
 do:
-  - (webState.session.data+1) --> output.session.data
+  - (parseInt(webState.session.data)+1) --> output.session.data
   - output.session.data --> output.data

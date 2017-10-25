@@ -1,5 +1,5 @@
 ins: webState
 out: output
 do:
-  - (webState.cookie.data+1) --> output.cookie.data
+  - (parseInt(webState.cookie.data)+1) --> output.cookie.data
   - output.cookie.data --> output.datains: webState
