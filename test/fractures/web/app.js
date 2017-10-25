@@ -1,3 +1,4 @@
+
 const chimera = require('chimera-framework')
 const path = require('path')
 const port = 3010
@@ -29,12 +30,15 @@ const webConfig = {
   'viewPath': path.join(__dirname, 'views'),
   'errorTemplate': path.join(__dirname, 'views/error.pug'),
   'startupHook': path.join(__dirname, 'chains/hook-startup.chiml'),
-  'verbose': 3
+  'verbose': 0
 }
 
 let app = chimera.web.createApp(webConfig)
+module.exports = app
 
-app.listen(port, function () {
-  console.error('Start at port ' + port)
-})
+if (require.main === module) {
+  app.listen(port, function () {
+    console.error('Start at port ' + port)
+  })
+}
 

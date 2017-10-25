@@ -6,7 +6,6 @@ require('cache-require-paths')
 let eisn = require('../lib/eisn.js')
 
 if (require.main === module) {
-  // The program needs at least 3 parameter (excluding the default 3)
   // Example: node eisn.js src.java src.class javac src.java
   if (process.argv.length > 3) {
     let srcFile = process.argv[2]

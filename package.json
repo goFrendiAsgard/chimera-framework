@@ -47,6 +47,7 @@
     "process": "^0.11.10",
     "pug": "^2.0.0-rc.4",
     "querystring": "^0.2.0",
+    "request": "^2.83.0",
     "safe-eval": "^0.3.0",
     "serve-favicon": "^2.4.4"
   },
