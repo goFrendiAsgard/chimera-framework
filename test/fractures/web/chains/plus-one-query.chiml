@@ -1,3 +1,6 @@
 ins: webState
 out: response
-do: (parseInt(webState.request.query.data)+1) --> response.data
+do: 
+  - if: |'query' not in request || 'data' not in request.query
+    do: 0 --> request.query.data
+  - (parseInt(webState.request.query.data)+1) --> response.data

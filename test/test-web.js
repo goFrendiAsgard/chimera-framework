@@ -106,10 +106,28 @@ describe('web', function () {
     let url = 'http://localhost:3010/plus-one-cookie';
     cookieJar.setCookie(cookie, url);
     request({url: url, jar: cookieJar}, function (error, response, body) {
+      if (error) {
+        return done(error)
+      }
       assert.equal(body, '4')
       done()
     })
   })
+
+  it('plus-one-cookie should send set-cookie response with correct value', function (done) {
+    let cookieJar = request.jar();
+    let cookie = request.cookie('data=3');
+    let url = 'http://localhost:3010/plus-one-cookie';
+    cookieJar.setCookie(cookie, url);
+    request({url: url, jar: cookieJar}, function (error, response, body) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(response.headers['set-cookie'][0], 'data=4; Path=/')
+      done()
+    })
+  })
+
 
   it('http.server returned by app.listen should be closeable programmatically', function (done) {
     server.close()
