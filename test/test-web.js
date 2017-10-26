@@ -80,6 +80,37 @@ describe('web', function () {
     })
   })
 
+  it('should serve plus-one-query (defined in hook-startup.chiml)', function (done) {
+    request('http://localhost:3010/plus-one-query?data=3', function (error, response, body) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(body, '4')
+      done()
+    })
+  })
+
+  it('should serve plus-one-body (defined in hook-startup.chiml)', function (done) {
+    request.post({url: 'http://localhost:3010/plus-one-body', form: {data: 3}}, function (error, response, body) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(body, '4')
+      done()
+    })
+  })
+
+  it('should serve plus-one-cookie (defined in hook-startup.chiml)', function (done) {
+    let cookieJar = request.jar();
+    let cookie = request.cookie('data=3');
+    let url = 'http://localhost:3010/plus-one-cookie';
+    cookieJar.setCookie(cookie, url);
+    request({url: url, jar: cookieJar}, function (error, response, body) {
+      assert.equal(body, '4')
+      done()
+    })
+  })
+
   it('http.server returned by app.listen should be closeable programmatically', function (done) {
     server.close()
     assert.equal(server.listening, false)
