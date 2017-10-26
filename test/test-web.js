@@ -60,6 +60,26 @@ describe('web', function () {
     })
   })
 
+  it('should serve hello-hook (defined in hook-startup.chiml)', function (done) {
+    request('http://localhost:3010/hello-hook', function (error, response, body) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(body, 'Hello :D')
+      done()
+    })
+  })
+
+  it('should serve hello-hook/:name (defined in hook-startup.chiml)', function (done) {
+    request('http://localhost:3010/hello-hook/emiya', function (error, response, body) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(body, 'Hello emiya')
+      done()
+    })
+  })
+
   it('http.server returned by app.listen should be closeable programmatically', function (done) {
     server.close()
     assert.equal(server.listening, false)
