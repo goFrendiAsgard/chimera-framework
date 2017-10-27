@@ -7,6 +7,7 @@ const assert = chai.assert
 
 // cmd
 describe('cmd', function () {
+
   // cmd.get
   describe('cmd.get', function () {
     it('should run command line and get the result', function (done) {
@@ -19,6 +20,7 @@ describe('cmd', function () {
       })
     })
   })
+
   // cmd.run
   describe('cmd.run', function () {
     it('should return an object with process id', function (done) {
@@ -27,4 +29,5 @@ describe('cmd', function () {
       done()
     })
   })
+
 })

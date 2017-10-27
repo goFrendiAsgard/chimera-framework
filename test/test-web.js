@@ -12,6 +12,8 @@ let sessionId
 
 describe('web', function () {
 
+  this.timeout(5000)
+
   it('app.listen shoud return http.server. It should be runnable and listening for request', function (done) {
     let port = 3010
     server = app.listen(port, function () {

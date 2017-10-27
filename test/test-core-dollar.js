@@ -6,6 +6,7 @@ const chimera = require('../index.js')
 const assert = chai.assert
 
 describe('chain dollar', function () {
+
   describe('runChain', function () {
     it('should runChain(square.chiml, 4) successfully', function (done) {
       chimera.coreDollar.runChain(path.resolve(__dirname, 'fractures/square.chiml'), 4, function (error, result) {
@@ -17,7 +18,9 @@ describe('chain dollar', function () {
       })
     })
   })
+
   describe('assignValue', function () {
+
     it('should assignValue(5) successfully', function (done) {
       chimera.coreDollar.assignValue(5, function (error, result) {
         if (error) {
@@ -27,6 +30,7 @@ describe('chain dollar', function () {
         done()
       })
     })
+
     it('should assignValue(5, 6, 7) successfully', function (done) {
       chimera.coreDollar.assignValue(5, 6, 7, function (error, result) {
         if (error) {
@@ -36,7 +40,9 @@ describe('chain dollar', function () {
         done()
       })
     })
+
   })
+
   describe('concat', function () {
     it('should concat("Hello ", "world") successfully', function (done) {
       chimera.coreDollar.concat('Hello ', 'world', function (error, result) {
@@ -48,6 +54,7 @@ describe('chain dollar', function () {
       })
     })
   })
+
   describe('join', function () {
     it('should join(["a", "b", "c"], ", ") successfully', function (done) {
       chimera.coreDollar.join(['a', 'b', 'c'], ', ', function (error, result) {
@@ -59,6 +66,7 @@ describe('chain dollar', function () {
       })
     })
   })
+
   describe('split', function () {
     it('should split("a, b, c", ", ") successfully', function (done) {
       chimera.coreDollar.split('a, b, c', ', ', function (error, result) {
@@ -70,6 +78,7 @@ describe('chain dollar', function () {
       })
     })
   })
+
   describe('push', function () {
     it('should push(["a", "b", "c"], "d") successfully', function (done) {
       chimera.coreDollar.push(['a', 'b', 'c'], 'd', function (error, result) {
@@ -81,6 +90,7 @@ describe('chain dollar', function () {
       })
     })
   })
+
   describe('merge', function () {
     it('should merge(["a", "b", "c"], ["d", "e", "f"]) successfully', function (done) {
       chimera.coreDollar.merge(['a', 'b', 'c'], ['d', 'e', 'f'], function (error, result) {
@@ -92,4 +102,5 @@ describe('chain dollar', function () {
       })
     })
   })
+
 })

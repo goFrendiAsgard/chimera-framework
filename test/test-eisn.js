@@ -18,7 +18,9 @@ const removeSrcAndDstFileCmd = 'rm '+quotedSrcFile + ' && rm ' + quotedDstFile +
 const command = 'cd '+quotedTmpPath+ ' && g++ -o substract substract.cpp'
 
 describe('eisn', function () {
+
   this.timeout(5000)
+
   it('should run command if dstFile does not exist', function (done) {
     chimera.cmd.get(copySrcFileCmd, function (error, result) {
       if (error) {
@@ -33,6 +35,7 @@ describe('eisn', function () {
       })
     })
   })
+
   it('should run command if dstFile exist but older than srcFile', function (done) {
     chimera.cmd.get(copySrcFileCmd, function (error, result) {
       if (error) {
@@ -47,6 +50,7 @@ describe('eisn', function () {
       })
     })
   })
+
   it('should not run command if dstFile exist and newer than srcFile', function (done) {
     chimera.eisn(srcFile, dstFile, command, function (error, result) {
       if (error) {
@@ -61,10 +65,13 @@ describe('eisn', function () {
       })
     })
   })
+
 })
 
 describe('dollar.eisn', function () {
+
   this.timeout(5000)
+
   it('should run command if dstFile does not exist', function (done) {
     chimera.cmd.get(copySrcFileCmd, function (error, result) {
       if (error) {
@@ -79,6 +86,7 @@ describe('dollar.eisn', function () {
       })
     })
   })
+
   it('should run command if dstFile exist but older than srcFile', function (done) {
     chimera.cmd.get(copySrcFileCmd, function (error, result) {
       if (error) {
@@ -93,6 +101,7 @@ describe('dollar.eisn', function () {
       })
     })
   })
+
   it('should not run command if dstFile exist and newer than srcFile', function (done) {
     chimera.coreDollar.eisn(srcFile, dstFile, command, function (error, result) {
       if (error) {
@@ -107,4 +116,5 @@ describe('dollar.eisn', function () {
       })
     })
   })
+
 })
