@@ -1,7 +1,7 @@
 ins: webState
 out: response
 do:
-  - if: |'cookies' not in request || 'data' not in request.cookies
-    do: 0 --> request.cookies.data
+  - if: |!('cookies' in webState.request) || !('data' in webState.request.cookies)
+    do: 0 --> webState.request.cookies.data
   - (parseInt(webState.request.cookies.data)+1) --> response.cookies.data
   - response.cookies.data --> response.data

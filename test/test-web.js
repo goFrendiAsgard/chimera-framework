@@ -8,6 +8,7 @@ const assert = chai.assert
 const request = require('request')
 
 let server
+let sessionId
 
 describe('web', function () {
 
@@ -128,6 +129,34 @@ describe('web', function () {
     })
   })
 
+  it('should serve plus-one-session (defined in hook-startup.chiml)', function (done) {
+    let cookieJar = request.jar();
+    let cookie = request.cookie('');
+    let url = 'http://localhost:3010/plus-one-session';
+    cookieJar.setCookie(cookie, url);
+    request({url: url, jar: cookieJar}, function (error, response, body) {
+      if (error) {
+        return done(error)
+      }
+      sessionId = response.headers['set-cookie'][0].match(/connect\.sid=(.*?);/)[1]
+      assert.equal(body, '1')
+      done()
+    })
+  })
+
+  it('plus-one-session should plus session.data by one', function (done) {
+    let cookieJar = request.jar();
+    let cookie = request.cookie('connect.sid='+sessionId);
+    let url = 'http://localhost:3010/plus-one-session';
+    cookieJar.setCookie(cookie, url);
+    request({url: url, jar: cookieJar}, function (error, response, body) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(body, '2')
+      done()
+    })
+  })
 
   it('http.server returned by app.listen should be closeable programmatically', function (done) {
     server.close()

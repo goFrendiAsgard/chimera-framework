@@ -1,6 +1,6 @@
 ins: webState
 out: response
-do: 
-  - if: |'query' not in request || 'data' not in request.query
-    do: 0 --> request.query.data
+do:
+  - if: |!('query' in webState.request) || !('data' in webState.request.query)
+    do: 0 --> webState.request.query.data
   - (parseInt(webState.request.query.data)+1) --> response.data
