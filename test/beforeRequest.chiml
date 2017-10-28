@@ -1,0 +1,6 @@
+ins: webState
+out: webState
+if: |webState.request.body.chain.indexOf('circle-area.chiml') != -1
+do:
+  - |("Access to circle-area.chiml denied") --> webState.response.errorMessage
+  - |("401") --> webState.response.status

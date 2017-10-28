@@ -1,0 +1,2 @@
+ins: url, number
+do: (url, _chain_cwd + 'square.chiml', number) -> [$.send]

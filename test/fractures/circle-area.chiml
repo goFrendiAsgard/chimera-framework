@@ -1,0 +1,1 @@
+(r) -> [$.loadJs(_chain_cwd + 'circle.js', 'area')]

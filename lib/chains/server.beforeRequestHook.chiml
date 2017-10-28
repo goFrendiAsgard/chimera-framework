@@ -5,4 +5,4 @@ series:
   - |(webState.config.localBeforeRequestHook) --> hook
 
   - if: hook 
-    command: |(_init_cwd + hook, webState) -> [$.loadJs('chimera-framework', 'run'] ->webState
+    command: |(_init_cwd + hook, webState) -> [$.runChain] ->webState

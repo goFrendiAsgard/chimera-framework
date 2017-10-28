@@ -11,6 +11,9 @@ if (require.main === module) {
     let chain = process.argv[3]
     let parameters = process.argv.slice(4)
     sender.send(host, chain, parameters, function (error, output) {
+      if (error) {
+        return console.error(error)
+      }
       console.log(output)
     })
   } else {
