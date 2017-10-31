@@ -1,9 +1,0 @@
-ins: a,b
-out: e
-verbose: 3
-series:
-  - parallel:
-      - (a,b) -> [$.core.load(_chain_cwd, 'programs/add.js')] -> c
-      # run sub-chimera
-      - (_chain_cwd, "add.yaml", a, b) -> [$.core.run] -> d
-  - (c,d) -> [$.core.load(_chain_cwd, 'programs/add.js')] -> e

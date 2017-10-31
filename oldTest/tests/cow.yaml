@@ -1,9 +1,0 @@
-ins: anyWord
-out: output
-series:
-  - if: anyWord == 0
-    command: echo hello -> anyWord
-  - parallel:
-      - cal -> currentCalendar
-      - anyWord -> cowsay -> cow
-  - (currentCalendar, cow) -> echo -> output

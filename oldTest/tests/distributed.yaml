@@ -1,8 +1,0 @@
-ins: a,b,server
-out: e
-verbose: true
-series:
-  - parallel:
-      - (a,b) -> php programs/add.php -> c
-      - (server, 'tests/add.yaml', a,b) -> chimera-send -> d
-  - (c,d) -> node programs/add.js -> e

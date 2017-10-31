@@ -1,6 +1,0 @@
-{
-    "ins" : ["a", "b"],
-    "command" : "php programs/add.php",
-    "verbose" : 1,
-    "out" : "c"
-}

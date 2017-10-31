@@ -1,4 +1,0 @@
-ins: a
-out: a 
-command: (a, a) -> php programs/echo.php -> a
-while: true

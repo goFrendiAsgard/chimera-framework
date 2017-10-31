@@ -1,1 +1,0 @@
-(str, num, fill) -> [$.util.getStretchedString]

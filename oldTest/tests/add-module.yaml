@@ -1,2 +1,0 @@
-verbose: true
-command: (a,b) -> [$.load(_chain_cwd, './programs/add.js')] -> c
