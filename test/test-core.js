@@ -5,7 +5,7 @@ const chai = require('chai')
 const chimera = require('../index.js')
 const assert = chai.assert
 
-const clearCompilationFileCommand = 'cd ' + path.join(__dirname + '/fractures') + ' && rm ' + path.join(__dirname, 'fractures/.*.cjson')
+const clearCompilationFileCommand = 'cd ' + path.join(__dirname, 'fractures') + ' && rm ' + path.join(__dirname, 'fractures/.*.cjson')
 const expectedTestResult = 'Hello world\nHello sekai\n6, 8, 10\nstring from circle.js\n76.96902001294993\n100'
 
 // core-preprocessor
