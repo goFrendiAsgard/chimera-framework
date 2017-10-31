@@ -8,7 +8,6 @@ const assert = chai.assert
 
 // core-preprocessor
 describe('core-preprocessor', function () {
-
   // getTrueRootChain
   it('should transform chain into a standard', function (done) {
     fs.readFile(path.join(__dirname, 'fractures/test.json'), function (error, chainScript) {
@@ -27,5 +26,4 @@ describe('core-preprocessor', function () {
       })
     })
   })
-
 })

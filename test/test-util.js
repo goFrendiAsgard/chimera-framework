@@ -18,9 +18,7 @@ const quotedJsonFileName = chimera.util.getQuoted(jsonFileName)
 
 // cmd
 describe('util', function () {
-
   describe('getInspectedObject', function () {
-
     it('should get inspected object of array', function (done) {
       let result = chimera.util.getInspectedObject([1, 2, 3])
       assert.equal(result, '[ 1, 2, 3 ]')
@@ -38,11 +36,9 @@ describe('util', function () {
       assert.equal(result, '{ a: \'abcdef\',\n  b: \'abcdef\',\n  c: \'abcdef\',\n  d: \'abcdef\',\n  e: \'abcdef\',\n  f: \'abcdef\' }')
       done()
     })
-
   })
 
   describe('getFilteredObject', function () {
-
     let originalObject = {a: 1, b: 2, c: 3, d: 4, e: {f: 5}}
     let filteredObject = chimera.util.getFilteredObject(originalObject, ['b', 'd'])
 
@@ -56,7 +52,6 @@ describe('util', function () {
       assert.equal(filteredObject.e.f, 6)
       done()
     })
-
   })
 
   describe('getUnwrapped', function () {
@@ -86,11 +81,9 @@ describe('util', function () {
       assert.equal(copiedObject.e.f, 5)
       done()
     })
-
   })
 
   describe('getPatchedObject', function () {
-
     let originalObject = {a: 1, b: 2, c: 3, d: 4, e: {f: 5}}
     let patchedObject = chimera.util.getPatchedObject(originalObject, {d: 6, e: {g: 7}, h: 8})
 
@@ -104,7 +97,6 @@ describe('util', function () {
       assert.equal(patchedObject.e.f, 5)
       done()
     })
-
   })
 
   describe('getQuoted', function () {
@@ -132,7 +124,6 @@ describe('util', function () {
   })
 
   describe('isString', function () {
-
     it('should recognize string as string', function (done) {
       assert.equal(chimera.util.isString(stringSample), true)
       done()
@@ -167,11 +158,9 @@ describe('util', function () {
       assert.equal(chimera.util.isString(undefinedSample), false)
       done()
     })
-
   })
 
   describe('isArray', function () {
-
     it('should not recognize string as array', function (done) {
       assert.equal(chimera.util.isArray(stringSample), false)
       done()
@@ -206,11 +195,9 @@ describe('util', function () {
       assert.equal(chimera.util.isArray(undefinedSample), false)
       done()
     })
-
   })
 
   describe('isObject', function () {
-
     it('should not recognize string as object', function (done) {
       assert.equal(chimera.util.isObject(stringSample), false)
       done()
@@ -245,11 +232,9 @@ describe('util', function () {
       assert.equal(chimera.util.isObject(undefinedSample), false)
       done()
     })
-
   })
 
   describe('isRealObject', function () {
-
     it('should not recognize string as object', function (done) {
       assert.equal(chimera.util.isRealObject(stringSample), false)
       done()
@@ -284,11 +269,9 @@ describe('util', function () {
       assert.equal(chimera.util.isRealObject(undefinedSample), false)
       done()
     })
-
   })
 
   describe('isUndefined', function () {
-
     it('should not recognize string as undefined', function (done) {
       assert.equal(chimera.util.isUndefined(stringSample), false)
       done()
@@ -323,11 +306,9 @@ describe('util', function () {
       assert.equal(chimera.util.isUndefined(undefinedSample), true)
       done()
     })
-
   })
 
   describe('isNull', function () {
-
     it('should not recognize string as null', function (done) {
       assert.equal(chimera.util.isNull(stringSample), false)
       done()
@@ -362,11 +343,9 @@ describe('util', function () {
       assert.equal(chimera.util.isNull(undefinedSample), false)
       done()
     })
-
   })
 
   describe('isNullOrUndefined', function () {
-
     it('should not recognize string as null or undefined', function (done) {
       assert.equal(chimera.util.isNullOrUndefined(stringSample), false)
       done()
@@ -401,11 +380,9 @@ describe('util', function () {
       assert.equal(chimera.util.isNullOrUndefined(undefinedSample), true)
       done()
     })
-
   })
 
   describe('isFunction', function () {
-
     it('should not recognize string as function', function (done) {
       assert.equal(chimera.util.isFunction(stringSample), false)
       done()
@@ -440,11 +417,9 @@ describe('util', function () {
       assert.equal(chimera.util.isFunction(undefinedSample), false)
       done()
     })
-
   })
 
   describe('getStretchedString', function () {
-
     it('should add filler characters if string length is less than expected length', function (done) {
       assert.equal(chimera.util.getStretchedString('abc', 6, '.'), 'abc...')
       done()
@@ -454,11 +429,9 @@ describe('util', function () {
       assert.equal(chimera.util.getStretchedString('abc', 2, '.'), 'abc')
       done()
     })
-
   })
 
   describe('getSlicedString', function () {
-
     it('should not do anything if string length is less than expected length', function (done) {
       assert.equal(chimera.util.getSlicedString('abc', 6), 'abc')
       done()
@@ -468,11 +441,9 @@ describe('util', function () {
       assert.equal(chimera.util.getSlicedString('abcdefghijklmn', 9), 'abcdef...')
       done()
     })
-
   })
 
   describe('writeJsonFile', function () {
-
     let obj = {a: 1, b: 2, c: [1, 2, 3], d: {e: 4, f: 5}, g: 'string'}
 
     it('should write JSON object to a file', function (done) {
@@ -489,11 +460,9 @@ describe('util', function () {
         })
       })
     })
-
   })
 
   describe('readJsonFile', function () {
-
     let obj = {a: 1, b: 2, c: [1, 2, 3], d: {e: 4, f: 5}, g: 'string'}
 
     it('should read JSOn object from a file', function (done) {
@@ -510,7 +479,5 @@ describe('util', function () {
         })
       })
     })
-
   })
-
 })

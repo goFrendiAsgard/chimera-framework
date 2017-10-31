@@ -1,8 +1,6 @@
 /* eslint-env mocha */
 
-const path = require('path')
 const chai = require('chai')
-const chimera = require('../index.js')
 const app = require('./fractures/web/app.js')
 const assert = chai.assert
 const request = require('request')
@@ -11,7 +9,6 @@ let server
 let sessionId
 
 describe('web', function () {
-
   this.timeout(5000)
 
   it('app.listen shoud return http.server. It should be runnable and listening for request', function (done) {
@@ -104,10 +101,10 @@ describe('web', function () {
   })
 
   it('should serve plus-one-cookie (defined in hook-startup.chiml)', function (done) {
-    let cookieJar = request.jar();
-    let cookie = request.cookie('data=3');
-    let url = 'http://localhost:3010/plus-one-cookie';
-    cookieJar.setCookie(cookie, url);
+    let cookieJar = request.jar()
+    let cookie = request.cookie('data=3')
+    let url = 'http://localhost:3010/plus-one-cookie'
+    cookieJar.setCookie(cookie, url)
     request({url: url, jar: cookieJar}, function (error, response, body) {
       if (error) {
         return done(error)
@@ -118,10 +115,10 @@ describe('web', function () {
   })
 
   it('plus-one-cookie should send set-cookie response with correct value', function (done) {
-    let cookieJar = request.jar();
-    let cookie = request.cookie('data=3');
-    let url = 'http://localhost:3010/plus-one-cookie';
-    cookieJar.setCookie(cookie, url);
+    let cookieJar = request.jar()
+    let cookie = request.cookie('data=3')
+    let url = 'http://localhost:3010/plus-one-cookie'
+    cookieJar.setCookie(cookie, url)
     request({url: url, jar: cookieJar}, function (error, response, body) {
       if (error) {
         return done(error)
@@ -132,10 +129,10 @@ describe('web', function () {
   })
 
   it('should serve plus-one-session (defined in hook-startup.chiml)', function (done) {
-    let cookieJar = request.jar();
-    let cookie = request.cookie('');
-    let url = 'http://localhost:3010/plus-one-session';
-    cookieJar.setCookie(cookie, url);
+    let cookieJar = request.jar()
+    let cookie = request.cookie('')
+    let url = 'http://localhost:3010/plus-one-session'
+    cookieJar.setCookie(cookie, url)
     request({url: url, jar: cookieJar}, function (error, response, body) {
       if (error) {
         return done(error)
@@ -147,10 +144,10 @@ describe('web', function () {
   })
 
   it('plus-one-session should plus session.data by one', function (done) {
-    let cookieJar = request.jar();
-    let cookie = request.cookie('connect.sid='+sessionId);
-    let url = 'http://localhost:3010/plus-one-session';
-    cookieJar.setCookie(cookie, url);
+    let cookieJar = request.jar()
+    let cookie = request.cookie('connect.sid=' + sessionId)
+    let url = 'http://localhost:3010/plus-one-session'
+    cookieJar.setCookie(cookie, url)
     request({url: url, jar: cookieJar}, function (error, response, body) {
       if (error) {
         return done(error)
@@ -165,5 +162,4 @@ describe('web', function () {
     assert.equal(server.listening, false)
     done()
   })
-
 })

@@ -23,9 +23,9 @@ const webConfig = {
       'route': '/hello-json',
       'method': 'all',
       'chain': path.join(__dirname, 'chains/hello-json.chiml')
-    },
+    }
   ],
-  'staticPath': path.join(__dirname,  'public'),
+  'staticPath': path.join(__dirname, 'public'),
   'faviconPath': path.join(__dirname, 'public/favicon.ico'),
   'viewPath': path.join(__dirname, 'views'),
   'errorTemplate': path.join(__dirname, 'views/error.pug'),
@@ -41,4 +41,3 @@ if (require.main === module) {
     console.error('Start at port ' + port)
   })
 }
-

@@ -9,11 +9,10 @@ let server
 let cwd
 
 describe('server and sender', function () {
-
   it('server run in the correct port', function (done) {
     cwd = process.cwd()
     process.chdir(__dirname)
-    chimera.server.serve({port:3011}, function (error, result) {
+    chimera.server.serve({port: 3011}, function (error, result) {
       if (error) {
         return done(error)
       }
@@ -49,5 +48,4 @@ describe('server and sender', function () {
     assert.equal(server.listening, false)
     done()
   })
-
 })

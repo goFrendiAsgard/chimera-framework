@@ -3,7 +3,6 @@
 
 require('cache-require-paths')
 let sender = require('../lib/sender.js')
-let chimera = require('../index.js')
 
 if (require.main === module) {
   if (process.argv.length > 3) {

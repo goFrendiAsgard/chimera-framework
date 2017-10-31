@@ -6,7 +6,6 @@ const chimera = require('../index.js')
 const assert = chai.assert
 
 describe('chain dollar', function () {
-
   describe('runChain', function () {
     it('should runChain(square.chiml, 4) successfully', function (done) {
       chimera.coreDollar.runChain(path.resolve(__dirname, 'fractures/square.chiml'), 4, function (error, result) {
@@ -20,7 +19,6 @@ describe('chain dollar', function () {
   })
 
   describe('assignValue', function () {
-
     it('should assignValue(5) successfully', function (done) {
       chimera.coreDollar.assignValue(5, function (error, result) {
         if (error) {
@@ -40,7 +38,6 @@ describe('chain dollar', function () {
         done()
       })
     })
-
   })
 
   describe('concat', function () {
@@ -102,5 +99,4 @@ describe('chain dollar', function () {
       })
     })
   })
-
 })

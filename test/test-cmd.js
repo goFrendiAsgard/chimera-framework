@@ -7,7 +7,6 @@ const assert = chai.assert
 
 // cmd
 describe('cmd', function () {
-
   // cmd.get
   describe('cmd.get', function () {
     it('should run command line and get the result', function (done) {
@@ -29,5 +28,4 @@ describe('cmd', function () {
       done()
     })
   })
-
 })
