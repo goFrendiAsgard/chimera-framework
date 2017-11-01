@@ -1,5 +1,3 @@
-# Chimera-Framework
-
 <h1 align="center">Chimera-Framework</h1>
 
 <div align="center">
