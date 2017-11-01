@@ -238,6 +238,45 @@ describe('mongo', function () {
     })
   })
 
+  it('should be able to max (excluding the soft deleted)', function (done) {
+    softGod.max('power', function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(result, 7000)
+      done()
+    })
+  })
+
+  it('should be able to max with filter (excluding the soft deleted)', function (done) {
+    softGod.max('power', {'mythology': 'Greek'}, function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(result, 7000)
+      done()
+    })
+  })
+
+  it('should be able to max with groupBy (excluding the soft deleted)', function (done) {
+    softGod.max('power', {}, 'mythology', function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.deepEqual(result, {'Nordic': 6000, 'Greek': 7000})
+      done()
+    })
+  })
+
+  it('should be able to max with filter and groupBy (excluding the soft deleted)', function (done) {
+    softGod.max('power', {'mythology': 'Greek'}, 'mythology', function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.deepEqual(result, {'Greek': 7000})
+      done()
+    })
+  })
 
   it('should be able to remove all record', function (done) {
     hardGod.remove({}, function (error, result) {
@@ -250,100 +289,5 @@ describe('mongo', function () {
       done()
     })
   })
-
-  /*
-
-    (next) => {
-      softGod.sum('power').then(
-      (result) => {
-        console.error('SoftGodSum')
-        console.error(result)
-        next()
-      }, errorHandler
-    )
-    },
-
-    (next) => {
-      softGod.sum('power', {}, 'mythology').then(
-      (result) => {
-        console.error('SoftGodSum By Mythology')
-        console.error(result)
-        next()
-      }, errorHandler
-    )
-    },
-
-    (next) => {
-      softGod.avg('power').then(
-      (result) => {
-        console.error('SoftGodAvg')
-        console.error(result)
-        next()
-      }, errorHandler
-    )
-    },
-
-    (next) => {
-      softGod.avg('power', {}, 'mythology').then(
-      (result) => {
-        console.error('SoftGodAvg By Mythology')
-        console.error(result)
-        next()
-      }, errorHandler
-    )
-    },
-
-    (next) => {
-      softGod.min('power').then(
-      (result) => {
-        console.error('SoftGodMin')
-        console.error(result)
-        next()
-      }, errorHandler
-    )
-    },
-
-    (next) => {
-      softGod.min('power', {}, 'mythology').then(
-      (result) => {
-        console.error('SoftGodMin By Mythology')
-        console.error(result)
-        next()
-      }, errorHandler
-    )
-    },
-
-    (next) => {
-      softGod.max('power').then(
-      (result) => {
-        console.error('SoftGodMax')
-        console.error(result)
-        next()
-      }, errorHandler
-    )
-    },
-
-    (next) => {
-      softGod.max('power', {}, 'mythology').then(
-      (result) => {
-        console.error('SoftGodMax By Mythology')
-        console.error(result)
-        next()
-      }, errorHandler
-    )
-    },
-
-    (next) => {
-      god.remove({}).then(
-      (result) => {
-        console.error('godRemove')
-        console.error(result.result)
-        next()
-      }, errorHandler
-    )
-    }
-
-  ], (error, result) => { errorHandler(error) })
-    */
 
 })
