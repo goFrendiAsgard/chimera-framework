@@ -20,6 +20,16 @@ const command = 'cd ' + quotedTmpPath + ' && g++ -o substract substract.cpp'
 describe('eisn', function () {
   this.timeout(5000)
 
+  it('should return error if srcFile not found', function (done) {
+    chimera.eisn(srcFile, dstFile, command, function (error, result) {
+      if (error) {
+        assert.equal(!!error, true)
+        return done()
+      }
+      done(new Error('Error expected, but no error found'))
+    })
+  })
+
   it('should run command if dstFile does not exist', function (done) {
     chimera.cmd.get(copySrcFileCmd, function (error, result) {
       if (error) {

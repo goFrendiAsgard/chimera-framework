@@ -8,10 +8,12 @@ const assert = chai.assert
 let server
 let cwd
 
+
 describe('server and sender', function () {
   it('server run in the correct port', function (done) {
     cwd = process.cwd()
     process.chdir(__dirname)
+    process.env.PUBLISHED = './fractures'
     chimera.server.serve({port: 3011}, function (error, result) {
       if (error) {
         return done(error)
@@ -36,6 +38,17 @@ describe('server and sender', function () {
     chimera.sender.send('http://localhost:3011', path.join(__dirname, 'fractures/circle-area.chiml'), [4], function (error, result) {
       if (error) {
         assert.equal(error.message, 'Access to circle-area.chiml denied')
+        return done()
+      }
+      done(new Error('Error expected, but no error found'))
+    })
+  })
+
+
+  it('should return error when trying to acces dummy.chiml', function (done) {
+    chimera.sender.send('http://localhost:3011', 'dummy.chiml', [4], function (error, result) {
+      if (error) {
+        assert.equal(error.message, 'Cannot access dummy.chiml')
         return done()
       }
       done(new Error('Error expected, but no error found'))

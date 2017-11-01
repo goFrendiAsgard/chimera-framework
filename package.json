@@ -10,7 +10,7 @@
     "chimera-init-web": "tools/init-web.js"
   },
   "scripts": {
-    "test": "nyc mocha"
+    "test": "nyc mocha && nyc report --reporter=html"
   },
   "keywords": [
     "framework",
@@ -65,6 +65,7 @@
   },
   "devDependencies": {
     "mocha": "^4.0.1",
-    "nyc": "^11.2.1"
+    "nyc": "^11.2.1",
+    "standard": "^10.0.3"
   }
 }

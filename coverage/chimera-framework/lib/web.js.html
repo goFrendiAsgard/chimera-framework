@@ -1,0 +1,1118 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for chimera-framework/lib/web.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">All files</a> / <a href="index.html">chimera-framework/lib</a> web.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">81.92% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>145/177</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">72.58% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>45/62</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">96% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>24/25</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">81.92% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>145/177</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">92x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">92x</span>
+<span class="cline-any cline-yes">92x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">64x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">72x</span>
+<span class="cline-any cline-yes">72x</span>
+<span class="cline-any cline-yes">72x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">165x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">70x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">71x</span>
+<span class="cline-any cline-yes">71x</span>
+<span class="cline-any cline-yes">71x</span>
+<span class="cline-any cline-yes">71x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">#! /usr/bin/env node
+'use strict'
+&nbsp;
+module.exports = {
+  createApp,
+  isRouteMatch,
+  getRouteMatches,
+  getParametersAsObject
+}
+&nbsp;
+const async = require('neo-async')
+const stringify = require('json-stringify-safe')
+const express = require('express')
+const favicon = require('serve-favicon')
+const logger = require('morgan')
+const cookieParser = require('cookie-parser')
+const bodyParser = require('body-parser')
+const session = require('express-session')
+const fileUpload = require('express-fileupload')
+const engines = require('consolidate')
+const url = require('url')
+const core = require('./core.js')
+const util = require('./util.js')
+&nbsp;
+const COLOR_FG_YELLOW = '\x1b[33m'
+const COLOR_RESET = '\x1b[0m'
+&nbsp;
+const VERBOSE = 1
+const VERY_VERBOSE = 2
+const ULTRA_VERBOSE = 3
+&nbsp;
+const DEFAULT_WEB_CONFIG = {
+  'mongoUrl': '',
+  'verbose': 0,
+  'staticPath': process.cwd() + '/public',
+  'faviconPath': process.cwd() + '/public/favicon.ico',
+  'viewPath': process.cwd() + '/views',
+  'defaultTemplate': null,
+  'errorTemplate': null,
+  'sessionSecret': 'dbbd821f0f40735ca5c2e03ad93bc79b',
+  'sessionMaxAge': 600000,
+  'sessionSaveUnitialized': true,
+  'sessionResave': true,
+  'startupHook': null, // Input: STATE. output: state
+  'beforeRequestHook': null, // Input: STATE. output: state
+  'afterRequestHook': null, // Input: STATE. output: state
+  'routes': {}
+}
+&nbsp;
+const DEFAULT_REQUEST = {
+  'query': {},
+  'body': {},
+  'baseUrl': {},
+  'cookies': {},
+  'session': {},
+  'files': {},
+  'params': [],
+  'hostname': '',
+  'method': 'get',
+  'protocol': 'http',
+  'url': ''
+}
+&nbsp;
+const DEFAULT_RESPONSE = {
+  'data': '',
+  'view': '',
+  'session': {},
+  'cookies': {},
+  'status': 200,
+  'errorMessage': ''
+}
+&nbsp;
+function getEscapedRouteKey (route) {
+  // hyphen should be translated literally
+  let str = route.replace(/-/g, '\\-')
+  // dots should be translated literally
+  str = str.replace(/\./g, '\\.')
+  return str
+}
+&nbsp;
+function getRoutePattern (route) {
+  // object (including regex pattern) should not be processed
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (typeof route === 'string') {
+    let str = getEscapedRouteKey(route)
+    // translate into regex
+    str = str.replace(/:[a-zA-Z_][a-zA-Z0-9_]*/g, '([a-zA-Z0-9_]*)')
+    str = '^' + str + '$'
+    let regex = new RegExp(str)
+    return regex
+  }
+<span class="cstat-no" title="statement not covered" >  return route</span>
+}
+&nbsp;
+function getParameterNames (route) {
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (typeof route === 'string') {
+    route = getEscapedRouteKey(route)
+  }
+  let matches = route.match(/:([a-zA-Z_][a-zA-Z0-9_]*)/g)
+  if (matches === null) {
+    matches = []
+  }
+  for (let i = 0; i &lt; matches.length; i++) {
+    matches[i] = matches[i].replace(':', '')
+  }
+  return matches
+}
+&nbsp;
+function isRouteMatch (route, urlPath) {
+  return !!getRouteMatches(route, urlPath)
+}
+&nbsp;
+function getRouteMatches (route, urlPath) {
+  let routePattern = getRoutePattern(route)
+  return urlPath.match(routePattern) || urlPath.replace(/(.*)\/$/, '$1').match(routePattern)
+}
+&nbsp;
+function getParametersAsObject (route, urlPath) {
+  let routeMatches = getRouteMatches(route, urlPath)
+  let parameterNames = getParameterNames(route)
+  let parameters = {}
+  for (let i = 0; i &lt; parameterNames.length; i++) {
+    let parameterName = parameterNames[i]
+    parameters[parameterName] = routeMatches[i + 1]
+  }
+  return parameters
+}
+&nbsp;
+function createApp (webConfig) {
+  let STATE = {}
+  let WEB_CONFIG = util.getPatchedObject(DEFAULT_WEB_CONFIG, webConfig)
+&nbsp;
+  logMessage('CONFIG :\n' + util.getInspectedObject(WEB_CONFIG), VERBOSE)
+  let app = getAppWithMiddleware(express(), WEB_CONFIG)
+  // serve route
+  app.all('/*', (request, response, next) =&gt; {
+    // initiate state and newState processor
+    STATE = getWebState(WEB_CONFIG, request)
+    // process
+    async.series([
+      createHookProcessor(STATE.config, 'startupHook'),
+      createHookProcessor(STATE.config, 'beforeRequestHook'),
+      createChainProcessor(STATE.config),
+      createHookProcessor(STATE.config, 'afterRequestHook')
+    ], (error, result) =&gt; {
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (error) {
+<span class="cstat-no" title="statement not covered" >        console.error(error)</span>
+      }
+      finalProcess(app, request, response)
+    })
+  })
+  // show 404 if no response
+  app.use(<span class="fstat-no" title="function not covered" >fu</span>nction (req, res, next) {
+<span class="cstat-no" title="statement not covered" >    res.status(404).send("Sorry can't find that!")</span>
+  })
+  return app
+&nbsp;
+  function logMessage (message, verbosity) {
+    let configVerbosity = 'config' in STATE ? STATE.config.verbose : WEB_CONFIG.verbose
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (verbosity &gt; configVerbosity) {
+      return null
+    }
+    let isoDate = <span class="cstat-no" title="statement not covered" >(new Date()).toISOString()</span>
+<span class="cstat-no" title="statement not covered" >    console.error(COLOR_FG_YELLOW + '[' + isoDate + '] ' + message + COLOR_RESET)</span>
+  }
+&nbsp;
+  function getAppWithMiddleware (app, config) {
+    app.use(logger('dev'))
+    app.use(bodyParser.json())
+    app.use(bodyParser.urlencoded({ extended: true }))
+    app.use(cookieParser())
+    app.use(fileUpload())
+    try {
+      if (!util.isNullOrUndefined(config.staticPath)) {
+        app.use(express.static(config.staticPath))
+      }
+      if (!util.isNullOrUndefined(config.faviconPath)) {
+        app.use(favicon(config.faviconPath))
+      }
+    } catch (error) {
+<span class="cstat-no" title="statement not covered" >      console.error(error)</span>
+    }
+    try {
+      if (!util.isNullOrUndefined(config.viewPath)) {
+        app.set('views', config.viewPath)
+      }
+    } catch (error) {
+<span class="cstat-no" title="statement not covered" >      console.error(error)</span>
+    }
+    // pug, handlebars, and ejs are used altogether
+    app.engine('pug', engines.pug)
+    app.engine('handlebars', engines.handlebars)
+    app.engine('ejs', engines.ejs)
+    app.use(session({
+      'secret': config.sessionSecret,
+      'resave': config.sessionResave,
+      'saveUninitialized': config.sessionSaveUnitialized,
+      'cookie': {'maxAge': config.sessionMaxAge}
+    }))
+    return app
+  }
+&nbsp;
+  function getPackedRequest (req) {
+    let packedReq = {}
+    for (let key in DEFAULT_REQUEST) {
+      packedReq[key] = req[key]
+    }
+    return packedReq
+  }
+&nbsp;
+  function getWebState (config, request) {
+    let webStateConfig = util.getPatchedObject(DEFAULT_WEB_CONFIG, config)
+    return {
+      'config': webStateConfig,
+      'request': getPackedRequest(request),
+      'response': util.getDeepCopiedObject(DEFAULT_RESPONSE)
+    }
+  }
+&nbsp;
+  function logState (description, verbosity) {
+    logMessage(description + ' STATE :\n' + util.getInspectedObject(STATE), verbosity)
+  }
+&nbsp;
+  function createHookProcessor (config, hookKey) {
+    return function (callback) {
+      let hook = config[hookKey]
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (util.isRealObject(hook)) {
+        // hook is object. Use it to patch current state
+        let newState = <span class="cstat-no" title="statement not covered" >hook</span>
+<span class="cstat-no" title="statement not covered" >        logState('BEFORE ' + hookKey, ULTRA_VERBOSE)</span>
+<span class="cstat-no" title="statement not covered" >        STATE = util.getPatchedObject(STATE, newState)</span>
+<span class="cstat-no" title="statement not covered" >        logState('AFTER ' + hookKey, VERY_VERBOSE)</span>
+<span class="cstat-no" title="statement not covered" >        return callback()</span>
+      } else if (util.isString(hook)) {
+        // hook is string, assume it as chain
+        let chain = hook
+        logState('BEFORE ' + hookKey, ULTRA_VERBOSE)
+        core.executeChain(chain, [STATE], {}, function (error, newState) {
+          <span class="missing-if-branch" title="else path not taken" >E</span>if (!error) {
+            STATE = util.getPatchedObject(STATE, newState)
+          } else {
+<span class="cstat-no" title="statement not covered" >            STATE.response.status = 500</span>
+<span class="cstat-no" title="statement not covered" >            STATE.response.errorMessage = error.name</span>
+<span class="cstat-no" title="statement not covered" >            console.error(error)</span>
+          }
+          logState('AFTER ' + hookKey, VERY_VERBOSE)
+          return callback()
+        })
+      } else {
+        // hook is neither object nor string. Pass on the current state
+        return callback()
+      }
+    }
+  }
+&nbsp;
+  function createChainProcessor (config) {
+    return function (callback) {
+      if (STATE.response.status &gt;= 400 &amp;&amp; STATE.response.status &lt; 600) {
+        return callback()
+      }
+      let routeObjList = STATE.config.routes
+      let urlPath = url.parse(STATE.request.url).pathname
+      let method = STATE.request.method.toLowerCase()
+      logState('BEFORE ' + urlPath, ULTRA_VERBOSE)
+      for (let i = 0; i &lt; routeObjList.length; i++) {
+        let routeObj = routeObjList[i]
+        let routeMethod = routeObj.method
+        let route = routeObj.route
+        if ((routeMethod === 'all' || routeMethod === method) &amp;&amp; isRouteMatch(route, urlPath)) {
+          let chain = routeObj.chain
+          STATE.request.params = getParametersAsObject(route, urlPath)
+          core.executeChain(chain, [STATE], {}, function (error, newResponse) {
+            <span class="missing-if-branch" title="else path not taken" >E</span>if (!error) {
+              STATE.response.status = 200
+              STATE.response.errorMessage = ''
+              if (!util.isRealObject(newResponse)) {
+                newResponse = {'data': String(newResponse)}
+              }
+              STATE.response = util.getPatchedObject(STATE.response, newResponse)
+            } else {
+<span class="cstat-no" title="statement not covered" >              STATE.response.status = 500</span>
+<span class="cstat-no" title="statement not covered" >              STATE.response.errorMessage = 'Unable to process chain'</span>
+<span class="cstat-no" title="statement not covered" >              console.error(error)</span>
+            }
+            logState(urlPath + ' -&gt; ' + chain, VERY_VERBOSE)
+            return callback()
+          })
+          return null
+        }
+      }
+<span class="cstat-no" title="statement not covered" >      STATE.response.status = 404</span>
+<span class="cstat-no" title="statement not covered" >      STATE.response.errorMessage = 'Not Found'</span>
+<span class="cstat-no" title="statement not covered" >      logState(urlPath, VERY_VERBOSE)</span>
+<span class="cstat-no" title="statement not covered" >      return callback()</span>
+    }
+  }
+&nbsp;
+  function buildCookieResponse (response) {
+    let cookies = STATE.response.cookies
+    for (let key in cookies) {
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (key !== 'sessionid') {
+        response.cookie(key, STATE.response.cookies[key])
+      }
+    }
+    return response
+  }
+&nbsp;
+  function buildSessionRequest (request, response) {
+    let session = STATE.response.session
+    for (let key in session) {
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (key !== 'cookie') {
+        request.session[key] = STATE.response.session[key]
+      }
+    }
+    return request
+  }
+&nbsp;
+  function finalProcess (app, request, response) {
+    let responseStatus = STATE.response.status
+    let responseErrorMessage = STATE.response.errorMessage
+    response = buildCookieResponse(response)
+    request = buildSessionRequest(request, response)
+    // render response
+    request.session.save(function (error) {
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (error || (STATE.response.status &gt;= 400 &amp;&amp; <span class="branch-2 cbranch-no" title="branch not covered" >STATE.response.status &lt; 600)</span>) {
+<span class="cstat-no" title="statement not covered" >        if (!util.isNullOrUndefined(STATE.config.errorTemplate)) {</span>
+          // set locals, only providing error in development
+<span class="cstat-no" title="statement not covered" >          response.locals.message = responseErrorMessage</span>
+<span class="cstat-no" title="statement not covered" >          if (app.get('env') === 'development') {</span>
+            let err = <span class="cstat-no" title="statement not covered" >new Error(responseErrorMessage)</span>
+<span class="cstat-no" title="statement not covered" >            err.status = responseStatus</span>
+<span class="cstat-no" title="statement not covered" >            response.locals.error = err</span>
+          } else {
+<span class="cstat-no" title="statement not covered" >            response.locals.error = {}</span>
+          }
+          // render the error page
+<span class="cstat-no" title="statement not covered" >          response.status(responseStatus || 500)</span>
+<span class="cstat-no" title="statement not covered" >          return response.render(STATE.config.errorTemplate)</span>
+        }
+        // send errorMessage
+<span class="cstat-no" title="statement not covered" >        return response.send(String(responseErrorMessage))</span>
+      }
+      if ('view' in STATE.response &amp;&amp; STATE.response.view !== '') {
+        return response.render(STATE.response.view, STATE.response.data)
+      }
+      if (util.isRealObject(STATE.response.data) || util.isArray(STATE.response.data)) {
+        return response.send(stringify(STATE.response.data))
+      }
+      return response.send(String(STATE.response.data))
+    })
+  }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Wed Nov 01 2017 22:21:04 GMT+0700 (WIB)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>
