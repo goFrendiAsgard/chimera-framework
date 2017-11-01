@@ -1,0 +1,15 @@
+{
+  "name": "webApp",
+  "version": "0.0.0",
+  "description": "Just another web application",
+  "main": "index.js",
+  "keywords": [
+    "web",
+    "chimera-framework"
+  ],
+  "dependencies": {
+    "chimera-framework": "0.0.0"
+  },
+  "author": "Another earthling",
+  "license": "ISC"
+}

@@ -2,11 +2,11 @@
 'use strict'
 
 require('cache-require-paths')
-let fse = require('fs-extra')
-let async = require('neo-async')
-let cmd = require('../lib/cmd.js')
-let util = require('../lib/util.js')
-let path = require('path')
+const fse = require('fs-extra')
+const async = require('neo-async')
+const cmd = require('../lib/cmd.js')
+const util = require('../lib/util.js')
+const path = require('path')
 
 function finalCallback (error, result) {
   if (error) {
@@ -17,56 +17,56 @@ function finalCallback (error, result) {
 }
 
 function initWeb (projectDir) {
-  let currentDir = __dirname
-  console.error(currentDir)
+  let chimeraVersion
   async.series([
-        // copy directory
+    // read current package.json
+    (callback) => {
+      util.readJsonFile(path.join(__dirname, '../package.json'), function (error, obj) {
+        if (error) {
+          console.error('[ERROR] Cannot read chimera-framework\'s package.json')
+          return finalCallback(error)
+        }
+        console.warn('[INFO] Read chimera-framework\'s package.json...')
+        chimeraVersion = obj.version
+        callback()
+      })
+    },
+    // copy directory
     (callback) => {
       console.warn('[INFO] Copying directory...')
-      fse.copy(path.join(currentDir, '../node_modules/chimera-web-framework'), projectDir, function (error) {
+      fse.copy(path.join(__dirname, '../web'), projectDir, function (error) {
         if (error) {
           console.error('[ERROR] Cannot copy directory')
-          finalCallback(error)
-        } else {
-          console.warn('[INFO] Done copying directory...')
-          callback()
+          return finalCallback(error)
         }
+        console.warn('[INFO] Done copying directory...')
+        callback()
       })
     },
-        // change directory and delete package.json
+    // change directory and read package.json
     (callback) => {
       process.chdir(projectDir)
-      fse.unlink('package.json', (error) => {
+      util.readJsonFile('package.json', function (error, obj) {
         if (error) {
-          console.error('[ERROR] Cannot remove package.json')
-          finalCallback(error)
-        } else {
-          console.warn('[INFO] Remove package.json...')
-          callback()
+          console.error('[ERROR] Cannot read package.json')
+          return finalCallback(error)
         }
+        // change chimera-framework dependency version and project name
+        obj.dependencies['chimera-framework'] = chimeraVersion
+        obj.name = projectDir
+        // write the new package.json
+        util.writeJsonFile('package.json', obj, function (error) {
+          if (error) {
+            console.error('[ERROR] Cannot write package.json')
+            finalCallback(error)
+          } else {
+            console.warn('[INFO] Creating new package.json...')
+            callback()
+          }
+        })
       })
     },
-        // read package-template.json and rewrite package.json
-    (callback) => {
-      util.readJsonFile('package-template.json', function (error, obj) {
-        if (error) {
-          console.error('[ERROR] Cannot read package-template.json')
-          finalCallback(error)
-        } else {
-          obj.name = projectDir
-          util.writeJsonFile('package.json', obj, function (error) {
-            if (error) {
-              console.error('[ERROR] Cannot write package.json')
-              finalCallback(error)
-            } else {
-              console.warn('[INFO] Creating new package.json...')
-              callback()
-            }
-          })
-        }
-      })
-    },
-        // run npm install
+    // run npm install
     (callback) => {
       cmd.get('npm install', function (error, result) {
         if (error) {
@@ -78,20 +78,6 @@ function initWeb (projectDir) {
         }
       })
     },
-        // delete package-template.json
-    (callback) => {
-      fse.unlink('package-template.json', (error) => {
-        if (error) {
-          console.error('[ERROR] Cannot remove package-template.json')
-          finalCallback(error)
-        } else {
-                    // move to upper directory
-          process.chdir('..')
-          console.warn('[INFO] Delete package-template.json...')
-          callback()
-        }
-      })
-    }
   ], finalCallback)
 }
 

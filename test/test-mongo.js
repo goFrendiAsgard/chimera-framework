@@ -17,7 +17,6 @@ function closeAll () {
 }
 
 describe('mongo', function () {
-
   it('should be able to insert single data', function (done) {
     softGod.insert({name: 'Odin', mythology: 'Nordic', power: 6000}, function (error, result) {
       if (error) {
@@ -449,5 +448,4 @@ describe('mongo', function () {
       done()
     })
   })
-
 })

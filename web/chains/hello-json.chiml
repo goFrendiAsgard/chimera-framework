@@ -1,0 +1,5 @@
+ins: webState
+out: response
+do:
+  - |webState.response --> response
+  - |{"data":"Hello :D"} --> response.data

@@ -1,0 +1,7 @@
+ins: webState
+out: response
+do:
+  - if: |!('session' in webState.request) || !('data' in webState.request.session)
+    do: 0 --> webState.request.session.data
+  - (parseInt(webState.request.session.data)+1) --> response.session.data
+  - response.session.data --> response.data
