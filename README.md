@@ -1,8 +1,19 @@
 # Chimera-Framework
 
+<h1 align="center">Chimera-Framework</h1>
+
+<div align="center">
+  <img src="other/logo.png" />
+</div>
+<br />
+<div align="center">
+  <strong>Language Agnostic Framework for Stand-alone and Distributed Computing</strong>
+</div>
+<br />
+
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-Chimera-framework is a language agnostic framework for standalone and distributed computing. Chimera-framework is written in Node.js. As a component based software engineering framework, Chimera-framework allows you to orchestrate several components to achieve a greater goal. Despite of written in `Node.JS`, Chimera-framework let you write your components in any languages (even executable machine language such as linux commands).
+Chimera-framework is a language agnostic framework for standalone and distributed computing. Chimera-framework is written in Node.js. As a component based software engineering framework, Chimera-framework allows you to orchestrate several components to achieve a greater goal. Despite of written in `Node.JS`, Chimera-framework let you use any component written in any languages (even executable machine language such as linux commands).
 
 # Why Chimera-Framework?
 
@@ -29,7 +40,7 @@ This method is recommended for framework user
 Using git (You should have `Node.Js`, `npm`, and `git client` installed):
 ```sh
 git clone git@github.com:goFrendiAsgard/chimera-framework.git
-cd chimera-framework 
+cd chimera-framework
 npm install --global
 npm link
 ```
