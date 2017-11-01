@@ -8,7 +8,6 @@ const assert = chai.assert
 let server
 let cwd
 
-
 describe('server and sender', function () {
   it('server run in the correct port', function (done) {
     cwd = process.cwd()
@@ -43,7 +42,6 @@ describe('server and sender', function () {
       done(new Error('Error expected, but no error found'))
     })
   })
-
 
   it('should return error when trying to acces dummy.chiml', function (done) {
     chimera.sender.send('http://localhost:3011', 'dummy.chiml', [4], function (error, result) {

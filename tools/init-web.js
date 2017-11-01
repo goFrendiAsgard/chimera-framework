@@ -77,7 +77,7 @@ function initWeb (projectDir) {
           callback()
         }
       })
-    },
+    }
   ], finalCallback)
 }
 

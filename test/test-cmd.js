@@ -9,7 +9,6 @@ const assert = chai.assert
 describe('cmd', function () {
   // cmd.get
   describe('cmd.get', function () {
-
     it('should run command line and get the result (with no option present)', function (done) {
       chimera.cmd.get(chimera.util.getQuoted(path.resolve(__dirname, 'fractures/cpp/substract')) + ' 10 6', function (error, result) {
         if (error) {
@@ -21,7 +20,7 @@ describe('cmd', function () {
     })
 
     it('should run command line and get the result (with option present)', function (done) {
-      chimera.cmd.get(chimera.util.getQuoted('fractures/cpp/substract') + ' 10 6', {cwd:__dirname}, function (error, result) {
+      chimera.cmd.get(chimera.util.getQuoted('fractures/cpp/substract') + ' 10 6', {cwd: __dirname}, function (error, result) {
         if (error) {
           return done(error)
         }
@@ -30,16 +29,15 @@ describe('cmd', function () {
       })
     })
 
-    it('should return undefined if no callback present', function (done) {
-      let result = chimera.cmd.get(chimera.util.getQuoted('fractures/cpp/substract') + ' 10 6', {cwd:__dirname})
+    it('should return object if no callback present', function (done) {
+      let result = chimera.cmd.get(chimera.util.getQuoted('fractures/cpp/substract') + ' 10 6', {cwd: __dirname})
+      assert.exists(result)
       done()
     })
-
   })
 
   // cmd.run
   describe('cmd.run', function () {
-
     it('should return an object with process id (with no option present)', function (done) {
       let result = chimera.cmd.run(chimera.util.getQuoted(path.resolve(__dirname, 'fractures/cpp/substract')) + ' 10 6')
       assert.exists(result.pid)
@@ -47,11 +45,9 @@ describe('cmd', function () {
     })
 
     it('should return an object with process id (with option present)', function (done) {
-      let result = chimera.cmd.run(chimera.util.getQuoted('fractures/cpp/substract') + ' 10 6', {cwd:__dirname})
+      let result = chimera.cmd.run(chimera.util.getQuoted('fractures/cpp/substract') + ' 10 6', {cwd: __dirname})
       assert.exists(result.pid)
       done()
     })
-
   })
-
 })

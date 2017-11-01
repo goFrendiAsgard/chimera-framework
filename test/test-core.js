@@ -10,7 +10,6 @@ const expectedTestResult = 'Hello world\nHello sekai\n6, 8, 10\nstring from circ
 
 // core-preprocessor
 describe('core', function () {
-
   it('should be able to execute json script and get the result', function (done) {
     chimera.core.executeChain('{"ins":"num", "verbose":1, "do":"(num*num)-->"}', [10], {}, function (error, result) {
       if (error) {
