@@ -4,3 +4,4 @@ npm_debug.log
 .*.cjson
 .nyc_output/
 coverage/
+test.sh
