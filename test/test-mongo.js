@@ -158,6 +158,46 @@ describe('mongo', function () {
     })
   })
 
+  it('should be able to sum (including the soft deleted)', function (done) {
+    hardGod.sum('power', function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(result, 20000)
+      done()
+    })
+  })
+
+  it('should be able to sum with filter (including the soft deleted)', function (done) {
+    hardGod.sum('power', {'mythology': 'Greek'}, function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(result, 10000)
+      done()
+    })
+  })
+
+  it('should be able to sum with groupBy (including the soft deleted)', function (done) {
+    hardGod.sum('power', {}, 'mythology', function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.deepEqual(result, {'Nordic': 10000, 'Greek': 10000})
+      done()
+    })
+  })
+
+  it('should be able to sum with filter and groupBy (including the soft deleted)', function (done) {
+    hardGod.sum('power', {'mythology': 'Greek'}, 'mythology', function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.deepEqual(result, {'Greek': 10000})
+      done()
+    })
+  })
+
   it('should be able to avg (excluding the soft deleted)', function (done) {
     softGod.avg('power', function (error, result) {
       if (error) {
@@ -194,6 +234,46 @@ describe('mongo', function () {
         return done(error)
       }
       assert.deepEqual(result, {'Greek': 7000})
+      done()
+    })
+  })
+
+  it('should be able to avg (including the soft deleted)', function (done) {
+    hardGod.avg('power', function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(result, 5000)
+      done()
+    })
+  })
+
+  it('should be able to avg with filter (including the soft deleted)', function (done) {
+    hardGod.avg('power', {'mythology': 'Greek'}, function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(result, 5000)
+      done()
+    })
+  })
+
+  it('should be able to avg with groupBy (including the soft deleted)', function (done) {
+    hardGod.avg('power', {}, 'mythology', function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.deepEqual(result, {'Nordic': 5000, 'Greek': 5000})
+      done()
+    })
+  })
+
+  it('should be able to avg with filter and groupBy (including the soft deleted)', function (done) {
+    hardGod.avg('power', {'mythology': 'Greek'}, 'mythology', function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.deepEqual(result, {'Greek': 5000})
       done()
     })
   })
@@ -238,6 +318,46 @@ describe('mongo', function () {
     })
   })
 
+  it('should be able to min (including the soft deleted)', function (done) {
+    hardGod.min('power', function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(result, 3000)
+      done()
+    })
+  })
+
+  it('should be able to min with filter (including the soft deleted)', function (done) {
+    hardGod.min('power', {'mythology': 'Greek'}, function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(result, 3000)
+      done()
+    })
+  })
+
+  it('should be able to min with groupBy (including the soft deleted)', function (done) {
+    hardGod.min('power', {}, 'mythology', function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.deepEqual(result, {'Nordic': 4000, 'Greek': 3000})
+      done()
+    })
+  })
+
+  it('should be able to min with filter and groupBy (including the soft deleted)', function (done) {
+    hardGod.min('power', {'mythology': 'Greek'}, 'mythology', function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.deepEqual(result, {'Greek': 3000})
+      done()
+    })
+  })
+
   it('should be able to max (excluding the soft deleted)', function (done) {
     softGod.max('power', function (error, result) {
       if (error) {
@@ -270,6 +390,46 @@ describe('mongo', function () {
 
   it('should be able to max with filter and groupBy (excluding the soft deleted)', function (done) {
     softGod.max('power', {'mythology': 'Greek'}, 'mythology', function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.deepEqual(result, {'Greek': 7000})
+      done()
+    })
+  })
+
+  it('should be able to max (including the soft deleted)', function (done) {
+    hardGod.max('power', function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(result, 7000)
+      done()
+    })
+  })
+
+  it('should be able to max with filter (including the soft deleted)', function (done) {
+    hardGod.max('power', {'mythology': 'Greek'}, function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(result, 7000)
+      done()
+    })
+  })
+
+  it('should be able to max with groupBy (including the soft deleted)', function (done) {
+    hardGod.max('power', {}, 'mythology', function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.deepEqual(result, {'Nordic': 6000, 'Greek': 7000})
+      done()
+    })
+  })
+
+  it('should be able to max with filter and groupBy (including the soft deleted)', function (done) {
+    hardGod.max('power', {'mythology': 'Greek'}, 'mythology', function (error, result) {
       if (error) {
         return done(error)
       }
