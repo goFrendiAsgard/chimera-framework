@@ -1,0 +1,15 @@
+ins: statement, x
+out: output
+do:
+  - parallel:
+
+    # get xMean
+    - |(x) -> node mean.js -> xMean
+
+    # get y and yMean
+    - do:
+      - |(statement, x) -> python function.py -> y
+      - |(y) -> node mean.js -> yMean
+
+  # get the output
+  - |({statement, x, xMean, y, yMean}) -> {$.util.getInspectedObject} -> output

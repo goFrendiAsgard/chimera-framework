@@ -1,0 +1,13 @@
+ins: statement, x
+out: output
+vars:
+  remoteUrl: 'http://localhost:3000'
+  chain: 'calculate.chiml'
+do:
+
+  - parallel:
+    - (remoteUrl, chain, statement, x) -> [$.send] -> fx
+    - (remoteUrl, chain, 'diff(' + statement + ')', x) -> [$.send] -> diff_fx
+    - (remoteUrl, chain, 'integrate(' + statement + ')', x) -> [$.send] -> int_fx
+
+  - (fx, '\n', diff_fx, '\n', int_fx) -> [$.concat] -> output
