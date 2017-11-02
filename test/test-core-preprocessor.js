@@ -21,7 +21,6 @@ describe('core-preprocessor', function () {
         }
         standardChainScript = String(standardChainScript)
         assert.equal(JSON.stringify(trueChain), JSON.stringify(JSON.parse(standardChainScript)))
-        // assert.deepInclude(trueChain, JSON.parse(standardChainScript))
         done()
       })
     })

@@ -1,0 +1,3 @@
+do:
+  - |<$.loadJs(_chain_cwd + 'bestNumber.js')> -> bestNumber
+  - |(bestNumber, 36) -> cpp/substract ->

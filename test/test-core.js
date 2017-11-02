@@ -30,6 +30,66 @@ describe('core', function () {
     })
   })
 
+  it('should be able to execute square.chiml and get the result (without vars parameter)', function (done) {
+    chimera.core.executeChain(path.join(__dirname, 'fractures/square.chiml'), [10], function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.strictEqual(result, 100)
+      done()
+    })
+  })
+
+  it('should be able to execute showPi.chiml and get the result (without ins and vars parameter)', function (done) {
+    chimera.core.executeChain(path.join(__dirname, 'fractures/showPi.chiml'), function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.strictEqual(result, 3.141592653589793)
+      done()
+    })
+  })
+
+  it('should able to execute `chimera fractures/showPi.chiml`', function (done) {
+    chimera.cmd.get('chimera ' + chimera.util.getQuoted(path.resolve(__dirname, 'fractures/showPi.chiml')), function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(result, '3.141592653589793\n')
+      done()
+    })
+  })
+
+  it('should able to execute `chimera fractures/showBestNumberPalindrome.chiml`', function (done) {
+    chimera.cmd.get('chimera ' + chimera.util.getQuoted(path.resolve(__dirname, 'fractures/showBestNumberPalindrome.chiml')), function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(result, '37\n')
+      done()
+    })
+  })
+
+  it('should be able to execute malformed.json and yield error', function (done) {
+    chimera.core.executeChain(path.join(__dirname, 'fractures/malformed.json'), function (error, result) {
+      if (error) {
+        assert.equal('YAMLException', error.name)
+        return done()
+      }
+      done(new Error('Error expected, but no error found'))
+    })
+  })
+
+  it('should be able to execute malformed json script and yield error', function (done) {
+    chimera.core.executeChain('{', function (error, result) {
+      if (error) {
+        assert.equal('YAMLException', error.name)
+        return done()
+      }
+      done(new Error('Error expected, but no error found'))
+    })
+  })
+
   it('should be able to execute test.chiml and get the result', function (done) {
     chimera.core.executeChain(path.join(__dirname, 'fractures/test.chiml'), [5, 10], {}, function (error, result) {
       if (error) {

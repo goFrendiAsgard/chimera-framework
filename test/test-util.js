@@ -425,6 +425,11 @@ describe('util', function () {
       done()
     })
 
+    it('should by default use `.` as filler character', function (done) {
+      assert.equal(chimera.util.getStretchedString('abc', 6), 'abc...')
+      done()
+    })
+
     it('should not do anything if string length is more than expected length', function (done) {
       assert.equal(chimera.util.getStretchedString('abc', 2, '.'), 'abc')
       done()
@@ -477,6 +482,26 @@ describe('util', function () {
           }
           done()
         })
+      })
+    })
+
+    it('should throw error when accessing non-existing file', function (done) {
+      chimera.util.readJsonFile('nonExistFile.json', function (error, result) {
+        if (error) {
+          assert.equal('Error', error.name)
+          return done()
+        }
+        return done(new Error('Error expected but no error found'))
+      })
+    })
+
+    it('should throw error when accessing malformed json file', function (done) {
+      chimera.util.readJsonFile(path.join(__dirname, 'fractures/malformed.json'), function (error, result) {
+        if (error) {
+          assert.equal('SyntaxError', error.name)
+          return done()
+        }
+        return done(new Error('Error expected but no error found'))
       })
     })
   })
