@@ -1,0 +1,5 @@
+ins: webState
+out: webState
+do:
+  - if: |webState.request.body.chain.indexOf('square.chiml') > -1 && webState.request.body.input.length < 1
+    do: |1 --> webState.request.body.input[0]

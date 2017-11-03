@@ -1,0 +1,5 @@
+ins: webState
+out: webState
+do:
+  - if: |webState.request.body.chain.indexOf('square.chiml') > -1 && webState.response.data.data === 5329
+    do: |'you do not square 73, because 73 is the most beautiful number and you do not want to ruin the beauty' --> webState.response.data.data

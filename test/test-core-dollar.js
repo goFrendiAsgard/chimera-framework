@@ -58,7 +58,17 @@ describe('chain dollar', function () {
         if (error) {
           return done(error)
         }
-        assert.deepEqual(result, 'a, b, c')
+        assert.equal(result, 'a, b, c')
+        done()
+      })
+    })
+
+    it('should join(["a", "b", "c"]) successfully', function (done) {
+      chimera.coreDollar.join(['a', 'b', 'c'], function (error, result) {
+        if (error) {
+          return done(error)
+        }
+        assert.equal(result, 'abc')
         done()
       })
     })
@@ -67,6 +77,16 @@ describe('chain dollar', function () {
   describe('split', function () {
     it('should split("a, b, c", ", ") successfully', function (done) {
       chimera.coreDollar.split('a, b, c', ', ', function (error, result) {
+        if (error) {
+          return done(error)
+        }
+        assert.deepEqual(result, ['a', 'b', 'c'])
+        done()
+      })
+    })
+
+    it('should split("abc") successfully', function (done) {
+      chimera.coreDollar.split('abc', function (error, result) {
         if (error) {
           return done(error)
         }

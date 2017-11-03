@@ -30,6 +30,16 @@ describe('eisn', function () {
     })
   })
 
+  it('should return error if command is not valid', function (done) {
+    chimera.eisn(srcFile, dstFile, '', function (error, result) {
+      if (error) {
+        assert.equal(!!error, true)
+        return done()
+      }
+      done(new Error('Error expected, but no error found'))
+    })
+  })
+
   it('should run command if dstFile does not exist', function (done) {
     chimera.cmd.get(copySrcFileCmd, function (error, result) {
       if (error) {
@@ -57,6 +67,16 @@ describe('eisn', function () {
         assert.deepEqual(result, {isCommandExecuted: true})
         done()
       })
+    })
+  })
+
+  it('should not run command if dstFile exist and newer than srcFile (by tool)', function (done) {
+    chimera.cmd.get('chimera-eisn substract.cpp substract g++ -o substract substract.cpp', {cwd: path.join(__dirname, 'tmp')}, function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.strictEqual(result, '{"result":{"isCommandExecuted":false},"error":false,"errorMessage":""}\n')
+      done()
     })
   })
 
