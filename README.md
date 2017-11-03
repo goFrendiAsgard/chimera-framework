@@ -237,15 +237,18 @@ parallel:
   - subChain2
   - subChain3
 ```
+__TODO:__ add link to complete CHIML grammar documentation
 
 ### The Data Flow
 
 So, for our `calculate.chiml` in the previous case, the script can be visualized as:
 
-[!stand-alone-simple](doc/img/stand-alone-simple.png)
+![stand-alone-simple](doc/img/stand-alone-simple.png)
 
 Technically, whenever a `CHIML` script executed, a `Javascript` object will be created and store some global variables which are accessible from every process. In this sense, `calculate.chiml` can also be visualized as: 
 
-[!stand-alone-simple](doc/img/stand-alone.png)
+![stand-alone-simple](doc/img/stand-alone.png)
 
 ## Distributed-Computing
+
+__TODO:__ add the example
