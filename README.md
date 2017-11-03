@@ -68,7 +68,7 @@ To perform the test, you can invoke `npm test`. A `g++` compiler is required for
 
 ## Stand-Alone-Computing
 
-Given `y = f(x) = integrate(2*x)` and `x = {-2, -1, 0, 1, 2, 3}`, you want to calculate:
+Given `y = f(x) = integrate(2*x)` and `x = {-2, -1, 0, 1, 2, 3}`, you want to make a program to calculate:
 
 * `y`
 * `mean of x`
