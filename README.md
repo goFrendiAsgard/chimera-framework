@@ -193,24 +193,29 @@ The only thing that make `CHIML` diferent from `YAML` is you are allowed to writ
 
 There are several ways to write a `single chain`:
 
+* Long form
 ```yaml
 ins: input1, input2
 out: output
 do: command
 ```
 
+* Short form
 ```yaml
 (input1, input2) -> command -> out
 ```
 
+* Short form with Javascript function instead of CLI command
 ```yaml
-(input1, input2) -> {javascript-statement} -> out
+(input1, input2) -> {javascript-function} -> out
 ```
 
+* Short form with Javascript function instead of CLI command (The last argument of the function must be Node-Callback)
 ```yaml
-(input1, input2) -> [javascript-statement-with-callback] -> out
+(input1, input2) -> [javascript-function-with-callback] -> out
 ```
 
+* Short form with Javascript promise instead of CLI command
 ```yaml
 (input1, input2) -> <javascript-promise> -> out
 ```
@@ -226,7 +231,7 @@ do:
   - subChain3
 ```
 
-If the `subChains` should be executed in parallel, the `do` keyword should be changed into `parallel` as follows
+If the `subChains` should be executed in parallel, a `parallel` keyword should be used instead of `do`:
 
 ```yaml
 ins: input1, input2
@@ -236,18 +241,102 @@ parallel:
   - subChain2
   - subChain3
 ```
+
+Chimera-Framework also provide some built-in Javascript functions under `$` namespace. `$.util.getInspectedObject` for example, will inspect and object and return a human-readable string representing the object.
+
 __TODO:__ add link to complete CHIML grammar documentation
 
 ### The Data Flow
 
-So, for our `calculate.chiml` in the previous case, the script can be visualized as:
+Our `calculate.chiml` in the previous case, can be visualized as follow:
 
 ![stand-alone-simple](doc/img/stand-alone-simple.png)
 
-Technically, whenever a `CHIML` script executed, a `Javascript` object will be created and store some global variables which are accessible from every process. In this sense, `calculate.chiml` can also be visualized as:
+Technically, whenever a `CHIML` script executed, a `Javascript` object will be created and store some global variables which are accessible from every process. In this sense, `calculate.chiml` can also be visualized as follow:
 
 ![stand-alone-simple](doc/img/stand-alone.png)
 
 ## Distributed-Computing
 
-__TODO:__ add the example
+So, your stand-alone program is working perfectly now. However, you have to do the same thing using a low-spec mini-computer. You have try to run your CHIML script in this mini-computer, but it takes 15 minutes to do the calculation.
+
+You think of the solution, and you come up with a briliant idea. You can create an API server in your computer, so that your mini-computer can send the request to the server and get the result.
+
+Chimera-Framework has a built in solution for that. Suppose your server can be accessed as `http://minastirith.com`, then in your server, you simply invoke this command:
+
+```
+chimera-serve
+```
+
+Now, in your mini-computer, you create a script named `remote-calculate.chiml`:
+
+```
+ins: statement, x
+out: output
+vars:
+  remoteUrl: 'http://minastirith.com:3000'
+  chain: 'calculate.chiml'
+do:
+
+  - parallel:
+    - (remoteUrl, chain, statement, x) -> [$.send] -> fx
+    - (remoteUrl, chain, 'diff(' + statement + ')', x) -> [$.send] -> diff_fx
+    - (remoteUrl, chain, 'integrate(' + statement + ')', x) -> [$.send] -> int_fx
+
+  - (fx, '\n', diff_fx, '\n', int_fx) -> {$.concat} -> output
+```
+
+Now, you can calculate `f(x)` as well as `diff(f(x))` and `integrate(f(x))` in parallel by simply invoke:
+
+```
+gofrendi@minastirith:~$ chimera multi-calculate.chiml "x**2" "[-2,-1,0,1,2,3]"
+{ statement: 'x**2',
+  x: [ -2, -1, 0, 1, 2, 3 ],
+  xMean: 0.5,
+  y: [ 4, 1, 0, 1, 4, 9 ],
+  yMean: 3.1666666666666665 }
+{ statement: 'diff(x**2)',
+  x: [ -2, -1, 0, 1, 2, 3 ],
+  xMean: 0.5,
+  y: [ -4, -2, 0, 2, 4, 6 ],
+  yMean: 1 }
+{ statement: 'integrate(x**2)',
+  x: [ -2, -1, 0, 1, 2, 3 ],
+  xMean: 0.5,
+  y: [ -3, -1, 0, 0, 2, 9 ],
+  yMean: 1.1666666666666667 }
+```
+
+`$.send` is a Chimera-Framework's built-in function to send the request to the server. The first and second parameters of `$.send` should be the url and the chain name respectively. And the last parameter of `$.send` should be the callback (handled automatically by Chimera-Framework)
+
+`$.concat` is also another Chimera-Framework's built in function. It receive string parameters and concat it into a single string.
+
+### The Data Flow
+
+Our `remote-calculate.chiml` in the previous case, can be visualized as follow:
+
+![stand-alone-simple](doc/img/distributed.png)
+
+# API
+
+Chimera-Framework has several API. The API are accessible from any Node.Js programs. To use the API, you need to add this to your Node.Js application:
+
+```
+const chimera = require('chimera-framework')
+```
+
+Below are the list of available API
+
+* chimera.cmd
+* chimera.core
+* chimera.coreChimlParser
+* chimera.coreDollar
+* chimera.corePreprocessor
+* chimera.eisn
+* chimera.mongo
+* chimera-sender
+* chimera-server
+* chimera-util
+* chimera-web
+
+__TODO:__ create documentation for this
