@@ -12,32 +12,31 @@
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 [![codecov](https://codecov.io/gh/goFrendiAsgard/chimera-framework/branch/master/graph/badge.svg)](https://codecov.io/gh/goFrendiAsgard/chimera-framework)
 
-Chimera-framework is a language agnostic framework for standalone and distributed computing. Chimera-framework is written in `Node.Js`. As a component based software engineering framework, Chimera-framework allows you to orchestrate several components to achieve a greater goal. The components can be written in any programming language. Executable binary file can also act as component.
+Chimera-Framework is a language agnostic framework for standalone and distributed computing. Chimera-Framework is written in `Node.Js`. As a component based software engineering framework, Chimera-Framework allows you to orchestrate several components to achieve a greater goal. The components can be written in any programming language. Executable binary file can also act as component.
 
 # Why Chimera-Framework?
 
-* __Programming Language Diversity:__ Some programming language are good at machine learning. Some others are good at statistics or web development. Creating a website with some machine-learning/statistics feature will lead you to a soon-to-be-regret decision. Chimera-framework solve this by let you choose the best programming language for each task.
+* __Programming Language Diversity:__ Some programming language are good at machine learning. Some others are good at statistics or web development. Creating a website with some machine-learning/statistics feature will lead you to a soon-to-be-regret decision. Chimera-Framework solve this by let you choose the best programming language for each task.
 
-* __CLI Support in Most Programming Language:__ Most programming language supporting command line interface. So, rather than inventing a new bridging interface, Chimera-framework simply use this already-popular-and-common interface. Thus, you don't need to learn something new in order to write your component.
+* __CLI Support in Most Programming Language:__ Most programming language supporting command line interface. So, rather than inventing a new bridging interface, Chimera-Framework simply use this already-popular-and-common interface. Thus, you don't need to learn something new in order to write your component.
 
-* __Technology Migration in Tight Deadline is Painful:__ In software development, there is one single hell named vendor-lock. And to make it worse, some frameworks (or even programming languages) can suddenly fade away from the market. Chimera-framework help you prevent this by let you develop component-based software. So, if your components suddenly doesn't work due to deprecation or anything, you can just simply drop in a new replacement without any need to rewrite the entire software.
+* __Technology Migration in Tight Deadline is Painful:__ In software development, there is one single hell named vendor-lock. And to make it worse, some frameworks (or even programming languages) can suddenly fade away from the market. Chimera-Framework help you prevent this by let you develop component-based software. So, if your components suddenly doesn't work due to deprecation or anything, you can just simply drop in a new replacement without any need to rewrite the entire software.
 
 # Installation
 
-Using npm (You should have `Node.Js` and `npm` installed):
+__Using npm__ You should have `Node.Js` and `npm` installed. This method is recommended for Chimera-Framework user:
 ```sh
 npm install --global chimera-framework
 ```
-This method is recommended for framework user
 
-Using git (You should have `Node.Js`, `npm`, and `git client` installed):
+__Using git__ You should have `Node.Js`, `npm`, and `git client` installed. This method is recommended for Chimera-Framework tester/developer/contributor:
 ```sh
+npm install --global standard nyc
 git clone git@github.com:goFrendiAsgard/chimera-framework.git
 cd chimera-framework
 npm install --global
 npm link
 ```
-This method is recommended for framework tester/developer
 
 # Update
 
@@ -68,7 +67,7 @@ To perform the test, you can invoke `npm test`. A `g++` compiler is required for
 
 ## Stand-Alone-Computing
 
-Given `y = f(x) = integrate(2*x)` and `x = {-2, -1, 0, 1, 2, 3}`, you want to make a program to calculate:
+Given `y = f(x) = integrate(2*x)` and `x = {-2, -1, 0, 1, 2, 3}`, A client ask you to make a program to calculate:
 
 * `y`
 * `mean of x`
@@ -76,9 +75,9 @@ Given `y = f(x) = integrate(2*x)` and `x = {-2, -1, 0, 1, 2, 3}`, you want to ma
 
 The user should be able to change the value of `x` and `f(x)` as needed.
 
-Suppose you are a `Node.Js` developer, and you mainly works with Javascript. You know how to do most thing in `Javascript`, but you can't find any `npm` package that can solve `integral` problem as good as [Sympy](http://www.sympy.org/en/index.html) which is a `Python` package.
+Suppose you are a `Node.Js` developer, and you mainly work with Javascript. You know how to do most thing in `Javascript`, but you can't find any `npm` package that can solve `integral` problem as good as [Sympy](http://www.sympy.org/en/index.html) which is a `Python` package.
 
-You can learn Python in a day or two, but the deadline is tomorrow and you don't want to waste your time learning a new programming language *(__PS:__ This is just a simple use-case, in real life, I love `Python` and I will recommend you to try this awesome language, especially if you do a lot of machine-learning thing)*
+You can learn `Python` in a day or two, but the deadline is tomorrow and you don't want to waste your time learning a new programming language *(__PS:__ This is just a simple use-case, in real life, I love `Python` and I will recommend you to try this awesome language, especially if you do a lot of machine-learning thing)*
 
 Your program should contains at least two inputs:
 * `statement`: a string containing the mathematical formula of `f(x)`.
@@ -245,7 +244,7 @@ So, for our `calculate.chiml` in the previous case, the script can be visualized
 
 ![stand-alone-simple](doc/img/stand-alone-simple.png)
 
-Technically, whenever a `CHIML` script executed, a `Javascript` object will be created and store some global variables which are accessible from every process. In this sense, `calculate.chiml` can also be visualized as: 
+Technically, whenever a `CHIML` script executed, a `Javascript` object will be created and store some global variables which are accessible from every process. In this sense, `calculate.chiml` can also be visualized as:
 
 ![stand-alone-simple](doc/img/stand-alone.png)
 
