@@ -21,7 +21,7 @@
             "num1 dan num2 should be number"
           ],
           "out": "_error_message",
-          "command": "[$.assignValue]",
+          "command": "{$.assignValue}",
           "loop": "false"
         },
         {
@@ -29,7 +29,7 @@
           "branch": "true",
           "ins": [true],
           "out": "_error",
-          "command": "[$.assignValue]",
+          "command": "{$.assignValue}",
           "loop": "false"
         }
       ],
@@ -65,7 +65,7 @@
                           "branch": "true",
                           "ins": "num2",
                           "out": "bottom",
-                          "command": "[$.assignValue]",
+                          "command": "{$.assignValue}",
                           "loop": "false"
                         },
                         {
@@ -73,7 +73,7 @@
                           "branch": "true",
                           "ins": "num1",
                           "out": "top",
-                          "command": "[$.assignValue]",
+                          "command": "{$.assignValue}",
                           "loop": "false"
                         }
                       ],
@@ -89,7 +89,7 @@
                           "branch": "true",
                           "ins": "num1",
                           "out": "bottom",
-                          "command": "[$.assignValue]",
+                          "command": "{$.assignValue}",
                           "loop": "false"
                         },
                         {
@@ -97,7 +97,7 @@
                           "branch": "true",
                           "ins": "num2",
                           "out": "top",
-                          "command": "[$.assignValue]",
+                          "command": "{$.assignValue}",
                           "loop": "false"
                         }
                       ],
@@ -111,7 +111,7 @@
                   "branch": "true",
                   "ins": "[]",
                   "out": "evens",
-                  "command": "[$.assignValue]",
+                  "command": "{$.assignValue}",
                   "loop": "false"
                 },
                 {
@@ -119,7 +119,7 @@
                   "branch": "true",
                   "ins": "bottom",
                   "out": "x",
-                  "command": "[$.assignValue]",
+                  "command": "{$.assignValue}",
                   "loop": "false"
                 },
                 {
@@ -132,7 +132,7 @@
                       "branch": "x%2 == 0",
                       "ins": "x",
                       "out": "evens[evens.length]",
-                      "command": "[$.assignValue]",
+                      "command": "{$.assignValue}",
                       "loop": "false"
                     },
                     {
@@ -140,7 +140,7 @@
                       "branch": "true",
                       "ins": "x+1",
                       "out": "x",
-                      "command": "[$.assignValue]",
+                      "command": "{$.assignValue}",
                       "loop": "false"
                     }
                   ],
@@ -173,7 +173,7 @@
           "branch": "true",
           "ins": "evens, \", \"",
           "out": "info.evens",
-          "command": "[$.join]",
+          "command": "{$.join}",
           "loop": "false"
         },
         {
@@ -181,7 +181,7 @@
           "branch": "true",
           "ins": "\"Hello \", \"world\"",
           "out": "info[\"helloWorld\"]",
-          "command": "[$.concat]",
+          "command": "{$.concat}",
           "loop": "false"
         },
         {
@@ -192,7 +192,7 @@
             "sekai"
           ],
           "out": "info[\"helloSekai\"]",
-          "command": "[$.concat]",
+          "command": "{$.concat}",
           "loop": "false"
         },
         {
@@ -208,7 +208,7 @@
           "branch": "true",
           "ins": "[info.helloWorld, info.helloSekai, info.evens, info.circle, info.area, info.square], \"\\n\"",
           "out": "output",
-          "command": "[$.join]",
+          "command": "{$.join}",
           "loop": "false"
         }
       ],
@@ -226,7 +226,7 @@
             "num1 dan num2 should be number"
           ],
           "out": "_error_message",
-          "command": "[$.assignValue]",
+          "command": "{$.assignValue}",
           "loop": "false"
         },
         {
@@ -234,7 +234,7 @@
           "branch": "true",
           "ins": [true],
           "out": "_error",
-          "command": "[$.assignValue]",
+          "command": "{$.assignValue}",
           "loop": "false"
         }
       ],

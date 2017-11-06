@@ -10,4 +10,4 @@ do:
     - (remoteUrl, chain, 'diff(' + statement + ')', x) -> [$.send] -> diff_fx
     - (remoteUrl, chain, 'integrate(' + statement + ')', x) -> [$.send] -> int_fx
 
-  - (fx, '\n', diff_fx, '\n', int_fx) -> [$.concat] -> output
+  - (fx, '\n', diff_fx, '\n', int_fx) -> {$.concat} -> output

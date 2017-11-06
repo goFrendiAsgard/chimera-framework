@@ -20,14 +20,14 @@ do:
         while: "x <= top"
     - "[$.loadJs(_chain_cwd+\"circle.js\")] -> info.circle"
     - "(7) -> [$.loadJs(_chain_cwd+\"circle.js\", \"area\")] -> info.area"
-  - "(evens, \", \") -> [$.join] -> info.evens"
-  - "(\"Hello \", \"world\") -> [$.concat] -> info[\"helloWorld\"]"
+  - "(evens, \", \") -> {$.join} -> info.evens"
+  - "(\"Hello \", \"world\") -> {$.concat} -> info[\"helloWorld\"]"
   - ins:
     - "Hello "
     - "sekai"
     out: info["helloSekai"]
-    do: "[$.concat]"
+    do: "{$.concat}"
   - "(_chain_cwd+\"square.chiml\", 10) -> [$.runChain] -> info.square"
-  - "([info.helloWorld, info.helloSekai, info.evens, info.circle, info.area, info.square], \"\\n\") -> [$.join] -> output"
+  - "([info.helloWorld, info.helloSekai, info.evens, info.circle, info.area, info.square], \"\\n\") -> {$.join} -> output"
 catch: "typeof(num1) !== \"number\" || typeof(num2) !== \"number\""
 throw: num1 dan num2 should be number

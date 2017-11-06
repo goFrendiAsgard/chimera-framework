@@ -70,6 +70,16 @@ describe('core', function () {
     })
   })
 
+  it('should be able to setnov.chiml and yield error', function (done) {
+    chimera.core.executeChain(path.join(__dirname, 'fractures/setnov.chiml'), function (error, result) {
+      if (error) {
+        assert.equal('Error', error.name)
+        return done()
+      }
+      done(new Error('Error expected, but no error found'))
+    })
+  })
+
   it('should be able to execute malformed.json and yield error', function (done) {
     chimera.core.executeChain(path.join(__dirname, 'fractures/malformed.json'), function (error, result) {
       if (error) {

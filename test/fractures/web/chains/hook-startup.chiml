@@ -13,4 +13,4 @@ do:
         {"route":"/hello-hook/:name", "method":"all", "chain":_chain_cwd+"hello-param.chiml"}
       ]
     out: webState.config.routes
-    do: |[$.merge]
+    do: |{$.merge}

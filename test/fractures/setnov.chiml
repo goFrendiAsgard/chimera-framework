@@ -1,0 +1,3 @@
+# assuming `setnov` stands for `setting-not-available` and no program named `setnov`, this should yield error
+# the sole purpose of this program is to generate error
+(i) -> setnov
