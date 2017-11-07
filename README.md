@@ -113,7 +113,7 @@ if __name__ == '__main__':
 Someone told you that `integrate(2*x)` is `x^2`. By using this information, you know that if `y = f(x) = integrate(2*x) = x^2` and `x = {-2, -1, 0, 1, 2, 3}`, then `y` must be `{4, 1, 0, 1, 4, 9}`.
 
 Just to make sure that your program is correct, you then invoke this in your `terminal`:
-```
+```bash
 gofrendi@minastirith:~$ python function.py "integrate(2*x)" "[-2,-1,0,1,2,3]"
 [4, 1, 0, 1, 4, 9]
 ```
@@ -139,7 +139,7 @@ if (require.main === module) {
 ```
 
 You are pretty sure it's going to work, and it's not as magical as solving the integral. But as you always happy seeing your program works, you open your terminal, and type this:
-```
+```bash
 gofrendi@minastirith:~$ node mean.js "[4,1,0,1,4,9]"
 3.1666666666666665
 ```
@@ -173,7 +173,7 @@ You see that the first process (get xMean) and second process (get y and yMean) 
 
 We will cover what actually happened here and what the `CHIML` is about. But first of all, let's confirm that this script is working. You open your terminal again, and invoke this command:
 
-```
+```bash
 gofrendi@minastirith:~$ chimera calculate.chiml "integrate(2*x)" "[-2,-1,0,1,2,3]"
 { statement: 'integrate(2*x)',
   x: [ -2, -1, 0, 1, 2, 3 ],
@@ -313,7 +313,7 @@ do:
 
 Now, you can calculate `f(x)` as well as `diff(f(x))` and `integrate(f(x))` in parallel by simply invoke:
 
-```
+```bash
 gofrendi@minastirith:~$ chimera multi-calculate.chiml "x**2" "[-2,-1,0,1,2,3]"
 { statement: 'x**2',
   x: [ -2, -1, 0, 1, 2, 3 ],
@@ -481,7 +481,7 @@ do:
 
 The script tells Chimera-Framework to send `x`, `y`, `xMean`, `yMean`, and `statement` to `result.ejs` so that it can show the desired result. Below is the content of `result.ejs`:
 
-```ejs
+```html
 <head>
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -500,7 +500,7 @@ __NOTE:__ The source code used in the examples are available [here](/example)
 
 Chimera-Framework has several API. The API are accessible from any Node.Js programs. To use the API, you need to add this to your Node.Js application:
 
-```
+```javascript
 const chimera = require('chimera-framework')
 ```
 
