@@ -19,10 +19,6 @@ This note is intended for developers. You might not need it
 ## Testing
 * Testing Chimera:
     - `npm test`
-* Testing Web Framework (__TODO:__ Create a better test)
-    - `cd project-template`
-    - `npm start`
-    - Test manually
 
 ## Publish
 * Commit and push git
@@ -35,3 +31,5 @@ This note is intended for developers. You might not need it
 * [x] Fix getChainWithTrueCommand
 * [ ] Find a way to test `chimera.dollar.prompt`
 * [ ] Find a way to test `chimera.dollar.print`
+* [ ] Find a way to compile `chiml` into `js`
+* [ ] Use nunjucks
