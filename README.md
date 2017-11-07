@@ -340,3 +340,7 @@ Below are the list of available API
 * chimera-web
 
 __TODO:__ create documentation for this
+
+# FAQ (Frequently Asked Question)
+
+Have some questions?  Open an [issue](https://github.com/goFrendiAsgard/chimera-framework/issues) or click the [FAQ](doc/faq.md).
