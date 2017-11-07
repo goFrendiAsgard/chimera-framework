@@ -1,0 +1,18 @@
+ins: webState
+out: webState
+parallel:
+
+  # define routes
+  - ins:
+    - [
+        {"route":"/calculate", "method":"post", "chain":_chain_cwd+"calculate.chiml"},
+        {"route":"/", "method":"all", "chain":_chain_cwd+"form.chiml"},
+      ]
+    out: webState.config.routes
+
+  # define other configurations
+  - (_chain_cwd+"../public") --> webState.config.staticPath
+  - (_chain_cwd+"../public/favicon.ico") --> webState.config.faviconPath
+  - (_chain_cwd+"../views") --> webState.config.viewPath
+  - (_chain_cwd+"../views/error.ejs") --> webState.config.errorTemplate
+  - (0) --> webState.config.verbose

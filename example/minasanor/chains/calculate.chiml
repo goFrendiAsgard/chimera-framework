@@ -1,0 +1,18 @@
+ins: webState
+out: response
+do:
+  - webState.request.body --> post
+  - ('[' + post.x + ']') --> x
+  - parallel:
+
+    # get xMean
+    - |(x) -> {$.loadJs(_chain_cwd+'components/mean.js')} -> xMean
+
+    # get y and yMean
+    - do:
+      - |(post.statement, x) -> python components/function.py -> y
+      - |(y) -> {$.loadJs(_chain_cwd+'components/mean.js')} -> yMean
+
+  # assemble output
+  - |({"x":x, "y":y, "xMean":xMean, "yMean": yMean, "statement": post.statement}) --> response.data
+  - |("result.ejs") --> response.view

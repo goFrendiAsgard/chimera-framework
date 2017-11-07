@@ -100,6 +100,7 @@ def f(statement, data):
     fn = str(eval(statement))
     y = []
     for x in data:
+        x = float(x)
         y.append(eval(fn))
     return y
 
@@ -256,6 +257,30 @@ Technically, whenever a `CHIML` script executed, a `Javascript` object will be c
 
 ![stand-alone-simple](doc/img/stand-alone.png)
 
+### Make Use of Node.Js Module For Better Performance
+
+As Chimera-Framework is written in Node.Js, loading a Node module in your CHIML script is going to be faster than invoking `node` command. As our `mean.js` export the `mean` function (ie: `module.exports = mean`), we can modify our CHIML script into:
+
+```yaml
+ins: statement, x
+out: output
+do:
+  - parallel:
+
+    # get xMean
+    - |(x) -> {$.loadJs(_chain_cwd + 'mean.js')} -> xMean
+
+    # get y and yMean
+    - do:
+      - |(statement, x) -> python function.py -> y
+      - |(y) -> {$.loadJs(_chain_cwd + 'mean.js')} -> yMean
+
+  # get the output
+  - |({statement, x, xMean, y, yMean}) -> {$.util.getInspectedObject} -> output
+```
+
+Notice that `$.loadJs` will load a function defined in Node.Js Module, so that it can be used in your CHIML script.
+
 ## Distributed-Computing
 
 So, your stand-alone program is working perfectly now. However, you have to do the same thing using a low-spec mini-computer. You have try to run your CHIML script in this mini-computer, but it takes 15 minutes to do the calculation.
@@ -316,6 +341,18 @@ gofrendi@minastirith:~$ chimera multi-calculate.chiml "x**2" "[-2,-1,0,1,2,3]"
 Our `remote-calculate.chiml` in the previous case, can be visualized as follow:
 
 ![stand-alone-simple](doc/img/distributed.png)
+
+# Web App
+
+Although CLI Application can be useful in a lot of cases, some people might be intimidated by it's interface. They prefer to click and tap on the screen rather than type some alien words in the terminal. In this case, creating a web application can be an interesting solution.
+
+Chimera-Web-App is based on [Express.Js](http://expressjs.com/), a de-facto web framework for Node.Js.
+
+In Chimera-Web-App, you can define several `hook` and `chains` to transform a user's request into desired response. This process is shown as follow:
+
+![web-data-flow](doc/img/web-data-flow.png)
+
+Now, let's convert our previous `CHIML` workflow into a web application.
 
 # API
 
