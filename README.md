@@ -342,7 +342,7 @@ Our `remote-calculate.chiml` in the previous case, can be visualized as follow:
 
 ![stand-alone-simple](doc/img/distributed.png)
 
-# Web App
+## Web App
 
 Although CLI Application can be useful in a lot of cases, some people might be intimidated by it's interface. They prefer to click and tap on the screen rather than type some alien words in the terminal. In this case, creating a web application can be an interesting solution.
 
@@ -352,7 +352,149 @@ In Chimera-Web-App, you can define several `hook` and `chains` to transform a us
 
 ![web-data-flow](doc/img/web-data-flow.png)
 
-Now, let's convert our previous `CHIML` workflow into a web application.
+Now, let's convert your previous `CHIML` workflow into a web application. We want to expose two URL. The first URL `http://localhost:3000/` act as entry point page. In this page, user will be able to input the value of `f(x)` and `x`. After clicking the `calculate` button, a `post` request will be sent to the second URL `http://localhost:3000/calculate`, and the calculation result will be shown to the user.
+
+![web-app](doc/img/web-app.png)
+
+First of all, you need to create the directory structure
+
+```
+▾ chains/
+  ▾ components/
+      function.py
+      mean.js
+    calculate.chiml
+    form.chiml
+    hook-startup.chiml
+▾ public/
+  ▾ css/
+      style.css
+    favicon.ico
+▾ views/
+    error.ejs
+    form.ejs
+    result.ejs
+  index.js
+```
+
+In your Chimera-Web-App, `index.js` will act as your entry point. The content of `index.js` is as follow:
+
+```javascript
+const path = require('path')
+const web = require('chimera-framework/lib/web.js')
+const port = process.env.PORT || 3000
+
+const webConfig = {
+  'startupHook': path.join(__dirname, 'chains/hook-startup.chiml'),
+  'verbose': 3
+}
+let app = web.createApp(webConfig)
+module.exports = app
+
+if (require.main === module) {
+  app.listen(port, function () {
+    console.error('Start at port ' + port)
+  })
+}
+```
+
+After importing `path`, `chimera.web`, and determining default `port`, you need to define the `webConfig`. This `webConfig` is merely an object containing several configuration values. For now, there are only two configuration, `startupHook` and `verbose`. The `startupHook` configuration is refering to a CHIML script to override the configurations as well as define accessible routes. On the other hand, `verbose` configuration defining verbosity level (i.e: how much log is shown in the console).
+
+The `web.createApp` function will return an Express.Js `app` with some middlewares adjusted to Chimera-Framework.
+
+You also need to define webConfig and route in `chains/hook-startup.chiml` as follow:
+
+```yaml
+ins: webState
+out: webState
+parallel:
+
+  # define routes
+  - ins:
+    - [
+        {"route":"/calculate", "method":"post", "chain":_chain_cwd+"calculate.chiml"},
+        {"route":"/", "method":"all", "chain":_chain_cwd+"form.chiml"},
+      ]
+    out: webState.config.routes
+
+  # define other configurations
+  - (_chain_cwd+"../public") --> webState.config.staticPath
+  - (_chain_cwd+"../public/favicon.ico") --> webState.config.faviconPath
+  - (_chain_cwd+"../views") --> webState.config.viewPath
+  - (_chain_cwd+"../views/error.ejs") --> webState.config.errorTemplate
+```
+
+Here you define two routes (`/calculate` to `calculate.chiml` and `/` to `form.chiml`) and several configurations (`staticPath`, `faviconPath`, `viewPath`, and `errorTemplate`). The configurations are defining directory path of your static resource, favicon, views, and error template.
+
+The content of `form.chiml` is merely:
+
+```yaml
+|({"view":"form.ejs"}) --> response
+```
+
+Basically, this `CHIML` script do nothing but set response's view to `form.ejs`. The content of `form.ejs` itself is a simple `HTML` to show an entry form:
+
+```html
+<head>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <h1>Function Calculator</h1>
+  <form action="/calculate" method="post">
+    <p>
+      <label>F(x)</label>
+      <input name="statement" placeholder="Your mathematical function" value="integrate(2*x)"></statement>
+    </p>
+    <p>
+      <label>X</label>
+      <input name="x" placeholder="Your data" value="-2, -1, 0, 1, 2, 3"></statement>
+    </p>
+    <p>
+      <button name="submit">Calculate</button>
+    </p>
+  </form>
+</body>
+```
+
+The content of `calculate.chiml` is a bit more complicated since it needs to take user's input, do some preprocessing then run both `function.py` and `means.js` in the correct order. The content of `calculate.chiml` is as follow:
+
+```yaml
+ins: webState
+out: response
+do:
+  - webState.request.body --> post
+  - ('[' + post.x + ']') --> x
+  - parallel:
+
+    # get xMean
+    - |(x) -> {$.loadJs(_chain_cwd+'components/mean.js')} -> xMean
+
+    # get y and yMean
+    - do:
+      - |(post.statement, x) -> python components/function.py -> y
+      - |(y) -> {$.loadJs(_chain_cwd+'components/mean.js')} -> yMean
+
+  # assemble output
+  - |({"x":x, "y":y, "xMean":xMean, "yMean": yMean, "statement": post.statement}) --> response.data
+  - |("result.ejs") --> response.view
+```
+
+The script tells Chimera-Framework to send `x`, `y`, `xMean`, `yMean`, and `statement` to `result.ejs` so that it can show the desired result. Below is the content of `result.ejs`:
+
+```ejs
+<head>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <h1><%= 'y = F(x) = ' + statement %></h1>
+  <pre><%= 'x = {' + x + '}' %></pre>
+  <pre><%= 'y = {' + y + '}' %></pre>
+  <pre><%= 'mean(x) = ' + xMean %></pre>
+  <pre><%= 'mean(y) = ' + yMean %></pre>
+</body>
+```
+
+__NOTE:__ The source code used in the examples are available [here](/example)
 
 # API
 
