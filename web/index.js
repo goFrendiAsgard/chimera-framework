@@ -4,7 +4,7 @@ const port = process.env.PORT || 3000
 
 const webConfig = {
   'startupHook': path.join(__dirname, 'chains/hook-startup.chiml'),
-  'verbose': 3
+  'verbose': 0
 }
 let app = web.createApp(webConfig)
 module.exports = app

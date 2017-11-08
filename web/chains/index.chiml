@@ -1,0 +1,4 @@
+out: response
+do:
+  - |"Hello world :D" --> response.data.body
+  - |"index.ejs" --> response.view

@@ -1,6 +1,0 @@
-ins: webState
-out: response
-do:
-  - if: |!('body' in webState.request) || !('data' in webState.request.body)
-    do: 0 --> webState.request.body.data
-  - (parseInt(webState.request.body.data)+1) --> response.data

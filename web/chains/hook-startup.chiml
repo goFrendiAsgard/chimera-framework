@@ -1,22 +1,11 @@
 ins: webState
 out: webState
-verbose: 0
 parallel:
 
   # define routes
   - ins:
     - [
-        {"route":"/plus-one-body", "method":"post", "chain":_chain_cwd+"plus-one-body.chiml"},
-        {"route":"/plus-one-cookie", "method":"all", "chain":_chain_cwd+"plus-one-cookie.chiml"},
-        {"route":"/plus-one-query", "method":"get", "chain":_chain_cwd+"plus-one-query.chiml"},
-        {"route":"/plus-one-session", "method":"all", "chain":_chain_cwd+"plus-one-session.chiml"},
-        {"route":"/hello-hook", "method":"all", "chain":_chain_cwd+"hello-string.chiml"},
-        {"route":"/hello-hook/:name", "method":"all", "chain":_chain_cwd+"hello-param.chiml"},
-        {"route":"/hello-string", "method":"all", "chain":_chain_cwd+"hello-string.chiml"},
-        {"route":"/hello-pug", "method":"all", "chain":_chain_cwd+"hello-pug.chiml"},
-        {"route":"/hello-ejs", "method":"all", "chain":_chain_cwd+"hello-ejs.chiml"},
-        {"route":"/hello-json", "method":"all", "chain":_chain_cwd+"hello-json.chiml"},
-        {"route":"/", "method":"all", "chain":_chain_cwd+"hello-string.chiml"},
+        {"route":"/", "method":"all", "chain":_chain_cwd+"index.chiml"},
       ]
     out: webState.config.routes
 
@@ -24,5 +13,5 @@ parallel:
   - (_chain_cwd+"../public") --> webState.config.staticPath
   - (_chain_cwd+"../public/favicon.ico") --> webState.config.faviconPath
   - (_chain_cwd+"../views") --> webState.config.viewPath
-  - (_chain_cwd+"../views/error.pug") --> webState.config.errorTemplate
+  - (_chain_cwd+"../views/error.ejs") --> webState.config.errorTemplate
   - (0) --> webState.config.verbose

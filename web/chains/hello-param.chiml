@@ -1,4 +1,0 @@
-ins: webState
-out: output
-do: 
-  - |("Hello ", webState.request.params.name) -> {$.concat} -> output
