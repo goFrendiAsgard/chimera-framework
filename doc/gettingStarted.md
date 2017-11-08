@@ -186,11 +186,11 @@ The complete semantic of CHIML script is provided [here](doc/chiml.md)
 
 Our `calculate.chiml` in the previous case, can be visualized as follow:
 
-![stand-alone-simple](doc/img/stand-alone-simple.png)
+![stand-alone-simple](img/stand-alone-simple.png)
 
 Technically, whenever a `CHIML` script executed, a `Javascript` object will be created and store some global variables which are accessible from every process. In this sense, `calculate.chiml` can also be visualized as follow:
 
-![stand-alone-simple](doc/img/stand-alone.png)
+![stand-alone-simple](img/stand-alone.png)
 
 ### Make Use of Node.Js Module For Better Performance
 
@@ -275,7 +275,7 @@ gofrendi@minastirith:~$ chimera multi-calculate.chiml "x**2" "[-2,-1,0,1,2,3]"
 
 Our `remote-calculate.chiml` in the previous case, can be visualized as follow:
 
-![stand-alone-simple](doc/img/distributed.png)
+![stand-alone-simple](img/distributed.png)
 
 ## Web App
 
@@ -285,11 +285,11 @@ Chimera-Web-App is based on [Express.Js](http://expressjs.com/), a de-facto web 
 
 In Chimera-Web-App, you can define several `hook` and `chains` to transform a user's request into desired response. This process is shown as follow:
 
-![web-data-flow](doc/img/web-data-flow.png)
+![web-data-flow](img/web-data-flow.png)
 
 Now, let's convert your previous `CHIML` workflow into a web application. We want to expose two URL. The first URL `http://localhost:3000/` act as entry point page. In this page, user will be able to input the value of `f(x)` and `x`. After clicking the `calculate` button, a `post` request will be sent to the second URL `http://localhost:3000/calculate`, and the calculation result will be shown to the user.
 
-![web-app](doc/img/web-app.png)
+![web-app](img/web-app.png)
 
 First of all, you need to create the directory structure
 

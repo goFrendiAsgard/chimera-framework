@@ -67,6 +67,12 @@ To perform the test, you can invoke `npm test`. A `g++` compiler is required for
 
 The brief introduction of Chimera-Framework usage is presented [here](doc/gettingStarted.md)
 
+Chimera-Framework can be used for
+
+* [Stand alone computing](doc/gettingStarted.md#stand-alone-computing)
+* [Distributed computing](doc/gettingStarted.md#distributed-computing)
+* [Stand alone computing](doc/gettingStarted.md#web-app)
+
 # API
 
 Chimera-Framework has several API. The API are accessible from any Node.Js programs. To use the API, you need to add this to your Node.Js application:
