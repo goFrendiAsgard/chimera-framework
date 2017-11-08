@@ -65,5 +65,5 @@ There are some default variables in every CHIML script:
 ## Control Flow
 Every `chain` has some keys including `ins`, `out`, `if`, `do`, and `while`. The control flow of a `chain` is as follow:
 
-![control-flowchart](img/chimera-control-flowchart.png)
+![control](img/control.png)
 
