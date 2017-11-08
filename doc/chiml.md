@@ -1,18 +1,18 @@
 # CHIML Semantic
 
 * *rootChain*
-    - _{_ _ins:_ *ins*, _out:_ *out*, _vars:_ *vars*, _verbose:_ *verbosity*, _if:_ *condition*, _do:_ *command*, _while:_ *condition* _}_
+    - **{ins:** *ins* **, out:** *out* **, vars:** *vars* **, verbose:** *verbosity* **, if:** *condition*, **do:** *command*, **while:** *condition* **}**
 * *chain*
-    - _{_ _ins:_ *ins*, _out:_ *out*, _if:_ *condition*, _do:_ *command*, _while:_ *condition* _}_
-    - _"(_*ins*_) -> _ *command* _ -> _ *out* _"_
+    - **{ins:** *ins*, **out:** *out*, **if:** *condition*, **do:** *command*, **while:** *condition* **}**
+    - **"(** *ins* **)->** *command* **->** *out* **"**
 * *ins*
     - *array*
 * *out*
     - *variableName*
 * *array*
-    - _[]_
-    - _[_ *elements* _]_
-    - _"_*elements*_"_
+    - **[]**
+    - **[** *elements* **]**
+    - **"** *elements* **"**
 * *elements*
     - *variableName*
-    - *variableName* _,_ *elements*
+    - *variableName* **,** *elements*
