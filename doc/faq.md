@@ -1,20 +1,22 @@
-# Do I need to know Javascript in order to use Chimera-Framework?
+# FAQ
+
+## Do I need to know Javascript in order to use Chimera-Framework?
 
 No. You only need to install Node.Js and npm. However, when you want to write some `if`, `while` and native javascript `command`, you should know some basic Javascript.
 
-# Chimera-Framework is using CLI mechanism. Isn't it better to just use UNIX Pipe instead?
+## Chimera-Framework is using CLI mechanism. Isn't it better to just use UNIX Pipe instead?
 
 In many cases, using Unix Pipe will give you a better performance. However, for complex flow, UNIX Pipe can be confusing and not so readable. Also, it is kind of difficult to implament `global variables` that are accessible from every process. Creating parallel mechanism in UNIX Pipe is also possible, but it also require unnamed pipe and other mechanism.
 
 Chimera-Framework offer a more readable definition of your processes.
 
-# Why do we need Chimera-Framework if we can write a simple Javascript invoking `childProcess` in order to run a CLI command?
+## Why do we need Chimera-Framework if we can write a simple Javascript invoking `childProcess` in order to run a CLI command?
 
 First, it is a matter of readability. Writing a Javascript program with a lot of callback or promise might escalate quickly and become hardly readable.
 
 Second, it is a matter of easiness. Chimera-Framework is a collection of useful libraries for common use cases. By using Chimera-Framework you can save you development time and focus on your business process.
 
-# Chimera-Framework slower compared to UNIX Pipe mechanism, is it true? why? and does it matter?
+## Chimera-Framework slower compared to UNIX Pipe mechanism, is it true? why? and does it matter?
 
 Yes, it is slower. In my machine (intel core i3, 4 GB of Ram) the time execution difference is approximately ~ 250 ms.
 

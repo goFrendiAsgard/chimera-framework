@@ -245,7 +245,7 @@ parallel:
 
 Chimera-Framework also provide some built-in Javascript functions under `$` namespace. `$.util.getInspectedObject` for example, will inspect and object and return a human-readable string representing the object.
 
-__TODO:__ add link to complete CHIML grammar documentation
+The complete semantic of CHIML script is provided [here](doc/chiml.md)
 
 ### The Data Flow
 
