@@ -532,8 +532,7 @@ Below are the list of available API
     - `split (value, delimiter)`
     - `send (host, chain, callback)`
     - `send (host, chain, arg1, arg2, arg3,... arg-N, callback)`
-    - `util`
-        Alias for `chimera.util`
+    - `util`: Alias for `chimera.util`
 * `chimera.corePreprocessor`
     - `getTrueRootChain (chain)`
     - `getTrueRootChain (chain, isStandard)`
@@ -546,19 +545,19 @@ Below are the list of available API
     - `collection (dbManager, collectionName, dbOption)`
     - `collection (dbManager, collectionName)`: Returning a `monk` collection instance (`dbCollection`). This instance also has several addtional methods
 * `dbCollection`
-      - `softRemove (query, opts, callback)`
-      - `avg (field, filter, groupBy, callback)`
-      - `avg (field, filter, callback)`
-      - `avg (field, callback)`
-      - `min (field, filter, groupBy, callback)`
-      - `min (field, filter, callback)`
-      - `min (field, callback)`
-      - `max (field, filter, groupBy, callback)`
-      - `max (field, filter, callback)`
-      - `max (field, callback)`
-      - `sum (field, filter, groupBy, callback)`
-      - `sum (field, filter, callback)`
-      - `sum (field, callback)`
+    - `softRemove (query, opts, callback)`
+    - `avg (field, filter, groupBy, callback)`
+    - `avg (field, filter, callback)`
+    - `avg (field, callback)`
+    - `min (field, filter, groupBy, callback)`
+    - `min (field, filter, callback)`
+    - `min (field, callback)`
+    - `max (field, filter, groupBy, callback)`
+    - `max (field, filter, callback)`
+    - `max (field, callback)`
+    - `sum (field, filter, groupBy, callback)`
+    - `sum (field, filter, callback)`
+    - `sum (field, callback)`
 * `chimera.sender`
     - `send (host, chain, params, callback)`
 * `chimera.server`
@@ -591,8 +590,6 @@ Below are the list of available API
     - `isRouteMatch (route, urlPath)`
     - `getRouteMatches (route, urlPath)`
     - `getParametersAsObject (route, urlPath)`
-
-__TODO:__ create documentation for this
 
 # FAQ (Frequently Asked Question)
 
