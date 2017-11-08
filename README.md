@@ -545,21 +545,19 @@ Below are the list of available API
     - `db (dbManager)`
     - `collection (dbManager, collectionName, dbOption)`
     - `collection (dbManager, collectionName)`: Returning a `monk` collection instance. This instance also has several addtional methods, like:
-
-          - `softRemove (query, opts, callback)`
-          - `avg (field, filter, groupBy, callback)`
-          - `avg (field, filter, callback)`
-          - `avg (field, callback)`
-          - `min (field, filter, groupBy, callback)`
-          - `min (field, filter, callback)`
-          - `min (field, callback)`
-          - `max (field, filter, groupBy, callback)`
-          - `max (field, filter, callback)`
-          - `max (field, callback)`
-          - `sum (field, filter, groupBy, callback)`
-          - `sum (field, filter, callback)`
-          - `sum (field, callback)`
-
+          > `softRemove (query, opts, callback)`
+          > `avg (field, filter, groupBy, callback)`
+          > `avg (field, filter, callback)`
+          > `avg (field, callback)`
+          > `min (field, filter, groupBy, callback)`
+          > `min (field, filter, callback)`
+          > `min (field, callback)`
+          > `max (field, filter, groupBy, callback)`
+          > `max (field, filter, callback)`
+          > `max (field, callback)`
+          > `sum (field, filter, groupBy, callback)`
+          > `sum (field, filter, callback)`
+          > `sum (field, callback)`
 * `chimera.sender`
     - `send (host, chain, params, callback)`
 * `chimera.server`
