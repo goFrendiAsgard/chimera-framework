@@ -289,13 +289,13 @@ You think of the solution, and you come up with a briliant idea. You can create 
 
 Chimera-Framework has a built in solution for that. Suppose your server can be accessed as `http://minastirith.com`, then in your server, you simply invoke this command:
 
-```
+```bash
 chimera-serve
 ```
 
 Now, in your mini-computer, you create a script named `remote-calculate.chiml`:
 
-```
+```yaml
 ins: statement, x
 out: output
 vars:
@@ -358,7 +358,7 @@ Now, let's convert your previous `CHIML` workflow into a web application. We wan
 
 First of all, you need to create the directory structure
 
-```
+```bash
 ▾ chains/
   ▾ components/
       function.py
