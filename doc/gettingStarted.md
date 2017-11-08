@@ -1,5 +1,12 @@
 # Getting Started
 
+Several example are presented
+
+* [Stand alone computing](#stand-alone-computing)
+* [Distributed computing](#distributed-computing)
+* [Creating Web Application](#web-app)
+
+
 ## Stand-Alone-Computing
 
 Given `y = f(x) = integrate(2*x)` and `x = {-2, -1, 0, 1, 2, 3}`, A client ask you to make a program to calculate:
