@@ -16,11 +16,11 @@ Chimera-Framework is a language agnostic framework for standalone and distribute
 
 # Why Chimera-Framework?
 
-* __Programming Language Diversity:__ Some programming language are good at machine learning. Some others are good at statistics or web development. Creating a website with some machine-learning/statistics feature will lead you to a soon-to-be-regret decision. Chimera-Framework solve this by let you choose the best programming language for each task.
+* `__Programming Language Diversity:__ Some programming language are good at machine learning. Some others are good at statistics or web development. Creating a website with some machine-learning/statistics feature will lead you to a soon-to-be-regret decision. Chimera-Framework solve this by let you choose the best programming language for each task.`
 
-* __CLI Support in Most Programming Language:__ Most programming language supporting command line interface. So, rather than inventing a new bridging interface, Chimera-Framework simply use this already-popular-and-common interface. Thus, you don't need to learn something new in order to write your component.
+* `__CLI Support in Most Programming Language:__ Most programming language supporting command line interface. So, rather than inventing a new bridging interface, Chimera-Framework simply use this already-popular-and-common interface. Thus, you don't need to learn something new in order to write your component.`
 
-* __Technology Migration in Tight Deadline is Painful:__ In software development, there is one single hell named vendor-lock. And to make it worse, some frameworks (or even programming languages) can suddenly fade away from the market. Chimera-Framework help you prevent this by let you develop component-based software. So, if your components suddenly doesn't work due to deprecation or anything, you can just simply drop in a new replacement without any need to rewrite the entire software.
+* `__Technology Migration in Tight Deadline is Painful:__ In software development, there is one single hell named vendor-lock. And to make it worse, some frameworks (or even programming languages) can suddenly fade away from the market. Chimera-Framework help you prevent this by let you develop component-based software. So, if your components suddenly doesn't work due to deprecation or anything, you can just simply drop in a new replacement without any need to rewrite the entire software.`
 
 # Installation
 
@@ -55,9 +55,9 @@ npm link
 
 # Dependencies
 
-* Node.Js
-* npm
-* Interpreters/Compilers, depend on programming language you use.
+* `Node.Js`
+* `npm`
+* `Interpreters/Compilers, depend on programming language you use.`
 
 # Testing
 
@@ -69,9 +69,9 @@ To perform the test, you can invoke `npm test`. A `g++` compiler is required for
 
 Given `y = f(x) = integrate(2*x)` and `x = {-2, -1, 0, 1, 2, 3}`, A client ask you to make a program to calculate:
 
-* `y`
-* `mean of x`
-* `mean of y`
+* ``y``
+* ``mean of x``
+* ``mean of y``
 
 The user should be able to change the value of `x` and `f(x)` as needed.
 
@@ -80,8 +80,8 @@ Suppose you are a `Node.Js` developer, and you mainly work with Javascript. You 
 You can learn `Python` in a day or two, but the deadline is tomorrow and you don't want to waste your time learning a new programming language *(__PS:__ This is just a simple use-case, in real life, I love `Python` and I will recommend you to try this awesome language, especially if you do a lot of machine-learning thing)*
 
 Your program should contains at least two inputs:
-* `statement`: a string containing the mathematical formula of `f(x)`.
-* `x`: an array containing the data.
+* ``statement`: a string containing the mathematical formula of `f(x)`.`
+* ``x`: an array containing the data.`
 
 You want to calculate the value of `y` by using `Python` because that is the only one to use `sympy` and you don't have enough time to create the same thing in `Javascript`
 
@@ -155,18 +155,18 @@ You name the `CHIML` script `calculate.chiml` and the content is as follow:
 ins: statement, x
 out: output
 do:
-  - parallel:
+  - `parallel:`
 
     # 1. get xMean
-    - |(x) -> node mean.js -> xMean
+    - `|(x) -> node mean.js -> xMean`
 
     # 2. get y and yMean
-    - do:
-      - |(statement, x) -> python function.py -> y
-      - |(y) -> node mean.js -> yMean
+    - `do:`
+      - `|(statement, x) -> python function.py -> y`
+      - `|(y) -> node mean.js -> yMean`
 
   # 3. show the output
-  - |({statement, x, xMean, y, yMean}) -> {$.util.getInspectedObject} -> output
+  - `|({statement, x, xMean, y, yMean}) -> {$.util.getInspectedObject} -> output`
 ```
 
 You see that the first process (get xMean) and second process (get y and yMean) are independent to each other. Thus, better to run in parallel. However, the third process (show the output) should only be executed once the first and second process finished.
@@ -194,29 +194,29 @@ The only thing that make `CHIML` diferent from `YAML` is you are allowed to writ
 
 There are several ways to write a `single chain`:
 
-* Long form
+* `Long form`
 ```yaml
 ins: input1, input2
 out: output
 do: command
 ```
 
-* Short form
+* `Short form`
 ```yaml
 (input1, input2) -> command -> out
 ```
 
-* Short form with Javascript function instead of CLI command
+* `Short form with Javascript function instead of CLI command`
 ```yaml
 (input1, input2) -> {javascript-function} -> out
 ```
 
-* Short form with Javascript function instead of CLI command (The last argument of the function must be Node-Callback)
+* `Short form with Javascript function instead of CLI command (The last argument of the function must be Node-Callback)`
 ```yaml
 (input1, input2) -> [javascript-function-with-callback] -> out
 ```
 
-* Short form with Javascript promise instead of CLI command
+* `Short form with Javascript promise instead of CLI command`
 ```yaml
 (input1, input2) -> <javascript-promise> -> out
 ```
@@ -227,9 +227,9 @@ A `chain` can contains another `chains` as it's child. These kind of `chain` is 
 ins: input1, input2
 out: output
 do:
-  - subChain1
-  - subChain2
-  - subChain3
+  - `subChain1`
+  - `subChain2`
+  - `subChain3`
 ```
 
 If the `subChains` should be executed in parallel, a `parallel` keyword should be used instead of `do`:
@@ -238,9 +238,9 @@ If the `subChains` should be executed in parallel, a `parallel` keyword should b
 ins: input1, input2
 out: output
 parallel:
-  - subChain1
-  - subChain2
-  - subChain3
+  - `subChain1`
+  - `subChain2`
+  - `subChain3`
 ```
 
 Chimera-Framework also provide some built-in Javascript functions under `$` namespace. `$.util.getInspectedObject` for example, will inspect and object and return a human-readable string representing the object.
@@ -265,18 +265,18 @@ As Chimera-Framework is written in Node.Js, loading a Node module in your CHIML 
 ins: statement, x
 out: output
 do:
-  - parallel:
+  - `parallel:`
 
     # get xMean
-    - |(x) -> {$.loadJs(_chain_cwd + 'mean.js')} -> xMean
+    - `|(x) -> {$.loadJs(_chain_cwd + 'mean.js')} -> xMean`
 
     # get y and yMean
-    - do:
-      - |(statement, x) -> python function.py -> y
-      - |(y) -> {$.loadJs(_chain_cwd + 'mean.js')} -> yMean
+    - `do:`
+      - `|(statement, x) -> python function.py -> y`
+      - `|(y) -> {$.loadJs(_chain_cwd + 'mean.js')} -> yMean`
 
   # get the output
-  - |({statement, x, xMean, y, yMean}) -> {$.util.getInspectedObject} -> output
+  - `|({statement, x, xMean, y, yMean}) -> {$.util.getInspectedObject} -> output`
 ```
 
 Notice that `$.loadJs` will load a function defined in Node.Js Module, so that it can be used in your CHIML script.
@@ -303,12 +303,12 @@ vars:
   chain: 'calculate.chiml'
 do:
 
-  - parallel:
-    - (remoteUrl, chain, statement, x) -> [$.send] -> fx
-    - (remoteUrl, chain, 'diff(' + statement + ')', x) -> [$.send] -> diff_fx
-    - (remoteUrl, chain, 'integrate(' + statement + ')', x) -> [$.send] -> int_fx
+  - `parallel:`
+    - `(remoteUrl, chain, statement, x) -> [$.send] -> fx`
+    - `(remoteUrl, chain, 'diff(' + statement + ')', x) -> [$.send] -> diff_fx`
+    - `(remoteUrl, chain, 'integrate(' + statement + ')', x) -> [$.send] -> int_fx`
 
-  - (fx, '\n', diff_fx, '\n', int_fx) -> {$.concat} -> output
+  - `(fx, '\n', diff_fx, '\n', int_fx) -> {$.concat} -> output`
 ```
 
 Now, you can calculate `f(x)` as well as `diff(f(x))` and `integrate(f(x))` in parallel by simply invoke:
@@ -410,18 +410,18 @@ out: webState
 parallel:
 
   # define routes
-  - ins:
-    - [
+  - `ins:`
+    - `[`
         {"route":"/calculate", "method":"post", "chain":_chain_cwd+"calculate.chiml"},
         {"route":"/", "method":"all", "chain":_chain_cwd+"form.chiml"},
       ]
     out: webState.config.routes
 
   # define other configurations
-  - (_chain_cwd+"../public") --> webState.config.staticPath
-  - (_chain_cwd+"../public/favicon.ico") --> webState.config.faviconPath
-  - (_chain_cwd+"../views") --> webState.config.viewPath
-  - (_chain_cwd+"../views/error.ejs") --> webState.config.errorTemplate
+  - `(_chain_cwd+"../public") --> webState.config.staticPath`
+  - `(_chain_cwd+"../public/favicon.ico") --> webState.config.faviconPath`
+  - `(_chain_cwd+"../views") --> webState.config.viewPath`
+  - `(_chain_cwd+"../views/error.ejs") --> webState.config.errorTemplate`
 ```
 
 Here you define two routes (`/calculate` to `calculate.chiml` and `/` to `form.chiml`) and several configurations (`staticPath`, `faviconPath`, `viewPath`, and `errorTemplate`). The configurations are defining directory path of your static resource, favicon, views, and error template.
@@ -462,21 +462,21 @@ The content of `calculate.chiml` is a bit more complicated since it needs to tak
 ins: webState
 out: response
 do:
-  - webState.request.body --> post
-  - ('[' + post.x + ']') --> x
-  - parallel:
+  - `webState.request.body --> post`
+  - `('[' + post.x + ']') --> x`
+  - `parallel:`
 
     # get xMean
-    - |(x) -> {$.loadJs(_chain_cwd+'components/mean.js')} -> xMean
+    - `|(x) -> {$.loadJs(_chain_cwd+'components/mean.js')} -> xMean`
 
     # get y and yMean
-    - do:
-      - |(post.statement, x) -> python components/function.py -> y
-      - |(y) -> {$.loadJs(_chain_cwd+'components/mean.js')} -> yMean
+    - `do:`
+      - `|(post.statement, x) -> python components/function.py -> y`
+      - `|(y) -> {$.loadJs(_chain_cwd+'components/mean.js')} -> yMean`
 
   # assemble output
-  - |({"x":x, "y":y, "xMean":xMean, "yMean": yMean, "statement": post.statement}) --> response.data
-  - |("result.ejs") --> response.view
+  - `|({"x":x, "y":y, "xMean":xMean, "yMean": yMean, "statement": post.statement}) --> response.data`
+  - `|("result.ejs") --> response.view`
 ```
 
 The script tells Chimera-Framework to send `x`, `y`, `xMean`, `yMean`, and `statement` to `result.ejs` so that it can show the desired result. Below is the content of `result.ejs`:
@@ -506,64 +506,90 @@ const chimera = require('chimera-framework')
 
 Below are the list of available API
 
-* chimera.cmd
-    - get (command, options, callback)
-    - run (command, options)
-* chimera.core
-    - executeChain (chains, ins, vars, callback)
-    - executeChain (chains, ins, callback)
-    - executeChain (chains, ins)
-* chimera.coreChimlParser
-    - parseChiml (chimlScript, callback)
-* chimera.coreDollar
-    - assignValue (value)
-    - assignValue (value1, value2, value3,... value-N)
-    - concat (string1, string2, string3,... string-N)
-    - eisn (srcFile, dstFile, command, callback)
-        Alias for `chimera.eisn`
-    - join (array, delimiter)
-    - merge (array1, array2)
-    - loadJs (moduleName, namespace)
-    - loadJs (moduleName)
-    - print (value)
-    - prompt (promptText, callback)
-    - push (array, value)
-    - runChain (chain, callback)
-    - runChain (chain, arg1, arg2, arg3,... arg-N, callback)
-    - split (value, delimiter)
-    - send (host, chain, callback)
-    - send (host, chain, arg1, arg2, arg3,... arg-N, callback)
-    - util
+* `chimera.cmd`
+    - `get (command, options, callback)`
+    - `run (command, options)`
+* `chimera.core`
+    - `executeChain (chains, ins, vars, callback)`
+    - `executeChain (chains, ins, callback)`
+    - `executeChain (chains, ins)`
+* `chimera.coreChimlParser`
+    - `parseChiml (chimlScript, callback)`
+* `chimera.coreDollar`
+    - `assignValue (value)`
+    - `assignValue (value1, value2, value3,... value-N)`
+    - `concat (string1, string2, string3,... string-N)`
+    - `eisn (srcFile, dstFile, command, callback)` Alias for `chimera.eisn`
+    - `join (array, delimiter)`
+    - `merge (array1, array2)`
+    - `loadJs (moduleName, namespace)`
+    - `loadJs (moduleName)`
+    - `print (value)`
+    - `prompt (promptText, callback)`
+    - `push (array, value)`
+    - `runChain (chain, callback)`
+    - `runChain (chain, arg1, arg2, arg3,... arg-N, callback)`
+    - `split (value, delimiter)`
+    - `send (host, chain, callback)`
+    - `send (host, chain, arg1, arg2, arg3,... arg-N, callback)`
+    - `util`
         Alias for `chimera.util`
-* chimera.corePreprocessor
-    - getTrueRootChain (chain)
-    - getTrueRootChain (chain, isStandard)
-* chimera.eisn (srcFile, dstFile, command, finalCallback)
-* chimera.mongo
-    - db (url, dbOption)
-    - db (dbManager, dbOption)
-    - db (url)
-    - db (dbManager)
-    - collection (dbManager, collectionName, dbOption)
-    - collection (dbManager, collectionName)
-        Returning a `monk` collection instance. This instance also has several addtional methods, like:
-            - softRemove (query, opts, callback)
-            - avg (field, filter, groupBy, callback)
-            - avg (field, filter, callback)
-            - avg (field, callback)
-            - min (field, filter, groupBy, callback)
-            - min (field, filter, callback)
-            - min (field, callback)
-            - max (field, filter, groupBy, callback)
-            - max (field, filter, callback)
-            - max (field, callback)
-            - sum (field, filter, groupBy, callback)
-            - sum (field, filter, callback)
-            - sum (field, callback)
-* chimera.sender
-* chimera.server
-* chimera.util
-* chimera.web
+* `chimera.corePreprocessor`
+    - `getTrueRootChain (chain)`
+    - `getTrueRootChain (chain, isStandard)`
+* `chimera.eisn (srcFile, dstFile, command, finalCallback)`
+* `chimera.mongo`
+    - `db (url, dbOption)`
+    - `db (dbManager, dbOption)`
+    - `db (url)`
+    - `db (dbManager)`
+    - `collection (dbManager, collectionName, dbOption)`
+    - `collection (dbManager, collectionName)` Returning a `monk` collection instance. This instance also has several addtional methods, like:
+          - `softRemove (query, opts, callback)`
+          - `avg (field, filter, groupBy, callback)`
+          - `avg (field, filter, callback)`
+          - `avg (field, callback)`
+          - `min (field, filter, groupBy, callback)`
+          - `min (field, filter, callback)`
+          - `min (field, callback)`
+          - `max (field, filter, groupBy, callback)`
+          - `max (field, filter, callback)`
+          - `max (field, callback)`
+          - `sum (field, filter, groupBy, callback)`
+          - `sum (field, filter, callback)`
+          - `sum (field, callback)`
+* `chimera.sender`
+    - `send (host, chain, params, callback)`
+* `chimera.server`
+    - `serve (options, callback)`
+    - `processChain (state, callback)`
+* `chimera.util`
+    - `getInspectedObject (variables)`
+    - `getFilteredObject (obj, exceptionKeys)`
+    - `getUnwrapped (string)`
+    - `getSlicedString (string, limit)`
+    - `getStretchedString (string, length, filler)`
+    - `getStretchedString (string, length)`
+    - `getDeepCopiedObject (obj)`
+    - `getPatchedObject (obj, patcher)`
+    - `getSmartSplitted (string, delimiter)`
+    - `getQuoted (string)`
+    - `getUnquoted (string)`
+    - `isString (value)`
+    - `isArray (value)`
+    - `isObject (value)`
+    - `isRealObject (value)`
+    - `isUndefined (value)`
+    - `isNull (value)`
+    - `isNullOrUndefined (value)`
+    - `isFunction (value)`
+    - `readJsonFile (jsonFile, callback)`
+    - `writeJsonFile (jsonFile, obj, callback)`
+* `chimera.web`
+    - `createApp (webConfig)`
+    - `isRouteMatch (route, urlPath)`
+    - `getRouteMatches (route, urlPath)`
+    - `getParametersAsObject (route, urlPath)`
 
 __TODO:__ create documentation for this
 
