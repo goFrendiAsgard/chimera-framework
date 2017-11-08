@@ -9,6 +9,8 @@ Several example are presented
 
 ## Stand-Alone-Computing
 
+__NOTE:__ The source code used in this examples is available [here](../example/minastirith/)
+
 Given `y = f(x) = integrate(2*x)` and `x = {-2, -1, 0, 1, 2, 3}`, A client ask you to make a program to calculate:
 
 * ``y``
@@ -97,7 +99,7 @@ You name the `CHIML` script `calculate.chiml` and the content is as follow:
 ins: statement, x
 out: output
 do:
-  - `parallel:`
+  - parallel:
 
     # 1. get xMean
     - `|(x) -> node mean.js -> xMean`
@@ -108,7 +110,7 @@ do:
       - `|(y) -> node mean.js -> yMean`
 
   # 3. show the output
-  - `|({statement, x, xMean, y, yMean}) -> {$.util.getInspectedObject} -> output`
+  - |({statement, x, xMean, y, yMean}) -> {$.util.getInspectedObject} -> output
 ```
 
 You see that the first process (get xMean) and second process (get y and yMean) are independent to each other. Thus, better to run in parallel. However, the third process (show the output) should only be executed once the first and second process finished.
@@ -169,9 +171,9 @@ A `chain` can contains another `chains` as it's child. These kind of `chain` is 
 ins: input1, input2
 out: output
 do:
-  - `subChain1`
-  - `subChain2`
-  - `subChain3`
+  - subChain1
+  - subChain2
+  - subChain3
 ```
 
 If the `subChains` should be executed in parallel, a `parallel` keyword should be used instead of `do`:
@@ -180,9 +182,9 @@ If the `subChains` should be executed in parallel, a `parallel` keyword should b
 ins: input1, input2
 out: output
 parallel:
-  - `subChain1`
-  - `subChain2`
-  - `subChain3`
+  - subChain1
+  - subChain2
+  - subChain3
 ```
 
 Chimera-Framework also provide some built-in Javascript functions under `$` namespace. `$.util.getInspectedObject` for example, will inspect and object and return a human-readable string representing the object.
@@ -207,23 +209,25 @@ As Chimera-Framework is written in Node.Js, loading a Node module in your CHIML 
 ins: statement, x
 out: output
 do:
-  - `parallel:`
+  - parallel:
 
     # get xMean
-    - `|(x) -> {$.loadJs(_chain_cwd + 'mean.js')} -> xMean`
+    - |(x) -> {$.loadJs(_chain_cwd + 'mean.js')} -> xMean
 
     # get y and yMean
-    - `do:`
-      - `|(statement, x) -> python function.py -> y`
-      - `|(y) -> {$.loadJs(_chain_cwd + 'mean.js')} -> yMean`
+    - do:
+      - |(statement, x) -> python function.py -> y
+      - |(y) -> {$.loadJs(_chain_cwd + 'mean.js')} -> yMean
 
   # get the output
-  - `|({statement, x, xMean, y, yMean}) -> {$.util.getInspectedObject} -> output`
+  - |({statement, x, xMean, y, yMean}) -> {$.util.getInspectedObject} -> output
 ```
 
 Notice that `$.loadJs` will load a function defined in Node.Js Module, so that it can be used in your CHIML script.
 
 ## Distributed-Computing
+
+__NOTE:__ The source code used in this examples is available [here](../example/minasmorgul/)
 
 So, your stand-alone program is working perfectly now. However, you have to do the same thing using a low-spec mini-computer. You have try to run your CHIML script in this mini-computer, but it takes 15 minutes to do the calculation.
 
@@ -245,12 +249,12 @@ vars:
   chain: 'calculate.chiml'
 do:
 
-  - `parallel:`
-    - `(remoteUrl, chain, statement, x) -> [$.send] -> fx`
-    - `(remoteUrl, chain, 'diff(' + statement + ')', x) -> [$.send] -> diff_fx`
-    - `(remoteUrl, chain, 'integrate(' + statement + ')', x) -> [$.send] -> int_fx`
+  - parallel:
+    - (remoteUrl, chain, statement, x) -> [$.send] -> fx
+    - (remoteUrl, chain, 'diff(' + statement + ')', x) -> [$.send] -> diff_fx
+    - (remoteUrl, chain, 'integrate(' + statement + ')', x) -> [$.send] -> int_fx
 
-  - `(fx, '\n', diff_fx, '\n', int_fx) -> {$.concat} -> output`
+  - (fx, '\n', diff_fx, '\n', int_fx) -> {$.concat} -> output
 ```
 
 Now, you can calculate `f(x)` as well as `diff(f(x))` and `integrate(f(x))` in parallel by simply invoke:
@@ -285,6 +289,8 @@ Our `remote-calculate.chiml` in the previous case, can be visualized as follow:
 ![stand-alone-simple](img/distributed.png)
 
 ## Web App
+
+__NOTE:__ The source code used in this examples is available [here](../example/minasanor/)
 
 Although CLI Application can be useful in a lot of cases, some people might be intimidated by it's interface. They prefer to click and tap on the screen rather than type some alien words in the terminal. In this case, creating a web application can be an interesting solution.
 
@@ -352,18 +358,18 @@ out: webState
 parallel:
 
   # define routes
-  - `ins:`
-    - `[`
+  - ins:
+    - [
         {"route":"/calculate", "method":"post", "chain":_chain_cwd+"calculate.chiml"},
         {"route":"/", "method":"all", "chain":_chain_cwd+"form.chiml"},
       ]
     out: webState.config.routes
 
   # define other configurations
-  - `(_chain_cwd+"../public") --> webState.config.staticPath`
-  - `(_chain_cwd+"../public/favicon.ico") --> webState.config.faviconPath`
-  - `(_chain_cwd+"../views") --> webState.config.viewPath`
-  - `(_chain_cwd+"../views/error.ejs") --> webState.config.errorTemplate`
+  - (_chain_cwd+"../public") --> webState.config.staticPath
+  - (_chain_cwd+"../public/favicon.ico") --> webState.config.faviconPath
+  - (_chain_cwd+"../views") --> webState.config.viewPath
+  - (_chain_cwd+"../views/error.ejs") --> webState.config.errorTemplate
 ```
 
 Here you define two routes (`/calculate` to `calculate.chiml` and `/` to `form.chiml`) and several configurations (`staticPath`, `faviconPath`, `viewPath`, and `errorTemplate`). The configurations are defining directory path of your static resource, favicon, views, and error template.
@@ -404,21 +410,21 @@ The content of `calculate.chiml` is a bit more complicated since it needs to tak
 ins: webState
 out: response
 do:
-  - `webState.request.body --> post`
-  - `('[' + post.x + ']') --> x`
-  - `parallel:`
+  - webState.request.body --> post
+  - ('[' + post.x + ']') --> x
+  - parallel:
 
     # get xMean
-    - `|(x) -> {$.loadJs(_chain_cwd+'components/mean.js')} -> xMean`
+    - |(x) -> {$.loadJs(_chain_cwd+'components/mean.js')} -> xMean
 
     # get y and yMean
-    - `do:`
-      - `|(post.statement, x) -> python components/function.py -> y`
-      - `|(y) -> {$.loadJs(_chain_cwd+'components/mean.js')} -> yMean`
+    - do:
+      - |(post.statement, x) -> python components/function.py -> y
+      - |(y) -> {$.loadJs(_chain_cwd+'components/mean.js')} -> yMean
 
   # assemble output
-  - `|({"x":x, "y":y, "xMean":xMean, "yMean": yMean, "statement": post.statement}) --> response.data`
-  - `|("result.ejs") --> response.view`
+  - |({"x":x, "y":y, "xMean":xMean, "yMean": yMean, "statement": post.statement}) --> response.data
+  - |("result.ejs") --> response.view
 ```
 
 The script tells Chimera-Framework to send `x`, `y`, `xMean`, `yMean`, and `statement` to `result.ejs` so that it can show the desired result. Below is the content of `result.ejs`:
@@ -435,7 +441,4 @@ The script tells Chimera-Framework to send `x`, `y`, `xMean`, `yMean`, and `stat
   <pre><%= 'mean(y) = ' + yMean %></pre>
 </body>
 ```
-
-__NOTE:__ The source code used in the examples are available [here](../example)
-
 
