@@ -544,7 +544,7 @@ Below are the list of available API
     - `db (dbManager)`
     - `collection (dbManager, collectionName, dbOption)`
     - `collection (dbManager, collectionName)`: Returning a `monk` collection instance (`dbCollection`). This instance also has several addtional methods
-* `dbCollection`
+* `dbCollection` instance (return value of `chimera.mongo.collection()`)
     - `softRemove (query, opts, callback)`
     - `avg (field, filter, groupBy, callback)`
     - `avg (field, filter, callback)`
