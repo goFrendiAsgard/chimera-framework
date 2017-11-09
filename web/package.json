@@ -8,7 +8,8 @@
     "chimera-framework"
   ],
   "dependencies": {
-    "chimera-framework": "0.0.0"
+    "chimera-framework": "0.0.0",
+    "neo-async": "^2.5.0"
   },
   "author": "Another earthling",
   "license": "ISC"
