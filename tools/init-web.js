@@ -19,7 +19,9 @@ function finalCallback (error, result) {
 
 function initWeb (projectDir) {
   let chimeraVersion, mongoUrl
+
   async.series([
+
     // read mongoUrl
     (callback) => {
       let defaultMongoUrl = 'mongodb://localhost/' + projectDir
@@ -36,6 +38,7 @@ function initWeb (projectDir) {
         callback()
       })
     },
+
     // read current package.json
     (callback) => {
       util.readJsonFile(path.join(__dirname, '../package.json'), function (error, obj) {
@@ -48,6 +51,7 @@ function initWeb (projectDir) {
         callback()
       })
     },
+
     // copy directory
     (callback) => {
       console.warn('[INFO] Copying directory...')
@@ -60,6 +64,7 @@ function initWeb (projectDir) {
         callback()
       })
     },
+
     // change directory and rewrite package.json
     (callback) => {
       process.chdir(projectDir)
@@ -82,6 +87,7 @@ function initWeb (projectDir) {
         })
       })
     },
+
     // read and rewrite core.startup.chiml
     (callback) => {
       fse.readFile('chains/core.startup.chiml', function (error, fileContent) {
@@ -101,6 +107,7 @@ function initWeb (projectDir) {
         })
       })
     },
+
     // run npm install
     (callback) => {
       cmd.get('npm install', function (error, result) {
@@ -113,6 +120,7 @@ function initWeb (projectDir) {
         }
       })
     }
+
   ], finalCallback)
 }
 
