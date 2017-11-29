@@ -3,13 +3,12 @@
 const chai = require('chai')
 const assert = chai.assert
 const chimera = require('../index.js')
-const db = chimera.mongo.db
-const collection = chimera.mongo.collection
+const mongo = chimera.mongo
 
-let softDb = db('mongodb://localhost/test')
-let hardDb = db('mongodb://localhost/test', {excludeDeleted: false, showHistory: true})
-let softGod = collection(softDb, 'gods')
-let hardGod = collection(hardDb, 'gods')
+let softDb = mongo.db('mongodb://localhost/test')
+let hardDb = mongo.db('mongodb://localhost/test', {excludeDeleted: false, showHistory: true})
+let softGod = mongo.collection(softDb, 'gods')
+let hardGod = mongo.collection(hardDb, 'gods')
 
 function closeAll () {
   hardDb.close()
