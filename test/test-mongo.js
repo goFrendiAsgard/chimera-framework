@@ -16,6 +16,7 @@ function closeAll () {
 }
 
 describe('mongo', function () {
+
   it('should be able to insert single data', function (done) {
     softGod.insert({name: 'Odin', mythology: 'Nordic', power: 6000}, function (error, result) {
       if (error) {
@@ -432,6 +433,16 @@ describe('mongo', function () {
         return done(error)
       }
       assert.deepEqual(result, {'Greek': 7000})
+      done()
+    })
+  })
+
+  it('should be able to find (excluding the soft deleted, via execute)', function (done) {
+    mongo.execute({'mongoUrl': 'mongodb://localhost/test', 'collectionName': 'gods'}, 'find', {}, function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(result.length, 3)
       done()
     })
   })
