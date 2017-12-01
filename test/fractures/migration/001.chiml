@@ -4,10 +4,12 @@ verbose: 0
 do:
 
   # chimera test/fractures/migration/001.chiml up "{\"mongoUrl\":\"localhost/test\"}"
+  - |config.mongoUrl --> dbConfig.mongoUrl
+  - |'test' --> dbConfig.collectionName
 
   - ins:
-      - mongoUrl: config.mongoUrl
-        collectionName: 'test'
+      mongoUrl: config.mongoUrl
+      collectionName: 'test'
     out: dbConfig
 
   - if: action == 'up'
@@ -16,7 +18,7 @@ do:
           - dbConfig
           - 'insert'
           - {'name': 'Odin'}
-        do: |[$.loadJs('chimera-framework', 'mongo.execute')]
+        do: |[$.mongoExecute]
         out: output
 
     else:
@@ -24,5 +26,5 @@ do:
           - dbConfig
           - 'remove'
           - {'name':'Odin'}
-        do: |[$.loadJs('chimera-framework', 'mongo.execute')]
+        do: |[$.mongoExecute]
         out: output

@@ -110,6 +110,16 @@ describe('core', function () {
     })
   })
 
+  it('should be able to execute test-alternative.chiml and get the result', function (done) {
+    chimera.core.executeChain(path.join(__dirname, 'fractures/test-alternative.chiml'), [5, 10], {}, function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(result, expectedTestResult)
+      done()
+    })
+  })
+
   it('should be able to execute test-indonesia.chiml and get the result', function (done) {
     chimera.core.executeChain(path.join(__dirname, 'fractures/test-indonesia.chiml'), [5, 10], {}, function (error, result) {
       if (error) {

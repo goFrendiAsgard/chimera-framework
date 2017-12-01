@@ -1,0 +1,35 @@
+ins: num1, num2
+out: output
+verbose: 0
+do:
+  - parallel: # do these things in parallel
+    - do:
+      - if: |num1 >= num2
+        do:
+          - |bottom <-- num2
+          - |top <-- num1
+        else:
+          - |bottom <-- num1
+          - |top <-- num2
+      - |evens <-- []
+      - |x <-- bottom
+      - do:
+        - if: |x%2 == 0
+          do: |evens[evens.length] <-- x
+        - x <-- x+1
+        while: |x <= top
+    - |info.circle <- [$.loadJs(_chain_cwd+"circle.js")]
+    - ins: 7
+      out: info.area
+      do: |[$.loadJs(_chain_cwd+"circle.js", "area")]
+  - |info.evens <- {$.join} <- (evens, ", ")
+  - |info["helloWorld"] <- {$.concat} <- ("Hello ", "world")
+  - ins:
+    - "Hello "
+    - "sekai"
+    out: info["helloSekai"]
+    do: |{$.concat}
+  - |info.square <- [$.runChain] <- (_chain_cwd+"square.chiml", 10)
+  - |output <- {$.join} <- ([info.helloWorld, info.helloSekai, info.evens, info.circle, info.area, info.square], "\n")
+catch: |typeof(num1) !== "number" || typeof(num2) !== "number"
+throw: num1 dan num2 should be number

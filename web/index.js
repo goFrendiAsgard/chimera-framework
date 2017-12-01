@@ -8,7 +8,7 @@ const webConfig = {
 }
 let app = web.createApp(webConfig)
 
-module.exports = {app, migrate, registerCollection}
+module.exports = {app}
 
 if (require.main === module) {
   app.listen(port, function () {
