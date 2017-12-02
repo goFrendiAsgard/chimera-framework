@@ -1,0 +1,29 @@
+ins: action, config
+out: output
+verbose: 0
+do:
+
+  - |config.mongoUrl --> dbConfig.mongoUrl
+  - |'test' --> dbConfig.collectionName
+
+  - ins:
+      mongoUrl: config.mongoUrl
+      collectionName: 'test'
+    out: dbConfig
+
+  - if: action == 'up'
+    do:
+      - ins:
+          - dbConfig
+          - 'insert'
+          - {'name': 'Marduk'}
+        do: |[$.mongoExecute]
+        out: output
+
+    else:
+      - ins:
+          - dbConfig
+          - 'remove'
+          - {'name':'Marduk'}
+        do: |[$.mongoExecute]
+        out: output
