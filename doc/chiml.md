@@ -20,6 +20,9 @@ The semantic of a `CHIML-script` is as follow:
     - **"(** *ins* **)->** *singleCommand* **->** *out* **"**
     - **"** *singleCommand* **->** *out* **"**
     - **"** *ins* **-->** *out* **"**
+    - **"** *out* **<-** *singleCommand* **<- (** *ins* **)"**
+    - **"** *out* **<-** *singleCOmmand* **"**
+    - **"** *out* **<-- (** *ins* **)"**
 * *ins*
     - *variableList*
 * *out*
