@@ -150,9 +150,21 @@ do: command
 (input1, input2) -> command -> out
 ```
 
+or
+
+```yaml
+out <- command <- (input1, input2)
+```
+
 * `Short form with Javascript function instead of CLI command`
 ```yaml
 (input1, input2) -> {javascript-function} -> out
+```
+
+or
+
+```yaml
+out <- {javascript-function} <- (input1, input2)
 ```
 
 * `Short form with Javascript function instead of CLI command (The last argument of the function must be Node-Callback)`
@@ -160,9 +172,21 @@ do: command
 (input1, input2) -> [javascript-function-with-callback] -> out
 ```
 
+or
+
+```yaml
+out <- [javascript-function-with-callback] -> (input1, input2)
+```
+
 * `Short form with Javascript promise instead of CLI command`
 ```yaml
 (input1, input2) -> <javascript-promise> -> out
+```
+
+or
+
+```yaml
+out <- <javascript-promise> <- (input1, input2)
 ```
 
 A `chain` can contains another `chains` as it's child. These kind of `chain` is also known as `nested chain`, and this is how we write a nested chain:
