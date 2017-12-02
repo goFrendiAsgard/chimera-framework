@@ -13,9 +13,9 @@ __NOTE:__ The source code used in this examples is available [here](../example/m
 
 Given `y = f(x) = integrate(2*x)` and `x = {-2, -1, 0, 1, 2, 3}`, A client ask you to make a program to calculate:
 
-* ``y``
-* ``mean of x``
-* ``mean of y``
+* `y`
+* `mean of x`
+* `mean of y`
 
 The user should be able to change the value of `x` and `f(x)` as needed.
 
@@ -24,8 +24,8 @@ Suppose you are a `Node.Js` developer, and you mainly work with Javascript. You 
 You can learn `Python` in a day or two, but the deadline is tomorrow and you don't want to waste your time learning a new programming language *(__PS:__ This is just a simple use-case, in real life, I love `Python` and I will recommend you to try this awesome language, especially if you do a lot of machine-learning thing)*
 
 Your program should contains at least two inputs:
-* ``statement`: a string containing the mathematical formula of `f(x)`.`
-* ``x`: an array containing the data.`
+* `statement`: a string containing the mathematical formula of `f(x)`.
+* `x`: an array containing the data.
 
 You want to calculate the value of `y` by using `Python` because that is the only one to use `sympy` and you don't have enough time to create the same thing in `Javascript`
 
@@ -102,12 +102,12 @@ do:
   - parallel:
 
     # 1. get xMean
-    - `|(x) -> node mean.js -> xMean`
+    - |(x) -> node mean.js -> xMean
 
     # 2. get y and yMean
-    - `do:`
-      - `|(statement, x) -> python function.py -> y`
-      - `|(y) -> node mean.js -> yMean`
+    - do:
+      - |(statement, x) -> python function.py -> y
+      - |(y) -> node mean.js -> yMean
 
   # 3. show the output
   - |({statement, x, xMean, y, yMean}) -> {$.util.getInspectedObject} -> output
