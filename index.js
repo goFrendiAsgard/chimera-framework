@@ -12,6 +12,7 @@ const web = require('./lib/web.js')
 const sender = require('./lib/sender.js')
 const server = require('./lib/server.js')
 const eisn = require('./lib/eisn.js')
+const migration = require('./lib/migration.js')
 
 // The exported resources
 module.exports = {
@@ -25,5 +26,6 @@ module.exports = {
   web,
   sender,
   server,
-  eisn
+  eisn,
+  migration
 }

@@ -24,13 +24,13 @@
 **** `git commit -m 'commit description'`
 **** `git push -u origin master`
 *** `sudo npm publish`
-** Todo
-*** [x] Fix getChainWithTrueCommand
-*** [ ] Find a way to test `chimera.dollar.prompt`
-*** [ ] Find a way to test `chimera.dollar.print`
-*** [x] Find a way to compile `chiml` into `js`
-*** [x] Use nunjucks
-*** [x] Test `non-array yaml value` as input 
-*** [x] Implement reverse arrow
-*** [x] Test reverse arrow 
-*** [ ] Test migration 
+* Todo
+** [x] Fix getChainWithTrueCommand
+** [ ] Find a way to test `chimera.dollar.prompt`
+** [ ] Find a way to test `chimera.dollar.print`
+** [x] Find a way to compile `chiml` into `js`
+** [x] Use nunjucks
+** [x] Test `non-array yaml value` as input 
+** [x] Implement reverse arrow
+** [x] Test reverse arrow 
+** [ ] Test migration 

@@ -22,7 +22,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result.name, 'Odin')
-      done()
+      return done()
     })
   })
 
@@ -32,7 +32,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result.length, 3)
-      done()
+      return done()
     })
   })
 
@@ -42,7 +42,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result.n, 1)
-      done()
+      return done()
     })
   })
 
@@ -52,7 +52,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result.n, 1)
-      done()
+      return done()
     })
   })
 
@@ -62,7 +62,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result.length, 3)
-      done()
+      return done()
     })
   })
 
@@ -72,7 +72,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result.length, 4)
-      done()
+      return done()
     })
   })
 
@@ -82,7 +82,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result, 3)
-      done()
+      return done()
     })
   })
 
@@ -92,7 +92,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result, 4)
-      done()
+      return done()
     })
   })
 
@@ -102,7 +102,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.deepEqual(result, [{'_id': 'count', 'count': 3}])
-      done()
+      return done()
     })
   })
 
@@ -112,7 +112,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.deepEqual(result, [{'_id': 'count', 'count': 4}])
-      done()
+      return done()
     })
   })
 
@@ -122,7 +122,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result, 17000)
-      done()
+      return done()
     })
   })
 
@@ -132,7 +132,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result, 7000)
-      done()
+      return done()
     })
   })
 
@@ -142,7 +142,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.deepEqual(result, {'Nordic': 10000, 'Greek': 7000})
-      done()
+      return done()
     })
   })
 
@@ -152,7 +152,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.deepEqual(result, {'Greek': 7000})
-      done()
+      return done()
     })
   })
 
@@ -162,7 +162,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result, 20000)
-      done()
+      return done()
     })
   })
 
@@ -172,7 +172,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result, 10000)
-      done()
+      return done()
     })
   })
 
@@ -182,7 +182,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.deepEqual(result, {'Nordic': 10000, 'Greek': 10000})
-      done()
+      return done()
     })
   })
 
@@ -192,7 +192,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.deepEqual(result, {'Greek': 10000})
-      done()
+      return done()
     })
   })
 
@@ -202,7 +202,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result, 5666.666666666667)
-      done()
+      return done()
     })
   })
 
@@ -212,7 +212,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result, 7000)
-      done()
+      return done()
     })
   })
 
@@ -222,7 +222,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.deepEqual(result, {'Nordic': 5000, 'Greek': 7000})
-      done()
+      return done()
     })
   })
 
@@ -232,7 +232,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.deepEqual(result, {'Greek': 7000})
-      done()
+      return done()
     })
   })
 
@@ -242,7 +242,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result, 5000)
-      done()
+      return done()
     })
   })
 
@@ -252,7 +252,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result, 5000)
-      done()
+      return done()
     })
   })
 
@@ -262,7 +262,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.deepEqual(result, {'Nordic': 5000, 'Greek': 5000})
-      done()
+      return done()
     })
   })
 
@@ -272,7 +272,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.deepEqual(result, {'Greek': 5000})
-      done()
+      return done()
     })
   })
 
@@ -282,7 +282,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result, 4000)
-      done()
+      return done()
     })
   })
 
@@ -292,7 +292,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result, 7000)
-      done()
+      return done()
     })
   })
 
@@ -302,7 +302,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.deepEqual(result, {'Nordic': 4000, 'Greek': 7000})
-      done()
+      return done()
     })
   })
 
@@ -312,7 +312,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.deepEqual(result, {'Greek': 7000})
-      done()
+      return done()
     })
   })
 
@@ -322,7 +322,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result, 3000)
-      done()
+      return done()
     })
   })
 
@@ -332,7 +332,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result, 3000)
-      done()
+      return done()
     })
   })
 
@@ -342,7 +342,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.deepEqual(result, {'Nordic': 4000, 'Greek': 3000})
-      done()
+      return done()
     })
   })
 
@@ -352,7 +352,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.deepEqual(result, {'Greek': 3000})
-      done()
+      return done()
     })
   })
 
@@ -362,7 +362,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result, 7000)
-      done()
+      return done()
     })
   })
 
@@ -372,7 +372,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result, 7000)
-      done()
+      return done()
     })
   })
 
@@ -382,7 +382,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.deepEqual(result, {'Nordic': 6000, 'Greek': 7000})
-      done()
+      return done()
     })
   })
 
@@ -392,7 +392,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.deepEqual(result, {'Greek': 7000})
-      done()
+      return done()
     })
   })
 
@@ -402,7 +402,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result, 7000)
-      done()
+      return done()
     })
   })
 
@@ -412,7 +412,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result, 7000)
-      done()
+      return done()
     })
   })
 
@@ -422,7 +422,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.deepEqual(result, {'Nordic': 6000, 'Greek': 7000})
-      done()
+      return done()
     })
   })
 
@@ -432,7 +432,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.deepEqual(result, {'Greek': 7000})
-      done()
+      return done()
     })
   })
 
@@ -442,7 +442,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result.length, 3)
-      done()
+      return done()
     })
   })
 
@@ -452,7 +452,7 @@ describe('mongo', function () {
         return done(error)
       }
       assert.equal(result.length, 3)
-      done()
+      return done()
     })
   })
 
@@ -464,7 +464,7 @@ describe('mongo', function () {
       }
       assert.equal(result.result.n, 4)
       closeAll()
-      done()
+      return done()
     })
   })
 })
