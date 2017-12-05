@@ -2,4 +2,4 @@ ins: webState
 out: response
 do:
   - |webState.response --> response
-  - |{"data":"Hello :D", "fromMiddleware":response.data} --> response.data
+  - |{"data":"Hello :D", "fromMiddleware":response.fromMiddleware} --> response.data

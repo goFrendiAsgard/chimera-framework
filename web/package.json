@@ -9,6 +9,7 @@
   ],
   "dependencies": {
     "chimera-framework": "0.0.0",
+    "express-jwt": "^5.3.0",
     "neo-async": "^2.5.0"
   },
   "author": "Another earthling",

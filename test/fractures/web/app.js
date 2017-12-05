@@ -33,7 +33,7 @@ const webConfig = {
 }
 const middleware = (request, response, next) => {
   if (request.originalUrl === '/hello-json') {
-    response.data = 'yes'
+    response.fromMiddleware = 'yes'
   }
   next()
 }
