@@ -31,8 +31,14 @@ const webConfig = {
   'errorTemplate': path.join(__dirname, 'views/error.pug'),
   'startupHook': path.join(__dirname, 'chains/hook-startup.chiml')
 }
+const middleware = (request, response, next) => {
+  if (request.originalUrl === '/hello-json') {
+    response.data = 'yes'
+  }
+  next()
+}
 
-let app = chimera.web.createApp(webConfig)
+let app = chimera.web.createApp(webConfig, middleware)
 module.exports = app
 
 if (require.main === module) {

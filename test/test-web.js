@@ -26,17 +26,17 @@ describe('web', function () {
         return done(error)
       }
       assert.equal(body, 'Hello :D')
-      done()
+      return done()
     })
   })
 
-  it('should serve hello-json', function (done) {
+  it('should serve hello-json, and transmit the data from custom middleware as well', function (done) {
     request('http://localhost:3010/hello-json', function (error, response, body) {
       if (error) {
         return done(error)
       }
-      assert.equal(body, '{"data":"Hello :D"}')
-      done()
+      assert.equal(body, '{"data":"Hello :D","fromMiddleware":"yes"}')
+      return done()
     })
   })
 
@@ -46,7 +46,7 @@ describe('web', function () {
         return done(error)
       }
       assert.equal(body, '<!DOCTYPE html><html><body><h1>This is Pug</h1><p>Hello :D</p></body></html>')
-      done()
+      return done()
     })
   })
 
@@ -56,7 +56,7 @@ describe('web', function () {
         return done(error)
       }
       assert.equal(body, '<h1>This is EJS</h1>\n<p>Hello :D</p>\n\n')
-      done()
+      return done()
     })
   })
 
@@ -66,7 +66,7 @@ describe('web', function () {
         return done(error)
       }
       assert.equal(body, 'Hello :D')
-      done()
+      return done()
     })
   })
 
@@ -76,7 +76,7 @@ describe('web', function () {
         return done(error)
       }
       assert.equal(body, 'Hello emiya')
-      done()
+      return done()
     })
   })
 
@@ -86,7 +86,7 @@ describe('web', function () {
         return done(error)
       }
       assert.equal(body, '4')
-      done()
+      return done()
     })
   })
 
@@ -96,7 +96,7 @@ describe('web', function () {
         return done(error)
       }
       assert.equal(body, '4')
-      done()
+      return done()
     })
   })
 
@@ -110,7 +110,7 @@ describe('web', function () {
         return done(error)
       }
       assert.equal(body, '4')
-      done()
+      return done()
     })
   })
 
@@ -124,7 +124,7 @@ describe('web', function () {
         return done(error)
       }
       assert.equal(response.headers['set-cookie'][0], 'data=4; Path=/')
-      done()
+      return done()
     })
   })
 
@@ -139,7 +139,7 @@ describe('web', function () {
       }
       sessionId = response.headers['set-cookie'][0].match(/connect\.sid=(.*?);/)[1]
       assert.equal(body, '1')
-      done()
+      return done()
     })
   })
 
@@ -153,7 +153,7 @@ describe('web', function () {
         return done(error)
       }
       assert.equal(body, '2')
-      done()
+      return done()
     })
   })
 
