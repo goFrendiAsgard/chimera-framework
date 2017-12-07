@@ -4,8 +4,6 @@ verbose: 0
 do:
 
   # chimera test/fractures/migration/001.chiml up "{\"mongoUrl\":\"localhost/test\"}"
-  - |config.mongoUrl --> dbConfig.mongoUrl
-  - |'test' --> dbConfig.collectionName
 
   - ins:
       mongoUrl: config.mongoUrl

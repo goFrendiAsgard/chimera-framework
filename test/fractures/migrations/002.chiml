@@ -3,9 +3,6 @@ out: output
 verbose: 0
 do:
 
-  - |config.mongoUrl --> dbConfig.mongoUrl
-  - |'test' --> dbConfig.collectionName
-
   - ins:
       mongoUrl: config.mongoUrl
       collectionName: 'test'

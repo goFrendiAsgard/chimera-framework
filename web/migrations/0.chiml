@@ -1,0 +1,16 @@
+ins: action, config
+out: output
+verbose: 0
+do:
+
+  - ins:
+      mongoUrl: config.mongoUrl
+      collectionName: 'test'
+    out: dbConfig
+
+  - if: action == 'up'
+    do:
+      - |([config, dbConfig]) -> {$.print}
+
+    else:
+      - |([config, dbConfig]) -> {$.print}

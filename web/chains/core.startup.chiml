@@ -20,7 +20,7 @@ vars:
 do:
 
   # define routes and configurations
-  parallel:
+  - parallel:
     # define routes
     - ins:
       - routes
@@ -41,3 +41,11 @@ do:
     - |(_chain_cwd, '../', errorTemplate) -> {$.concat} -> webState.config.errorTemplate
     - |(mongoUrl) --> webState.config.mongoUrl
     - |(verbose) --> webState.config.verbose
+
+  # define migration config
+  - ins:
+      - migrationPath: webState.config.migrationPath
+        mongoUrl: webState.config.mongoUrl
+    out: migrationConfig
+  # upgrade 
+  - |(migrationConfig) -> [$.loadJs('chimera-framework', 'migration.upgrade')]
