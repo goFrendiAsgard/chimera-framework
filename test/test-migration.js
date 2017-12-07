@@ -15,7 +15,6 @@ let collectionName = '_migration'
 let migrationConfig = {migrationPath, mongoUrl}
 let dbConfig = {mongoUrl, collectionName}
 describe('migration', function () {
-
   it('should be able to upgrade to certain version', function (done) {
     chimera.mongo.execute(dbConfig, 'remove', {}, function (error, result) {
       if (error) {
@@ -85,5 +84,4 @@ describe('migration', function () {
       })
     })
   })
-
 })
