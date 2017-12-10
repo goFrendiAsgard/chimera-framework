@@ -1,15 +1,6 @@
-ins: webState
-out: webState
+ins: state
+out: state
 vars:
-
-  # configurations
-  staticPath:    'public'
-  faviconPath:   'public/favicon.ico'
-  viewPath:      'views'
-  migrationPath: 'migrations'
-  errorTemplate: 'views/error.ejs'
-  mongoUrl:      'mongodb://localhost/chimera-web-app'
-  verbose:       0
 
   # routes
   routes:
@@ -19,33 +10,8 @@ vars:
 
 do:
 
-  # define routes and configurations
-  - parallel:
-    # define routes
-    - ins:
-      - routes
-      - _chain_cwd
-      do: |
-        (routes, chainCwd) => {
-          for (let i=0; i<routes.length; i++) {
-            routes[i].chain = chainCwd + routes[i].chain
-          }
-          return routes
-        }
-      out: webState.config.routes
-    # define other configurations
-    - |(_chain_cwd, '../', staticPath) -> {$.concat} -> webState.config.staticPath
-    - |(_chain_cwd, '../', faviconPath) -> {$.concat} -> webState.config.faviconPath
-    - |(_chain_cwd, '../', viewPath) -> {$.concat} -> webState.config.viewPath
-    - |(_chain_cwd, '../', migrationPath) -> {$.concat} -> webState.config.migrationPath
-    - |(_chain_cwd, '../', errorTemplate) -> {$.concat} -> webState.config.errorTemplate
-    - |(mongoUrl) --> webState.config.mongoUrl
-    - |(verbose) --> webState.config.verbose
+  # preprocess routes
+  - |(routes, _chain_cwd) -> {state.config.preprocessRoutes} -> state.config.routes
 
-  # define migration config
-  - ins:
-      - migrationPath: webState.config.migrationPath
-        mongoUrl: webState.config.mongoUrl
-    out: migrationConfig
   # upgrade 
-  - |(migrationConfig) -> [$.loadJs('chimera-framework', 'migration.upgrade')]
+  - |(state.config.migrationConfig) -> [$.loadJs('chimera-framework', 'migration.upgrade')]

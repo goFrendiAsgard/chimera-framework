@@ -3,14 +3,13 @@ out: output
 verbose: 0
 do:
 
-  - ins:
-      mongoUrl: config.mongoUrl
-      collectionName: 'test'
-    out: dbConfig
+  - |({mongoUrl: config.mongoUrl, collectionName:'test'}) --> dbConfig
 
   - if: action == 'up'
     do:
+      # upgrade
       - |([config, dbConfig]) -> {$.print}
 
     else:
+      # downgrade
       - |([config, dbConfig]) -> {$.print}

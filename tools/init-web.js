@@ -88,25 +88,39 @@ function initWeb (projectDir) {
       })
     },
 
-    // read and rewrite core.startup.chiml
+    // read and rewrite webConfig.default.js
     (callback) => {
-      fse.readFile('chains/core.startup.chiml', function (error, fileContent) {
+      fse.readFile('webConfig.default.js', function (error, fileContent) {
         if (error) {
           console.error('[ERROR] Cannot read core.startup.chiml')
           return finalCallback(error)
         }
         fileContent = String(fileContent)
         fileContent = fileContent.replace(/mongodb:\/\/localhost\/chimera-web-app/, mongoUrl)
-        fse.writeFile('chains/core.startup.chiml', fileContent, function (error, result) {
+        fse.writeFile('webConfig.default.js', fileContent, function (error, result) {
           if (error) {
-            console.error('[ERROR] Cannot write core.startup.chiml')
+            console.error('[ERROR] Cannot write webConfig.default.js')
             return finalCallback(error)
           }
-          console.warn('[INFO] Creating new core.startup.chiml...')
+          console.warn('[INFO] Creating webConfig.default.js...')
           callback()
         })
       })
     },
+
+    // write webConfig.js
+    (callback) => {
+      let fileContent = 'const webConfig = require(\'./webConfig.default.js\')\n'
+      fileContent += 'module.exports = webConfig'
+      fse.writeFile('webConfig.js', fileContent, function (error, result) {
+        if (error) {
+          console.error('[ERROR] Cannot create webConfig.js')
+          return finalCallback(error)
+        }
+        console.warn('[INFO] Creating webConfig.js...')
+        callback()
+      })
+    }
 
     // run npm install
     (callback) => {

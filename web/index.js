@@ -1,12 +1,16 @@
-const path = require('path')
 const web = require('chimera-framework/lib/web.js')
 const port = process.env.PORT || 3000
 
-const webConfig = {
-  'startupHook': path.join(__dirname, 'chains/core.startup.chiml'),
-  'verbose': 0
+let webConfig
+try {
+  console.warn('[INFO] Load webConfig.js')
+  webConfig = require('./webConfig.js')
+} catch (error) {
+  console.warn('[WARNING] webConfig.js is not exist, load webConfig.default.js')
+  webConfig = require('./webConfig.default.js')
 }
-let app = web.createApp(webConfig)
+
+let app = web.createApp(webConfig, ...webConfig.middlewares)
 
 module.exports = {app}
 
