@@ -1,5 +1,5 @@
-ins: state
-out: state
+ins: st
+out: st
 vars:
 
   # routes
@@ -11,7 +11,7 @@ vars:
 do:
 
   # preprocess routes
-  - |(routes, _chain_cwd) -> {state.config.preprocessRoutes} -> state.config.routes
+  - |(routes, _chain_cwd) -> {st.config.getPreprocessedRoutes} -> st.config.routes
 
-  # upgrade 
-  - |(state.config.migrationConfig) -> [$.loadJs('chimera-framework', 'migration.upgrade')]
+  # do upgrade migration 
+  - |(st.config.migrationConfig) -> [$.loadJs('chimera-framework', 'migration.upgrade')]

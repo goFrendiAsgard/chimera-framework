@@ -1,30 +1,53 @@
 const path = require('path')
+const mongo = require('chimera-framework/lib/mongo.js')
+const cckCollection = '_cck'
+const middlewares = []
+const mongoUrl = 'mongodb://localhost/chimera-web-app'
+const migrationPath = path.join(__dirname, 'migrations')
+const migrationConfig = {
+  mongoUrl,
+  migrationPath: migrationPath
+}
+const cckDbConfig = {
+  mongoUrl,
+  collectionName: cckCollection
+}
 
-function preprocessRoutes (routes, chainCwd) {
+function createSchema (config, callback) {
+  return mongo.execute(cckDbConfig, 'insert', config, callback)
+}
+
+function updateSchema (config, callback) {
+  let filter = {'name': config.name, 'site': config.site}
+  return mongo.execute(cckDbConfig, 'update', filter, config, callback)
+}
+
+function removeSchema (config, callback) {
+  return mongo.execute(cckDbConfig, 'remove', config, callback)
+}
+
+function getPreprocessedRoutes (routes, chainCwd) {
   for (let i = 0; i < routes.length; i++) {
     routes[i].chain = chainCwd + routes[i].chain
   }
   return routes
 }
 
-const middlewares = []
-
 const webConfig = {
-  preprocessRoutes,
+  getPreprocessedRoutes,
   middlewares,
+  mongoUrl,
+  migrationPath,
+  migrationConfig,
+  createSchema,
+  updateSchema,
+  removeSchema,
   verbose: 0,
-  mongoUrl: 'mongodb://localhost/chimera-web-app',
   startupHook: path.join(__dirname, 'chains/core.startup.chiml'),
   staticPath: path.join(__dirname, 'public'),
   faviconPath: path.join(__dirname, 'public/favicon.ico'),
   viewPath: path.join(__dirname, 'views'),
-  migrationPath: path.join(__dirname, 'migrations'),
   errorTemplate: path.join(__dirname, 'views/error.ejs')
-}
-
-webConfig.migrationConfig = {
-  migrationPath: webConfig.migrationPath,
-  mongoUrl: webConfig.mongoUrl
 }
 
 module.exports = webConfig
