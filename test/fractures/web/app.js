@@ -29,7 +29,10 @@ const webConfig = {
   'faviconPath': path.join(__dirname, 'public/favicon.ico'),
   'viewPath': path.join(__dirname, 'views'),
   'errorTemplate': path.join(__dirname, 'views/error.pug'),
-  'startupHook': path.join(__dirname, 'chains/hook-startup.chiml')
+  'startupHook': path.join(__dirname, 'chains/hook-startup.chiml'),
+  'vars': {
+    '$': {message: 'hi'}
+  }
 }
 const middleware = (request, response, next) => {
   if (request.originalUrl === '/hello-json') {

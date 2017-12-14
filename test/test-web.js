@@ -1,10 +1,10 @@
 /* eslint-env mocha */
 
 const chai = require('chai')
-const app = require('./fractures/web/app.js')
 const assert = chai.assert
 const request = require('request')
 
+let app
 let server
 let sessionId
 
@@ -12,6 +12,7 @@ describe('web', function () {
   this.timeout(5000)
 
   it('app.listen shoud return http.server. It should be runnable and listening for request', function (done) {
+    app = require('./fractures/web/app.js')
     let port = 3010
     server = app.listen(port, function () {
       console.error('Start at port ' + port)
@@ -35,7 +36,7 @@ describe('web', function () {
       if (error) {
         return done(error)
       }
-      assert.equal(body, '{"data":"Hello :D","fromMiddleware":"yes"}')
+      assert.equal(body, '{"data":"Hello :D","fromMiddleware":"yes","message":"hi"}')
       return done()
     })
   })

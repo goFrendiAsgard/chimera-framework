@@ -33,15 +33,19 @@ function getPreprocessedRoutes (routes, chainCwd) {
   return routes
 }
 
-const webConfig = {
+const helper = {
   getPreprocessedRoutes,
+  createSchema,
+  updateSchema,
+  removeSchema
+}
+
+const webConfig = {
+  helper,
   middlewares,
   mongoUrl,
   migrationPath,
   migrationConfig,
-  createSchema,
-  updateSchema,
-  removeSchema,
   verbose: 0,
   startupHook: path.join(__dirname, 'chains/core.startup.chiml'),
   staticPath: path.join(__dirname, 'public'),
