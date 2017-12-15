@@ -120,7 +120,7 @@ function initWeb (projectDir) {
         console.warn('[INFO] Creating webConfig.js...')
         callback()
       })
-    }
+    },
 
     // run npm install
     (callback) => {
