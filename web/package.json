@@ -8,7 +8,7 @@
     "chimera-framework"
   ],
   "dependencies": {
-    "chimera-framework": "0.0.44",
+    "chimera-framework": "0.0.45",
     "express-jwt": "^5.3.0",
     "neo-async": "^2.5.0"
   },
