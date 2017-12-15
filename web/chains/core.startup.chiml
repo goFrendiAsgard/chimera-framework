@@ -12,6 +12,9 @@ do:
 
   # preprocess routes
   - |(routes, _chain_cwd) -> {$.getPreprocessedRoutes} -> st.config.routes
+  - |(st.config.routes, _chain_cwd) -> {$.getPreprocessedRoutes} -> st.config.routes
 
-  # do upgrade migration 
-  - |($.migrationConfig) -> [$.loadJs('chimera-framework', 'migration.upgrade')]
+  # do migration
+  - if: st.config.lastVersion
+    do: |($.migrationConfig) -> [$.loadJs('chimera-framework', 'migration.upgrade')]
+    else: |($.migrationConfig, st.config.version) -> [$.loadJs('chimera-framework', 'migration.upgrade')]
