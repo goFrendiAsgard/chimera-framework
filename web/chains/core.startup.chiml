@@ -11,7 +11,7 @@ vars:
 do:
 
   # preprocess routes
-  - |(routes, _chain_cwd) -> {st.config.helper.getPreprocessedRoutes} -> st.config.routes
+  - |(routes, _chain_cwd) -> {$.getPreprocessedRoutes} -> st.config.routes
 
   # do upgrade migration 
-  - |(st.config.migrationConfig) -> [$.loadJs('chimera-framework', 'migration.upgrade')]
+  - |($.migrationConfig) -> [$.loadJs('chimera-framework', 'migration.upgrade')]
