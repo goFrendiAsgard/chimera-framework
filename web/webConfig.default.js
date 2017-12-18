@@ -2,7 +2,23 @@ const path = require('path')
 
 const webConfig = {
   // routes
-  routes: [],
+  routes: [
+    {route: '/', method: 'all', chain: 'index.chiml'},
+    {route: '/login-api', method: 'all', chain: 'login.chiml'}
+  ],
+  // jwt configuration
+  jwtSecret: String(Math.round(Math.random() * 1000000000)),
+  jwtExpired: 60 * 60 * 24,
+  jwtTokenName: 'token',
+  // session configuration
+  sessionSecret: String(Math.round(Math.random() * 1000000000)),
+  sessionMaxAge: 60 * 60 * 24,
+  sessionSaveUnitialized: true,
+  sessionResave: true,
+  // hook configuration
+  startupHook: path.join(__dirname, 'chains/core.startup.chiml'),
+  beforeRequestHook: null,
+  afterRequestHook: null,
   // list of express middlewares function
   middlewares: [],
   // mongoUrl database
@@ -15,8 +31,6 @@ const webConfig = {
   lastVersion: true,
   // migration path
   migrationPath: path.join(__dirname, 'migrations'),
-  // startup hook
-  startupHook: path.join(__dirname, 'chains/core.startup.chiml'),
   // location of static resources
   staticPath: path.join(__dirname, 'public'),
   // favicon path

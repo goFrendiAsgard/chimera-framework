@@ -1,3 +1,4 @@
+in: request
 out: response
 do:
   - |"Hello world :D" --> response.data.body

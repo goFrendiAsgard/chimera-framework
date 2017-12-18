@@ -8,8 +8,9 @@
     "chimera-framework"
   ],
   "dependencies": {
-    "chimera-framework": "0.0.45",
+    "chimera-framework": "0.0.46",
     "express-jwt": "^5.3.0",
+    "jsonwebtoken": "^7.3.0",
     "neo-async": "^2.5.0"
   },
   "author": "Another earthling",

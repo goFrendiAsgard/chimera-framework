@@ -1,20 +1,11 @@
-ins: st
-out: st
-vars:
-
-  # routes
-  routes:
-    - route: '/'
-      method: 'all'
-      chain: 'index.chiml'
-
+ins: state
+out: state
 do:
 
   # preprocess routes
-  - |(routes, _chain_cwd) -> {$.getPreprocessedRoutes} -> st.config.routes
-  - |(st.config.routes, _chain_cwd) -> {$.getPreprocessedRoutes} -> st.config.routes
+  - |(state.config.routes, _chain_cwd) -> {$.getPreprocessedRoutes} -> state.config.routes
 
   # do migration
-  - if: st.config.lastVersion
+  - if: state.config.lastateVersion
     do: |($.migrationConfig) -> [$.loadJs('chimera-framework', 'migration.upgrade')]
-    else: |($.migrationConfig, st.config.version) -> [$.loadJs('chimera-framework', 'migration.upgrade')]
+    else: |($.migrationConfig, state.config.version) -> [$.loadJs('chimera-framework', 'migration.upgrade')]

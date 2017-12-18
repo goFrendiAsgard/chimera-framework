@@ -25,7 +25,7 @@ function initWeb (projectDir) {
     // read mongoUrl
     (callback) => {
       let defaultMongoUrl = 'mongodb://localhost/' + projectDir
-      dollar.prompt('Mongodb Url: (' + defaultMongoUrl + ')', function (error, url) {
+      dollar.prompt('Mongodb Url (' + defaultMongoUrl + '):', function (error, url) {
         if (error) {
           console.error('[ERROR] Cannot read mongodb url')
           return finalCallback(error)
@@ -41,12 +41,13 @@ function initWeb (projectDir) {
 
     // read current package.json
     (callback) => {
+      console.warn('[INFO] Read chimera-framework\'s package.json...')
       util.readJsonFile(path.join(__dirname, '../package.json'), function (error, obj) {
         if (error) {
           console.error('[ERROR] Cannot read chimera-framework\'s package.json')
           return finalCallback(error)
         }
-        console.warn('[INFO] Read chimera-framework\'s package.json...')
+        console.warn('[INFO] Done...')
         chimeraVersion = obj.version
         callback()
       })
@@ -60,7 +61,7 @@ function initWeb (projectDir) {
           console.error('[ERROR] Cannot copy directory')
           return finalCallback(error)
         }
-        console.warn('[INFO] Done copying directory...')
+        console.warn('[INFO] Done...')
         callback()
       })
     },
@@ -68,6 +69,7 @@ function initWeb (projectDir) {
     // change directory and rewrite package.json
     (callback) => {
       process.chdir(projectDir)
+      console.warn('[INFO] Creating project\'s package.json...')
       util.readJsonFile('package.json', function (error, obj) {
         if (error) {
           console.error('[ERROR] Cannot read package.json')
@@ -82,7 +84,7 @@ function initWeb (projectDir) {
             console.error('[ERROR] Cannot write package.json')
             return finalCallback(error)
           }
-          console.warn('[INFO] Creating new package.json...')
+          console.warn('[INFO] Done...')
           callback()
         })
       })
@@ -90,6 +92,7 @@ function initWeb (projectDir) {
 
     // read and rewrite webConfig.default.js
     (callback) => {
+      console.warn('[INFO] Creating webConfig.default.js...')
       fse.readFile('webConfig.default.js', function (error, fileContent) {
         if (error) {
           console.error('[ERROR] Cannot read core.startup.chiml')
@@ -102,7 +105,7 @@ function initWeb (projectDir) {
             console.error('[ERROR] Cannot write webConfig.default.js')
             return finalCallback(error)
           }
-          console.warn('[INFO] Creating webConfig.default.js...')
+          console.warn('[INFO] Done...')
           callback()
         })
       })
@@ -112,24 +115,26 @@ function initWeb (projectDir) {
     (callback) => {
       let fileContent = 'const webConfig = require(\'./webConfig.default.js\')\n'
       fileContent += 'module.exports = webConfig'
+      console.warn('[INFO] Creating webConfig.js...')
       fse.writeFile('webConfig.js', fileContent, function (error, result) {
         if (error) {
           console.error('[ERROR] Cannot create webConfig.js')
           return finalCallback(error)
         }
-        console.warn('[INFO] Creating webConfig.js...')
+        console.warn('[INFO] Done...')
         callback()
       })
     },
 
     // run npm install
     (callback) => {
+      console.warn('[INFO] Performing npm install...')
       cmd.get('npm install', function (error, result) {
         if (error) {
           console.error('[ERROR] Cannot perform npm install')
           finalCallback(error)
         } else {
-          console.warn('[INFO] Performing npm install...')
+          console.warn('[INFO] Done...')
           callback()
         }
       })
