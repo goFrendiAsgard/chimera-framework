@@ -13,7 +13,7 @@ describe('chain dollar', function () {
           return done(error)
         }
         assert.equal(result, '16')
-        done()
+        return done()
       })
     })
   })

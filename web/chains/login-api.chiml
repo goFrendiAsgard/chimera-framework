@@ -1,0 +1,24 @@
+ins: state
+out: response
+
+do:
+  - parallel:
+    - |config <-- state.config
+    - |query <-- state.request.query
+    - |body <-- state.request.body
+    - |jwtTokenName <-- config.jwtTokenName
+
+  - if: (query.user == 'root' && query.password == 'toor') || (body.user == 'root' && body.password == 'toor')
+    do:
+
+    - ins:
+      - id: 0
+        user: 'root'
+      - config.jwtSecret
+      out: jwt_token
+      do: |{$.loadJs('jsonwebtoken', 'sign')}
+
+    - |({token: jwt_token, success: true, errorMessage: ''}) --> response.data
+    - |(jwt_token) --> response.cookies[jwtTokenName]
+
+    else: |({token: '', success: false, errorMessage: 'Invalid username or password'}) --> response.data

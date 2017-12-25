@@ -1,5 +1,11 @@
-in: request
+ins: state
 out: response
 do:
-  - |"Hello world :D" --> response.data.body
+
+  - |request <-- state.request
+
+  - if: |'auth' in request && 'user' in request.auth
+    do: |"Hello " + request.auth.user --> response.data.body
+    else: |"Hello world :D" --> response.data.body
+
   - |"index.ejs" --> response.view

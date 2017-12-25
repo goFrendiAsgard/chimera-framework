@@ -4,7 +4,7 @@ const webConfig = {
   // routes
   routes: [
     {route: '/', method: 'all', chain: 'index.chiml'},
-    {route: '/login-api', method: 'all', chain: 'login.chiml'}
+    {route: '/login-api', method: 'all', chain: 'login-api.chiml'},
   ],
   // jwt configuration
   jwtSecret: String(Math.round(Math.random() * 1000000000)),
@@ -38,7 +38,8 @@ const webConfig = {
   // location of view files
   viewPath: path.join(__dirname, 'views'),
   // error view tempalate
-  errorTemplate: path.join(__dirname, 'views/error.ejs')
+  errorTemplate: path.join(__dirname, 'views/error.ejs'),
+  defaultTemplate: null
 }
 
 module.exports = webConfig

@@ -1,8 +1,8 @@
 const web = require('chimera-framework/lib/web.js')
 const util = require('chimera-framework/lib/util.js')
 const mongo = require('chimera-framework/lib/mongo.js')
-const jwt = require('express-jwt')
-const jsonwebtoken = require('jsonwebtoken')
+const expressJwt = require('express-jwt')
+const jwt = require('jsonwebtoken')
 
 const port = process.env.PORT || 3000
 const defaultSchemaData = {}
@@ -21,21 +21,21 @@ try {
 if (!('middlewares' in webConfig)) {
   webConfig.middlewares = []
 }
-webConfig.middlewares.unshift(jwt({
-  secret: webConfig.jwtSecret,
-  exp: webConfig.jwtExpired,
-  credentialRequired: false,
-  getToken: function getToken (req) {
-    if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
-      return req.headers.authorization.split(' ')[1]
-    } else if (req.query && req.query[webConfig.jwtTokenName]) {
-      return req.query[webConfig.jwtTokenName]
-    } else if (req.cookies && req.cookies[webConfig.jwtTokenName]) {
-      return req.cookies[webConfig.jwtTokenName]
-    }
-    return jsonwebtoken.sign({id: 0}, webConfig.jwtSecret)
+webConfig.middlewares.unshift((req, res, next) => {
+  let token
+  if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+    token = req.headers.authorization.split(' ')[1]
+  } else if (req.query && req.query[webConfig.jwtTokenName]) {
+    token = req.query[webConfig.jwtTokenName]
+  } else if (req.cookies && req.cookies[webConfig.jwtTokenName]) {
+    token = req.cookies[webConfig.jwtTokenName]
+  } else {
+    token = jwt.sign({}, webConfig.jwtSecret)
   }
-}))
+  console.error(token)
+  req.auth = jwt.verify(token, webConfig.jwtSecret)
+  next()
+})
 
 // define default value of webConfig.vars.$
 if (!('vars' in webConfig)) {
@@ -44,6 +44,8 @@ if (!('vars' in webConfig)) {
 if (!('$' in webConfig.vars)) {
   webConfig.vars.$ = {}
 }
+
+webConfig.vars.jwt = jwt
 
 // define migrationCOnfig and cckDbConfig
 webConfig.vars.$.migrationConfig = {
@@ -54,8 +56,6 @@ webConfig.vars.$.cckDbConfig = {
   mongoUrl: webConfig.mongoUrl,
   collectionName: '_cck'
 }
-
-webConfig.vars.$.jwtSign = jsonwebtoken.sign
 
 webConfig.vars.$.createSchema = (config, callback) => {
   let data = util.getPatchedObject(defaultSchemaData, config)
