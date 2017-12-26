@@ -11,7 +11,7 @@ const assert = chai.assert
 
 let migrationPath = path.join(__dirname, 'fractures/migrations')
 let mongoUrl = 'mongodb://localhost/test'
-let collectionName = '_migration'
+let collectionName = 'chimera_migrations'
 let migrationConfig = {migrationPath, mongoUrl}
 let dbConfig = {mongoUrl, collectionName}
 describe('migration', function () {

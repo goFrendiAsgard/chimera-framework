@@ -1,0 +1,14 @@
+ins: state
+out: response
+do:
+  - |config <-- state.config
+  - |jwtTokenName <-- config.jwtTokenName
+
+  - ins:
+    - {}
+    - config.jwtSecret
+    out: jwtToken
+    do: |{$.loadJs('jsonwebtoken', 'sign')}
+
+  - |({token: jwtToken, success: true, errorMessage: ''}) --> response.data
+  - |(jwtToken) --> response.cookies[jwtTokenName]

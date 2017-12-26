@@ -6,6 +6,6 @@ do:
   - |(state.config.routes, _chain_cwd) -> {$.getPreprocessedRoutes} -> state.config.routes
 
   # do migration
-  - if: state.config.lastateVersion
+  - if: state.config.lastVersion
     do: |($.migrationConfig) -> [$.loadJs('chimera-framework', 'migration.upgrade')]
     else: |($.migrationConfig, state.config.version) -> [$.loadJs('chimera-framework', 'migration.upgrade')]

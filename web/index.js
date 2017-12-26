@@ -1,11 +1,7 @@
 const web = require('chimera-framework/lib/web.js')
-const util = require('chimera-framework/lib/util.js')
-const mongo = require('chimera-framework/lib/mongo.js')
-const expressJwt = require('express-jwt')
 const jwt = require('jsonwebtoken')
-
+const cck = require('./cck.js')
 const port = process.env.PORT || 3000
-const defaultSchemaData = {}
 
 // load webConfig
 let webConfig
@@ -29,11 +25,17 @@ webConfig.middlewares.unshift((req, res, next) => {
     token = req.query[webConfig.jwtTokenName]
   } else if (req.cookies && req.cookies[webConfig.jwtTokenName]) {
     token = req.cookies[webConfig.jwtTokenName]
-  } else {
-    token = jwt.sign({}, webConfig.jwtSecret)
   }
-  console.error(token)
-  req.auth = jwt.verify(token, webConfig.jwtSecret)
+  try {
+    if (token !== null) {
+      req.auth = jwt.verify(token, webConfig.jwtSecret)
+    } else {
+      req.auth = {}
+    }
+  } catch (error) {
+    console.error(error)
+    req.auth = {}
+  }
   next()
 })
 
@@ -45,40 +47,13 @@ if (!('$' in webConfig.vars)) {
   webConfig.vars.$ = {}
 }
 
-webConfig.vars.jwt = jwt
+webConfig.vars.$.jwt = jwt
+webConfig.vars.$.cck = cck
 
 // define migrationCOnfig and cckDbConfig
 webConfig.vars.$.migrationConfig = {
   mongoUrl: webConfig.mongoUrl,
   migrationPath: webConfig.migrationPath
-}
-webConfig.vars.$.cckDbConfig = {
-  mongoUrl: webConfig.mongoUrl,
-  collectionName: '_cck'
-}
-
-webConfig.vars.$.createSchema = (config, callback) => {
-  let data = util.getPatchedObject(defaultSchemaData, config)
-  return mongo.execute(webConfig.cckDbConfig, 'insert', data, callback)
-}
-
-webConfig.vars.$.removeSchema = (config, callback) => {
-  let filter = {}
-  if ('_id' in config) {
-    // remove by _id
-    filter._id = config._id
-  } else if ('name' in config || 'site' in config) {
-    // remove by name or config, or both
-    if ('name' in config) {
-      filter.name = config.name
-    }
-    if ('site' in config) {
-      filter.site = config.site
-    }
-  } else {
-    filter = config
-  }
-  return mongo.execute(webConfig.cckDbConfig, 'remove', filter, callback)
 }
 
 webConfig.vars.$.getPreprocessedRoutes = (routes, chainCwd) => {

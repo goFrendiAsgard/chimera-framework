@@ -15,10 +15,10 @@ do:
       - id: 0
         user: 'root'
       - config.jwtSecret
-      out: jwt_token
+      out: jwtToken
       do: |{$.loadJs('jsonwebtoken', 'sign')}
 
-    - |({token: jwt_token, success: true, errorMessage: ''}) --> response.data
-    - |(jwt_token) --> response.cookies[jwtTokenName]
+    - |({token: jwtToken, success: true, errorMessage: ''}) --> response.data
+    - |(jwtToken) --> response.cookies[jwtTokenName]
 
     else: |({token: '', success: false, errorMessage: 'Invalid username or password'}) --> response.data

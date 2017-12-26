@@ -5,6 +5,7 @@ const webConfig = {
   routes: [
     {route: '/', method: 'all', chain: 'index.chiml'},
     {route: '/login-api', method: 'all', chain: 'login-api.chiml'},
+    {route: '/logout-api', method: 'all', chain: 'logout-api.chiml'}
   ],
   // jwt configuration
   jwtSecret: String(Math.round(Math.random() * 1000000000)),
