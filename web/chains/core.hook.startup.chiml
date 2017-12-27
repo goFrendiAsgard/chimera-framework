@@ -1,0 +1,9 @@
+ins: state
+out: state
+do:
+  - |basePath <-- state.config.basePath
+  - |routes <-- state.config.routes
+
+  # get cck routes and combine it with config's routes
+  - |cckRoutes <- [$.loadJs(basePath + 'cck.js', 'getRoutes')]
+  - |(routes, cckRoutes) -> {$.merge} -> state.config.routes

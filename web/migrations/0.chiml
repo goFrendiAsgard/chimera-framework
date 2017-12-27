@@ -1,54 +1,41 @@
 ins: action, config
 out: output
 vars:
-  cck:
-    name: 'cck'
-    collectionName: 'web_cck'
-    fields:
-      name: 'text'
-      collectionName: 'text'
-      site: 'text'
-      fields: 'textArea'
-  routes:
-    name: 'routes'
-    collectionName: 'web_routes'
-    fields:
-      name: 'text'
-      url: 'text'
-      chiml: 'text'
-  users:
-    name: 'users'
-    collectionName: 'web_users'
-    fields:
-      username: 'text'
-      email: 'text'
-      hashedPassword: 'text'
-      groups: 'textArea'
-  configs:
-    name: 'configs'
-    collectionName: 'web_configs'
-    fields:
-      key: 'text'
-      value: 'text'
+  schemas:
+    - name: 'cck'
+      collectionName: 'web_cck'
+      fields:
+        name: 'text'
+        collectionName: 'text'
+        site: 'text'
+        fields: 'textArea'
+    - name: 'routes'
+      collectionName: 'web_routes'
+      fields:
+        name: 'text'
+        url: 'text'
+        chiml: 'text'
+    - name: 'users'
+      collectionName: 'web_users'
+      fields:
+        username: 'text'
+        email: 'text'
+        hashedPassword: 'text'
+        groups: 'textArea'
+    - name: 'configs'
+      collectionName: 'web_configs'
+      fields:
+        key: 'text'
+        value: 'text'
 do:
-  - |mongoUrl <-- config.mongoUrl
-
+  - |cckPath <-- config.cckPath
 
   - if: action == 'up'
     do:
       # upgrade
-      - |(mongoUrl, cck) --> [$.cck.createSchema]
-      - |(mongoUrl, routes) --> [$.cck.createSchema]
-      - |(mongoUrl, users) --> [$.cck.createSchema]
-      - |(mongoUrl, configs) --> [$.cck.createSchema]
+      - |(schemas) -> [$.loadJs(cckPath, 'createSchema')]
 
     else:
       # downgrade
-      - |({mongoUrl, collectionName: cck.collectionName}, 'remove', {}) --> [$.mongo.execute]
-      - |({mongoUrl, collectionName: routes.collectionName}, 'remove', {}) --> [$.mongo.execute]
-      - |({mongoUrl, collectionName: users.collectionName}, 'remove', {}) --> [$.mongo.execute]
-      - |({mongoUrl, collectionName: configs.collectionName}, 'remove', {}) --> [$.mongo.execute]
-      - |(mongoUrl, cck) --> [$.cck.removeSchema]
-      - |(mongoUrl, routes) --> [$.cck.removeSchema]
-      - |(mongoUrl, users) --> [$.cck.removeSchema]
-      - |(mongoUrl, configs) --> [$.cck.removeSchema]
+      # - |(configs.collectionName, 'remove', {}) -> [$.loadJs(cckPath, 'mongoExecute')]
+      - |(schemas) -> [$.loadJs(cckPath, 'removeSchema')]

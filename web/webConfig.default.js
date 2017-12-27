@@ -1,11 +1,16 @@
 const path = require('path')
 
+let basePath = __dirname + '/'
+let chainPath = path.join(__dirname, 'chains')
+
 const webConfig = {
+  basePath,
+  chainPath,
   // routes
   routes: [
-    {route: '/', method: 'all', chain: 'index.chiml'},
-    {route: '/login-api', method: 'all', chain: 'login-api.chiml'},
-    {route: '/logout-api', method: 'all', chain: 'logout-api.chiml'}
+    {route: '/', method: 'all', chain: path.join(chainPath, 'index.chiml')},
+    {route: '/login-api', method: 'all', chain: path.join(chainPath, 'login-api.chiml')},
+    {route: '/logout-api', method: 'all', chain: path.join(chainPath, 'logout-api.chiml')}
   ],
   // jwt configuration
   jwtSecret: String(Math.round(Math.random() * 1000000000)),
@@ -17,7 +22,7 @@ const webConfig = {
   sessionSaveUnitialized: true,
   sessionResave: true,
   // hook configuration
-  startupHook: path.join(__dirname, 'chains/core.startup.chiml'),
+  startupHook: path.join(chainPath, 'core.hook.startup.chiml'),
   beforeRequestHook: null,
   afterRequestHook: null,
   // list of express middlewares function
@@ -26,10 +31,6 @@ const webConfig = {
   mongoUrl: 'mongodb://localhost/chimera-web-app',
   // verbosity level
   verbose: 0,
-  // automatically do migration to this version if lastVersion is false
-  version: '0',
-  // automatically do migration to the latest version
-  lastVersion: true,
   // migration path
   migrationPath: path.join(__dirname, 'migrations'),
   // location of static resources

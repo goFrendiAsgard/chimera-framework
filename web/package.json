@@ -13,7 +13,8 @@
     "neo-async": "^2.5.0"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "migrate": "node migrate.js"
   },
   "author": "Another earthling",
   "license": "ISC"
