@@ -1,13 +1,16 @@
 ins: state
 out: response
 do:
-
   - |request <-- state.request
 
   - |(request.auth) -> {$.print}
 
   - if: |'auth' in request && 'username' in request.auth
-    do: |"Hello " + request.auth.username --> response.data.body
+    do:
+      - |userName <-- request.auth.username
+      - |email <-- request.auth.email
+      - |(request.auth.groups, ', ') -> {$.join} -> groups
+      - |"Hello " + userName + ". Your email is: " + email + ". Your privileges are: " + groups --> response.data.body
     else: |"Hello world :D" --> response.data.body
 
   - |"index.ejs" --> response.view

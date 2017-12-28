@@ -71,7 +71,7 @@ Chimera-Framework can be used for
 
 * [Stand alone computing](doc/gettingStarted.md#stand-alone-computing)
 * [Distributed computing](doc/gettingStarted.md#distributed-computing)
-* [Stand alone computing](doc/gettingStarted.md#web-app)
+* [Creating Web Application](doc/gettingStarted.md#web-app)
 
 In order to use Chimera-Framework, you need to write a `CHIML script`. CHIML is a simple superset of YAML. The sepecification of CHIML script is presented [here](doc/chiml.md)
 

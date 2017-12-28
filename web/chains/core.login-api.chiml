@@ -38,6 +38,7 @@ do:
       - ins:
         - username: user.username 
           email: user.email
+          groups: user.groups
         - jwtSecret
         - expiresIn: jwtExpired
         out: jwtToken
