@@ -169,27 +169,21 @@ function findSchema (config, callback) {
   })
 }
 
-function getRoutes(callback) {
+function getRoutes() {
   let webConfig = helper.getWebConfig()
   let chainPath = webConfig.chainPath
-  findSchema({}, (error, schemas) => {
-    if (error) {
-      return callback(error, null)
-    }
-    let routes = []
-    for (let schema of schemas) {
-      let schemaName = schema.name
-      let frontRoute = '/data/' + schemaName
-      let apiRoute = '/api/' + schemaName
-      routes.push({route: frontRoute, method: 'all', chain: path.join(chainPath, 'cck.core.view.chiml')})
-      routes.push({route: frontRoute + '/insert', method: 'all', chain: path.join(chainPath, 'cck.core.insertForm.chiml')})
-      routes.push({route: frontRoute + '/update', method: 'all', chain: path.join(chainPath, 'cck.core.updateForm.chiml')})
-      routes.push({route: apiRoute, method: 'get', chain: path.join(chainPath, 'cck.core.select.chiml')})
-      routes.push({route: apiRoute, method: 'post', chain: path.join(chainPath, 'cck.core.insert.chiml')})
-      routes.push({route: apiRoute, method: 'put', chain: path.join(chainPath, 'cck.core.update.chiml')})
-      routes.push({route: apiRoute, method: 'patch', chain: path.join(chainPath, 'cck.core.update.chiml')})
-      routes.push({route: apiRoute, method: 'delete', chain: path.join(chainPath, 'cck.core.delete.chiml')})
-    }
-    return callback(error, routes)
-  })
+  return [
+    // REST API URLS
+    {route: '/api/v1/:schemaName',     method: 'get',    chain: path.join(chainPath, 'cck.core.select.chiml')},
+    {route: '/api/v1/:schemaName',     method: 'post',   chain: path.join(chainPath, 'cck.core.insert.chiml')},
+    {route: '/api/v1/:schemaName',     method: 'put',    chain: path.join(chainPath, 'cck.core.update.chiml')},
+    {route: '/api/v1/:schemaName',     method: 'delete', chain: path.join(chainPath, 'cck.core.delete.chiml')},
+    {route: '/api/v1/:schemaName/:id', method: 'get',    chain: path.join(chainPath, 'cck.core.select.chiml')},
+    {route: '/api/v1/:schemaName/:id', method: 'put',    chain: path.join(chainPath, 'cck.core.update.chiml')},
+    {route: '/api/v1/:schemaName/:id', method: 'delete', chain: path.join(chainPath, 'cck.core.delete.chiml')},
+    // FRONT END URLS
+    {route: '/data/:schemaName',         method: 'all',    chain: path.join(chainPath, 'cck.core.view.chiml')},
+    {route: '/data/:schemaName/insert',  method: 'all',    chain: path.join(chainPath, 'cck.core.insertForm.chiml')},
+    {route: '/data/:schemaName/update/:id',  method: 'all',    chain: path.join(chainPath, 'cck.core.updateForm.chiml')},
+  ]
 }

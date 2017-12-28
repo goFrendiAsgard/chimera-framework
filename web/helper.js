@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken')
+const util = require('chimera-framework/lib/util.js')
 
 module.exports = {
   getWebConfig,
@@ -16,17 +17,17 @@ function jwtMiddleware (req, res, next) {
     token = req.cookies[webConfig.jwtTokenName]
   }
   try {
-    if (token !== null) {
+    if (!util.isNullOrUndefined(token)) {
       req.auth = jwt.verify(token, webConfig.jwtSecret)
     } else {
       req.auth = {}
+      if (!res.cookies) { res.cookies = {}; }
+      res.cookies[webConfig.jwtTokenName] = jwt.sign({}, webConfig.jwtSecret)
     }
   } catch (error) {
     console.error(error)
     if (req.cookies && req.cookies[webConfig.jwtTokenName]) {
-      if (!res.cookies) {
-        res.cookies = {}
-      }
+      if (!res.cookies) { res.cookies = {}; }
       res.cookies[webConfig.jwtTokenName] = jwt.sign({}, webConfig.jwtSecret)
     }
     req.auth = {}
