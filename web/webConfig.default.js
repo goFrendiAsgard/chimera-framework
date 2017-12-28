@@ -1,3 +1,5 @@
+'use strict'
+
 const path = require('path')
 
 let basePath = __dirname + '/'

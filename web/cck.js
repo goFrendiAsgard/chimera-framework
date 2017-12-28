@@ -1,3 +1,5 @@
+'use strict'
+
 const path = require('path')
 const core = require('chimera-framework/lib/core.js')
 const util = require('chimera-framework/lib/util.js')
@@ -9,7 +11,8 @@ module.exports = {
   removeSchema,
   findSchema,
   mongoExecute,
-  getRoutes
+  getRoute,
+  getRouteList
 }
 
 const defaultSavedSchemaData = {
@@ -41,8 +44,6 @@ const defaultSchemaData = {
   viewChiml: 'cck.default.view.chiml', // view
   beforeInsertChiml: null,
   afterInsertChiml: null,
-  beforeUpdateChiml: null,
-  afterUpdateChiml: null,
   beforeUpdateChiml: null,
   afterUpdateChiml: null,
   beforeRemoveChiml: null,
@@ -82,7 +83,7 @@ function createSchema (config, callback) {
   let data
   if (util.isArray(config)) {
     data = []
-    for (row of config) {
+    for (let row of config) {
       data.push(getSchemaCreationData(row))
     }
   } else {
@@ -115,7 +116,7 @@ function removeSchema (config, callback) {
   let filter = {}
   if (util.isArray(config)) {
     let data = []
-    for (row of config) {
+    for (let row of config) {
       data.push(getSchemaCreationData(row))
     }
     filter = {$or: data}
@@ -131,13 +132,13 @@ function preprocessSchema (schema) {
   // define completeSchema
   let completeSchema = util.getPatchedObject(defaultSchemaData, schema)
   // completing chiml path
-  for (key of schemaChimlList) {
+  for (let key in schemaChimlList) {
     if (util.isNullOrUndefined(completeSchema[key])) {
       continue
     }
     completeSchema[key] = path.join(chainPath, completeSchema[key])
   }
-  for (key in completeSchema.fields) {
+  for (let key in completeSchema.fields) {
     let fieldData = util.getPatchedObject(defaultFieldData, completeSchema.fields[key])
     // define default caption
     if (util.isNullOrUndefined(fieldData.caption)) {
@@ -169,21 +170,35 @@ function findSchema (config, callback) {
   })
 }
 
-function getRoutes() {
+function getRoute(key = null) {
   let webConfig = helper.getWebConfig()
   let chainPath = webConfig.chainPath
-  return [
-    // REST API URLS
-    {route: '/api/v1/:schemaName',     method: 'get',    chain: path.join(chainPath, 'cck.core.select.chiml')},
-    {route: '/api/v1/:schemaName',     method: 'post',   chain: path.join(chainPath, 'cck.core.insert.chiml')},
-    {route: '/api/v1/:schemaName',     method: 'put',    chain: path.join(chainPath, 'cck.core.update.chiml')},
-    {route: '/api/v1/:schemaName',     method: 'delete', chain: path.join(chainPath, 'cck.core.delete.chiml')},
-    {route: '/api/v1/:schemaName/:id', method: 'get',    chain: path.join(chainPath, 'cck.core.select.chiml')},
-    {route: '/api/v1/:schemaName/:id', method: 'put',    chain: path.join(chainPath, 'cck.core.update.chiml')},
-    {route: '/api/v1/:schemaName/:id', method: 'delete', chain: path.join(chainPath, 'cck.core.delete.chiml')},
-    // FRONT END URLS
-    {route: '/data/:schemaName',         method: 'all',    chain: path.join(chainPath, 'cck.core.view.chiml')},
-    {route: '/data/:schemaName/insert',  method: 'all',    chain: path.join(chainPath, 'cck.core.insertForm.chiml')},
-    {route: '/data/:schemaName/update/:id',  method: 'all',    chain: path.join(chainPath, 'cck.core.updateForm.chiml')},
-  ]
+  let routes = {
+    'selectBulk': {route: '/api/:version/:schemaName',     method: 'get',    chain: path.join(chainPath, 'cck.core.select.chiml')},
+    'insertBulk': {route: '/api/:version/:schemaName',     method: 'post',   chain: path.join(chainPath, 'cck.core.insert.chiml')},
+    'updateBulk': {route: '/api/:version/:schemaName',     method: 'put',    chain: path.join(chainPath, 'cck.core.update.chiml')},
+    'deleteBulk': {route: '/api/:version/:schemaName',     method: 'delete', chain: path.join(chainPath, 'cck.core.delete.chiml')},
+    'selectOne':  {route: '/api/:version/:schemaName/:id', method: 'get',    chain: path.join(chainPath, 'cck.core.select.chiml')},
+    'updateOne':  {route: '/api/:version/:schemaName/:id', method: 'put',    chain: path.join(chainPath, 'cck.core.update.chiml')},
+    'deleteOne':  {route: '/api/:version/:schemaName/:id', method: 'delete', chain: path.join(chainPath, 'cck.core.delete.chiml')},
+    'view':       {route: '/data/:schemaName',             method: 'all',    chain: path.join(chainPath, 'cck.core.view.chiml')},
+    'insertForm': {route: '/data/:schemaName/insert',      method: 'all',    chain: path.join(chainPath, 'cck.core.insertForm.chiml')},
+    'updateForm': {route: '/data/:schemaName/update/:id',  method: 'all',    chain: path.join(chainPath, 'cck.core.updateForm.chiml')}
+  }
+  if (util.isNullOrUndefined(key)) {
+    return routes
+  } else {
+    return routes[key]
+  }
+}
+
+function getRouteList() {
+  let webConfig = helper.getWebConfig()
+  let chainPath = webConfig.chainPath
+  let routes = getRoute()
+  let routeList = []
+  for (let key in routes) {
+    routeList.push(routes[key])
+  }
+  return routeList
 }

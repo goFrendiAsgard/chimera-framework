@@ -8,7 +8,7 @@
     "chimera-framework"
   ],
   "dependencies": {
-    "chimera-framework": "0.0.46",
+    "chimera-framework": "0.0.47",
     "jsonwebtoken": "^7.3.0",
     "neo-async": "^2.5.0"
   },

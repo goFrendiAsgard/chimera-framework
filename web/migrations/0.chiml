@@ -1,4 +1,4 @@
-ins: action, config
+ins: action, migrationConfig
 out: output
 vars:
   schemas:
@@ -21,6 +21,7 @@ vars:
         username: 'text'
         email: 'text'
         hashedPassword: 'text'
+        salt: 'text'
         groups: 'textArea'
     - name: 'configs'
       collectionName: 'web_configs'
@@ -28,7 +29,7 @@ vars:
         key: 'text'
         value: 'text'
 do:
-  - |cckPath <-- config.cckPath
+  - |cckPath <-- migrationConfig.cckPath
 
   - if: action == 'up'
     do:
@@ -37,5 +38,4 @@ do:
 
     else:
       # downgrade
-      # - |(configs.collectionName, 'remove', {}) -> [$.loadJs(cckPath, 'mongoExecute')]
       - |(schemas) -> [$.loadJs(cckPath, 'removeSchema')]

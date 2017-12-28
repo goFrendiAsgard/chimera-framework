@@ -1,3 +1,5 @@
+'use strict'
+
 const path = require('path')
 const migration = require('chimera-framework/lib/migration.js')
 const helper = require('./helper.js')
@@ -9,7 +11,8 @@ let webConfig = helper.getWebConfig()
 let migrationConfig = {
   migrationPath: webConfig.migrationPath,
   mongoUrl: webConfig.mongoUrl,
-  cckPath: path.join(__dirname, 'cck.js')
+  cckPath: path.join(__dirname, 'cck.js'),
+  helperPath: path.join(__dirname, 'helper.js')
 }
 let version = null
 let action = 'up'

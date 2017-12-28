@@ -1,3 +1,5 @@
+'use strict'
+
 const web = require('chimera-framework/lib/web.js')
 const cck = require('./cck.js')
 const helper = require('./helper.js')
