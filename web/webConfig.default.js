@@ -8,18 +8,20 @@ let chainPath = path.join(__dirname, 'chains')
 const webConfig = {
   basePath,
   chainPath,
+  cckPath: path.join(__dirname, 'cck.js'),
+  helperPath: path.join(__dirname, 'helper.js'),
   // routes
   routes: [
     {route: '/', method: 'all', chain: path.join(chainPath, 'index.chiml')},
-    {route: '/login-api', method: 'all', chain: path.join(chainPath, 'login-api.chiml')},
-    {route: '/logout-api', method: 'all', chain: path.join(chainPath, 'logout-api.chiml')}
+    {route: '/login-api', method: 'all', chain: path.join(chainPath, 'core.login-api.chiml')},
+    {route: '/logout-api', method: 'all', chain: path.join(chainPath, 'core.logout-api.chiml')}
   ],
   // jwt configuration
-  jwtSecret: String(Math.round(Math.random() * 1000000000)),
+  jwtSecret: 'secret' + String(Math.round(Math.random() * 1000000000)) + 'jwt',
   jwtExpired: 60 * 60 * 24,
   jwtTokenName: 'token',
   // session configuration
-  sessionSecret: String(Math.round(Math.random() * 1000000000)),
+  sessionSecret: 'secret' + String(Math.round(Math.random() * 1000000000)) + 'session',
   sessionMaxAge: 60 * 60 * 24,
   sessionSaveUnitialized: true,
   sessionResave: true,

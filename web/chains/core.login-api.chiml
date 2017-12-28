@@ -1,0 +1,50 @@
+ins: state
+out: response
+do:
+
+  # get jwtTokenName, cckPath, helperPath, user, and password
+  - parallel:
+    - |jwtTokenName <-- state.config.jwtTokenName
+    - |jwtSecret <-- state.config.jwtSecret
+    - |jwtExpired <-- state.config.jwtExpired
+    - |cckPath <-- state.config.cckPath
+    - |helperPath <-- state.config.helperPath
+    - |query <-- state.request.query
+    - |body <-- state.request.body
+    - |identity <-- ''
+    - |password <-- ''
+    - if: (query.user && query.password)
+      do:
+      - |identity <-- query.user
+      - |password <-- query.password
+    - if: (body.user && body.password)
+      do:
+      - |identity <-- body.user
+      - |password <-- body.password
+
+  # get users from database
+  - |userFilter <-- {$or: [{username:identity}, {email:identity}]}
+  - |('web_users', 'find', userFilter) -> [$.loadJs(cckPath, 'mongoExecute')] -> users
+
+  # validate
+  - if: users.length > 0
+    do:
+    - user <-- users[0]
+    - salt <-- user.salt
+    - |(password, salt) -> {$.loadJs(helperPath, 'hashPassword')} -> hashedObject
+    - if: hashedObject.hashedPassword == user.hashedPassword
+      do:
+
+      - ins:
+        - username: user.username 
+          email: user.email
+        - jwtSecret
+        - expiresIn: jwtExpired
+        out: jwtToken
+        do: |{$.loadJs('jsonwebtoken', 'sign')}
+
+      - |({token: jwtToken, success: true, errorMessage: ''}) --> response.data
+      - |(jwtToken) --> response.cookies[jwtTokenName]
+
+      else: |({token: '', success: false, errorMessage: 'Invalid username or password'}) --> response.data
+    else: |({token: '', success: false, errorMessage: 'Invalid username or password'}) --> response.data

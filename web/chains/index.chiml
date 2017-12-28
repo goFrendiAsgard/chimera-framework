@@ -4,8 +4,10 @@ do:
 
   - |request <-- state.request
 
-  - if: |'auth' in request && 'user' in request.auth
-    do: |"Hello " + request.auth.user --> response.data.body
+  - |(request.auth) -> {$.print}
+
+  - if: |'auth' in request && 'username' in request.auth
+    do: |"Hello " + request.auth.username --> response.data.body
     else: |"Hello world :D" --> response.data.body
 
   - |"index.ejs" --> response.view

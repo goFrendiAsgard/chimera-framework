@@ -7,13 +7,6 @@ const helper = require('./helper.js')
 // load webConfig
 let webConfig = helper.getWebConfig()
 
-// define default parameters
-let migrationConfig = {
-  migrationPath: webConfig.migrationPath,
-  mongoUrl: webConfig.mongoUrl,
-  cckPath: path.join(__dirname, 'cck.js'),
-  helperPath: path.join(__dirname, 'helper.js')
-}
 let version = null
 let action = 'up'
 let executors = {
@@ -22,7 +15,7 @@ let executors = {
 }
 
 function migrate (action, version) {
-  executors[action](migrationConfig, version, function (error, result) {
+  executors[action](webConfig, version, function (error, result) {
     if (error) {
       console.error(error)
     } else {
