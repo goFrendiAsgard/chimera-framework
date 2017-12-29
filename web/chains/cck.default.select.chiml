@@ -1,8 +1,9 @@
 ins: cckState
 out: cckState
 do:
-  - |$.helper <-- cckState.state.config.vars.$.helper
   - |collectionName <-- cckState.schema.collectionName
   - |documentId <-- cckState.documentId
   - |filter <-- {} 
+  - if: |!$.util.isNullOrUndefined(documentId)
+    do: |filter <-- {'_id': documentId}
   - |(collectionName, 'find', filter) -> [$.helper.mongoExecute] -> cckState.result

@@ -1,5 +1,6 @@
 'use strict'
 
+const core = require('chimera-framework/lib/core.js')
 const web = require('chimera-framework/lib/web.js')
 const cck = require('./cck.js')
 const helper = require('./helper.js')
@@ -17,6 +18,16 @@ webConfig.vars = 'vars' in webConfig? webConfig.vars: {}
 webConfig.vars.$ = '$' in webConfig.vars? webConfig.vars.$: {}
 webConfig.vars.$.helper = helper
 webConfig.vars.$.cck = cck
+
+// override webConfig.vars.$.runChain
+function runChainAndCallback (...args) {
+  let callback = args.pop()
+  // get the chain
+  let chain = args.shift()
+  webConfig.vars.$.runChain = runChainAndCallback
+  core.executeChain(chain, args, webConfig.vars, callback)
+}
+webConfig.vars.$.runChain = runChainAndCallback
 
 // create app
 let app = web.createApp(webConfig, ...webConfig.middlewares)
