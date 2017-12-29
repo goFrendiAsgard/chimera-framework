@@ -12,6 +12,12 @@ let webConfig = helper.getWebConfig()
 webConfig.middlewares = 'middlewares' in webConfig? webConfig.middlewares: []
 webConfig.middlewares.unshift(helper.jwtMiddleware)
 
+// add `helper` and `cck` to webConfig.vars.$
+webConfig.vars = 'vars' in webConfig? webConfig.vars: {}
+webConfig.vars.$ = '$' in webConfig.vars? webConfig.vars.$: {}
+webConfig.vars.$.helper = helper
+webConfig.vars.$.cck = cck
+
 // create app
 let app = web.createApp(webConfig, ...webConfig.middlewares)
 

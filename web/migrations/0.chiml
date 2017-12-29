@@ -5,37 +5,38 @@ vars:
     - name: 'cck'
       collectionName: 'web_cck'
       fields:
-        name: 'text'
-        collectionName: 'text'
-        site: 'text'
-        fields: 'textArea'
+        name: {}
+        collectionName: {}
+        site: {}
+        fields: {} 
     - name: 'routes'
       collectionName: 'web_routes'
       fields:
-        name: 'text'
-        url: 'text'
-        chiml: 'text'
+        name: {}
+        route: {}
+        method: {}
+        chain: {}
     - name: 'users'
       collectionName: 'web_users'
       fields:
-        username: 'text'
-        email: 'text'
-        hashedPassword: 'text'
-        salt: 'text'
-        groups: 'textArea'
+        username: {}
+        email: {}
+        hashedPassword: {}
+        salt: {}
+        groups: {}
     - name: 'configs'
       collectionName: 'web_configs'
       fields:
-        key: 'text'
-        value: 'text'
+        key: {}
+        value: {}
 do:
   - |cckPath <-- migrationConfig.cckPath
 
   - if: action == 'up'
     do:
       # upgrade
-      - |(schemas) -> [$.loadJs(cckPath, 'createSchema')]
+      - |(schemas) -> [$.cck.createSchema]
 
     else:
       # downgrade
-      - |(schemas) -> [$.loadJs(cckPath, 'removeSchema')]
+      - |(schemas) -> [$.cck.removeSchema]

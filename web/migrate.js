@@ -3,9 +3,15 @@
 const path = require('path')
 const migration = require('chimera-framework/lib/migration.js')
 const helper = require('./helper.js')
+const cck = require('./cck.js')
 
 // load webConfig
 let webConfig = helper.getWebConfig()
+// add `helper` and `cck` to webConfig.vars.$
+webConfig.vars = 'vars' in webConfig? webConfig.vars: {}
+webConfig.vars.$ = '$' in webConfig.vars? webConfig.vars.$: {}
+webConfig.vars.$.helper = helper
+webConfig.vars.$.cck = cck
 
 let version = null
 let action = 'up'

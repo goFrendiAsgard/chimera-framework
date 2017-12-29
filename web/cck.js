@@ -1,33 +1,33 @@
 'use strict'
 
 const path = require('path')
+const ejs = require('ejs')
 const core = require('chimera-framework/lib/core.js')
 const util = require('chimera-framework/lib/util.js')
-const mongo = require('chimera-framework/lib/mongo.js')
 const helper = require('./helper.js')
 
 module.exports = {
   createSchema,
   removeSchema,
   findSchema,
-  mongoExecute,
   getRoute,
-  getRouteList
+  getRoutes,
+  getInitialState
 }
+
+const cckCollectionName = 'web_cck'
 
 const defaultSavedSchemaData = {
   name: 'unnamed'
 }
 
-const defaultChimlInput = {
-  userId: null, // current user id
-  id: null, // id of document
-  data: null, // new data
-  row: null, // document
-  fieldName: null, // name of field
-  value: null, // new value of field
-  default: null, // default value of field
-  options: {} // input's options
+const defaultInitialState = {
+  auth: {},
+  documentId: null, // id of document
+  apiVersion: null,
+  result: {},
+  state: {},
+  schema: {}
 }
 
 const defaultSchemaData = {
@@ -35,51 +35,39 @@ const defaultSchemaData = {
   collectionName: 'unnamed',
   site: null,
   fields: {},
-  insertChiml: 'cck.default.insert.chiml', // insert api
-  updateChiml: 'cck.default.update.chiml', // update api
-  deleteChiml: 'cck.default.delete.chiml', // delete api
-  selectChiml: 'cck.default.select.chiml', // select api
-  insertFormChiml: 'cck.default.insertForm.chiml', // insert form
-  updateFormChiml: 'cck.default.updateForm.chiml', // update form
-  viewChiml: 'cck.default.view.chiml', // view
-  beforeInsertChiml: null,
-  afterInsertChiml: null,
-  beforeUpdateChiml: null,
-  afterUpdateChiml: null,
-  beforeRemoveChiml: null,
-  afterRemoveChiml: null,
-  afterSelectChiml: null
+  insertChain: '<%= chainPath %>cck.default.insert.chiml', // insert api
+  updateChain: '<%= chainPath %>cck.default.update.chiml', // update api
+  deleteChain: '<%= chainPath %>cck.default.delete.chiml', // delete api
+  selectChain: '<%= chainPath %>cck.default.select.chiml', // select api
+  insertFormChain: '<%= chainPath %>cck.default.insertForm.chiml', // insert form
+  updateFormChain: '<%= chainPath %>cck.default.updateForm.chiml', // update form
+  viewChain: '<%= chainPath %>cck.default.view.chiml', // view
+  beforeInsertChain: null,
+  afterInsertChain: null,
+  beforeUpdateChain: null,
+  afterUpdateChain: null,
+  beforeRemoveChain: null,
+  afterRemoveChain: null,
+  afterSelectChain: null
 }
 
-const schemaChimlList = ['insertChiml', 'updateChiml', 'deleteChiml', 'selectChiml', 'insertFormChiml', 'updateFormChiml', 'viewChiml', 'beforeInsertChiml', 'afterInsertChiml', 'beforeUpdateChiml', 'afterUpdateChiml', 'beforeUpdateChiml', 'afterUpdateChiml', 'beforeRemoveChiml', 'afterRemoveChiml', 'afterSelectChiml']
+const schemaChainList = ['insertChain', 'updateChain', 'deleteChain', 'selectChain', 'insertFormChain', 'updateFormChain', 'viewChain', 'beforeInsertChain', 'afterInsertChain', 'beforeUpdateChain', 'afterUpdateChain', 'beforeUpdateChain', 'afterUpdateChain', 'beforeRemoveChain', 'afterRemoveChain', 'afterSelectChain']
 
 const defaultFieldData = {
   caption: null,
-  inputChiml: 'cck.input.text.chiml',
-  validationChiml: 'cck.validation.all.chiml',
+  inputChain: '<%= chainPath %>cck.input.text.chiml',
+  validationChain: '<%= chainPath %>cck.validation.all.chiml',
   default: '',
   options: {}
 }
 
-const fieldChimlList = ['inputChiml', 'validationChiml']
-
-function mongoExecute (collectionName, fn, ...args) {
-  let webConfig = helper.getWebConfig()
-  let mongoUrl = webConfig.mongoUrl
-  mongo.execute({mongoUrl, collectionName}, fn, ...args)
-}
-
-function getCckDbConfig () {
-  let webConfig = helper.getWebConfig()
-  return {mongoUrl: webConfig.mongoUrl, collectionName: 'web_cck'}
-}
+const fieldChainList = ['inputChain', 'validationChain']
 
 function getSchemaCreationData(row) {
   return util.getPatchedObject(defaultSavedSchemaData, row)
 }
 
 function createSchema (config, callback) {
-  let dbConfig = getCckDbConfig()
   let data
   if (util.isArray(config)) {
     data = []
@@ -89,7 +77,7 @@ function createSchema (config, callback) {
   } else {
     data = getSchemaCreationData(data)
   }
-  return mongo.execute(dbConfig, 'insert', data, callback)
+  return helper.mongoExecute(cckCollectionName, 'insert', data, callback)
 }
 
 function getSchemaRemovalFilter(row) {
@@ -112,7 +100,6 @@ function getSchemaRemovalFilter(row) {
 }
 
 function removeSchema (config, callback) {
-  let dbConfig = getCckDbConfig()
   let filter = {}
   if (util.isArray(config)) {
     let data = []
@@ -123,42 +110,36 @@ function removeSchema (config, callback) {
   } else {
     filter = getSchemaCreationData(data)
   }
-  return mongo.execute(dbConfig, 'remove', filter, callback)
+  return helper.mongoExecute(cckCollectionName, 'remove', filter, callback)
 }
 
 function preprocessSchema (schema) {
   let webConfig = helper.getWebConfig()
-  let chainPath = webConfig.chainPath
   // define completeSchema
   let completeSchema = util.getPatchedObject(defaultSchemaData, schema)
   // completing chiml path
-  for (let key in schemaChimlList) {
-    if (util.isNullOrUndefined(completeSchema[key])) {
-      continue
+  for (let key in completeSchema) {
+    if (util.isString(completeSchema[key])) {
+      completeSchema[key] = ejs.render(completeSchema[key], webConfig)
     }
-    completeSchema[key] = path.join(chainPath, completeSchema[key])
   }
-  for (let key in completeSchema.fields) {
-    let fieldData = util.getPatchedObject(defaultFieldData, completeSchema.fields[key])
+  for (let field in completeSchema.fields) {
+    let fieldData = util.getPatchedObject(defaultFieldData, completeSchema.fields[field])
     // define default caption
-    if (util.isNullOrUndefined(fieldData.caption)) {
-      fieldData.caption = key
-    }
+    fieldData.caption = util.isNullOrUndefined(fieldData.caption)? field: fieldData.caption
     // completing chiml path
-    for (key of fieldChimlList) {
-      if (util.isNullOrUndefined(fieldData[key])) {
-        continue
+    for (let key of fieldChainList) {
+      if (util.isString(fieldData[key])) {
+        completeSchema.fields[field] = ejs.render(fieldData[key], webConfig)
       }
-      completeSchema[key] = path.join(chainPath, fieldData[key])
     }
-    completeSchema.fields[key] = fieldData
+    completeSchema.fields[field] = fieldData
   }
   return completeSchema
 }
 
-function findSchema (config, callback) {
-  let dbConfig = getCckDbConfig()
-  return mongo.execute(dbConfig, 'find', config, function (error, result) {
+function findSchema (filter, callback) {
+  return helper.mongoExecute(cckCollectionName, 'find', filter, function (error, result) {
     if (error) {
       return callback (error, null)
     }
@@ -173,7 +154,7 @@ function findSchema (config, callback) {
 function getRoute(key = null) {
   let webConfig = helper.getWebConfig()
   let chainPath = webConfig.chainPath
-  let routes = {
+  let route = {
     'selectBulk': {route: '/api/:version/:schemaName',     method: 'get',    chain: path.join(chainPath, 'cck.core.select.chiml')},
     'insertBulk': {route: '/api/:version/:schemaName',     method: 'post',   chain: path.join(chainPath, 'cck.core.insert.chiml')},
     'updateBulk': {route: '/api/:version/:schemaName',     method: 'put',    chain: path.join(chainPath, 'cck.core.update.chiml')},
@@ -186,19 +167,39 @@ function getRoute(key = null) {
     'updateForm': {route: '/data/:schemaName/update/:id',  method: 'all',    chain: path.join(chainPath, 'cck.core.updateForm.chiml')}
   }
   if (util.isNullOrUndefined(key)) {
-    return routes
+    return route
   } else {
-    return routes[key]
+    return route[key]
   }
 }
 
-function getRouteList() {
+function getRoutes() {
   let webConfig = helper.getWebConfig()
   let chainPath = webConfig.chainPath
-  let routes = getRoute()
-  let routeList = []
-  for (let key in routes) {
-    routeList.push(routes[key])
+  let route = getRoute()
+  let routes = []
+  for (let key in route) {
+    routes.push(route[key])
   }
-  return routeList
+  return routes
+}
+
+function getInitialState(state, callback) {
+  let request = state.request
+  let apiVersion = request.params.version? request.params.version: null
+  let schemaName = request.params.schemaName? request.params.schemaName: null
+  let documentId = request.params.id? request.params.id: null
+  let auth = request.auth
+  findSchema({name: schemaName}, (error, schemas) => {
+    if (error) {
+      return callback(error, null)
+    }
+    if (schemas.length == 0) {
+      return callback(new Error('cckError: Undefined schema ' + schemaName), null)
+    }
+    let schema = schemas[0]
+    let chainInput = {auth, documentId, apiVersion, state, schema}
+    chainInput = util.getPatchedObject(defaultInitialState, chainInput)
+    return callback(error, chainInput)
+  })
 }

@@ -1,0 +1,26 @@
+ins: action, migrationConfig
+out: output
+do:
+    - if: action == 'up'
+      do:
+        - ins:
+            - name: 'Landing page'
+              route: '/'
+              method: 'all'
+              chain: '<%= chainPath %>index.chiml'
+              defaultRoute: 1
+            - name: 'Login API'
+              route: '/login-api'
+              method: 'all'
+              chain: '<%= chainPath %>core.login-api.chiml'
+              defaultRoute: 1
+            - name: 'Logout API'
+              route: '/logout-api'
+              method: 'all'
+              chain: '<%= chainPath %>core.logout-api.chiml'
+              defaultRoute: 1
+          out: defaultRoutes
+        - |('web_routes', 'insert', defaultRoutes) -> [$.helper.mongoExecute] -> output
+
+      else:
+        - |('web_routes', 'remove', {'defaultRoute': 1}) -> [$.helper.mongoExecute] -> output

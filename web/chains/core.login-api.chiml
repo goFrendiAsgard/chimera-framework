@@ -1,51 +1,42 @@
 ins: state
 out: response
 do:
-
-  # get jwtTokenName, cckPath, helperPath, user, and password
-  - parallel:
-    - |jwtTokenName <-- state.config.jwtTokenName
-    - |jwtSecret <-- state.config.jwtSecret
-    - |jwtExpired <-- state.config.jwtExpired
-    - |cckPath <-- state.config.cckPath
-    - |helperPath <-- state.config.helperPath
-    - |query <-- state.request.query
-    - |body <-- state.request.body
-    - |identity <-- ''
-    - |password <-- ''
-    - if: (query.user && query.password)
-      do:
-      - |identity <-- query.user
-      - |password <-- query.password
-    - if: (body.user && body.password)
-      do:
-      - |identity <-- body.user
-      - |password <-- body.password
+  # get jwtTokenName, user, and password
+  - |config <-- state.config
+  - |request <-- state.request
+  - |identity <-- ''
+  - |password <-- ''
+  - if: (request.query.user && request.query.password)
+    do:
+      - |identity <-- request.query.user
+      - |password <-- request.query.password
+  - if: (request.body.user && request.body.password)
+    do:
+      - |identity <-- request.body.user
+      - |password <-- request.body.password
 
   # get users from database
   - |userFilter <-- {$or: [{username:identity}, {email:identity}]}
-  - |('web_users', 'find', userFilter) -> [$.loadJs(cckPath, 'mongoExecute')] -> users
+  - |('web_users', 'find', userFilter) -> [$.helper.mongoExecute] -> users
 
   # validate
   - if: users.length > 0
     do:
-    - user <-- users[0]
-    - salt <-- user.salt
-    - |(password, salt) -> {$.loadJs(helperPath, 'hashPassword')} -> hashedObject
-    - if: hashedObject.hashedPassword == user.hashedPassword
-      do:
-
-      - ins:
-        - username: user.username 
-          email: user.email
-          groups: user.groups
-        - jwtSecret
-        - expiresIn: jwtExpired
-        out: jwtToken
-        do: |{$.loadJs('jsonwebtoken', 'sign')}
-
-      - |({token: jwtToken, success: true, errorMessage: ''}) --> response.data
-      - |(jwtToken) --> response.cookies[jwtTokenName]
-
-      else: |({token: '', success: false, errorMessage: 'Invalid username or password'}) --> response.data
+      - user <-- users[0]
+      - salt <-- user.salt
+      - |(password, salt) -> {$.helper.hashPassword} -> hashedObject
+      - if: hashedObject.hashedPassword == user.hashedPassword
+        do:
+          - ins:
+              - id: user._id
+                username: user.username 
+                email: user.email
+                groups: user.groups
+              - config.jwtSecret
+              - expiresIn: config.jwtExpired
+            out: jwtToken
+            do: |{$.loadJs('jsonwebtoken', 'sign')}
+          - |({token: jwtToken, success: true, errorMessage: ''}) --> response.data
+          - |(jwtToken) --> response.cookies[config.jwtTokenName]
+        else: |({token: '', success: false, errorMessage: 'Invalid username or password'}) --> response.data
     else: |({token: '', success: false, errorMessage: 'Invalid username or password'}) --> response.data

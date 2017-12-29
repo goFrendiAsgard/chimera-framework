@@ -1,9 +1,14 @@
 ins: state
 out: state
 do:
-  - |basePath <-- state.config.basePath
-  - |routes <-- state.config.routes
 
-  # get cck routes and combine it with config's routes
-  - |cckRoutes <- {$.loadJs(basePath + 'cck.js', 'getRouteList')}
+  - |dbConfig <- [$.helper.getDbConfig]
+  - |(state.config, dbConfig) -> {$.util.getPatchedObject} -> state.config
+
+  # get `routes` `cckRoutes`, `dbRoutes`.
+  # combine them into new `state.config.routes`
+  - |(state.config) -> [$.helper.getDbRoutes] -> dbRoutes
+  - |routes <-- state.config.routes
+  - |cckRoutes <- {$.cck.getRoutes}
   - |(routes, cckRoutes) -> {$.merge} -> state.config.routes
+  - |(state.config.routes, dbRoutes) -> {$.merge} -> state.config.routes

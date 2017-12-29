@@ -3,14 +3,48 @@
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
 const util = require('chimera-framework/lib/util.js')
+const mongo = require('chimera-framework/lib/mongo.js')
+const ejs = require('ejs')
 
 module.exports = {
   hashPassword,
   getWebConfig,
-  jwtMiddleware
+  jwtMiddleware,
+  getDbConfig,
+  getDbRoutes,
+  mongoExecute
 }
 
-function createRandomString (length) {
+function mongoExecute (collectionName, fn, ...args) {
+  let webConfig = getWebConfig()
+  let mongoUrl = webConfig.mongoUrl
+  mongo.execute({mongoUrl, collectionName}, fn, ...args)
+}
+
+function getDbConfig(callback) {
+  mongoExecute('web_configs', 'find', {}, (error, docs) => {
+    let dbConfig = {}
+    for (let doc of docs) {
+      dbConfig[doc.key] = doc.value
+    }
+    callback(error, dbConfig)
+  })
+}
+
+function getDbRoutes(config, callback) {
+  mongoExecute('web_routes', 'find', {}, (error, docs) => {
+    let dbRoutes = []
+    for (let doc of docs) {
+      let route = ejs.render(doc.route, config)
+      let method = doc.method? ejs.render(doc.method, config): 'all'
+      let chain = ejs.render(doc.chain, config)
+      dbRoutes.push({route, method, chain})
+    }
+    callback(error, dbRoutes)
+  })
+}
+
+function createRandomString (length = 16) {
   return crypto.randomBytes(Math.ceil(length/2))
     .toString('hex')
     .slice(0,length)

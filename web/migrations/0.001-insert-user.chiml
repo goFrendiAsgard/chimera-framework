@@ -2,27 +2,29 @@ ins: action, migrationConfig
 out: output
 do:
 
-  - |cckPath <-- migrationConfig.cckPath
-  - |helperPath <-- migrationConfig.helperPath
-
   - if: action == 'up'
     do:
       # check existance of super admin
-      - |('web_users', 'find', {'groups': 'superAdmin'}) -> [$.loadJs(cckPath, 'mongoExecute')] -> superAdmins
-      - if: length(superAdmins) === 0
+      - |('web_users', 'find', {'groups': 'superAdmin'}) -> [$.helper.mongoExecute] -> superAdmins
+      - if: superAdmins.length === 0
         do:
 
           # ask superAdmin username and password
           - |('SuperAdmin username: ') -> [$.prompt] -> superAdminUsername
+          - |('SuperAdmin email: ') -> [$.prompt] -> superAdminEmail
           - |('SuperAdmin password: ') -> [$.prompt] -> superAdminPassword
 
           # create hashed object and salt
-          - |(superAdminPassword) -> {$.loadJs(helperPath, 'hashPassword')} -> hashObject
+          - |(superAdminPassword) -> {$.helper.hashPassword} -> hashObject
           - |(hashObject.hashedPassword) --> hashedPassword
           - |(hashObject.salt) --> salt
 
           # create new user
-          - |({'username': superAdminUsername, 'hashedPassword': hashedPassword, 'salt': salt, 'groups': ['superAdmin']}) --> newUser
-          - |('web_users', 'insert', newUser) -> [$.loadJs(cckPath, 'mongoExecute')] -> output
-      
-
+          - ins:
+              username: superAdminUsername
+              email: superAdminEmail
+              hashedPassword: hashedPassword
+              salt: salt
+              groups: ['superAdmin']
+            out: newUser
+          - |('web_users', 'insert', newUser) -> [$.helper.mongoExecute] -> output

@@ -3,7 +3,7 @@
 const path = require('path')
 
 let basePath = __dirname + '/'
-let chainPath = path.join(__dirname, 'chains')
+let chainPath = path.join(__dirname, 'chains') + '/'
 
 const webConfig = {
   basePath,
@@ -11,11 +11,7 @@ const webConfig = {
   cckPath: path.join(__dirname, 'cck.js'),
   helperPath: path.join(__dirname, 'helper.js'),
   // routes
-  routes: [
-    {route: '/', method: 'all', chain: path.join(chainPath, 'index.chiml')},
-    {route: '/login-api', method: 'all', chain: path.join(chainPath, 'core.login-api.chiml')},
-    {route: '/logout-api', method: 'all', chain: path.join(chainPath, 'core.logout-api.chiml')}
-  ],
+  routes: [],
   // jwt configuration
   jwtSecret: 'secret' + String(Math.round(Math.random() * 1000000000)) + 'jwt',
   jwtExpired: 60 * 60 * 24,
@@ -36,13 +32,13 @@ const webConfig = {
   // verbosity level
   verbose: 0,
   // migration path
-  migrationPath: path.join(__dirname, 'migrations'),
+  migrationPath: path.join(__dirname, 'migrations') + '/',
   // location of static resources
-  staticPath: path.join(__dirname, 'public'),
+  staticPath: path.join(__dirname, 'public') + '/',
   // favicon path
   faviconPath: path.join(__dirname, 'public/favicon.ico'),
   // location of view files
-  viewPath: path.join(__dirname, 'views'),
+  viewPath: path.join(__dirname, 'views') + '/',
   // error view tempalate
   errorTemplate: path.join(__dirname, 'views/error.ejs'),
   defaultTemplate: null

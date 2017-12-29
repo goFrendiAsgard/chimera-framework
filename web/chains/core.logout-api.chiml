@@ -5,8 +5,8 @@ do:
   - |jwtTokenName <-- config.jwtTokenName
 
   - ins:
-    - {}
-    - config.jwtSecret
+      - {}
+      - config.jwtSecret
     out: jwtToken
     do: |{$.loadJs('jsonwebtoken', 'sign')}
 
