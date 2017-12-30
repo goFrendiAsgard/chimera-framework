@@ -1,0 +1,258 @@
+{
+	"info": {
+		"name": "test-web",
+		"_postman_id": "654769a1-cd27-2b7c-cccb-f4d6e40e4a58",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET: Login API - correct",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6c069551-97c5-4237-a30b-dccaec9acaa0",
+						"type": "text/javascript",
+						"exec": [
+							"var responseJSON;",
+							"",
+							"try { ",
+							"    responseJSON = JSON.parse(responseBody); ",
+							"    tests['response is valid JSON'] = true;",
+							"}",
+							"catch (e) { ",
+							"    responseJSON = {}; ",
+							"    tests['response is valid JSON'] = false;",
+							"}",
+							"",
+							"tests['response contains `token`'] = _.has(responseJSON, 'token');",
+							"tests['response contains `errorMessage`'] = _.has(responseJSON, 'errorMessage');",
+							"tests['response contains `success`'] = _.has(responseJSON, 'success');",
+							"",
+							"tests['response is success'] = responseJSON.success;",
+							"",
+							"tests['same token should be available in cookies'] = postman.getResponseCookie('token').value == responseJSON.token;"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:3000/login-api?user=admin&password=admin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login-api"
+					],
+					"query": [
+						{
+							"key": "user",
+							"value": "admin",
+							"equals": true
+						},
+						{
+							"key": "password",
+							"value": "admin",
+							"equals": true
+						}
+					]
+				},
+				"description": "Login API"
+			},
+			"response": []
+		},
+		{
+			"name": "GET: Login API - incorrect user, correct password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ca2d071c-c131-43cc-a338-65fe199a61ba",
+						"type": "text/javascript",
+						"exec": [
+							"var responseJSON;",
+							"",
+							"try { ",
+							"    responseJSON = JSON.parse(responseBody); ",
+							"    tests['response is valid JSON'] = true;",
+							"}",
+							"catch (e) { ",
+							"    responseJSON = {}; ",
+							"    tests['response is valid JSON'] = false;",
+							"}",
+							"",
+							"tests['response contains `token`'] = _.has(responseJSON, 'token');",
+							"tests['response contains `errorMessage`'] = _.has(responseJSON, 'errorMessage');",
+							"tests['response contains `success`'] = _.has(responseJSON, 'success');",
+							"",
+							"tests['response is success'] = !responseJSON.success;",
+							"",
+							"tests['same token should be available in cookies'] = postman.getResponseCookie('token').value == responseJSON.token;"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:3000/login-api?user=root&password=admin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login-api"
+					],
+					"query": [
+						{
+							"key": "user",
+							"value": "root",
+							"equals": true
+						},
+						{
+							"key": "password",
+							"value": "admin",
+							"equals": true
+						}
+					]
+				},
+				"description": "Login API"
+			},
+			"response": []
+		},
+		{
+			"name": "GET: Login API - correct user, incorrect password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6699a998-4219-4de2-b243-ed366e334c3e",
+						"type": "text/javascript",
+						"exec": [
+							"var responseJSON;",
+							"",
+							"try { ",
+							"    responseJSON = JSON.parse(responseBody); ",
+							"    tests['response is valid JSON'] = true;",
+							"}",
+							"catch (e) { ",
+							"    responseJSON = {}; ",
+							"    tests['response is valid JSON'] = false;",
+							"}",
+							"",
+							"tests['response contains `token`'] = _.has(responseJSON, 'token');",
+							"tests['response contains `errorMessage`'] = _.has(responseJSON, 'errorMessage');",
+							"tests['response contains `success`'] = _.has(responseJSON, 'success');",
+							"",
+							"tests['response is success'] = !responseJSON.success;",
+							"",
+							"tests['same token should be available in cookies'] = postman.getResponseCookie('token').value == responseJSON.token;"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:3000/login-api?user=admin&password=root",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login-api"
+					],
+					"query": [
+						{
+							"key": "user",
+							"value": "admin",
+							"equals": true
+						},
+						{
+							"key": "password",
+							"value": "root",
+							"equals": true
+						}
+					]
+				},
+				"description": "Login API"
+			},
+			"response": []
+		},
+		{
+			"name": "GET: Logout API",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6c069551-97c5-4237-a30b-dccaec9acaa0",
+						"type": "text/javascript",
+						"exec": [
+							"var responseJSON;",
+							"",
+							"try { ",
+							"    responseJSON = JSON.parse(responseBody); ",
+							"    tests['response is valid JSON'] = true;",
+							"}",
+							"catch (e) { ",
+							"    responseJSON = {}; ",
+							"    tests['response is valid JSON'] = false;",
+							"}",
+							"",
+							"tests['response contains `token`'] = _.has(responseJSON, 'token');",
+							"tests['response contains `errorMessage`'] = _.has(responseJSON, 'errorMessage');",
+							"tests['response contains `success`'] = _.has(responseJSON, 'success');",
+							"",
+							"tests['response is success'] = responseJSON.success;",
+							"",
+							"tests['same token should be available in cookies'] = postman.getResponseCookie('token').value == responseJSON.token;"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:3000/login-api?user=admin&password=admin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login-api"
+					],
+					"query": [
+						{
+							"key": "user",
+							"value": "admin",
+							"equals": true
+						},
+						{
+							"key": "password",
+							"value": "admin",
+							"equals": true
+						}
+					]
+				},
+				"description": "Login API"
+			},
+			"response": []
+		}
+	]
+}
