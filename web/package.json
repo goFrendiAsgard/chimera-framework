@@ -10,10 +10,12 @@
   "dependencies": {
     "chimera-framework": "0.0.47",
     "jsonwebtoken": "^7.3.0",
-    "neo-async": "^2.5.0"
+    "neo-async": "^2.5.0",
+    "newman": "^3.9.1"
   },
   "scripts": {
     "start": "node index.js",
+    "test": "node test.js",
     "migrate": "node migrate.js"
   },
   "author": "Another earthling",
