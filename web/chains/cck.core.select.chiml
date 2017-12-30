@@ -8,8 +8,7 @@ do:
     do: |(cckState.schema.selectChain, cckState) -> [$.runChain] -> cckState
 
   # do post-processing
-  - if: |!$.util.isNullOrUndefined(cckState.schema.afterSelectChain)
+  - if: |cckState.result.status == 200 && !$.util.isNullOrUndefined(cckState.schema.afterSelectChain)
     do: |(cckState.schema.afterSelectChain, cckState) -> [$.runChain] -> cckState
 
   - |response.data <-- cckState.result
-  

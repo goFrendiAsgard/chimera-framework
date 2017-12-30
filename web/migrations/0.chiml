@@ -21,8 +21,7 @@ vars:
       fields:
         username: {}
         email: {}
-        hashedPassword: {}
-        salt: {}
+        password: {}
         groups: {}
     - name: 'configs'
       collectionName: 'web_configs'

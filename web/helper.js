@@ -12,13 +12,63 @@ module.exports = {
   jwtMiddleware,
   getDbConfig,
   getDbRoutes,
-  mongoExecute
+  mongoExecute,
+  getObjectFromJson,
+  getNormalizedDocId,
+  getIfDefined,
+  getObjectKeys,
+  getSubObject
+}
+
+function getSubObject (obj, keys) {
+  let newObj = {}
+  for (let key of keys) {
+    if (key in obj) {
+      newObj[key] = obj[key]
+    }
+  }
+  return newObj
+}
+
+function getObjectKeys (obj) {
+  return Object.keys(obj)
+}
+
+function getObjectFromJson (jsonString) {
+  try {
+    return JSON.parse(jsonString)
+  } catch (error) {
+    return {}
+  }
+}
+
+function getNormalizedDocId (docId) {
+  if (util.isString(docId)) {
+    if (docId.length === 24) {
+      return docId
+    }
+    return util.getSlicedString(util.getStretchedString(docId, 24, '0'), 24)
+  }
+  return null
+}
+
+function getIfDefined (obj, key, defaultValue) {
+  // only two parameters: if obj is null, return key, otherwise return obj
+  if (util.isNullOrUndefined(defaultValue)) {
+    return util.isNullOrUndefined(obj)? key: obj
+  }
+  // three parameters: if key in obj, return obj[key], otherwise return defaultValue
+  return (key in obj) && !util.isNullOrUndefined(obj[key])? obj[key]: defaultValue
 }
 
 function mongoExecute (collectionName, fn, ...args) {
   let webConfig = getWebConfig()
   let mongoUrl = webConfig.mongoUrl
-  mongo.execute({mongoUrl, collectionName}, fn, ...args)
+  let dbConfig = util.isRealObject(collectionName)? collectionName: {mongoUrl, collectionName}
+  if (!('mongoUrl' in dbConfig)) {
+    dbConfig.mongoUrl = mongoUrl
+  }
+  mongo.execute(dbConfig, fn, ...args)
 }
 
 function getDbConfig(callback) {

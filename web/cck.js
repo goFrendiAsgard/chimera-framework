@@ -12,7 +12,8 @@ module.exports = {
   findSchema,
   getRoute,
   getRoutes,
-  getInitialState
+  getInitialState,
+  getFilteredDocument
 }
 
 const cckCollectionName = 'web_cck'
@@ -23,11 +24,23 @@ const defaultSavedSchemaData = {
 
 const defaultInitialState = {
   auth: {},
-  documentId: null, // id of document
+  documentId: null,
+  schemaName: null,
   apiVersion: null,
-  result: {},
+  fieldNames: [],
+  result: {
+    status: 200,
+    userMessage: '',
+    developerMessage: ''
+  },
   state: {},
-  schema: {}
+  schema: {},
+  filter: {},
+  data: {},
+  limit: 1000,
+  offset: 0,
+  excludeDeleted: 1,
+  showHistory: 0
 }
 
 const defaultSchemaData = {
@@ -100,15 +113,16 @@ function getSchemaRemovalFilter(row) {
 }
 
 function removeSchema (config, callback) {
+  let filterKeys = ['_id', 'name', 'site']
   let filter = {}
   if (util.isArray(config)) {
     let data = []
     for (let row of config) {
-      data.push(getSchemaCreationData(row))
+      data.push(helper.getSubObject(getSchemaCreationData(row), filterKeys))
     }
     filter = {$or: data}
   } else {
-    filter = getSchemaCreationData(data)
+    filter = helper.getSubObject(getSchemaCreationData(config), filterKeys)
   }
   return helper.mongoExecute(cckCollectionName, 'remove', filter, callback)
 }
@@ -188,8 +202,16 @@ function getInitialState(state, callback) {
   let request = state.request
   let apiVersion = request.params.version? request.params.version: null
   let schemaName = request.params.schemaName? request.params.schemaName: null
-  let documentId = request.params.id? request.params.id: null
+  let documentId = request.params.id? helper.getNormalizedDocId(request.params.id): null
+  let queryFilter = helper.getObjectFromJson(request.query._q)
   let auth = request.auth
+  let limit = 'limit' in request.query? request.query.limit: 1000
+  let offset = 'offset' in request.query? request.query.offset: 0
+  let excludeDeleted = '_excludeDeleted' in request.query? request.query._excludeDeleted: 1
+  let showHistory = '_showHistory' in request.query? request.query._showHistory: 0
+  let authId = 'id' in request.auth? request.auth.id: ''
+  let filter = util.isNullOrUndefined(documentId)? queryFilter: {$and: [{_id: documentId}, queryFilter]}
+  auth.id = helper.getNormalizedDocId(authId)
   findSchema({name: schemaName}, (error, schemas) => {
     if (error) {
       return callback(error, null)
@@ -198,8 +220,41 @@ function getInitialState(state, callback) {
       return callback(new Error('cckError: Undefined schema ' + schemaName), null)
     }
     let schema = schemas[0]
-    let chainInput = {auth, documentId, apiVersion, state, schema}
+    let fieldNames = helper.getObjectKeys(schema.fields)
+    let data = getData(request, fieldNames)
+    let chainInput = {auth, documentId, apiVersion, schemaName, fieldNames, data, filter, limit, offset, excludeDeleted, showHistory, state, schema}
     chainInput = util.getPatchedObject(defaultInitialState, chainInput)
     return callback(error, chainInput)
   })
+}
+
+function getData (request, fieldNames) {
+  let query = helper.getSubObject(request.query, fieldNames)
+  let body = helper.getSubObject(request.query, fieldNames)
+  return util.getPatchedObject(query, body)
+}
+
+function getFilteredDocument (document, fieldNames) {
+  let allowedFieldNames = util.getDeepCopiedObject(fieldNames)
+  for (let field of ['_muser', '_mtime', '_deleted', '_history']) {
+    if (allowedFieldNames.indexOf(field) < 0) {
+      allowedFieldNames.push(field)
+    }
+  }
+  if (util.isArray(document)) {
+    let newDocument = []
+    for (let row of document) {
+      newDocument.push(getFilteredSingleDocument(row, allowedFieldNames))
+    }
+    return newDocument
+  }
+  return getFilteredSingleDocument(document, allowedFieldNames)
+}
+
+function getFilteredSingleDocument (row, allowedFieldNames) {
+  let newRow = helper.getSubObject(row, allowedFieldNames)
+  if ('_history' in newRow) {
+    newRow._history = helper.getFilteredDocument(newRow._history, allowedFieldNames)
+  }
+  return newRow
 }
