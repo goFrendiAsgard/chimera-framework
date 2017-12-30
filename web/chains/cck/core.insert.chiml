@@ -1,0 +1,18 @@
+ins: state
+out: response
+do:
+  - |(state) -> [$.cck.getInitialState] -> cckState
+
+  # do pre-processing
+  - if: |cckState.result.status == 200 && !$.util.isNullOrUndefined(cckState.schema.beforeInsertChain)
+    do: |(cckState.schema.beforeInsertChain, cckState) -> [$.runChain] -> cckState
+
+  # do select
+  - if: |cckState.result.status == 200 && !$.util.isNullOrUndefined(cckState.schema.insertChain)
+    do: |(cckState.schema.insertChain, cckState) -> [$.runChain] -> cckState
+
+  # do post-processing
+  - if: |cckState.result.status == 200 && !$.util.isNullOrUndefined(cckState.schema.afterInsertChain)
+    do: |(cckState.schema.afterInsertChain, cckState) -> [$.runChain] -> cckState
+
+  - |response.data <-- cckState.result

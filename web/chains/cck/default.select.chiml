@@ -10,12 +10,13 @@ do:
 
   # run query
   - |dbConfig <-- ({collectionName, dbOption:{excludeDeleted, showHistory, user}})
-  - |(dbConfig, 'find', cckState.filter, {limit, skip}) -> [$.helper.mongoExecute] -> results
+  - |(cckState.filter, cckState.data) -> {$.cck.getCombinedFilter} -> filter
+  - |(dbConfig, 'find', filter, {limit, skip}) -> [$.helper.mongoExecute] -> results
 
-  # filter results
-  - |(results, cckState.fieldNames) -> {$.cck.getFilteredDocument} -> results
+  # get only shown results
+  - |(results, cckState.fieldNames) -> {$.cck.getShownDocument} -> results
 
-  # show the result
+  # assign the result
   - if: |$.util.isString(cckState.documentId)
     do:
       - if: |results.length > 0

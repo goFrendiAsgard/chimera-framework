@@ -13,7 +13,8 @@ module.exports = {
   getRoute,
   getRoutes,
   getInitialState,
-  getFilteredDocument
+  getShownDocument,
+  getCombinedFilter
 }
 
 const cckCollectionName = 'web_cck'
@@ -48,13 +49,13 @@ const defaultSchemaData = {
   collectionName: 'unnamed',
   site: null,
   fields: {},
-  insertChain: '<%= chainPath %>cck.default.insert.chiml', // insert api
-  updateChain: '<%= chainPath %>cck.default.update.chiml', // update api
-  deleteChain: '<%= chainPath %>cck.default.delete.chiml', // delete api
-  selectChain: '<%= chainPath %>cck.default.select.chiml', // select api
-  insertFormChain: '<%= chainPath %>cck.default.insertForm.chiml', // insert form
-  updateFormChain: '<%= chainPath %>cck.default.updateForm.chiml', // update form
-  viewChain: '<%= chainPath %>cck.default.view.chiml', // view
+  insertChain: '<%= chainPath %>cck/default.insert.chiml', // insert api
+  updateChain: '<%= chainPath %>cck/default.update.chiml', // update api
+  deleteChain: '<%= chainPath %>cck/default.delete.chiml', // delete api
+  selectChain: '<%= chainPath %>cck/default.select.chiml', // select api
+  insertFormChain: '<%= chainPath %>cck/default.insertForm.chiml', // insert form
+  updateFormChain: '<%= chainPath %>cck/default.updateForm.chiml', // update form
+  viewChain: '<%= chainPath %>cck/default.view.chiml', // view
   beforeInsertChain: null,
   afterInsertChain: null,
   beforeUpdateChain: null,
@@ -68,8 +69,8 @@ const schemaChainList = ['insertChain', 'updateChain', 'deleteChain', 'selectCha
 
 const defaultFieldData = {
   caption: null,
-  inputChain: '<%= chainPath %>cck.input.text.chiml',
-  validationChain: '<%= chainPath %>cck.validation.all.chiml',
+  inputChain: '<%= chainPath %>cck/input.text.chiml',
+  validationChain: '<%= chainPath %>cck/validation.all.chiml',
   default: '',
   options: {}
 }
@@ -169,16 +170,16 @@ function getRoute(key = null) {
   let webConfig = helper.getWebConfig()
   let chainPath = webConfig.chainPath
   let route = {
-    'selectBulk': {route: '/api/:version/:schemaName',     method: 'get',    chain: path.join(chainPath, 'cck.core.select.chiml')},
-    'insertBulk': {route: '/api/:version/:schemaName',     method: 'post',   chain: path.join(chainPath, 'cck.core.insert.chiml')},
-    'updateBulk': {route: '/api/:version/:schemaName',     method: 'put',    chain: path.join(chainPath, 'cck.core.update.chiml')},
-    'deleteBulk': {route: '/api/:version/:schemaName',     method: 'delete', chain: path.join(chainPath, 'cck.core.delete.chiml')},
-    'selectOne':  {route: '/api/:version/:schemaName/:id', method: 'get',    chain: path.join(chainPath, 'cck.core.select.chiml')},
-    'updateOne':  {route: '/api/:version/:schemaName/:id', method: 'put',    chain: path.join(chainPath, 'cck.core.update.chiml')},
-    'deleteOne':  {route: '/api/:version/:schemaName/:id', method: 'delete', chain: path.join(chainPath, 'cck.core.delete.chiml')},
-    'view':       {route: '/data/:schemaName',             method: 'all',    chain: path.join(chainPath, 'cck.core.view.chiml')},
-    'insertForm': {route: '/data/:schemaName/insert',      method: 'all',    chain: path.join(chainPath, 'cck.core.insertForm.chiml')},
-    'updateForm': {route: '/data/:schemaName/update/:id',  method: 'all',    chain: path.join(chainPath, 'cck.core.updateForm.chiml')}
+    'selectBulk': {route: '/api/:version/:schemaName',     method: 'get',    chain: path.join(chainPath, 'cck/core.select.chiml')},
+    'insertBulk': {route: '/api/:version/:schemaName',     method: 'post',   chain: path.join(chainPath, 'cck/core.insert.chiml')},
+    'updateBulk': {route: '/api/:version/:schemaName',     method: 'put',    chain: path.join(chainPath, 'cck/core.update.chiml')},
+    'deleteBulk': {route: '/api/:version/:schemaName',     method: 'delete', chain: path.join(chainPath, 'cck/core.delete.chiml')},
+    'selectOne':  {route: '/api/:version/:schemaName/:id', method: 'get',    chain: path.join(chainPath, 'cck/core.select.chiml')},
+    'updateOne':  {route: '/api/:version/:schemaName/:id', method: 'put',    chain: path.join(chainPath, 'cck/core.update.chiml')},
+    'deleteOne':  {route: '/api/:version/:schemaName/:id', method: 'delete', chain: path.join(chainPath, 'cck/core.delete.chiml')},
+    'view':       {route: '/data/:schemaName',             method: 'all',    chain: path.join(chainPath, 'cck/core.view.chiml')},
+    'insertForm': {route: '/data/:schemaName/insert',      method: 'all',    chain: path.join(chainPath, 'cck/core.insertForm.chiml')},
+    'updateForm': {route: '/data/:schemaName/update/:id',  method: 'all',    chain: path.join(chainPath, 'cck/core.updateForm.chiml')}
   }
   if (util.isNullOrUndefined(key)) {
     return route
@@ -198,6 +199,10 @@ function getRoutes() {
   return routes
 }
 
+function getCombinedFilter(filter1, filter2) {
+  return {$and: [filter1, filter2]}
+}
+
 function getInitialState(state, callback) {
   let request = state.request
   let apiVersion = request.params.version? request.params.version: null
@@ -210,7 +215,7 @@ function getInitialState(state, callback) {
   let excludeDeleted = '_excludeDeleted' in request.query? request.query._excludeDeleted: 1
   let showHistory = '_showHistory' in request.query? request.query._showHistory: 0
   let authId = 'id' in request.auth? request.auth.id: ''
-  let filter = util.isNullOrUndefined(documentId)? queryFilter: {$and: [{_id: documentId}, queryFilter]}
+  let filter = util.isNullOrUndefined(documentId)? queryFilter: getCombinedFilter({_id:documentId}, queryFilter)
   auth.id = helper.getNormalizedDocId(authId)
   findSchema({name: schemaName}, (error, schemas) => {
     if (error) {
@@ -234,7 +239,7 @@ function getData (request, fieldNames) {
   return util.getPatchedObject(query, body)
 }
 
-function getFilteredDocument (document, fieldNames) {
+function getShownDocument (document, fieldNames) {
   let allowedFieldNames = util.getDeepCopiedObject(fieldNames)
   for (let field of ['_muser', '_mtime', '_deleted', '_history']) {
     if (allowedFieldNames.indexOf(field) < 0) {
@@ -244,17 +249,17 @@ function getFilteredDocument (document, fieldNames) {
   if (util.isArray(document)) {
     let newDocument = []
     for (let row of document) {
-      newDocument.push(getFilteredSingleDocument(row, allowedFieldNames))
+      newDocument.push(getShownSingleDocument(row, allowedFieldNames))
     }
     return newDocument
   }
-  return getFilteredSingleDocument(document, allowedFieldNames)
+  return getShownSingleDocument(document, allowedFieldNames)
 }
 
-function getFilteredSingleDocument (row, allowedFieldNames) {
+function getShownSingleDocument (row, allowedFieldNames) {
   let newRow = helper.getSubObject(row, allowedFieldNames)
   if ('_history' in newRow) {
-    newRow._history = helper.getFilteredDocument(newRow._history, allowedFieldNames)
+    newRow._history = helper.getShownDocument(newRow._history, allowedFieldNames)
   }
   return newRow
 }
