@@ -241,7 +241,7 @@ function getData (request, fieldNames) {
 
 function getShownDocument (document, fieldNames) {
   let allowedFieldNames = util.getDeepCopiedObject(fieldNames)
-  for (let field of ['_muser', '_mtime', '_deleted', '_history']) {
+  for (let field of ['_id', '_muser', '_mtime', '_deleted', '_history']) {
     if (allowedFieldNames.indexOf(field) < 0) {
       allowedFieldNames.push(field)
     }
@@ -259,7 +259,15 @@ function getShownDocument (document, fieldNames) {
 function getShownSingleDocument (row, allowedFieldNames) {
   let newRow = helper.getSubObject(row, allowedFieldNames)
   if ('_history' in newRow) {
-    newRow._history = helper.getShownDocument(newRow._history, allowedFieldNames)
+    let newHistory = []
+    for (let historyRow of newRow._history) {
+      let newHistoryRow = {}
+      for (let key in historyRow) {
+        newHistoryRow[key] = getShownDocument(historyRow[key], allowedFieldNames)
+      }
+      newHistory.push(newHistoryRow)
+    }
+    newRow._history = newHistory
   }
   return newRow
 }

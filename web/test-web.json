@@ -7,6 +7,39 @@
 	},
 	"item": [
 		{
+			"name": "GET: Index - not login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "394266dd-e1fc-41a1-83c3-2c8304ddd06e",
+						"type": "text/javascript",
+						"exec": [
+							"tests['response contains Hello world :D'] = _.include(responseBody, 'Hello world :D');"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:3000/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						""
+					]
+				},
+				"description": "Login API"
+			},
+			"response": []
+		},
+		{
 			"name": "GET: Login API - correct",
 			"event": [
 				{
@@ -69,12 +102,45 @@
 			"response": []
 		},
 		{
+			"name": "GET: Index - login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8ea96c9a-74a7-4ce0-b722-43d628591c44",
+						"type": "text/javascript",
+						"exec": [
+							"tests['response contains Hello world :D'] = _.include(responseBody, 'Hello admin');"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:3000/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						""
+					]
+				},
+				"description": "Login API"
+			},
+			"response": []
+		},
+		{
 			"name": "GET: Login API - incorrect user, correct password",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
-						"id": "ca2d071c-c131-43cc-a338-65fe199a61ba",
+						"id": "906fe849-e674-4d3a-80dc-f6e1fce988fb",
 						"type": "text/javascript",
 						"exec": [
 							"var responseJSON;",
@@ -92,9 +158,7 @@
 							"tests['response contains `errorMessage`'] = _.has(responseJSON, 'errorMessage');",
 							"tests['response contains `success`'] = _.has(responseJSON, 'success');",
 							"",
-							"tests['response is success'] = !responseJSON.success;",
-							"",
-							"tests['same token should be available in cookies'] = postman.getResponseCookie('token').value == responseJSON.token;"
+							"tests['response is success'] = !responseJSON.success;"
 						]
 					}
 				}
@@ -136,7 +200,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "6699a998-4219-4de2-b243-ed366e334c3e",
+						"id": "8172d998-aa5f-4993-b14e-a5b6496efaaa",
 						"type": "text/javascript",
 						"exec": [
 							"var responseJSON;",
@@ -154,9 +218,7 @@
 							"tests['response contains `errorMessage`'] = _.has(responseJSON, 'errorMessage');",
 							"tests['response contains `success`'] = _.has(responseJSON, 'success');",
 							"",
-							"tests['response is success'] = !responseJSON.success;",
-							"",
-							"tests['same token should be available in cookies'] = postman.getResponseCookie('token').value == responseJSON.token;"
+							"tests['response is success'] = !responseJSON.success;"
 						]
 					}
 				}
@@ -228,7 +290,106 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "http://localhost:3000/login-api?user=admin&password=admin",
+					"raw": "http://localhost:3000/logout-api",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"logout-api"
+					]
+				},
+				"description": "Login API"
+			},
+			"response": []
+		},
+		{
+			"name": "GET: Index - not login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "394266dd-e1fc-41a1-83c3-2c8304ddd06e",
+						"type": "text/javascript",
+						"exec": [
+							"tests['response contains Hello world :D'] = _.include(responseBody, 'Hello world :D');"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:3000/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						""
+					]
+				},
+				"description": "Login API"
+			},
+			"response": []
+		},
+		{
+			"name": "POST: Login API - correct",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6c069551-97c5-4237-a30b-dccaec9acaa0",
+						"type": "text/javascript",
+						"exec": [
+							"var responseJSON;",
+							"",
+							"try { ",
+							"    responseJSON = JSON.parse(responseBody); ",
+							"    tests['response is valid JSON'] = true;",
+							"}",
+							"catch (e) { ",
+							"    responseJSON = {}; ",
+							"    tests['response is valid JSON'] = false;",
+							"}",
+							"",
+							"tests['response contains `token`'] = _.has(responseJSON, 'token');",
+							"tests['response contains `errorMessage`'] = _.has(responseJSON, 'errorMessage');",
+							"tests['response contains `success`'] = _.has(responseJSON, 'success');",
+							"",
+							"tests['response is success'] = responseJSON.success;",
+							"",
+							"tests['same token should be available in cookies'] = postman.getResponseCookie('token').value == responseJSON.token;"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user",
+							"value": "admin",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "admin",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/login-api",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -236,18 +397,342 @@
 					"port": "3000",
 					"path": [
 						"login-api"
+					]
+				},
+				"description": "Login API"
+			},
+			"response": []
+		},
+		{
+			"name": "GET: Index - login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8ea96c9a-74a7-4ce0-b722-43d628591c44",
+						"type": "text/javascript",
+						"exec": [
+							"tests['response contains Hello world :D'] = _.include(responseBody, 'Hello admin');"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:3000/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						""
+					]
+				},
+				"description": "Login API"
+			},
+			"response": []
+		},
+		{
+			"name": "GET: Logout API",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6c069551-97c5-4237-a30b-dccaec9acaa0",
+						"type": "text/javascript",
+						"exec": [
+							"var responseJSON;",
+							"",
+							"try { ",
+							"    responseJSON = JSON.parse(responseBody); ",
+							"    tests['response is valid JSON'] = true;",
+							"}",
+							"catch (e) { ",
+							"    responseJSON = {}; ",
+							"    tests['response is valid JSON'] = false;",
+							"}",
+							"",
+							"tests['response contains `token`'] = _.has(responseJSON, 'token');",
+							"tests['response contains `errorMessage`'] = _.has(responseJSON, 'errorMessage');",
+							"tests['response contains `success`'] = _.has(responseJSON, 'success');",
+							"",
+							"tests['response is success'] = responseJSON.success;",
+							"",
+							"tests['same token should be available in cookies'] = postman.getResponseCookie('token').value == responseJSON.token;"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:3000/logout-api",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"logout-api"
+					]
+				},
+				"description": "Login API"
+			},
+			"response": []
+		},
+		{
+			"name": "GET: Index - not login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "394266dd-e1fc-41a1-83c3-2c8304ddd06e",
+						"type": "text/javascript",
+						"exec": [
+							"tests['response contains Hello world :D'] = _.include(responseBody, 'Hello world :D');"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:3000/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						""
+					]
+				},
+				"description": "Login API"
+			},
+			"response": []
+		},
+		{
+			"name": "GET: cck routes - all",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c28d03da-260c-4b5c-aed8-b8bad0ee21dd",
+						"type": "text/javascript",
+						"exec": [
+							"var responseJSON, results, firstResult;",
+							"",
+							"try { ",
+							"    responseJSON = JSON.parse(responseBody); ",
+							"    tests['response is valid JSON'] = true;",
+							"}",
+							"catch (e) { ",
+							"    responseJSON = {}; ",
+							"    tests['response is valid JSON'] = false;",
+							"}",
+							"",
+							"tests['response contains `results`'] = _.has(responseJSON, 'results');",
+							"results = responseJSON.results;",
+							"firstResult = results[0];",
+							"tests['results contains 3 fields'] = results.length === 3;",
+							"tests['firstResult has id'] = ('_id' in firstResult);",
+							"tests['firstResult does not have history'] = !('_history' in firstResult);",
+							"",
+							"postman.setEnvironmentVariable('firstRouteId', firstResult._id);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/routes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"routes"
+					]
+				},
+				"description": "Login API"
+			},
+			"response": []
+		},
+		{
+			"name": "GET: cck routes - limit showHistory",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0fe5e5e4-9f58-4fa4-8c49-6baaf27afe29",
+						"type": "text/javascript",
+						"exec": [
+							"var responseJSON, results, firstResult;",
+							"",
+							"try { ",
+							"    responseJSON = JSON.parse(responseBody); ",
+							"    tests['response is valid JSON'] = true;",
+							"}",
+							"catch (e) { ",
+							"    responseJSON = {}; ",
+							"    tests['response is valid JSON'] = false;",
+							"}",
+							"",
+							"tests['response contains `results`'] = _.has(responseJSON, 'results');",
+							"results = responseJSON.results;",
+							"firstResult = results[0];",
+							"tests['results contains 3 fields'] = results.length === 2;",
+							"tests['firstResult has id'] = ('_id' in firstResult);",
+							"tests['firstResult has history'] = ('_history' in firstResult);",
+							"tests['firstResult history is correct'] = firstResult._history[0].set.name = firstResult.name;",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/routes?limit=2&_showHistory=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"routes"
 					],
 					"query": [
 						{
-							"key": "user",
-							"value": "admin",
+							"key": "limit",
+							"value": "2",
 							"equals": true
 						},
 						{
-							"key": "password",
-							"value": "admin",
+							"key": "_showHistory",
+							"value": "1",
 							"equals": true
 						}
+					]
+				},
+				"description": "Login API"
+			},
+			"response": []
+		},
+		{
+			"name": "GET: cck routes - by id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1381d2fe-2eb3-404c-976c-3c2348ec7244",
+						"type": "text/javascript",
+						"exec": [
+							"var responseJSON, result;",
+							"",
+							"try { ",
+							"    responseJSON = JSON.parse(responseBody); ",
+							"    tests['response is valid JSON'] = true;",
+							"}",
+							"catch (e) { ",
+							"    responseJSON = {}; ",
+							"    tests['response is valid JSON'] = false;",
+							"}",
+							"",
+							"tests['response contains `result`'] = _.has(responseJSON, 'result');",
+							"result = responseJSON.result;",
+							"tests['result has id'] = ('_id' in result);",
+							"tests['result id is valid'] = result._id == postman.getEnvironmentVariable('firstRouteId');"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/routes/{{firstRouteId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"routes",
+						"{{firstRouteId}}"
+					]
+				},
+				"description": "Login API"
+			},
+			"response": []
+		},
+		{
+			"name": "GET: cck routes - by id (incorrect)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a5981942-19b1-4313-ab39-57a2249764a2",
+						"type": "text/javascript",
+						"exec": [
+							"var responseJSON, result;",
+							"",
+							"try { ",
+							"    responseJSON = JSON.parse(responseBody); ",
+							"    tests['response is valid JSON'] = true;",
+							"}",
+							"catch (e) { ",
+							"    responseJSON = {}; ",
+							"    tests['response is valid JSON'] = false;",
+							"}",
+							"",
+							"tests['response contains `status`'] = _.has(responseJSON, 'status');",
+							"tests['response contains `result`'] = _.has(responseJSON, 'result');",
+							"result = responseJSON.result;",
+							"",
+							"tests['response status is 400'] = responseJSON.status == 400;",
+							"tests['result has no id'] = !('_id' in result);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/routes/123",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"routes",
+						"123"
 					]
 				},
 				"description": "Login API"
