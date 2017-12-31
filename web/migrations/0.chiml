@@ -28,8 +28,13 @@ vars:
       fields:
         key: {}
         value: {}
+    - name: 'tests'
+      collectionName: 'web_tests'
+      fields:
+        key: {}
+        value: {}
+
 do:
-  - |cckPath <-- migrationConfig.cckPath
 
   - if: action == 'up'
     do:

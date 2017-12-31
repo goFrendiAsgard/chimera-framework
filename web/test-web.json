@@ -528,7 +528,7 @@
 			"description": "",
 			"item": [
 				{
-					"name": "POST: cck configs - insert testKey1",
+					"name": "POST: cck tests - insert testKey1",
 					"event": [
 						{
 							"listen": "test",
@@ -551,7 +551,7 @@
 									"",
 									"tests['inserted key correct'] = result.key == 'testKey1';",
 									"tests['inserted value correct'] = result.value == 'testValue1';",
-									"postman.setEnvironmentVariable('firstConfigId', result._id);"
+									"postman.setEnvironmentVariable('firstTestId', result._id);"
 								]
 							}
 						}
@@ -582,7 +582,7 @@
 							]
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/v1/configs",
+							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -591,7 +591,7 @@
 							"path": [
 								"api",
 								"v1",
-								"configs"
+								"tests"
 							]
 						},
 						"description": ""
@@ -599,7 +599,7 @@
 					"response": []
 				},
 				{
-					"name": "POST: cck configs - insert-bulk testKey2 & testKey3",
+					"name": "POST: cck tests - insert-bulk testKey2 & testKey3",
 					"event": [
 						{
 							"listen": "test",
@@ -638,7 +638,7 @@
 							"raw": "[{\"key\":\"testKey2\",\"value\":\"testValue2\"}, {\"key\":\"testKey3\",\"value\":\"testValue3\"}]"
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/v1/configs",
+							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -647,7 +647,7 @@
 							"path": [
 								"api",
 								"v1",
-								"configs"
+								"tests"
 							]
 						},
 						"description": ""
@@ -655,7 +655,7 @@
 					"response": []
 				},
 				{
-					"name": "GET: cck configs - all",
+					"name": "GET: cck tests - all",
 					"event": [
 						{
 							"listen": "test",
@@ -681,7 +681,7 @@
 									"tests['firstResult has id'] = ('_id' in firstResult);",
 									"tests['firstResult does not have history'] = !('_history' in firstResult);",
 									"",
-									"postman.setEnvironmentVariable('firstConfigId', firstResult._id);"
+									"postman.setEnvironmentVariable('firstTestId', firstResult._id);"
 								]
 							}
 						}
@@ -691,7 +691,7 @@
 						"header": [],
 						"body": {},
 						"url": {
-							"raw": "http://localhost:3000/api/v1/configs",
+							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -700,7 +700,7 @@
 							"path": [
 								"api",
 								"v1",
-								"configs"
+								"tests"
 							]
 						},
 						"description": "Login API"
@@ -714,7 +714,7 @@
 			"description": "",
 			"item": [
 				{
-					"name": "GET: cck routes - all",
+					"name": "GET: cck tests - all",
 					"event": [
 						{
 							"listen": "test",
@@ -740,7 +740,7 @@
 									"tests['firstResult has id'] = ('_id' in firstResult);",
 									"tests['firstResult does not have history'] = !('_history' in firstResult);",
 									"",
-									"postman.setEnvironmentVariable('firstRouteId', firstResult._id);"
+									"postman.setEnvironmentVariable('firstTestId', firstResult._id);"
 								]
 							}
 						}
@@ -750,7 +750,7 @@
 						"header": [],
 						"body": {},
 						"url": {
-							"raw": "http://localhost:3000/api/v1/routes",
+							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -759,7 +759,7 @@
 							"path": [
 								"api",
 								"v1",
-								"routes"
+								"tests"
 							]
 						},
 						"description": "Login API"
@@ -767,7 +767,7 @@
 					"response": []
 				},
 				{
-					"name": "GET: cck routes - limit showHistory",
+					"name": "GET: cck tests - limit showHistory",
 					"event": [
 						{
 							"listen": "test",
@@ -792,7 +792,7 @@
 									"tests['results contains 3 fields'] = results.length === 2;",
 									"tests['firstResult has id'] = ('_id' in firstResult);",
 									"tests['firstResult has history'] = ('_history' in firstResult);",
-									"tests['firstResult history is correct'] = firstResult._history[0].set.name = firstResult.name;",
+									"tests['firstResult history is correct'] = firstResult._history[0].set.key = firstResult.key;",
 									""
 								]
 							}
@@ -803,7 +803,7 @@
 						"header": [],
 						"body": {},
 						"url": {
-							"raw": "http://localhost:3000/api/v1/routes?limit=2&_showHistory=1",
+							"raw": "http://localhost:3000/api/v1/tests?limit=2&_showHistory=1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -812,7 +812,7 @@
 							"path": [
 								"api",
 								"v1",
-								"routes"
+								"tests"
 							],
 							"query": [
 								{
@@ -832,7 +832,7 @@
 					"response": []
 				},
 				{
-					"name": "GET: cck routes - by id",
+					"name": "GET: cck tests - by id",
 					"event": [
 						{
 							"listen": "test",
@@ -854,7 +854,7 @@
 									"tests['response contains `result`'] = _.has(responseJSON, 'result');",
 									"result = responseJSON.result;",
 									"tests['result has id'] = ('_id' in result);",
-									"tests['result id is valid'] = result._id == postman.getEnvironmentVariable('firstRouteId');"
+									"tests['result id is valid'] = result._id == postman.getEnvironmentVariable('firstTestId');"
 								]
 							}
 						}
@@ -864,7 +864,7 @@
 						"header": [],
 						"body": {},
 						"url": {
-							"raw": "http://localhost:3000/api/v1/routes/{{firstRouteId}}",
+							"raw": "http://localhost:3000/api/v1/tests/{{firstTestId}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -873,8 +873,8 @@
 							"path": [
 								"api",
 								"v1",
-								"routes",
-								"{{firstRouteId}}"
+								"tests",
+								"{{firstTestId}}"
 							]
 						},
 						"description": "Login API"
@@ -882,7 +882,7 @@
 					"response": []
 				},
 				{
-					"name": "GET: cck routes - by id (incorrect)",
+					"name": "GET: cck tests - by id (incorrect)",
 					"event": [
 						{
 							"listen": "test",
@@ -916,7 +916,7 @@
 						"header": [],
 						"body": {},
 						"url": {
-							"raw": "http://localhost:3000/api/v1/routes/123",
+							"raw": "http://localhost:3000/api/v1/tests/123",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -925,7 +925,7 @@
 							"path": [
 								"api",
 								"v1",
-								"routes",
+								"tests",
 								"123"
 							]
 						},
@@ -940,7 +940,7 @@
 			"description": "",
 			"item": [
 				{
-					"name": "POST: cck configs - update all",
+					"name": "POST: cck tests - update all",
 					"event": [
 						{
 							"listen": "test",
@@ -984,7 +984,7 @@
 							]
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/v1/configs",
+							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -993,7 +993,7 @@
 							"path": [
 								"api",
 								"v1",
-								"configs"
+								"tests"
 							]
 						},
 						"description": ""
@@ -1001,7 +1001,7 @@
 					"response": []
 				},
 				{
-					"name": "POST: cck configs - update one",
+					"name": "POST: cck tests - update one",
 					"event": [
 						{
 							"listen": "test",
@@ -1045,7 +1045,7 @@
 							]
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/v1/configs/{{firstConfigId}}",
+							"raw": "http://localhost:3000/api/v1/tests/{{firstTestId}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1054,8 +1054,8 @@
 							"path": [
 								"api",
 								"v1",
-								"configs",
-								"{{firstConfigId}}"
+								"tests",
+								"{{firstTestId}}"
 							]
 						},
 						"description": ""
@@ -1063,7 +1063,7 @@
 					"response": []
 				},
 				{
-					"name": "GET: cck configs - all",
+					"name": "GET: cck tests - all",
 					"event": [
 						{
 							"listen": "test",
@@ -1106,7 +1106,7 @@
 						"header": [],
 						"body": {},
 						"url": {
-							"raw": "http://localhost:3000/api/v1/configs",
+							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1115,7 +1115,7 @@
 							"path": [
 								"api",
 								"v1",
-								"configs"
+								"tests"
 							]
 						},
 						"description": "Login API"
@@ -1129,7 +1129,7 @@
 			"description": "",
 			"item": [
 				{
-					"name": "POST: cck configs - delete one (soft)",
+					"name": "POST: cck tests - delete one (soft)",
 					"event": [
 						{
 							"listen": "test",
@@ -1163,7 +1163,7 @@
 						],
 						"body": {},
 						"url": {
-							"raw": "http://localhost:3000/api/v1/configs/{{firstConfigId}}",
+							"raw": "http://localhost:3000/api/v1/tests/{{firstTestId}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1172,8 +1172,8 @@
 							"path": [
 								"api",
 								"v1",
-								"configs",
-								"{{firstConfigId}}"
+								"tests",
+								"{{firstTestId}}"
 							]
 						},
 						"description": ""
@@ -1181,7 +1181,7 @@
 					"response": []
 				},
 				{
-					"name": "POST: cck configs - delete all (soft)",
+					"name": "POST: cck tests - delete all (soft)",
 					"event": [
 						{
 							"listen": "test",
@@ -1215,7 +1215,7 @@
 						],
 						"body": {},
 						"url": {
-							"raw": "http://localhost:3000/api/v1/configs",
+							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1224,7 +1224,7 @@
 							"path": [
 								"api",
 								"v1",
-								"configs"
+								"tests"
 							]
 						},
 						"description": ""
@@ -1232,7 +1232,7 @@
 					"response": []
 				},
 				{
-					"name": "GET: cck configs - all (excludeDeleted)",
+					"name": "GET: cck tests - all (excludeDeleted)",
 					"event": [
 						{
 							"listen": "test",
@@ -1264,7 +1264,7 @@
 						"header": [],
 						"body": {},
 						"url": {
-							"raw": "http://localhost:3000/api/v1/configs",
+							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1273,7 +1273,7 @@
 							"path": [
 								"api",
 								"v1",
-								"configs"
+								"tests"
 							]
 						},
 						"description": "Login API"
@@ -1281,7 +1281,7 @@
 					"response": []
 				},
 				{
-					"name": "GET: cck configs - all (includeDeleted)",
+					"name": "GET: cck tests - all (includeDeleted)",
 					"event": [
 						{
 							"listen": "test",
@@ -1313,7 +1313,7 @@
 						"header": [],
 						"body": {},
 						"url": {
-							"raw": "http://localhost:3000/api/v1/configs?_excludeDeleted=0",
+							"raw": "http://localhost:3000/api/v1/tests?_excludeDeleted=0",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1322,7 +1322,7 @@
 							"path": [
 								"api",
 								"v1",
-								"configs"
+								"tests"
 							],
 							"query": [
 								{
@@ -1337,7 +1337,7 @@
 					"response": []
 				},
 				{
-					"name": "POST: cck configs - delete all (hard)",
+					"name": "POST: cck tests - delete all (hard)",
 					"event": [
 						{
 							"listen": "test",
@@ -1371,7 +1371,7 @@
 						],
 						"body": {},
 						"url": {
-							"raw": "http://localhost:3000/api/v1/configs?_excludeDeleted=0",
+							"raw": "http://localhost:3000/api/v1/tests?_excludeDeleted=0",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1380,7 +1380,7 @@
 							"path": [
 								"api",
 								"v1",
-								"configs"
+								"tests"
 							],
 							"query": [
 								{
@@ -1395,7 +1395,7 @@
 					"response": []
 				},
 				{
-					"name": "GET: cck configs - all (includeDeleted)",
+					"name": "GET: cck tests - all (includeDeleted)",
 					"event": [
 						{
 							"listen": "test",
@@ -1427,7 +1427,7 @@
 						"header": [],
 						"body": {},
 						"url": {
-							"raw": "http://localhost:3000/api/v1/configs?_excludeDeleted=0",
+							"raw": "http://localhost:3000/api/v1/tests?_excludeDeleted=0",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1436,7 +1436,7 @@
 							"path": [
 								"api",
 								"v1",
-								"configs"
+								"tests"
 							],
 							"query": [
 								{

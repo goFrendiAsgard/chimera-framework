@@ -16,8 +16,6 @@ Invoke `npm start` to run the server
 
 ## Testing
 The steps to do the testing is as follow:
-* Install `postman`
 * Run migration (`npm run-script migrate up`)
 * When prompted for superAdmin's username and password, please type `admin` and `admin`
-* Run the server (`npm start`)
-* Start another terminal, and run the test (`npm test`)
+* Run the test (`npm test`)
