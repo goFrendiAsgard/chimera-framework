@@ -36,7 +36,7 @@ do:
               - expiresIn: config.jwtExpired
             out: jwtToken
             do: |{$.loadJs('jsonwebtoken', 'sign')}
-          - |({token: jwtToken, success: true, errorMessage: ''}) --> response.data
+          - |({token: jwtToken, status: 200, userMessage: 'Login success', developerMessage: 'Login success'}) --> response.data
           - |(jwtToken) --> response.cookies[config.jwtTokenName]
-        else: |({token: '', success: false, errorMessage: 'Invalid username or password'}) --> response.data
-    else: |({token: '', success: false, errorMessage: 'Invalid username or password'}) --> response.data
+        else: |({token: '', status: 400, userMessage: 'Invalid username or password', 'developerMessage': 'Invalid username or password'}) --> response.data
+    else: |({token: '', status: 400, userMessage: 'Invalid username or password', 'developerMessage': 'Invalid username or password'}) --> response.data

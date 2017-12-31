@@ -7,7 +7,7 @@ do:
   - if: |cckState.result.status == 200 && !$.util.isNullOrUndefined(cckState.schema.beforeInsertChain)
     do: |(cckState.schema.beforeInsertChain, cckState) -> [$.runChain] -> cckState
 
-  # do select
+  # do insert
   - if: |cckState.result.status == 200 && !$.util.isNullOrUndefined(cckState.schema.insertChain)
     do: |(cckState.schema.insertChain, cckState) -> [$.runChain] -> cckState
 

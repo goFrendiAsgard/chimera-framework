@@ -234,9 +234,17 @@ function getInitialState(state, callback) {
 }
 
 function getData (request, fieldNames) {
-  let query = helper.getSubObject(request.query, fieldNames)
-  let body = helper.getSubObject(request.query, fieldNames)
-  return util.getPatchedObject(query, body)
+  if (util.isArray(request.body)) {
+    let data = []
+    for (let row of request.body) {
+      data.push(helper.getSubObject(row, fieldNames))
+    }
+    return data
+  }
+  let queryData = helper.getSubObject(request.query, fieldNames)
+  let bodyData = helper.getSubObject(request.body, fieldNames)
+  let data = util.getPatchedObject(queryData, bodyData)
+  return data
 }
 
 function getShownDocument (document, fieldNames) {

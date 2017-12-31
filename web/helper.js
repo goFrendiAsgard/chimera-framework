@@ -22,9 +22,11 @@ module.exports = {
 
 function getSubObject (obj, keys) {
   let newObj = {}
-  for (let key of keys) {
-    if (key in obj) {
-      newObj[key] = obj[key]
+  if (util.isRealObject(obj)) {
+    for (let key of keys) {
+      if (key in obj) {
+        newObj[key] = obj[key]
+      }
     }
   }
   return newObj

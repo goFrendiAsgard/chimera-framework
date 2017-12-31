@@ -10,5 +10,5 @@ do:
     out: jwtToken
     do: |{$.loadJs('jsonwebtoken', 'sign')}
 
-  - |({token: jwtToken, success: true, errorMessage: ''}) --> response.data
+  - |({token: jwtToken, status: 200, userMessage: 'Logout success', developerMessage: 'Logout success'}) --> response.data
   - |(jwtToken) --> response.cookies[jwtTokenName]

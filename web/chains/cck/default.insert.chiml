@@ -1,0 +1,23 @@
+ins: cckState
+out: cckState
+do:
+  - |collectionName <-- cckState.schema.collectionName
+  - |user <-- cckState.auth.id
+  - |showHistory <-- cckState.showHistory
+  - |excludeDeleted <-- cckState.excludeDeleted
+  - |data <-- cckState.data
+
+  # run query
+  - |dbConfig <-- ({collectionName, dbOption:{excludeDeleted, showHistory, user}})
+  - |(dbConfig, 'insert', data) -> [$.helper.mongoExecute] -> results
+
+  # get only shown results
+  - |(results, cckState.fieldNames) -> {$.cck.getShownDocument} -> results
+
+  # assign the result
+  - |cckState.result.status <-- 201
+  - if: |$.util.isArray(results)
+    do:
+      - |cckState.result.results <-- results
+    else:
+      - |cckState.result.result <-- results
