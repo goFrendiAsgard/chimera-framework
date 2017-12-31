@@ -524,6 +524,192 @@
 			]
 		},
 		{
+			"name": "CCK API: POST",
+			"description": "",
+			"item": [
+				{
+					"name": "POST: cck configs - insert testKey1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5d9c52fa-520f-4810-ba12-94066f5ebb66",
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON, result;",
+									"",
+									"try { ",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests['response is valid JSON'] = true;",
+									"}",
+									"catch (e) { ",
+									"    responseJSON = {}; ",
+									"    tests['response is valid JSON'] = false;",
+									"}",
+									"",
+									"result = responseJSON.result;",
+									"",
+									"tests['inserted key correct'] = result.key == 'testKey1';",
+									"tests['inserted value correct'] = result.value == 'testValue1';",
+									"postman.setEnvironmentVariable('firstConfigId', result._id);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "key",
+									"value": "testKey1",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "value",
+									"value": "testValue1",
+									"description": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/configs",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"configs"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "POST: cck configs - insert-bulk testKey2 & testKey3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9bc69347-9ce8-40af-aad8-407dbdb3d18d",
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON, results;",
+									"",
+									"try { ",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests['response is valid JSON'] = true;",
+									"}",
+									"catch (e) { ",
+									"    responseJSON = {}; ",
+									"    tests['response is valid JSON'] = false;",
+									"}",
+									"results = responseJSON.results;",
+									"tests['results should contains two documents'] = results.length == 2;",
+									"tests['first result should be testKey2'] = results[0].key == 'testKey2';",
+									"tests['second result should be testKey3'] = results[1].key == 'testKey3';"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json;charset=UTF-8"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"key\":\"testKey2\",\"value\":\"testValue2\"}, {\"key\":\"testKey3\",\"value\":\"testValue3\"}]"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/configs",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"configs"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "GET: cck configs - all",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8bb7dd75-5877-447d-8fa6-ddfd08ae4997",
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON, results, firstResult;",
+									"",
+									"try { ",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests['response is valid JSON'] = true;",
+									"}",
+									"catch (e) { ",
+									"    responseJSON = {}; ",
+									"    tests['response is valid JSON'] = false;",
+									"}",
+									"",
+									"tests['response contains `results`'] = _.has(responseJSON, 'results');",
+									"results = responseJSON.results;",
+									"firstResult = results[0];",
+									"tests['results contains 3 rows'] = results.length === 3;",
+									"tests['firstResult has id'] = ('_id' in firstResult);",
+									"tests['firstResult does not have history'] = !('_history' in firstResult);",
+									"",
+									"postman.setEnvironmentVariable('firstConfigId', firstResult._id);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/configs",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"configs"
+							]
+						},
+						"description": "Login API"
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "CCK API: GET",
 			"description": "",
 			"item": [
@@ -750,192 +936,6 @@
 			]
 		},
 		{
-			"name": "CCK API: POST",
-			"description": "",
-			"item": [
-				{
-					"name": "POST: cck configs - insert testKey1",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "5d9c52fa-520f-4810-ba12-94066f5ebb66",
-								"type": "text/javascript",
-								"exec": [
-									"var responseJSON, result;",
-									"",
-									"try { ",
-									"    responseJSON = JSON.parse(responseBody); ",
-									"    tests['response is valid JSON'] = true;",
-									"}",
-									"catch (e) { ",
-									"    responseJSON = {}; ",
-									"    tests['response is valid JSON'] = false;",
-									"}",
-									"",
-									"result = responseJSON.result;",
-									"",
-									"tests['inserted key correct'] = result.key == 'testKey1';",
-									"tests['inserted value correct'] = result.value == 'testValue1';",
-									"postman.setEnvironmentVariable('firstConfigId', result._id);"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "key",
-									"value": "testKey1",
-									"description": "",
-									"type": "text"
-								},
-								{
-									"key": "value",
-									"value": "testValue1",
-									"description": "",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "http://localhost:3000/api/v1/configs",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"v1",
-								"configs"
-							]
-						},
-						"description": ""
-					},
-					"response": []
-				},
-				{
-					"name": "POST: cck configs - insert-bulk testKey2 & testKey3",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "9bc69347-9ce8-40af-aad8-407dbdb3d18d",
-								"type": "text/javascript",
-								"exec": [
-									"var responseJSON, results;",
-									"",
-									"try { ",
-									"    responseJSON = JSON.parse(responseBody); ",
-									"    tests['response is valid JSON'] = true;",
-									"}",
-									"catch (e) { ",
-									"    responseJSON = {}; ",
-									"    tests['response is valid JSON'] = false;",
-									"}",
-									"results = responseJSON.results;",
-									"tests['results should contains two documents'] = results.length == 2;",
-									"tests['first result should be testKey2'] = results[0].key == 'testKey2';",
-									"tests['second result should be testKey3'] = results[1].key == 'testKey3';"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json;charset=UTF-8"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "[{\"key\":\"testKey2\",\"value\":\"testValue2\"}, {\"key\":\"testKey3\",\"value\":\"testValue3\"}]"
-						},
-						"url": {
-							"raw": "http://localhost:3000/api/v1/configs",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"v1",
-								"configs"
-							]
-						},
-						"description": ""
-					},
-					"response": []
-				},
-				{
-					"name": "GET: cck configs - all",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "8bb7dd75-5877-447d-8fa6-ddfd08ae4997",
-								"type": "text/javascript",
-								"exec": [
-									"var responseJSON, results, firstResult;",
-									"",
-									"try { ",
-									"    responseJSON = JSON.parse(responseBody); ",
-									"    tests['response is valid JSON'] = true;",
-									"}",
-									"catch (e) { ",
-									"    responseJSON = {}; ",
-									"    tests['response is valid JSON'] = false;",
-									"}",
-									"",
-									"tests['response contains `results`'] = _.has(responseJSON, 'results');",
-									"results = responseJSON.results;",
-									"firstResult = results[0];",
-									"tests['results contains 3 rows'] = results.length === 3;",
-									"tests['firstResult has id'] = ('_id' in firstResult);",
-									"tests['firstResult does not have history'] = !('_history' in firstResult);",
-									"",
-									"postman.setEnvironmentVariable('firstConfigId', firstResult._id);"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {},
-						"url": {
-							"raw": "http://localhost:3000/api/v1/configs",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"v1",
-								"configs"
-							]
-						},
-						"description": "Login API"
-					},
-					"response": []
-				}
-			]
-		},
-		{
 			"name": "CCK API: UPDATE",
 			"description": "",
 			"item": [
@@ -1068,7 +1068,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "f09624df-3670-406e-b21e-6edbea6ea577",
+								"id": "3cc54a34-a38f-4cc8-a2f7-78e7817c2916",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON, results, fooCount, barCount;",
@@ -1088,7 +1088,6 @@
 									"fooCount = 0;",
 									"barCount = 0;",
 									"for (let result of results) {",
-									"    console.error(result)",
 									"    if (result.value == 'foo') {",
 									"        fooCount ++;",
 									"    } else if (result.value == 'bar') {",
@@ -1117,6 +1116,334 @@
 								"api",
 								"v1",
 								"configs"
+							]
+						},
+						"description": "Login API"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CCK API: DELETE",
+			"description": "",
+			"item": [
+				{
+					"name": "POST: cck configs - delete one (soft)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "cabf6317-8854-4a25-ab70-e623d3f9728a",
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON, result;",
+									"",
+									"try { ",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests['response is valid JSON'] = true;",
+									"}",
+									"catch (e) { ",
+									"    responseJSON = {}; ",
+									"    tests['response is valid JSON'] = false;",
+									"}",
+									"result = responseJSON.result;",
+									"tests['result.nModified should be 1'] = result.nModified == 1;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/configs/{{firstConfigId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"configs",
+								"{{firstConfigId}}"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "POST: cck configs - delete all (soft)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8fa52e37-c3d3-4741-9199-c2501eb3480e",
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON, result;",
+									"",
+									"try { ",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests['response is valid JSON'] = true;",
+									"}",
+									"catch (e) { ",
+									"    responseJSON = {}; ",
+									"    tests['response is valid JSON'] = false;",
+									"}",
+									"result = responseJSON.result;",
+									"tests['result.nModified should be 2'] = result.nModified == 2;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/configs",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"configs"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "GET: cck configs - all (excludeDeleted)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c29b44bf-df87-434e-8cdb-43805092e38b",
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON, results;",
+									"",
+									"try { ",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests['response is valid JSON'] = true;",
+									"}",
+									"catch (e) { ",
+									"    responseJSON = {}; ",
+									"    tests['response is valid JSON'] = false;",
+									"}",
+									"",
+									"tests['response contains `results`'] = _.has(responseJSON, 'results');",
+									"results = responseJSON.results;",
+									"",
+									"tests['results should be empty'] = results.length === 0;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/configs",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"configs"
+							]
+						},
+						"description": "Login API"
+					},
+					"response": []
+				},
+				{
+					"name": "GET: cck configs - all (includeDeleted)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "27d3b48c-2a03-4c6d-b901-2d79338fa72b",
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON, results;",
+									"",
+									"try { ",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests['response is valid JSON'] = true;",
+									"}",
+									"catch (e) { ",
+									"    responseJSON = {}; ",
+									"    tests['response is valid JSON'] = false;",
+									"}",
+									"",
+									"tests['response contains `results`'] = _.has(responseJSON, 'results');",
+									"results = responseJSON.results;",
+									"",
+									"tests['results should be empty'] = results.length === 3;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/configs?_excludeDeleted=0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"configs"
+							],
+							"query": [
+								{
+									"key": "_excludeDeleted",
+									"value": "0",
+									"equals": true
+								}
+							]
+						},
+						"description": "Login API"
+					},
+					"response": []
+				},
+				{
+					"name": "POST: cck configs - delete all (hard)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b76c0127-0abc-40fc-98fd-1a72dbf72013",
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON, result;",
+									"",
+									"try { ",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests['response is valid JSON'] = true;",
+									"}",
+									"catch (e) { ",
+									"    responseJSON = {}; ",
+									"    tests['response is valid JSON'] = false;",
+									"}",
+									"result = responseJSON.result;",
+									"tests['result.n should be 3'] = result.n == 3;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/configs?_excludeDeleted=0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"configs"
+							],
+							"query": [
+								{
+									"key": "_excludeDeleted",
+									"value": "0",
+									"equals": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "GET: cck configs - all (includeDeleted)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a7e5de0d-2377-44dc-be2a-8503307e180a",
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON, results;",
+									"",
+									"try { ",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests['response is valid JSON'] = true;",
+									"}",
+									"catch (e) { ",
+									"    responseJSON = {}; ",
+									"    tests['response is valid JSON'] = false;",
+									"}",
+									"",
+									"tests['response contains `results`'] = _.has(responseJSON, 'results');",
+									"results = responseJSON.results;",
+									"",
+									"tests['results should be empty'] = results.length === 0;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/configs?_excludeDeleted=0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"configs"
+							],
+							"query": [
+								{
+									"key": "_excludeDeleted",
+									"value": "0",
+									"equals": true
+								}
 							]
 						},
 						"description": "Login API"

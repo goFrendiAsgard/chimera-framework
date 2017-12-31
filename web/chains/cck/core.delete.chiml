@@ -7,7 +7,7 @@ do:
   - if: |cckState.result.status == 200 && !$.util.isNullOrUndefined(cckState.schema.beforeDeleteChain)
     do: |(cckState.schema.beforeDeleteChain, cckState) -> [$.runChain] -> cckState
 
-  # do select
+  # do delete
   - if: |cckState.result.status == 200 && !$.util.isNullOrUndefined(cckState.schema.deleteChain)
     do: |(cckState.schema.deleteChain, cckState) -> [$.runChain] -> cckState
 
