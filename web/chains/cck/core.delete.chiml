@@ -3,16 +3,24 @@ out: response
 do:
   - |(state) -> [$.cck.getInitialState] -> cckState
 
+  - if: |!$.helper.isAuthorized(state.request, cckState.schema.deleteGroups)
+    do:
+      - ins:
+          developerMessage: 'Forbidden'
+          userMessage: 'Forbidden'
+          status: 403
+        out: cckState.result
+
   # do pre-processing
-  - if: |cckState.result.status == 200 && !$.util.isNullOrUndefined(cckState.schema.beforeDeleteChain)
+  - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.beforeDeleteChain)
     do: |(cckState.schema.beforeDeleteChain, cckState) -> [$.runChain] -> cckState
 
   # do delete
-  - if: |cckState.result.status == 200 && !$.util.isNullOrUndefined(cckState.schema.deleteChain)
+  - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.deleteChain)
     do: |(cckState.schema.deleteChain, cckState) -> [$.runChain] -> cckState
 
   # do post-processing
-  - if: |cckState.result.status == 200 && !$.util.isNullOrUndefined(cckState.schema.afterDeleteChain)
+  - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.afterDeleteChain)
     do: |(cckState.schema.afterDeleteChain, cckState) -> [$.runChain] -> cckState
 
   - |response.data <-- cckState.result

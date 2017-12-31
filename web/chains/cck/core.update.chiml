@@ -3,16 +3,24 @@ out: response
 do:
   - |(state) -> [$.cck.getInitialState] -> cckState
 
+  - if: |!$.helper.isAuthorized(state.request, cckState.schema.updateGroups)
+    do:
+      - ins:
+          developerMessage: 'Forbidden'
+          userMessage: 'Forbidden'
+          status: 403
+        out: cckState.result
+
   # do pre-processing
-  - if: |cckState.result.status == 200 && !$.util.isNullOrUndefined(cckState.schema.beforeUpdateChain)
+  - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.beforeUpdateChain)
     do: |(cckState.schema.beforeUpdateChain, cckState) -> [$.runChain] -> cckState
 
   # do update
-  - if: |cckState.result.status == 200 && !$.util.isNullOrUndefined(cckState.schema.updateChain)
+  - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.updateChain)
     do: |(cckState.schema.updateChain, cckState) -> [$.runChain] -> cckState
 
   # do post-processing
-  - if: |cckState.result.status == 200 && !$.util.isNullOrUndefined(cckState.schema.afterUpdateChain)
+  - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.afterUpdateChain)
     do: |(cckState.schema.afterUpdateChain, cckState) -> [$.runChain] -> cckState
 
   - |response.data <-- cckState.result

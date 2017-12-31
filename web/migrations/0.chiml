@@ -4,13 +4,25 @@ vars:
   schemas:
     - name: 'cck'
       collectionName: 'web_cck'
+      insertGroups: ['superAdmin']
+      updateGroups: ['superAdmin']
+      deleteGroups: ['superAdmin']
+      selectGroups: ['superAdmin']
       fields:
         name: {}
         collectionName: {}
         site: {}
         fields: {} 
+        insertGroups: {}
+        updateGroups: {}
+        deleteGroups: {}
+        selectGroups: {}
     - name: 'routes'
       collectionName: 'web_routes'
+      insertGroups: ['superAdmin']
+      updateGroups: ['superAdmin']
+      deleteGroups: ['superAdmin']
+      selectGroups: ['superAdmin']
       fields:
         name: {}
         route: {}
@@ -18,6 +30,10 @@ vars:
         chain: {}
     - name: 'users'
       collectionName: 'web_users'
+      insertGroups: ['superAdmin']
+      updateGroups: ['superAdmin']
+      deleteGroups: ['superAdmin']
+      selectGroups: ['superAdmin']
       fields:
         username: {}
         email: {}
@@ -25,6 +41,18 @@ vars:
         groups: {}
     - name: 'configs'
       collectionName: 'web_configs'
+      insertGroups: ['superAdmin']
+      updateGroups: ['superAdmin']
+      deleteGroups: ['superAdmin']
+      selectGroups: ['superAdmin']
+      fields:
+        key: {}
+        value: {}
+    - name: 'pages'
+      collectionName: 'web_pages'
+      insertGroups: ['superAdmin']
+      updateGroups: ['superAdmin']
+      deleteGroups: ['superAdmin']
       fields:
         key: {}
         value: {}

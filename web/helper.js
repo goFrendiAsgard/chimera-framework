@@ -17,7 +17,42 @@ module.exports = {
   getNormalizedDocId,
   getIfDefined,
   getObjectKeys,
-  getSubObject
+  getSubObject,
+  getIntersection,
+  hasIntersectionOrEquals,
+  isAuthorized
+}
+
+function isAuthorized (request, groups) {
+  if (groups.length === 0) {
+    return true
+  }
+  if ('groups' in request.auth) {
+    return hasIntersectionOrEquals(request.auth.groups, groups)
+  }
+  return false
+}
+
+function hasIntersectionOrEquals (array1, array2) {
+  if (array1.length === 0 && array2.length === 0) {
+    return true
+  }
+  for (let element of array1) {
+    if (array2.indexOf(element) > -1) {
+      return true
+    }
+  }
+  return false
+}
+
+function getIntersection (array1, array2) {
+  let intersection = []
+  for (let element of array1) {
+    if (array2.indexOf(element) > -1) {
+      intersection.push(element)
+    }
+  }
+  return intersection
 }
 
 function getSubObject (obj, keys) {

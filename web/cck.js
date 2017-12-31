@@ -56,6 +56,10 @@ const defaultSchemaData = {
   insertFormChain: '<%= chainPath %>cck/default.insertForm.chiml', // insert form
   updateFormChain: '<%= chainPath %>cck/default.updateForm.chiml', // update form
   viewChain: '<%= chainPath %>cck/default.view.chiml', // view
+  insertGroups: [],
+  updateGroups: [],
+  deleteGroups: [],
+  selectGroups: [],
   beforeInsertChain: null,
   afterInsertChain: null,
   beforeUpdateChain: null,

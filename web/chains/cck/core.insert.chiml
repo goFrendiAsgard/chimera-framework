@@ -3,16 +3,24 @@ out: response
 do:
   - |(state) -> [$.cck.getInitialState] -> cckState
 
+  - if: |!$.helper.isAuthorized(state.request, cckState.schema.insertGroups)
+    do:
+      - ins:
+          developerMessage: 'Forbidden'
+          userMessage: 'Forbidden'
+          status: 403
+        out: cckState.result
+
   # do pre-processing
-  - if: |cckState.result.status == 200 && !$.util.isNullOrUndefined(cckState.schema.beforeInsertChain)
+  - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.beforeInsertChain)
     do: |(cckState.schema.beforeInsertChain, cckState) -> [$.runChain] -> cckState
 
   # do insert
-  - if: |cckState.result.status == 200 && !$.util.isNullOrUndefined(cckState.schema.insertChain)
+  - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.insertChain)
     do: |(cckState.schema.insertChain, cckState) -> [$.runChain] -> cckState
 
   # do post-processing
-  - if: |cckState.result.status == 200 && !$.util.isNullOrUndefined(cckState.schema.afterInsertChain)
+  - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.afterInsertChain)
     do: |(cckState.schema.afterInsertChain, cckState) -> [$.runChain] -> cckState
 
   - |response.data <-- cckState.result

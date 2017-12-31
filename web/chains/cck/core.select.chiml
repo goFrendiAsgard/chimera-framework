@@ -3,12 +3,20 @@ out: response
 do:
   - |(state) -> [$.cck.getInitialState] -> cckState
 
+  - if: |!$.helper.isAuthorized(state.request, cckState.schema.selectGroups)
+    do:
+      - ins:
+          developerMessage: 'Forbidden'
+          userMessage: 'Forbidden'
+          status: 403
+        out: cckState.result
+
   # do select
-  - if: |!$.util.isNullOrUndefined(cckState.schema.selectChain)
+  - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.selectChain)
     do: |(cckState.schema.selectChain, cckState) -> [$.runChain] -> cckState
 
   # do post-processing
-  - if: |cckState.result.status == 200 && !$.util.isNullOrUndefined(cckState.schema.afterSelectChain)
+  - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.afterSelectChain)
     do: |(cckState.schema.afterSelectChain, cckState) -> [$.runChain] -> cckState
 
   - |response.data <-- cckState.result

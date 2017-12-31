@@ -1,14 +1,13 @@
 {
 	"info": {
 		"name": "test-web",
-		"_postman_id": "654769a1-cd27-2b7c-cccb-f4d6e40e4a58",
+		"_postman_id": "419726f7-7afc-2b4f-2e4d-b9412e77548b",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "Authentication",
-			"description": "",
 			"item": [
 				{
 					"name": "GET: Index - not login",
@@ -20,6 +19,16 @@
 								"type": "text/javascript",
 								"exec": [
 									"tests['response contains Hello world :D'] = _.include(responseBody, 'Hello world :D');"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "4df93261-3e18-4506-8d47-9a50d223614b",
+								"type": "text/javascript",
+								"exec": [
+									""
 								]
 							}
 						}
@@ -37,6 +46,62 @@
 							"port": "3000",
 							"path": [
 								""
+							]
+						},
+						"description": "Login API"
+					},
+					"response": []
+				},
+				{
+					"name": "GET: cck API users - not login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2a08286e-79a8-4b02-8f3f-05ce9772f824",
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON;",
+									"",
+									"try { ",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests['response is valid JSON'] = true;",
+									"}",
+									"catch (e) { ",
+									"    responseJSON = {}; ",
+									"    tests['response is valid JSON'] = false;",
+									"}",
+									"",
+									"tests['should be forbidden'] = responseJSON.status === 403;"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "4df93261-3e18-4506-8d47-9a50d223614b",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"users"
 							]
 						},
 						"description": "Login API"
@@ -77,7 +142,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/login-api?user=admin&password=admin",
 							"protocol": "http",
@@ -106,6 +174,62 @@
 					"response": []
 				},
 				{
+					"name": "GET: cck API users - login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "43c46d61-7ffa-46e5-8a3f-5ea3ffac94b5",
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON;",
+									"",
+									"try { ",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests['response is valid JSON'] = true;",
+									"}",
+									"catch (e) { ",
+									"    responseJSON = {}; ",
+									"    tests['response is valid JSON'] = false;",
+									"}",
+									"",
+									"tests['should be ok'] = responseJSON.status === 200;"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "4df93261-3e18-4506-8d47-9a50d223614b",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						},
+						"description": "Login API"
+					},
+					"response": []
+				},
+				{
 					"name": "GET: Index - login",
 					"event": [
 						{
@@ -122,7 +246,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/",
 							"protocol": "http",
@@ -170,7 +297,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/login-api?user=root&password=admin",
 							"protocol": "http",
@@ -230,7 +360,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/login-api?user=admin&password=root",
 							"protocol": "http",
@@ -291,7 +424,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/logout-api",
 							"protocol": "http",
@@ -324,7 +460,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/",
 							"protocol": "http",
@@ -380,13 +519,11 @@
 								{
 									"key": "user",
 									"value": "admin",
-									"description": "",
 									"type": "text"
 								},
 								{
 									"key": "password",
 									"value": "admin",
-									"description": "",
 									"type": "text"
 								}
 							]
@@ -423,7 +560,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/",
 							"protocol": "http",
@@ -472,7 +612,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/logout-api",
 							"protocol": "http",
@@ -505,7 +648,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/",
 							"protocol": "http",
@@ -525,7 +671,6 @@
 		},
 		{
 			"name": "CCK API: POST",
-			"description": "",
 			"item": [
 				{
 					"name": "POST: cck tests - insert testKey1",
@@ -570,13 +715,11 @@
 								{
 									"key": "key",
 									"value": "testKey1",
-									"description": "",
 									"type": "text"
 								},
 								{
 									"key": "value",
 									"value": "testValue1",
-									"description": "",
 									"type": "text"
 								}
 							]
@@ -593,8 +736,7 @@
 								"v1",
 								"tests"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -649,8 +791,7 @@
 								"v1",
 								"tests"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -689,7 +830,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
@@ -711,7 +855,6 @@
 		},
 		{
 			"name": "CCK API: GET",
-			"description": "",
 			"item": [
 				{
 					"name": "GET: cck tests - all",
@@ -748,7 +891,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
@@ -772,7 +918,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "0fe5e5e4-9f58-4fa4-8c49-6baaf27afe29",
+								"id": "6c972d46-71bb-4040-9414-c71cffb7c9e0",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON, results, firstResult;",
@@ -862,7 +1008,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests/{{firstTestId}}",
 							"protocol": "http",
@@ -914,7 +1063,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests/123",
 							"protocol": "http",
@@ -937,7 +1089,6 @@
 		},
 		{
 			"name": "CCK API: UPDATE",
-			"description": "",
 			"item": [
 				{
 					"name": "POST: cck tests - update all",
@@ -978,7 +1129,6 @@
 								{
 									"key": "value",
 									"value": "foo",
-									"description": "",
 									"type": "text"
 								}
 							]
@@ -995,8 +1145,7 @@
 								"v1",
 								"tests"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -1039,7 +1188,6 @@
 								{
 									"key": "value",
 									"value": "bar",
-									"description": "",
 									"type": "text"
 								}
 							]
@@ -1057,8 +1205,7 @@
 								"tests",
 								"{{firstTestId}}"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -1104,7 +1251,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
@@ -1126,7 +1276,6 @@
 		},
 		{
 			"name": "CCK API: DELETE",
-			"description": "",
 			"item": [
 				{
 					"name": "POST: cck tests - delete one (soft)",
@@ -1161,7 +1310,10 @@
 								"value": "application/x-www-form-urlencoded"
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests/{{firstTestId}}",
 							"protocol": "http",
@@ -1175,8 +1327,7 @@
 								"tests",
 								"{{firstTestId}}"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -1213,7 +1364,10 @@
 								"value": "application/x-www-form-urlencoded"
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
@@ -1226,8 +1380,7 @@
 								"v1",
 								"tests"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -1262,7 +1415,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
@@ -1311,7 +1467,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests?_excludeDeleted=0",
 							"protocol": "http",
@@ -1369,7 +1528,10 @@
 								"value": "application/x-www-form-urlencoded"
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests?_excludeDeleted=0",
 							"protocol": "http",
@@ -1389,8 +1551,7 @@
 									"equals": true
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -1425,7 +1586,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests?_excludeDeleted=0",
 							"protocol": "http",
