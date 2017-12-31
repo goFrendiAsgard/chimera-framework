@@ -1,0 +1,22 @@
+<table>
+  <thead>
+    <tr>
+      <% for (let fieldName of cckState.fieldNames) { %>
+        <th><%= cckState.schema.fields[fieldName].caption %></th>
+      <% } %>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for (let row of results) { %>
+      <tr>
+        <% for (let fieldName of cckState.fieldNames) { %>
+          <td><%= row[fieldName] %></td>
+        <% } %>
+        <td>
+          <%= row._id %>
+        </td>
+      </tr>
+    <% } %>
+  </tbody>
+</table>

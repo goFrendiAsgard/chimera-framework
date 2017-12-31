@@ -55,7 +55,11 @@ const defaultSchemaData = {
   selectChain: '<%= chainPath %>cck/default.select.chiml', // select api
   insertFormChain: '<%= chainPath %>cck/default.insertForm.chiml', // insert form
   updateFormChain: '<%= chainPath %>cck/default.updateForm.chiml', // update form
-  viewChain: '<%= chainPath %>cck/default.view.chiml', // view
+  showChain: '<%= chainPath %>cck/default.show.chiml', // show
+  insertFormView: '<%= viewPath %>cck/default.insertForm.ejs', // insert form
+  updateFormView: '<%= viewPath %>cck/default.updateForm.ejs', // update form
+  showView: '<%= viewPath %>cck/default.show.ejs', // show
+  showOneView: '<%= viewPath %>cck/default.showOne.ejs', // showOne
   insertGroups: [],
   updateGroups: [],
   deleteGroups: [],
@@ -181,7 +185,8 @@ function getRoute(key = null) {
     'selectOne':  {route: '/api/:version/:schemaName/:id', method: 'get',    chain: path.join(chainPath, 'cck/core.select.chiml')},
     'updateOne':  {route: '/api/:version/:schemaName/:id', method: 'put',    chain: path.join(chainPath, 'cck/core.update.chiml')},
     'deleteOne':  {route: '/api/:version/:schemaName/:id', method: 'delete', chain: path.join(chainPath, 'cck/core.delete.chiml')},
-    'view':       {route: '/data/:schemaName',             method: 'all',    chain: path.join(chainPath, 'cck/core.view.chiml')},
+    'show':       {route: '/data/:schemaName',             method: 'all',    chain: path.join(chainPath, 'cck/core.show.chiml')},
+    'showOne':    {route: '/data/:schemaName/:id',         method: 'all',    chain: path.join(chainPath, 'cck/core.show.chiml')},
     'insertForm': {route: '/data/:schemaName/insert',      method: 'all',    chain: path.join(chainPath, 'cck/core.insertForm.chiml')},
     'updateForm': {route: '/data/:schemaName/update/:id',  method: 'all',    chain: path.join(chainPath, 'cck/core.updateForm.chiml')}
   }

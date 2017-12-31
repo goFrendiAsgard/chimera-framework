@@ -1,0 +1,21 @@
+ins: state
+out: response
+do:
+  - |(state) -> [$.cck.getInitialState] -> cckState
+
+  # get data from API
+  - |(_chain_cwd + 'core.select.chiml', state) -> [$.runChain] -> apiResponse
+
+  # processing response
+  - if: |apiResponse.data.status <400
+    do:
+      - |response.data <-- apiResponse.data
+      - |response.data.cckState <-- cckState 
+      - if: |$.util.isString(cckState.documentId)
+        do:
+          - (cckState.schema.showOneView) --> response.view
+        else:
+          - (cckState.schema.showView) --> response.view
+    else:
+      - |response.status <-- apiResponse.data.status
+      - |response.errorMessage <-- apiResponse.data.userMessage
