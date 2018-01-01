@@ -2,9 +2,11 @@
 
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
+const path = require('path')
+const ejs = require('ejs')
+const fs = require('fs')
 const util = require('chimera-framework/lib/util.js')
 const mongo = require('chimera-framework/lib/mongo.js')
-const ejs = require('ejs')
 
 module.exports = {
   hashPassword,
@@ -20,7 +22,35 @@ module.exports = {
   getSubObject,
   getIntersection,
   hasIntersectionOrEquals,
-  isAuthorized
+  isAuthorized,
+  getAbsoluteFilePath,
+  injectBaseLayout
+}
+
+function injectBaseLayout(state) {
+  if (!util.isRealObject(state.response) || state.response.view == '') {
+    return state
+  }
+  let responseData = state.response.data
+  let viewPath = getAbsoluteFilePath(state.config.viewPath, state.response.view)
+  let viewContent = fs.readFileSync(viewPath, 'utf8')
+  let content = ejs.render(viewContent, responseData)
+  let newResponseData = {content, partial:{}}
+  for (let partialName in state.config.partial) {
+    let partialPath = state.config.partial[partialName]
+    let partialContent = fs.readFileSync(partialPath, 'utf8')
+    newResponseData.partial[partialName] = ejs.render(partialContent, {responseData})
+  }
+  state.response.data = newResponseData
+  state.response.view = state.config.baseLayout
+  return state
+}
+
+function getAbsoluteFilePath (basePath, filePath) {
+  if (path.isAbsolute(filePath)) {
+    return filePath
+  }
+  return path.join(basePath, filePath)
 }
 
 function isAuthorized (request, groups) {

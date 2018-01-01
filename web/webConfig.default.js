@@ -4,6 +4,7 @@ const path = require('path')
 
 let basePath = __dirname + '/'
 let chainPath = path.join(__dirname, 'chains') + '/'
+let viewPath = path.join(__dirname, 'views') + '/'
 
 const webConfig = {
   basePath,
@@ -24,7 +25,7 @@ const webConfig = {
   // hook configuration
   startupHook: path.join(chainPath, 'core.hook.startup.chiml'),
   beforeRequestHook: null,
-  afterRequestHook: null,
+  afterRequestHook: path.join(chainPath, 'core.hook.afterRequest.chiml'),
   // list of express middlewares function
   middlewares: [],
   // mongoUrl database
@@ -38,10 +39,20 @@ const webConfig = {
   // favicon path
   faviconPath: path.join(__dirname, 'public/favicon.ico'),
   // location of view files
-  viewPath: path.join(__dirname, 'views') + '/',
+  viewPath: viewPath,
   // error view tempalate
-  errorTemplate: path.join(__dirname, 'views/error.ejs'),
-  defaultTemplate: null
+  errorTemplate: path.join(viewPath, 'default.error.ejs'),
+  defaultTemplate: null,
+  baseLayout: path.join(viewPath, 'default.layout.ejs'),
+  partial: {
+    'leftWidget': path.join(viewPath, 'partials/default.leftWidget.ejs'),
+    'rightWidget': path.join(viewPath, 'partials/default.rightWidget.ejs'),
+    'htmlHeader': path.join(viewPath, 'partials/default.htmlHeader.ejs'),
+    'largeBanner': path.join(viewPath, 'partials/default.largeBanner.ejs'),
+    'smallBanner': path.join(viewPath, 'partials/default.smallBanner.ejs'),
+    'largeFooter': path.join(viewPath, 'partials/default.largeFooter.ejs'),
+    'smallFooter': path.join(viewPath, 'partials/default.smallFooter.ejs')
+  }
 }
 
 module.exports = webConfig

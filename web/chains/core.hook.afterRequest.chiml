@@ -1,0 +1,4 @@
+ins: state
+out: state
+do:
+  - |(state) -> {$.helper.injectBaseLayout} -> state
