@@ -1,4 +1,7 @@
-<table>
+<div style="margin-bottom:1em">
+  <a id="button-insert" class="btn btn-default" href="/data/<%= cckState.schemaName %>/insert">Add</a>
+</div>
+<table class="table">
   <thead>
     <tr>
       <% for (let fieldName of cckState.fieldNames) { %>
@@ -14,7 +17,9 @@
           <td><%= row[fieldName] %></td>
         <% } %>
         <td>
-          <%= row._id %>
+          <a class="btn btn-default button-detail" rowId="<%=row._id%>" href="/data/<%= cckState.schemaName %>/<%=row._id%>">Detail</a>
+          <a class="btn btn-default button-update" rowId="<%=row._id%>" href="/data/<%= cckState.schemaName %>/update/<%=row._id%>">Update</a>
+          <a class="btn btn-default button-delete" rowId="<%=row._id%>" href="/data/<%= cckState.schemaName %>/<%=row._id%>">Delete</a>
         </td>
       </tr>
     <% } %>

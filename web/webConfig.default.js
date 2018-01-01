@@ -48,6 +48,7 @@ const webConfig = {
     'leftWidget': path.join(viewPath, 'partials/default.leftWidget.ejs'),
     'rightWidget': path.join(viewPath, 'partials/default.rightWidget.ejs'),
     'htmlHeader': path.join(viewPath, 'partials/default.htmlHeader.ejs'),
+    'htmlFooter': path.join(viewPath, 'partials/default.htmlFooter.ejs'),
     'largeBanner': path.join(viewPath, 'partials/default.largeBanner.ejs'),
     'smallBanner': path.join(viewPath, 'partials/default.smallBanner.ejs'),
     'largeFooter': path.join(viewPath, 'partials/default.largeFooter.ejs'),

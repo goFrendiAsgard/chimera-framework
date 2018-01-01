@@ -1,15 +1,48 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <link rel="stylesheet" href="/css/style.css">
     <%- partial.htmlHeader %>
   </head>
   <body>
-    <%- partial.largeBanner %>
-    <%- partial.leftWidget %>
-    <%- partial.smallBanner %>
-    <%- content %>
-    <%- partial.smallFooter %>
-    <%- partial.rightWidget %>
-    <%- partial.largeFooter %>
+    <div class="container">
+      <div class="row">
+        <%- partial.largeBanner %>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+
+        <% if (partial.leftWidget.trim().length > 0) { %>
+          <div class="col-sm-3">
+            <%- partial.leftWidget %>
+          </div>
+        <% } %>
+
+        <% if (partial.leftWidget.trim().length > 0 && partial.rightWidget.trim().length > 0) { %>
+         <div class="col-sm-6">
+        <% } else if (partial.leftWidget.trim().length > 0 || partial.rightWidget.trim().length > 0) { %>
+         <div class="col-sm-9">
+        <% } else {%>
+         <div class="col-sm-12">
+        <% } %>
+          <%- partial.smallBanner %>
+          <%- content %>
+          <%- partial.smallFooter %>
+        </div>
+
+        <% if (partial.rightWidget.trim().length > 0) { %>
+          <div class="col-sm-3">
+            <%- partial.rightWidget %>
+          </div>
+        <% } %>
+
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <%- partial.largeFooter %>
+      </div>
+    </div>
+    <%- partial.htmlFooter %>
   </body>
 </html>

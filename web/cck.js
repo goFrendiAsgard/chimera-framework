@@ -186,9 +186,9 @@ function getRoute(key = null) {
     'updateOne':  {route: '/api/:version/:schemaName/:id', method: 'put',    chain: path.join(chainPath, 'cck/core.update.chiml')},
     'deleteOne':  {route: '/api/:version/:schemaName/:id', method: 'delete', chain: path.join(chainPath, 'cck/core.delete.chiml')},
     'show':       {route: '/data/:schemaName',             method: 'all',    chain: path.join(chainPath, 'cck/core.show.chiml')},
-    'showOne':    {route: '/data/:schemaName/:id',         method: 'all',    chain: path.join(chainPath, 'cck/core.show.chiml')},
     'insertForm': {route: '/data/:schemaName/insert',      method: 'all',    chain: path.join(chainPath, 'cck/core.insertForm.chiml')},
-    'updateForm': {route: '/data/:schemaName/update/:id',  method: 'all',    chain: path.join(chainPath, 'cck/core.updateForm.chiml')}
+    'updateForm': {route: '/data/:schemaName/update/:id',  method: 'all',    chain: path.join(chainPath, 'cck/core.updateForm.chiml')},
+    'showOne':    {route: '/data/:schemaName/:id',         method: 'all',    chain: path.join(chainPath, 'cck/core.show.chiml')}
   }
   if (util.isNullOrUndefined(key)) {
     return route

@@ -8,10 +8,13 @@
     "chimera-framework"
   ],
   "dependencies": {
-    "chimera-framework": "0.0.47",
+    "bootstrap": "^3.3.7",
+    "chimera-framework": "0.0.48",
+    "jquery": "^3.2.1",
     "jsonwebtoken": "^7.3.0",
     "neo-async": "^2.5.0",
-    "newman": "^3.9.1"
+    "newman": "^3.9.1",
+    "popper.js": "^1.12.9"
   },
   "scripts": {
     "start": "node index.js",
