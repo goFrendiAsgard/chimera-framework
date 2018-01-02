@@ -17,15 +17,15 @@ let jqueryPath = path.join(__dirname, 'node_modules/jquery')
 let popperPath = path.join(__dirname, 'node_modules/popper.js')
 
 // define default middlewares (bootstrap, jquery, and JWT)
-webConfig.middlewares = 'middlewares' in webConfig? webConfig.middlewares: []
+webConfig.middlewares = 'middlewares' in webConfig ? webConfig.middlewares : []
 webConfig.middlewares.unshift(helper.jwtMiddleware)
 webConfig.middlewares.unshift({'/bootstrap': express.static(bootstrapPath)})
 webConfig.middlewares.unshift({'/jquery': express.static(jqueryPath)})
 webConfig.middlewares.unshift({'/popper.js': express.static(popperPath)})
 
 // add `helper` and `cck` to webConfig.vars.$
-webConfig.vars = 'vars' in webConfig? webConfig.vars: {}
-webConfig.vars.$ = '$' in webConfig.vars? webConfig.vars.$: {}
+webConfig.vars = 'vars' in webConfig ? webConfig.vars : {}
+webConfig.vars.$ = '$' in webConfig.vars ? webConfig.vars.$ : {}
 webConfig.vars.$.helper = helper
 webConfig.vars.$.cck = cck
 

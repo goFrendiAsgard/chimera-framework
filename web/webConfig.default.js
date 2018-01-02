@@ -2,7 +2,7 @@
 
 const path = require('path')
 
-let basePath = __dirname + '/'
+let basePath = path.join(__dirname, '/')
 let chainPath = path.join(__dirname, 'chains') + '/'
 let viewPath = path.join(__dirname, 'views') + '/'
 

@@ -27,15 +27,15 @@ module.exports = {
   injectBaseLayout
 }
 
-function injectBaseLayout(state) {
-  if (!util.isRealObject(state.response) || state.response.view == '') {
+function injectBaseLayout (state) {
+  if (!util.isRealObject(state.response) || state.response.view === '') {
     return state
   }
   let responseData = state.response.data
   let viewPath = getAbsoluteFilePath(state.config.viewPath, state.response.view)
   let viewContent = fs.readFileSync(viewPath, 'utf8')
   let content = ejs.render(viewContent, responseData)
-  let newResponseData = {content, partial:{}}
+  let newResponseData = {content, partial: {}}
   for (let partialName in state.config.partial) {
     let partialPath = state.config.partial[partialName]
     let partialContent = fs.readFileSync(partialPath, 'utf8')
@@ -122,23 +122,23 @@ function getNormalizedDocId (docId) {
 function getIfDefined (obj, key, defaultValue) {
   // only two parameters: if obj is null, return key, otherwise return obj
   if (util.isNullOrUndefined(defaultValue)) {
-    return util.isNullOrUndefined(obj)? key: obj
+    return util.isNullOrUndefined(obj) ? key : obj
   }
   // three parameters: if key in obj, return obj[key], otherwise return defaultValue
-  return (key in obj) && !util.isNullOrUndefined(obj[key])? obj[key]: defaultValue
+  return (key in obj) && !util.isNullOrUndefined(obj[key]) ? obj[key] : defaultValue
 }
 
 function mongoExecute (collectionName, fn, ...args) {
   let webConfig = getWebConfig()
   let mongoUrl = webConfig.mongoUrl
-  let dbConfig = util.isRealObject(collectionName)? collectionName: {mongoUrl, collectionName}
+  let dbConfig = util.isRealObject(collectionName) ? collectionName : {mongoUrl, collectionName}
   if (!('mongoUrl' in dbConfig)) {
     dbConfig.mongoUrl = mongoUrl
   }
   mongo.execute(dbConfig, fn, ...args)
 }
 
-function getDbConfig(callback) {
+function getDbConfig (callback) {
   mongoExecute('web_configs', 'find', {}, (error, docs) => {
     let dbConfig = {}
     for (let doc of docs) {
@@ -148,12 +148,12 @@ function getDbConfig(callback) {
   })
 }
 
-function getDbRoutes(config, callback) {
+function getDbRoutes (config, callback) {
   mongoExecute('web_routes', 'find', {}, (error, docs) => {
     let dbRoutes = []
     for (let doc of docs) {
       let route = ejs.render(doc.route, config)
-      let method = doc.method? ejs.render(doc.method, config): 'all'
+      let method = doc.method ? ejs.render(doc.method, config) : 'all'
       let chain = ejs.render(doc.chain, config)
       dbRoutes.push({route, method, chain})
     }
@@ -162,12 +162,12 @@ function getDbRoutes(config, callback) {
 }
 
 function createRandomString (length = 16) {
-  return crypto.randomBytes(Math.ceil(length/2))
+  return crypto.randomBytes(Math.ceil(length / 2))
     .toString('hex')
-    .slice(0,length)
+    .slice(0, length)
 }
 
-function hashPassword (password, salt = null, algorithm = 'sha512'){
+function hashPassword (password, salt = null, algorithm = 'sha512') {
   if (util.isNullOrUndefined(salt)) {
     salt = createRandomString(16)
   }
@@ -177,10 +177,10 @@ function hashPassword (password, salt = null, algorithm = 'sha512'){
   return {salt, hashedPassword}
 }
 
-function setCookieToken(webConfig, req, res) {
+function setCookieToken (webConfig, req, res) {
   req.auth = {}
   if (req.cookies && req.cookies[webConfig.jwtTokenName]) {
-    if (!res.cookies) { res.cookies = {}; }
+    if (!res.cookies) { res.cookies = {} }
     res.cookies[webConfig.jwtTokenName] = jwt.sign({}, webConfig.jwtSecret)
   }
 }

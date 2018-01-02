@@ -1,4 +1,4 @@
-var newman = require('newman'); // require newman in your project
+var newman = require('newman') // require newman in your project
 var web = require('./index.js')
 
 let app = web.app
@@ -11,9 +11,9 @@ let server = app.listen(port, function () {
     collection: require('./test-web.json'),
     reporters: 'cli'
   }, function (err) {
-    if (err) { throw err; }
+    if (err) { throw err }
     // Stop the server
     server.close()
     console.log('Test session complete!')
-  });
+  })
 })
