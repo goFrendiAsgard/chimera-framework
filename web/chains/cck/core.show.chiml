@@ -13,8 +13,22 @@ do:
       - |response.data.cckState <-- cckState 
       - if: |$.util.isString(cckState.documentId)
         do:
+          # get presentation
+          - |cckState.data <-- apiResponse.data.result
+          - |(cckState) -> [$.cck.getPresentationRow] -> response.data.presentation
+          # set single show
           - |(cckState.schema.showOneView) --> response.view
         else:
+          # get presentation
+          - |response.data.presentations <-- []
+          - |i <-- 0
+          - if: |apiResponse.data.results.length > 0
+            do:
+              - |cckState.data <-- apiResponse.data.results[i]
+              - |(cckState) -> [$.cck.getPresentationRow] -> response.data.presentations[i]
+              - |i <-- i+1 
+            while: |i < apiResponse.data.results.length
+          # set tabular view
           - |(cckState.schema.showView) --> response.view
     else:
       - |response.status <-- apiResponse.data.status

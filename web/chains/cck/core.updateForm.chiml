@@ -1,0 +1,20 @@
+ins: state
+out: response
+do:
+
+  # get data from API
+  - |(_chain_cwd + 'core.select.chiml', state) -> [$.runChain] -> apiResponse
+
+  # processing response
+  - |(state) -> [$.cck.getInitialState] -> cckState
+  - if: |apiResponse.data.status <400
+    do:
+      # get presentation
+      - |cckState.data <-- apiResponse.data.result
+      - |response.data.cckState <-- cckState
+      - |(cckState) -> [$.cck.getInputRow] -> response.data.input
+      # set single show
+      - |(cckState.schema.updateFormView) --> response.view
+    else:
+      - |response.status <-- apiResponse.data.status
+      - |response.errorMessage <-- apiResponse.data.userMessage

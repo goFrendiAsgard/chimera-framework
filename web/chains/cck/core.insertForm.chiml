@@ -1,0 +1,11 @@
+ins: state
+out: response
+do:
+  - |(state) -> [$.cck.getInitialState] -> cckState
+
+  # get presentation
+  - |response.data.cckState <-- cckState
+  - |(cckState) -> [$.cck.getInputRow] -> response.data.input
+
+  # set single show
+  - |(cckState.schema.insertFormView) --> response.view

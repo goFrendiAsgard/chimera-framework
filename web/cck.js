@@ -194,12 +194,28 @@ function getCombinedFilter (filter1, filter2) {
   return {$and: [filter1, filter2]}
 }
 
+function getQueryFilter (request) {
+  let queryFilter = helper.getObjectFromJson(request.query._q)
+  if ('_q' in request.body) {
+    let bodyFilter = request.body._q
+    if (util.isString(bodyFilter)) {
+      try {
+        bodyFilter = JSON.parse(bodyFilter)
+      } catch (error) {
+        // do nothing
+      }
+    }
+    queryFilter = getCombinedFilter(queryFilter, bodyFilter)
+  }
+  return queryFilter
+}
+
 function getInitialState (state, callback) {
   let request = state.request
   let apiVersion = request.params.version ? request.params.version : null
   let schemaName = request.params.schemaName ? request.params.schemaName : null
   let documentId = request.params.id ? helper.getNormalizedDocId(request.params.id) : null
-  let queryFilter = helper.getObjectFromJson(request.query._q)
+  let queryFilter = getQueryFilter(request)
   let auth = request.auth
   let limit = 'limit' in request.query ? request.query.limit : 1000
   let offset = 'offset' in request.query ? request.query.offset : 0
@@ -276,7 +292,7 @@ function getInputRow (cckState, callback) {
 }
 
 function getPresentationRow (cckState, callback) {
-  return getFieldChainExecutionResult(cckState, 'inputChain', callback)
+  return getFieldChainExecutionResult(cckState, 'presentationChain', callback)
 }
 
 function getInsertValidity (cckState, callback) {
@@ -294,9 +310,8 @@ function getValidity (cckState, chainKey, callback) {
     }
     let status = true
     let messages = {}
-    for (let i = 0; i < cckState.fieldNames.length; i++) {
-      let fieldName = cckState.fieldNames[i]
-      let validity = results[i]
+    for (let fieldName in results) {
+      let validity = results[fieldName]
       status = status && validity.status
       if (validity.message) {
         messages[fieldName] = validity.message
@@ -309,7 +324,7 @@ function getValidity (cckState, chainKey, callback) {
 function getFieldChainExecutionResult (cckState, chainKey, callback) {
   let row = cckState.data
   let tmpRow = util.getPatchedObject({_id: ''}, row)
-  let chainResults = []
+  let chainResults = {}
   let actions = []
   for (let fieldName of cckState.fieldNames) {
     actions.push((next) => {
@@ -318,15 +333,16 @@ function getFieldChainExecutionResult (cckState, chainKey, callback) {
       let value = fieldName in row ? row[fieldName] : fieldInfo.defaultValue
       helper.runChain(chainName, fieldName, value, tmpRow, cckState, (error, result) => {
         if (error) {
+          console.error(error)
           return next(error)
         }
-        chainResults.push(result)
+        chainResults[fieldName] = result
         return next(null, result)
       })
     })
   }
-  // execute the actions sequentially
-  async.series(actions, (error, result) => {
+  // execute the action
+  async.parallel(actions, (error, result) => {
     if (error) {
       return callback(error, null)
     }

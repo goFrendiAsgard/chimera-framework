@@ -1,4 +1,4 @@
-<select id="inputField<%= fieldName %>" class="form-control" rowId="<%= row._id %>">
+<select id="inputField<%= fieldName %>" name="<%= fieldName %>" class="form-control" rowId="<%= row._id %>">
   <%= for (let key of options) {%>
     <option <%= key == value? 'selected': '' %> value="<%= key %>"><%= options[key] %></option>
   <%= }%>

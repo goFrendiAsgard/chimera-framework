@@ -4,6 +4,7 @@
     <%- partial.htmlHeader %>
   </head>
   <body>
+    <%- partial.scripts %>
     <div class="container">
       <div class="row">
         <%- partial.largeBanner %>
@@ -11,25 +12,21 @@
     </div>
     <div class="container">
       <div class="row">
-
         <% if (partial.leftWidget.trim().length > 0) { %>
           <div class="col-sm-3">
             <%- partial.leftWidget %>
           </div>
         <% } %>
-
         <div class="<%= partial.leftWidget && partial.rightWidget? 'col-sm-6': (partial.leftWidget || partial.rightWidget? 'col-sm-9': 'col-sm-12')%>">
           <%- partial.smallBanner %>
           <%- content %>
           <%- partial.smallFooter %>
         </div>
-
         <% if (partial.rightWidget.trim().length > 0) { %>
           <div class="col-sm-3">
             <%- partial.rightWidget %>
           </div>
         <% } %>
-
       </div>
     </div>
     <div class="container">
@@ -37,6 +34,5 @@
         <%- partial.largeFooter %>
       </div>
     </div>
-    <%- partial.htmlFooter %>
   </body>
 </html>
