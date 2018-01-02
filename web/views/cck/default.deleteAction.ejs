@@ -10,6 +10,8 @@
 <div style="margin-bottom:1em">
   <a class="btn btn-default" href="/data/<%= cckState.schemaName %>">Back</a>
 </div>
-<script>
-  console.error('<%= developerMessage %>');
-</script>
+<% if (developerMessage){ %>
+  <script>
+   console.log('<%= developerMessage %>');
+  </script>
+<% } %>

@@ -1,4 +1,14 @@
 ins: state
 out: state
 do:
-  - |(state) -> {$.helper.injectBaseLayout} -> state
+  - if: |state.response.view == '' && state.request.url.indexOf('/api/') === 0 && state.response.errorMessage
+    do:
+      # handle error from /api
+      - |response <-- state.response
+      - |status <-- response.status
+      - |userMessage <-- response.errorMessage
+      - |developerMessage <-- response.errorMessage
+      - |state.response.data <-- {status, userMessage, developerMessage}
+    else:
+      # inject baseLayout to the view
+      - |(state) -> {$.helper.injectBaseLayout} -> state

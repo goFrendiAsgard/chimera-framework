@@ -1,13 +1,13 @@
 ins: state
 out: response
 do:
+  - |(state) -> [$.cck.getInitialState] -> cckState
   - |(state.config.errorTemplate) --> response.view
 
   # get data from API
-  - |(_chain_cwd + 'core.select.chiml', state) -> [$.runChain] -> apiResponse
+  - |(_chain_cwd + 'core.select.chiml', state, cckState) -> [$.runChain] -> apiResponse
 
   # processing response
-  - |(state) -> [$.cck.getInitialState] -> cckState
   - if: |apiResponse.data.status <400
     do:
       # get presentation

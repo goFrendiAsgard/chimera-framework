@@ -1,8 +1,8 @@
-ins: state
+ins: state, cckState
 out: response
 do:
-  - |(state.config.errorTemplate) --> response.view
-  - |(state) -> [$.cck.getInitialState] -> cckState
+  - if: |!cckState
+    do: |(state) -> [$.cck.getInitialState] -> cckState
 
   - if: |!$.helper.isAuthorized(state.request, cckState.schema.selectGroups)
     do:

@@ -1,7 +1,8 @@
-ins: state
+ins: state, cckState
 out: response
 do:
-  - |(state) -> [$.cck.getInitialState] -> cckState
+  - if: |!cckState
+    do: |(state) -> [$.cck.getInitialState] -> cckState
 
   # authorization checking
   - if: |!$.helper.isAuthorized(state.request, cckState.schema.updateGroups)

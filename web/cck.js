@@ -328,15 +328,43 @@ function getValidity (cckState, chainKey, callback) {
 }
 
 function getFieldChainExecutionResult (cckState, chainKey, callback) {
+  if (util.isArray(cckState.data)) {
+    let rows = util.getDeepCopiedObject(cckState.data)
+    let actions = []
+    let chainResults = []
+    for (let row of rows) {
+      actions.push((next) => {
+        cckState.data = row
+        getSingleRowFieldChainExecutionResult(cckState, chainKey, (error, result) => {
+          if (error) {
+            console.error(error)
+            return next(error)
+          }
+          chainResults.push(result)
+          return next(null, result)
+        })
+      })
+    }
+    return async.parallel(actions, (error, result) => {
+      if (error) {
+        return callback(error, null)
+      }
+      return callback(null, chainResults)
+    })
+  }
+  return getSingleRowFieldChainExecutionResult(cckState, chainKey, callback)
+}
+
+function getSingleRowFieldChainExecutionResult (cckState, chainKey, callback) {
   let row = cckState.data
   let tmpRow = util.getPatchedObject({_id: ''}, row)
-  let chainResults = {}
+  let chainResults = {_id: tmpRow._id}
   let actions = []
   for (let fieldName of cckState.fieldNames) {
+    let fieldInfo = cckState.schema.fields[fieldName]
+    let chainName = fieldInfo[chainKey]
     actions.push((next) => {
-      let fieldInfo = cckState.schema.fields[fieldName]
-      let chainName = fieldInfo[chainKey]
-      let value = fieldName in row ? row[fieldName] : fieldInfo.defaultValue
+      let value = fieldName in tmpRow ? tmpRow[fieldName] : fieldInfo.defaultValue
       helper.runChain(chainName, fieldName, value, tmpRow, cckState, (error, result) => {
         if (error) {
           console.error(error)

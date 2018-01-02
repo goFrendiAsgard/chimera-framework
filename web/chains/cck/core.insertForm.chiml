@@ -1,8 +1,8 @@
 ins: state
 out: response
 do:
-  - |(state.config.errorTemplate) --> response.view
   - |(state) -> [$.cck.getInitialState] -> cckState
+  - |(state.config.errorTemplate) --> response.view
 
   # get presentation
   - |response.data.cckState <-- cckState

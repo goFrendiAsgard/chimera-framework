@@ -1,12 +1,13 @@
 ins: state
 out: response
 do:
+  - |(state.config.errorTemplate) --> response.view
+  - |(state) -> [$.cck.getInitialState] -> cckState
 
   # get data from API
-  - |(_chain_cwd + 'core.select.chiml', state) -> [$.runChain] -> apiResponse
+  - |(_chain_cwd + 'core.select.chiml', state, cckState) -> [$.runChain] -> apiResponse
 
   # processing response
-  - |(state) -> [$.cck.getInitialState] -> cckState
   - if: |apiResponse.data.status <400
     do:
       - |response.data <-- apiResponse.data
@@ -19,15 +20,9 @@ do:
           # set single show
           - |(cckState.schema.showOneView) --> response.view
         else:
-          # get presentation
-          - |response.data.presentations <-- []
-          - |i <-- 0
-          - if: |apiResponse.data.results.length > 0
-            do:
-              - |cckState.data <-- apiResponse.data.results[i]
-              - |(cckState) -> [$.cck.getPresentationRow] -> response.data.presentations[i]
-              - |i <-- i+1 
-            while: |i < apiResponse.data.results.length
+          # get presentations
+          - |cckState.data <-- apiResponse.data.results
+          - |(cckState) -> [$.cck.getPresentationRow] -> response.data.presentations
           # set tabular view
           - |(cckState.schema.showView) --> response.view
     else:

@@ -29,10 +29,9 @@ module.exports = {
   runChain
 }
 
-function runChain (...args) {
+function runChain (chain, ...args) {
   let vars = {$: {runChain, helper: module.exports, cck: require('./cck.js')}}
   let callback = args.pop()
-  let chain = args.shift()
   core.executeChain(chain, args, vars, callback)
 }
 
