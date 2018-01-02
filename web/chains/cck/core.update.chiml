@@ -3,12 +3,23 @@ out: response
 do:
   - |(state) -> [$.cck.getInitialState] -> cckState
 
+  # authorization checking
   - if: |!$.helper.isAuthorized(state.request, cckState.schema.updateGroups)
     do:
       - ins:
           developerMessage: 'Unauthorized'
           userMessage: 'Unauthorized'
           status: 401
+        out: cckState.result
+
+  # field validity checking
+  - |(cckState) -> [$.cck.getUpdateValidity] -> validity
+  - if: |!validity.status
+    do:
+      - ins:
+          developerMessage: validity.messages 
+          userMessage: 'Invalid Column Value'
+          status: 400
         out: cckState.result
 
   # do pre-processing

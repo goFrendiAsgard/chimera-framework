@@ -58,7 +58,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "2a08286e-79a8-4b02-8f3f-05ce9772f824",
+								"id": "32eb0c60-c8a2-431e-8a8b-016238898463",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON;",
@@ -72,7 +72,7 @@
 									"    tests['response is valid JSON'] = false;",
 									"}",
 									"",
-									"tests['should be forbidden'] = responseJSON.status === 403;"
+									"tests['should be forbidden'] = responseJSON.status === 401;"
 								]
 							}
 						},

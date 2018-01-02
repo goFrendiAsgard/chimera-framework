@@ -1,0 +1,3 @@
+ins: fieldName, value, row, cckState
+out: validity
+do: |validity.status <-- true

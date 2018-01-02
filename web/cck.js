@@ -1,5 +1,6 @@
 'use strict'
 
+const async = require('neo-async')
 const path = require('path')
 const ejs = require('ejs')
 const util = require('chimera-framework/lib/util.js')
@@ -13,7 +14,11 @@ module.exports = {
   getRoutes,
   getInitialState,
   getShownDocument,
-  getCombinedFilter
+  getCombinedFilter,
+  getInsertValidity,
+  getUpdateValidity,
+  getPresentationRow,
+  getInputRow
 }
 
 const cckCollectionName = 'web_cck'
@@ -83,8 +88,6 @@ const defaultFieldData = {
   options: {}
 }
 
-const fieldChainList = ['inputChain', 'validationChain']
-
 function getSchemaCreationData (row) {
   return util.getPatchedObject(defaultSavedSchemaData, row)
 }
@@ -132,9 +135,9 @@ function preprocessSchema (schema) {
     // define default caption
     fieldData.caption = util.isNullOrUndefined(fieldData.caption) ? field.charAt(0).toUpperCase() + field.slice(1) : fieldData.caption
     // completing chiml path
-    for (let key of fieldChainList) {
+    for (let key in fieldData) {
       if (util.isString(fieldData[key])) {
-        completeSchema.fields[field] = ejs.render(fieldData[key], webConfig)
+        fieldData[key] = ejs.render(fieldData[key], webConfig)
       }
     }
     completeSchema.fields[field] = fieldData
@@ -266,4 +269,67 @@ function getShownSingleDocument (row, allowedFieldNames) {
     newRow._history = newHistory
   }
   return newRow
+}
+
+function getInputRow (cckState, callback) {
+  return getFieldChainExecutionResult(cckState, 'inputChain', callback)
+}
+
+function getPresentationRow (cckState, callback) {
+  return getFieldChainExecutionResult(cckState, 'inputChain', callback)
+}
+
+function getInsertValidity (cckState, callback) {
+  return getValidity(cckState, 'insertValidationChain', callback)
+}
+
+function getUpdateValidity (cckState, callback) {
+  return getValidity(cckState, 'updateValidationChain', callback)
+}
+
+function getValidity (cckState, chainKey, callback) {
+  return getFieldChainExecutionResult(cckState, chainKey, (error, results) => {
+    if (error) {
+      return callback(error, null)
+    }
+    let status = true
+    let messages = {}
+    for (let i = 0; i < cckState.fieldNames.length; i++) {
+      let fieldName = cckState.fieldNames[i]
+      let validity = results[i]
+      status = status && validity.status
+      if (validity.message) {
+        messages[fieldName] = validity.message
+      }
+    }
+    return callback(null, {status, messages})
+  })
+}
+
+function getFieldChainExecutionResult (cckState, chainKey, callback) {
+  let row = cckState.data
+  let tmpRow = util.getPatchedObject({_id: ''}, row)
+  let chainResults = []
+  let actions = []
+  for (let fieldName of cckState.fieldNames) {
+    actions.push((next) => {
+      let fieldInfo = cckState.schema.fields[fieldName]
+      let chainName = fieldInfo[chainKey]
+      let value = fieldName in row ? row[fieldName] : fieldInfo.defaultValue
+      helper.runChain(chainName, fieldName, value, tmpRow, cckState, (error, result) => {
+        if (error) {
+          return next(error)
+        }
+        chainResults.push(result)
+        return next(null, result)
+      })
+    })
+  }
+  // execute the actions sequentially
+  async.series(actions, (error, result) => {
+    if (error) {
+      return callback(error, null)
+    }
+    return callback(null, chainResults)
+  })
 }

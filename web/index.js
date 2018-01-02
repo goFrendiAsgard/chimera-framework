@@ -23,21 +23,12 @@ webConfig.middlewares.unshift({'/bootstrap': express.static(bootstrapPath)})
 webConfig.middlewares.unshift({'/jquery': express.static(jqueryPath)})
 webConfig.middlewares.unshift({'/popper.js': express.static(popperPath)})
 
-// add `helper` and `cck` to webConfig.vars.$
+// add `helper`, `cck`, and helper.runChain to webConfig.vars.$
 webConfig.vars = 'vars' in webConfig ? webConfig.vars : {}
 webConfig.vars.$ = '$' in webConfig.vars ? webConfig.vars.$ : {}
 webConfig.vars.$.helper = helper
 webConfig.vars.$.cck = cck
-
-// override webConfig.vars.$.runChain
-function runChainAndCallback (...args) {
-  let callback = args.pop()
-  // get the chain
-  let chain = args.shift()
-  webConfig.vars.$.runChain = runChainAndCallback
-  core.executeChain(chain, args, webConfig.vars, callback)
-}
-webConfig.vars.$.runChain = runChainAndCallback
+webConfig.vars.$.runChain = helper.runChain
 
 // create app
 let app = web.createApp(webConfig, ...webConfig.middlewares)

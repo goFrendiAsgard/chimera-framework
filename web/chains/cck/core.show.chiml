@@ -1,12 +1,12 @@
 ins: state
 out: response
 do:
-  - |(state) -> [$.cck.getInitialState] -> cckState
 
   # get data from API
   - |(_chain_cwd + 'core.select.chiml', state) -> [$.runChain] -> apiResponse
 
   # processing response
+  - |(state) -> [$.cck.getInitialState] -> cckState
   - if: |apiResponse.data.status <400
     do:
       - |response.data <-- apiResponse.data

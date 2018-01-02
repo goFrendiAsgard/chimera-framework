@@ -1,0 +1,2 @@
+ins: fieldName, value, row, cckState
+out: value

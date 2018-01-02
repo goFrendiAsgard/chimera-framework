@@ -1,0 +1,6 @@
+ins: fieldName, value, row, cckState
+out: alias
+do:
+  - if: |value in cckState.schema.fields[fieldName].options
+    do: |alias <-- cckState.schema.fields[fieldName].options[value]
+    else: |alias <-- ''

@@ -7,6 +7,7 @@ const ejs = require('ejs')
 const fs = require('fs')
 const util = require('chimera-framework/lib/util.js')
 const mongo = require('chimera-framework/lib/mongo.js')
+const core = require('chimera-framework/lib/core.js')
 
 module.exports = {
   hashPassword,
@@ -24,7 +25,15 @@ module.exports = {
   hasIntersectionOrEquals,
   isAuthorized,
   getAbsoluteFilePath,
-  injectBaseLayout
+  injectBaseLayout,
+  runChain
+}
+
+function runChain (...args) {
+  let vars = {$: {runChain, helper: module.exports, cck: require('./cck.js')}}
+  let callback = args.pop()
+  let chain = args.shift()
+  core.executeChain(chain, args, vars, callback)
 }
 
 function injectBaseLayout (state) {
