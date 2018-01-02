@@ -13,9 +13,9 @@ do:
       - |response.data.cckState <-- cckState 
       - if: |$.util.isString(cckState.documentId)
         do:
-          - (cckState.schema.showOneView) --> response.view
+          - |(cckState.schema.showOneView) --> response.view
         else:
-          - (cckState.schema.showView) --> response.view
+          - |(cckState.schema.showView) --> response.view
     else:
       - |response.status <-- apiResponse.data.status
       - |response.errorMessage <-- apiResponse.data.userMessage

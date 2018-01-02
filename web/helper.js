@@ -39,7 +39,7 @@ function injectBaseLayout (state) {
   for (let partialName in state.config.partial) {
     let partialPath = state.config.partial[partialName]
     let partialContent = fs.readFileSync(partialPath, 'utf8')
-    newResponseData.partial[partialName] = ejs.render(partialContent, {responseData})
+    newResponseData.partial[partialName] = ejs.render(partialContent, {responseData}).trim()
   }
   state.response.data = newResponseData
   state.response.view = state.config.baseLayout

@@ -69,14 +69,17 @@ const defaultSchemaData = {
   afterUpdateChain: null,
   beforeRemoveChain: null,
   afterRemoveChain: null,
+  beforeSlectChain: null,
   afterSelectChain: null
 }
 
 const defaultFieldData = {
   caption: null,
-  inputChain: '<%= chainPath %>cck/input.text.chiml',
-  validationChain: '<%= chainPath %>cck/validation.all.chiml',
-  default: '',
+  inputChain: '<%= chainPath %>cck/inputs/text.chiml',
+  presentationChain: '<%= chainPath %>cck/presentations/text.chiml',
+  insertValidationChain: '<%= chainPath %>cck/validations/allowAll.chiml',
+  updateValidationChain: '<%= chainPath %>cck/validations/allowAll.chiml',
+  defaultValue: '',
   options: {}
 }
 
@@ -127,7 +130,7 @@ function preprocessSchema (schema) {
   for (let field in completeSchema.fields) {
     let fieldData = util.getPatchedObject(defaultFieldData, completeSchema.fields[field])
     // define default caption
-    fieldData.caption = util.isNullOrUndefined(fieldData.caption) ? field : fieldData.caption
+    fieldData.caption = util.isNullOrUndefined(fieldData.caption) ? field.charAt(0).toUpperCase() + field.slice(1) : fieldData.caption
     // completing chiml path
     for (let key of fieldChainList) {
       if (util.isString(fieldData[key])) {

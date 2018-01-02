@@ -6,10 +6,14 @@ do:
   - if: |!$.helper.isAuthorized(state.request, cckState.schema.selectGroups)
     do:
       - ins:
-          developerMessage: 'Forbidden'
-          userMessage: 'Forbidden'
-          status: 403
+          developerMessage: 'Unauthorized'
+          userMessage: 'Unauthorized'
+          status: 401
         out: cckState.result
+  
+  # do pre-processing
+  - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.beforeSelectChain)
+    do: |(cckState.schema.beforeSelectChain, cckState) -> [$.runChain] -> cckState
 
   # do select
   - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.selectChain)
@@ -19,4 +23,5 @@ do:
   - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.afterSelectChain)
     do: |(cckState.schema.afterSelectChain, cckState) -> [$.runChain] -> cckState
 
+  - |response.status <-- cckState.result.status
   - |response.data <-- cckState.result

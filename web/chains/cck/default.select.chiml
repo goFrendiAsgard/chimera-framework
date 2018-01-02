@@ -25,6 +25,6 @@ do:
         else:
           - |cckState.result.result <-- {}
           - |cckState.result.status <-- 400
-          - |cckState.result.userMessage <-- 'Not found'
-          - |cckState.result.developerMessage <-- 'Not found'
+          - |cckState.result.userMessage <-- 'Data not found'
+          - |cckState.result.developerMessage <-- 'Resource not found: Data does not exist or has been deleted, or query is wrong'
     else: |cckState.result.results <-- results

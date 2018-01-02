@@ -18,13 +18,7 @@
           </div>
         <% } %>
 
-        <% if (partial.leftWidget.trim().length > 0 && partial.rightWidget.trim().length > 0) { %>
-         <div class="col-sm-6">
-        <% } else if (partial.leftWidget.trim().length > 0 || partial.rightWidget.trim().length > 0) { %>
-         <div class="col-sm-9">
-        <% } else {%>
-         <div class="col-sm-12">
-        <% } %>
+        <div class="<%= partial.leftWidget && partial.rightWidget? 'col-sm-6': (partial.leftWidget || partial.rightWidget? 'col-sm-9': 'col-sm-12')%>">
           <%- partial.smallBanner %>
           <%- content %>
           <%- partial.smallFooter %>
