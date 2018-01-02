@@ -1,6 +1,7 @@
 ins: state
 out: response
 do:
+  - |(state.config.errorTemplate) --> response.view
   - |(state) -> [$.cck.getInitialState] -> cckState
 
   # get presentation

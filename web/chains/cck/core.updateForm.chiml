@@ -1,6 +1,7 @@
 ins: state
 out: response
 do:
+  - |(state.config.errorTemplate) --> response.view
 
   # get data from API
   - |(_chain_cwd + 'core.select.chiml', state) -> [$.runChain] -> apiResponse

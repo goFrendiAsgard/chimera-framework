@@ -1,0 +1,10 @@
+ins: state
+out: response
+do:
+  - |(state.config.errorTemplate) --> response.view
+
+  # get data from API
+  - |(_chain_cwd + 'core.update.chiml', state) -> [$.runChain] -> response
+  - |(state) -> [$.cck.getInitialState] -> cckState
+  - |(cckState) --> response.data.cckState
+  - |(cckState.schema.updateActionView) --> response.view

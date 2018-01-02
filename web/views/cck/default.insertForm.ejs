@@ -1,7 +1,4 @@
-<div style="margin-bottom:1em">
-  <a class="btn btn-default" href="/data/<%= cckState.schemaName %>">Back</a>
-</div>
-<form action="/api/v1/<%= cckState.schemaName %>" method="post">
+<form action="/data/<%= cckState.schemaName %>/insert" method="post">
   <% for (let fieldName of cckState.fieldNames) { %>
     <div class="form-group row">
       <label class="col-form-label col-sm-2"><%= cckState.schema.fields[fieldName].caption %></label>

@@ -62,6 +62,9 @@ const defaultSchemaData = {
   showChain: '<%= chainPath %>cck/default.show.chiml', // show
   insertFormView: '<%= viewPath %>cck/default.insertForm.ejs', // insert form
   updateFormView: '<%= viewPath %>cck/default.updateForm.ejs', // update form
+  insertActionView: '<%= viewPath %>cck/default.insertAction.ejs', // insert action
+  updateActionView: '<%= viewPath %>cck/default.updateAction.ejs', // update action
+  deleteActionView: '<%= viewPath %>cck/default.deleteAction.ejs', // delete action
   showView: '<%= viewPath %>cck/default.show.ejs', // show
   showOneView: '<%= viewPath %>cck/default.showOne.ejs', // showOne
   insertGroups: [],
@@ -170,8 +173,11 @@ function getRoute (key = null) {
     'updateOne': {route: '/api/:version/:schemaName/:id', method: 'put', chain: path.join(chainPath, 'cck/core.update.chiml')},
     'deleteOne': {route: '/api/:version/:schemaName/:id', method: 'delete', chain: path.join(chainPath, 'cck/core.delete.chiml')},
     'show': {route: '/data/:schemaName', method: 'all', chain: path.join(chainPath, 'cck/core.show.chiml')},
-    'insertForm': {route: '/data/:schemaName/insert', method: 'all', chain: path.join(chainPath, 'cck/core.insertForm.chiml')},
-    'updateForm': {route: '/data/:schemaName/update/:id', method: 'all', chain: path.join(chainPath, 'cck/core.updateForm.chiml')},
+    'insertForm': {route: '/data/:schemaName/insert', method: 'get', chain: path.join(chainPath, 'cck/core.insertForm.chiml')},
+    'updateForm': {route: '/data/:schemaName/update/:id', method: 'get', chain: path.join(chainPath, 'cck/core.updateForm.chiml')},
+    'insertAction': {route: '/data/:schemaName/insert', method: 'post', chain: path.join(chainPath, 'cck/core.insertAction.chiml')},
+    'updateAction': {route: '/data/:schemaName/update/:id', method: 'post', chain: path.join(chainPath, 'cck/core.updateAction.chiml')},
+    'deleteAction': {route: '/data/:schemaName/delete/:id', method: 'all', chain: path.join(chainPath, 'cck/core.deleteAction.chiml')},
     'showOne': {route: '/data/:schemaName/:id', method: 'all', chain: path.join(chainPath, 'cck/core.show.chiml')}
   }
   if (util.isNullOrUndefined(key)) {
