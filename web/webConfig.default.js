@@ -31,7 +31,7 @@ const webConfig = {
   // mongoUrl database
   mongoUrl: 'mongodb://localhost/chimera-web-app',
   // verbosity level
-  verbose: 0,
+  verbose: 1,
   // migration path
   migrationPath: path.join(__dirname, 'migrations') + '/',
   // location of static resources
@@ -45,14 +45,39 @@ const webConfig = {
   defaultTemplate: null,
   baseLayout: path.join(viewPath, 'default.layout.ejs'),
   partial: {
-    'scripts': path.join(viewPath, 'partials/default.scripts.ejs'),
-    'htmlHeader': path.join(viewPath, 'partials/default.htmlHeader.ejs'),
-    'leftWidget': path.join(viewPath, 'partials/default.leftWidget.ejs'),
-    'rightWidget': path.join(viewPath, 'partials/default.rightWidget.ejs'),
-    'largeBanner': path.join(viewPath, 'partials/default.largeBanner.ejs'),
-    'smallBanner': path.join(viewPath, 'partials/default.smallBanner.ejs'),
-    'largeFooter': path.join(viewPath, 'partials/default.largeFooter.ejs'),
-    'smallFooter': path.join(viewPath, 'partials/default.smallFooter.ejs')
+    scripts: path.join(viewPath, 'partials/default.scripts.ejs'),
+    htmlHeader: path.join(viewPath, 'partials/default.htmlHeader.ejs'),
+    leftWidget: path.join(viewPath, 'partials/default.leftWidget.ejs'),
+    rightWidget: path.join(viewPath, 'partials/default.rightWidget.ejs'),
+    largeBanner: path.join(viewPath, 'partials/default.largeBanner.ejs'),
+    smallBanner: path.join(viewPath, 'partials/default.smallBanner.ejs'),
+    largeFooter: path.join(viewPath, 'partials/default.largeFooter.ejs'),
+    smallFooter: path.join(viewPath, 'partials/default.smallFooter.ejs')
+  },
+  cck: {
+    // ejs to render inputs
+    inputs: {
+      text: '<input name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control" type="text" value="<%= value %>" />',
+      textArea: '<textarea name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control"><%= value %></textarea>',
+      option: '<select name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control" value="<%= value %>" />\n' +
+              '<% for (let value in fieldInfo.options){ %>\n' +
+              '  <option value="<%= value %>" <%= value === fieldInfo.options[value]? "selected": ""%>><%= fieldInfo.options[value] %></option>\n' +
+              '<% } %>\n' +
+              '</select>'
+    },
+    // ejs to render presentations
+    presentations: {
+      text: '<%= value %>',
+      option: '<%= value in fieldInfo.options? fieldInfo.options[value]: "" %>'
+    },
+    // validation chain
+    validations: {
+      all: 'vars:\n' +
+           '  validityResponse:\n' +
+           '    status: true\n' +
+           '    message: ""\n' +
+           'out: validityResponse'
+    }
   }
 }
 

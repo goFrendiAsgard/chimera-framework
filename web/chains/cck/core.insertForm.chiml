@@ -2,11 +2,8 @@ ins: state
 out: response
 do:
   - |(state) -> [$.cck.getInitialState] -> cckState
-  - |(state.config.errorTemplate) --> response.view
+  - |(cckState.schema.insertFormView) --> response.view
 
   # get presentation
   - |response.data.cckState <-- cckState
-  - |(cckState) -> [$.cck.getInputRow] -> response.data.input
-
-  # set single show
-  - |(cckState.schema.insertFormView) --> response.view
+  - |(cckState, {_id:0}) -> [$.cck.getInputRow] -> response.data.input

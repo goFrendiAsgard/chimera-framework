@@ -2,7 +2,7 @@ ins: state
 out: response
 do:
   - |(state) -> [$.cck.getInitialState] -> cckState
-  - |(state.config.errorTemplate) --> response.view
+  - |(cckState.schema.updateFormView) --> response.view
 
   # get data from API
   - |(_chain_cwd + 'core.select.chiml', state, cckState) -> [$.runChain] -> apiResponse
@@ -11,11 +11,8 @@ do:
   - if: |apiResponse.data.status <400
     do:
       # get presentation
-      - |cckState.data <-- apiResponse.data.result
       - |response.data.cckState <-- cckState
-      - |(cckState) -> [$.cck.getInputRow] -> response.data.input
-      # set single show
-      - |(cckState.schema.updateFormView) --> response.view
+      - |(cckState, apiResponse.data.result) -> [$.cck.getInputRow] -> response.data.input
     else:
       - |response.status <-- apiResponse.data.status
       - |response.errorMessage <-- apiResponse.data.userMessage

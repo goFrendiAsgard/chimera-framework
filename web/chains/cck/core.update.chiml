@@ -1,6 +1,7 @@
 ins: state, cckState
 out: response
 do:
+  - |response.data <-- {}
   - if: |!cckState
     do: |(state) -> [$.cck.getInitialState] -> cckState
 
@@ -14,7 +15,7 @@ do:
         out: cckState.result
 
   # field validity checking
-  - |(cckState) -> [$.cck.getUpdateValidity] -> validity
+  - |(cckState, cckState.data) -> [$.cck.getUpdateValidity] -> validity
   - if: |!validity.status
     do:
       - ins:

@@ -1,4 +1,4 @@
-ins: fieldName, value, row, cckState
+ins: cckState, fieldName, value, row
 out: alias
 do:
   - if: |value in cckState.schema.fields[fieldName].options

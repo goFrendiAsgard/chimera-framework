@@ -1,5 +1,6 @@
 'use strict'
 
+const async = require('neo-async')
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
 const path = require('path')
@@ -13,20 +14,15 @@ module.exports = {
   hashPassword,
   getWebConfig,
   jwtMiddleware,
-  getDbConfig,
-  getDbRoutes,
+  injectState,
   mongoExecute,
   getObjectFromJson,
   getNormalizedDocId,
-  getIfDefined,
-  getObjectKeys,
   getSubObject,
-  getIntersection,
-  hasIntersectionOrEquals,
   isAuthorized,
-  getAbsoluteFilePath,
   injectBaseLayout,
-  runChain
+  runChain,
+  loadEjs
 }
 
 function runChain (chain, ...args) {
@@ -35,23 +31,32 @@ function runChain (chain, ...args) {
   core.executeChain(chain, args, vars, callback)
 }
 
-function injectBaseLayout (state) {
-  if (!util.isRealObject(state.response) || state.response.view === '') {
-    return state
+function loadEjs (fileName, data) {
+  let content = fs.readFileSync(fileName, 'utf8')
+  return ejs.render(content, data).trim()
+}
+
+function injectBaseLayout (state, callback) {
+  if (!util.isRealObject(state.response) || util.isNullOrUndefined(state.response.view) || state.response.view === '') {
+    return callback(null, state)
   }
   let responseData = state.response.data
-  let viewPath = getAbsoluteFilePath(state.config.viewPath, state.response.view)
-  let viewContent = fs.readFileSync(viewPath, 'utf8')
-  let content = ejs.render(viewContent, responseData)
+  let templateFile = getAbsoluteFilePath(state.config.viewPath, state.response.view)
+  let content = loadEjs(templateFile, responseData)
   let newResponseData = {content, partial: {}}
+  let actions = []
   for (let partialName in state.config.partial) {
-    let partialPath = state.config.partial[partialName]
-    let partialContent = fs.readFileSync(partialPath, 'utf8')
-    newResponseData.partial[partialName] = ejs.render(partialContent, {responseData}).trim()
+    actions.push((next) => {
+      let partialPath = state.config.partial[partialName]
+      newResponseData.partial[partialName] = loadEjs(partialPath, {responseData})
+      next()
+    })
   }
-  state.response.data = newResponseData
-  state.response.view = state.config.baseLayout
-  return state
+  return async.parallel(actions, (error, result) => {
+    state.response.data = newResponseData
+    state.response.view = state.config.baseLayout
+    return callback(error, state)
+  })
 }
 
 function getAbsoluteFilePath (basePath, filePath) {
@@ -83,16 +88,6 @@ function hasIntersectionOrEquals (array1, array2) {
   return false
 }
 
-function getIntersection (array1, array2) {
-  let intersection = []
-  for (let element of array1) {
-    if (array2.indexOf(element) > -1) {
-      intersection.push(element)
-    }
-  }
-  return intersection
-}
-
 function getSubObject (obj, keys) {
   let newObj = {}
   if (util.isRealObject(obj)) {
@@ -103,10 +98,6 @@ function getSubObject (obj, keys) {
     }
   }
   return newObj
-}
-
-function getObjectKeys (obj) {
-  return Object.keys(obj)
 }
 
 function getObjectFromJson (jsonString) {
@@ -127,15 +118,6 @@ function getNormalizedDocId (docId) {
   return null
 }
 
-function getIfDefined (obj, key, defaultValue) {
-  // only two parameters: if obj is null, return key, otherwise return obj
-  if (util.isNullOrUndefined(defaultValue)) {
-    return util.isNullOrUndefined(obj) ? key : obj
-  }
-  // three parameters: if key in obj, return obj[key], otherwise return defaultValue
-  return (key in obj) && !util.isNullOrUndefined(obj[key]) ? obj[key] : defaultValue
-}
-
 function mongoExecute (collectionName, fn, ...args) {
   let webConfig = getWebConfig()
   let mongoUrl = webConfig.mongoUrl
@@ -146,27 +128,49 @@ function mongoExecute (collectionName, fn, ...args) {
   mongo.execute(dbConfig, fn, ...args)
 }
 
-function getDbConfig (callback) {
-  mongoExecute('web_configs', 'find', {}, (error, docs) => {
-    let dbConfig = {}
-    for (let doc of docs) {
-      dbConfig[doc.key] = doc.value
+function injectState (state, callback) {
+  let cck = require('./cck.js')
+  let configDocs, routeDocs
+  async.parallel([
+    (next) => {
+      mongoExecute('web_configs', 'find', {}, (error, docs) => {
+        configDocs = docs
+        next(error, docs)
+      })
+    },
+    (next) => {
+      mongoExecute('web_routes', 'find', {}, (error, docs) => {
+        routeDocs = docs
+        next(error, docs)
+      })
     }
-    callback(error, dbConfig)
+  ], (error, result) => {
+    // add db configs
+    for (let doc of configDocs) {
+      state.config[doc.key] = doc.value
+    }
+    // render routes
+    for (let route in state.config.routes) {
+      route = renderRoute(route, state.config)
+    }
+    // add rendered cck routes
+    let cckRoutes = cck.getRoutes()
+    for (let doc of cckRoutes) {
+      state.config.routes.push(renderRoute(doc, state.config))
+    }
+    // add rendered db routes
+    for (let doc of routeDocs) {
+      state.config.routes.push(renderRoute(doc, state.config))
+    }
+    callback(error, state)
   })
 }
 
-function getDbRoutes (config, callback) {
-  mongoExecute('web_routes', 'find', {}, (error, docs) => {
-    let dbRoutes = []
-    for (let doc of docs) {
-      let route = ejs.render(doc.route, config)
-      let method = doc.method ? ejs.render(doc.method, config) : 'all'
-      let chain = ejs.render(doc.chain, config)
-      dbRoutes.push({route, method, chain})
-    }
-    callback(error, dbRoutes)
-  })
+function renderRoute (doc, config) {
+  let route = ejs.render(doc.route, config)
+  let method = doc.method ? ejs.render(doc.method, config) : 'all'
+  let chain = ejs.render(doc.chain, config)
+  return {route, method, chain}
 }
 
 function createRandomString (length = 16) {

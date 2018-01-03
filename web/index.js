@@ -2,7 +2,6 @@
 
 const express = require('express')
 const path = require('path')
-const core = require('chimera-framework/lib/core.js')
 const web = require('chimera-framework/lib/web.js')
 const cck = require('./cck.js')
 const helper = require('./helper.js')

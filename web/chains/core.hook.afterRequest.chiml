@@ -1,14 +1,16 @@
 ins: state
 out: state
 do:
-  - if: |state.response.view == '' && state.request.url.indexOf('/api/') === 0 && state.response.errorMessage
+  - if: |state.response.status < 400
     do:
-      # handle error from /api
-      - |response <-- state.response
-      - |status <-- response.status
-      - |userMessage <-- response.errorMessage
-      - |developerMessage <-- response.errorMessage
-      - |state.response.data <-- {status, userMessage, developerMessage}
+      # Render base layout
+      - |(state) -> [$.helper.injectBaseLayout] -> state
     else:
-      # inject baseLayout to the view
-      - |(state) -> {$.helper.injectBaseLayout} -> state
+      # Complete data for JSON API
+      - if: |state.response.view == '' && $.util.isRealObject(state.response.data) && Object.keys(state.response.data).length == 0
+        do:
+          - ins:
+              userMessage: state.response.errorMessage
+              developerMessage: state.response.errorMessage
+              status: state.response.status
+            out: state.response.data

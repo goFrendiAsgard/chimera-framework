@@ -7,7 +7,7 @@ do:
   - |excludeDeleted <-- cckState.excludeDeleted
   - |data <-- cckState.data
 
-  - |option <-- {}
+  - |options <-- {}
   - if: |$.util.isNullOrUndefined(cckState.documentId)
     do: |options <-- {multi:1}
 

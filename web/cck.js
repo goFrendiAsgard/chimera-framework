@@ -9,8 +9,6 @@ const helper = require('./helper.js')
 module.exports = {
   createSchema,
   removeSchema,
-  findSchema,
-  getRoute,
   getRoutes,
   getInitialState,
   getShownDocument,
@@ -45,7 +43,10 @@ const defaultInitialState = {
   limit: 1000,
   offset: 0,
   excludeDeleted: 1,
-  showHistory: 0
+  showHistory: 0,
+  basePath: null,
+  chainPath: null,
+  viewPath: null
 }
 
 const defaultSchemaData = {
@@ -161,42 +162,39 @@ function findSchema (filter, callback) {
   })
 }
 
-function getRoute (key = null) {
+function getRoutes () {
   let webConfig = helper.getWebConfig()
   let chainPath = webConfig.chainPath
-  let route = {
-    'selectBulk': {route: '/api/:version/:schemaName', method: 'get', chain: path.join(chainPath, 'cck/core.select.chiml')},
-    'insertBulk': {route: '/api/:version/:schemaName', method: 'post', chain: path.join(chainPath, 'cck/core.insert.chiml')},
-    'updateBulk': {route: '/api/:version/:schemaName', method: 'put', chain: path.join(chainPath, 'cck/core.update.chiml')},
-    'deleteBulk': {route: '/api/:version/:schemaName', method: 'delete', chain: path.join(chainPath, 'cck/core.delete.chiml')},
-    'selectOne': {route: '/api/:version/:schemaName/:id', method: 'get', chain: path.join(chainPath, 'cck/core.select.chiml')},
-    'updateOne': {route: '/api/:version/:schemaName/:id', method: 'put', chain: path.join(chainPath, 'cck/core.update.chiml')},
-    'deleteOne': {route: '/api/:version/:schemaName/:id', method: 'delete', chain: path.join(chainPath, 'cck/core.delete.chiml')},
-    'show': {route: '/data/:schemaName', method: 'all', chain: path.join(chainPath, 'cck/core.show.chiml')},
-    'insertForm': {route: '/data/:schemaName/insert', method: 'get', chain: path.join(chainPath, 'cck/core.insertForm.chiml')},
-    'updateForm': {route: '/data/:schemaName/update/:id', method: 'get', chain: path.join(chainPath, 'cck/core.updateForm.chiml')},
-    'insertAction': {route: '/data/:schemaName/insert', method: 'post', chain: path.join(chainPath, 'cck/core.insertAction.chiml')},
-    'updateAction': {route: '/data/:schemaName/update/:id', method: 'post', chain: path.join(chainPath, 'cck/core.updateAction.chiml')},
-    'deleteAction': {route: '/data/:schemaName/delete/:id', method: 'all', chain: path.join(chainPath, 'cck/core.deleteAction.chiml')},
-    'showOne': {route: '/data/:schemaName/:id', method: 'all', chain: path.join(chainPath, 'cck/core.show.chiml')}
-  }
-  if (util.isNullOrUndefined(key)) {
-    return route
-  } else {
-    return route[key]
-  }
-}
-
-function getRoutes () {
-  let route = getRoute()
-  let routes = []
-  for (let key in route) {
-    routes.push(route[key])
-  }
-  return routes
+  return [
+    {route: '/api/:version/:schemaName', method: 'get', chain: path.join(chainPath, 'cck/core.select.chiml')},
+    {route: '/api/:version/:schemaName', method: 'post', chain: path.join(chainPath, 'cck/core.insert.chiml')},
+    {route: '/api/:version/:schemaName', method: 'put', chain: path.join(chainPath, 'cck/core.update.chiml')},
+    {route: '/api/:version/:schemaName', method: 'delete', chain: path.join(chainPath, 'cck/core.delete.chiml')},
+    {route: '/api/:version/:schemaName/:id', method: 'get', chain: path.join(chainPath, 'cck/core.select.chiml')},
+    {route: '/api/:version/:schemaName/:id', method: 'put', chain: path.join(chainPath, 'cck/core.update.chiml')},
+    {route: '/api/:version/:schemaName/:id', method: 'delete', chain: path.join(chainPath, 'cck/core.delete.chiml')},
+    {route: '/data/:schemaName', method: 'all', chain: path.join(chainPath, 'cck/core.show.chiml')},
+    {route: '/data/:schemaName/insert', method: 'get', chain: path.join(chainPath, 'cck/core.insertForm.chiml')},
+    {route: '/data/:schemaName/update/:id', method: 'get', chain: path.join(chainPath, 'cck/core.updateForm.chiml')},
+    {route: '/data/:schemaName/insert', method: 'post', chain: path.join(chainPath, 'cck/core.insertAction.chiml')},
+    {route: '/data/:schemaName/update/:id', method: 'post', chain: path.join(chainPath, 'cck/core.updateAction.chiml')},
+    {route: '/data/:schemaName/delete/:id', method: 'all', chain: path.join(chainPath, 'cck/core.deleteAction.chiml')},
+    {route: '/data/:schemaName/:id', method: 'all', chain: path.join(chainPath, 'cck/core.show.chiml')}
+  ]
 }
 
 function getCombinedFilter (filter1, filter2) {
+  let filter1KeyCount = Object.keys(filter1).length
+  let filter2KeyCount = Object.keys(filter2).length
+  if (filter1KeyCount === 0 && filter2KeyCount === 0) {
+    return {}
+  }
+  if (filter1KeyCount === 0) {
+    return filter2
+  }
+  if (filter2KeyCount === 0) {
+    return filter1
+  }
   return {$and: [filter1, filter2]}
 }
 
@@ -217,7 +215,12 @@ function getQueryFilter (request) {
 }
 
 function getInitialState (state, callback) {
+  let config = state.config
   let request = state.request
+  let basePath = config.basePath ? config.basePath : null
+  let chainPath = config.chainPath ? config.chainPath : null
+  let viewPath = config.viewPath ? config.viewPath : null
+  let migrationPath = config.migrationPath
   let apiVersion = request.params.version ? request.params.version : null
   let schemaName = request.params.schemaName ? request.params.schemaName : null
   let documentId = request.params.id ? helper.getNormalizedDocId(request.params.id) : null
@@ -238,9 +241,9 @@ function getInitialState (state, callback) {
       return callback(new Error('cckError: Undefined schema ' + schemaName), null)
     }
     let schema = schemas[0]
-    let fieldNames = helper.getObjectKeys(schema.fields)
+    let fieldNames = Object.keys(schema.fields)
     let data = getData(request, fieldNames)
-    let chainInput = {auth, documentId, apiVersion, schemaName, fieldNames, data, filter, limit, offset, excludeDeleted, showHistory, state, schema}
+    let chainInput = {auth, documentId, apiVersion, schemaName, fieldNames, data, filter, limit, offset, excludeDeleted, showHistory, schema, basePath, chainPath, viewPath, migrationPath}
     chainInput = util.getPatchedObject(defaultInitialState, chainInput)
     return callback(error, chainInput)
   })
@@ -293,24 +296,24 @@ function getShownSingleDocument (row, allowedFieldNames) {
   return newRow
 }
 
-function getInputRow (cckState, callback) {
-  return getFieldChainExecutionResult(cckState, 'inputChain', callback)
+function getInputRow (cckState, rows, callback) {
+  return getFieldChainExecutionResult(cckState, rows, 'inputChain', callback)
 }
 
-function getPresentationRow (cckState, callback) {
-  return getFieldChainExecutionResult(cckState, 'presentationChain', callback)
+function getPresentationRow (cckState, rows, callback) {
+  return getFieldChainExecutionResult(cckState, rows, 'presentationChain', callback)
 }
 
-function getInsertValidity (cckState, callback) {
-  return getValidity(cckState, 'insertValidationChain', callback)
+function getInsertValidity (cckState, rows, callback) {
+  return getValidity(cckState, rows, 'insertValidationChain', callback)
 }
 
-function getUpdateValidity (cckState, callback) {
-  return getValidity(cckState, 'updateValidationChain', callback)
+function getUpdateValidity (cckState, rows, callback) {
+  return getValidity(cckState, rows, 'updateValidationChain', callback)
 }
 
-function getValidity (cckState, chainKey, callback) {
-  return getFieldChainExecutionResult(cckState, chainKey, (error, results) => {
+function getValidity (cckState, rows, chainKey, callback) {
+  return getFieldChainExecutionResult(cckState, rows, chainKey, (error, results) => {
     if (error) {
       return callback(error, null)
     }
@@ -318,7 +321,12 @@ function getValidity (cckState, chainKey, callback) {
     let messages = {}
     for (let fieldName in results) {
       let validity = results[fieldName]
-      status = status && validity.status
+      if (!util.isRealObject(validity)) {
+        continue
+      }
+      if (validity.status) {
+        status = status && validity.status
+      }
       if (validity.message) {
         messages[fieldName] = validity.message
       }
@@ -327,20 +335,19 @@ function getValidity (cckState, chainKey, callback) {
   })
 }
 
-function getFieldChainExecutionResult (cckState, chainKey, callback) {
-  if (util.isArray(cckState.data)) {
-    let rows = util.getDeepCopiedObject(cckState.data)
+function getFieldChainExecutionResult (cckState, rows, chainKey, callback) {
+  if (util.isArray(rows)) {
     let actions = []
     let chainResults = []
-    for (let row of rows) {
+    for (let i = 0; i < rows.length; i++) {
+      let row = rows[i]
       actions.push((next) => {
-        cckState.data = row
-        getSingleRowFieldChainExecutionResult(cckState, chainKey, (error, result) => {
+        getSingleRowFieldChainExecutionResult(cckState, row, chainKey, (error, result) => {
           if (error) {
             console.error(error)
             return next(error)
           }
-          chainResults.push(result)
+          chainResults[i] = result
           return next(null, result)
         })
       })
@@ -352,11 +359,10 @@ function getFieldChainExecutionResult (cckState, chainKey, callback) {
       return callback(null, chainResults)
     })
   }
-  return getSingleRowFieldChainExecutionResult(cckState, chainKey, callback)
+  return getSingleRowFieldChainExecutionResult(cckState, rows, chainKey, callback)
 }
 
-function getSingleRowFieldChainExecutionResult (cckState, chainKey, callback) {
-  let row = cckState.data
+function getSingleRowFieldChainExecutionResult (cckState, row, chainKey, callback) {
   let tmpRow = util.getPatchedObject({_id: ''}, row)
   let chainResults = {_id: tmpRow._id}
   let actions = []
@@ -365,7 +371,7 @@ function getSingleRowFieldChainExecutionResult (cckState, chainKey, callback) {
     let chainName = fieldInfo[chainKey]
     actions.push((next) => {
       let value = fieldName in tmpRow ? tmpRow[fieldName] : fieldInfo.defaultValue
-      helper.runChain(chainName, fieldName, value, tmpRow, cckState, (error, result) => {
+      return helper.runChain(chainName, cckState, fieldName, value, tmpRow, (error, result) => {
         if (error) {
           console.error(error)
           return next(error)

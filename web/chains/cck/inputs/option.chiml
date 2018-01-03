@@ -1,6 +1,6 @@
-ins: fieldName, value, row, cckState 
+ins: cckState, fieldName, value, row
 out: html
 do:
-  - |webConfig <-- cckState.state.config
-  - |(webConfig.viewPath + 'cck/inputs/option.ejs', 'utf8') -> [$.loadJs('fs', 'readFile')] -> ejsContent
-  - |(ejsContent, {fieldName, value, row, cckState.schema.fields[fieldName].options}) -> {$.loadJs('ejs', 'render')} -> html
+  - |ejsFile <-- (cckState.viewPath + 'cck/inputs/option.ejs')
+  - |options <-- (cckState.schema.fields[fieldName].options)
+  - |(ejsFile, {fieldName, value, row, options}) -> {$.helper.loadEjs} -> html
