@@ -13,10 +13,10 @@ vars:
         collectionName: {}
         site: {}
         fields: {} 
-        insertGroups: {}
-        updateGroups: {}
-        deleteGroups: {}
-        selectGroups: {}
+        insertGroups: {caption: 'Insert Privileges'}
+        updateGroups: {caption: 'Update Privileges'}
+        deleteGroups: {caption: 'Delete Privileges'}
+        selectGroups: {caption: 'Select Privileges'}
     - name: 'routes'
       collectionName: 'web_routes'
       insertGroups: ['superAdmin']
@@ -26,8 +26,25 @@ vars:
       fields:
         name: {}
         route: {}
-        method: {}
-        chain: {}
+        method:
+          inputTemplate: '<%- cck.input.option %>'
+          presentationTemplate: '<%- cck.presentation.option %>'
+          options:
+            all: 'All Methods'
+            get: 'GET'
+            post: 'POST'
+            put: 'PUT'
+            patch: 'PATCH'
+            delete: 'DELETE'
+            copy: 'COPY'
+            head: 'HEAD'
+            options: 'OPTIONS'
+            link: 'LINK'
+            unlink: 'UNLINK'
+            purge: 'PURGE'
+            lock: 'LOCK'
+        chain:
+          inputTemplate: '<%- cck.input.textarea %>'
     - name: 'users'
       collectionName: 'web_users'
       insertGroups: ['superAdmin']

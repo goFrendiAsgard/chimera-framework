@@ -58,7 +58,7 @@ const webConfig = {
     // ejs to render inputs, parameters: fieldName, row, value, fieldInfo
     input: {
       text: '<input name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control" type="text" value="<%= value %>" />',
-      textArea: '<textarea name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control"><%= value %></textarea>',
+      textarea: '<textarea name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control"><%= value %></textarea>',
       option: '<select name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control" value="<%= value %>" />\n' +
               '<% for (let value in fieldInfo.options){ %>\n' +
               '  <option value="<%= value %>" <%= value === fieldInfo.options[value]? "selected": ""%>><%= fieldInfo.options[value] %></option>\n' +
