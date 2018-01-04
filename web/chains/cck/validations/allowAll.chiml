@@ -1,3 +1,0 @@
-ins: cckState, fieldName, value, row
-out: validity
-do: |validity.status <-- true

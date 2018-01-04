@@ -1,3 +1,0 @@
-ins: cckState, fieldName, value, row
-out: html
-do: |html <-- value

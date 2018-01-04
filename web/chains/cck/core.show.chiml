@@ -17,13 +17,6 @@ do:
   - if: |apiResponse.status <400
     do:
       - |response.data <-- apiResponse.data
-      - if: |$.util.isString(cckState.documentId)
-        do:
-          # get presentation
-          - |(cckState, apiResponse.data.result) -> [$.cck.getPresentationRow] -> response.data.presentation
-        else:
-          # get presentations
-          - |(cckState, apiResponse.data.results) -> [$.cck.getPresentationRow] -> response.data.presentations
       - |response.data.cckState <-- cckState 
     else:
       - |response.status <-- apiResponse.status

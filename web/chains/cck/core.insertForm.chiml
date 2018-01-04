@@ -6,4 +6,3 @@ do:
 
   # get presentation
   - |response.data.cckState <-- cckState
-  - |(cckState, {_id:0}) -> [$.cck.getInputRow] -> response.data.input

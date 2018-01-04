@@ -12,7 +12,6 @@ do:
     do:
       # get presentation
       - |response.data.cckState <-- cckState
-      - |(cckState, apiResponse.data.result) -> [$.cck.getInputRow] -> response.data.input
     else:
       - |response.status <-- apiResponse.data.status
       - |response.errorMessage <-- apiResponse.data.userMessage

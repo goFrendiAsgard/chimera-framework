@@ -11,10 +11,10 @@
     </tr>
   </thead>
   <tbody>
-    <% for (let row of presentations) { %>
+    <% for (let row of results) { %>
       <tr>
         <% for (let fieldName of cckState.fieldNames) { %>
-          <td><%= row[fieldName] %></td>
+          <td><%- render(cckState.schema, fieldName, 'presentationTemplate', row) %></td>
         <% } %>
         <td>
           <a class="btn btn-default button-detail" rowId="<%=row._id%>" href="/data/<%= cckState.schemaName %>/<%=row._id%>">Detail</a>

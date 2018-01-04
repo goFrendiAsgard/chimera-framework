@@ -55,8 +55,8 @@ const webConfig = {
     smallFooter: path.join(viewPath, 'partials/default.smallFooter.ejs')
   },
   cck: {
-    // ejs to render inputs
-    inputs: {
+    // ejs to render inputs, parameters: fieldName, row, value, fieldInfo
+    input: {
       text: '<input name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control" type="text" value="<%= value %>" />',
       textArea: '<textarea name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control"><%= value %></textarea>',
       option: '<select name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control" value="<%= value %>" />\n' +
@@ -65,18 +65,10 @@ const webConfig = {
               '<% } %>\n' +
               '</select>'
     },
-    // ejs to render presentations
-    presentations: {
+    // ejs to render presentations, parameters: fieldName, row, value, fieldInfo
+    presentation: {
       text: '<%= value %>',
       option: '<%= value in fieldInfo.options? fieldInfo.options[value]: "" %>'
-    },
-    // validation chain
-    validations: {
-      all: 'vars:\n' +
-           '  validityResponse:\n' +
-           '    status: true\n' +
-           '    message: ""\n' +
-           'out: validityResponse'
     }
   }
 }

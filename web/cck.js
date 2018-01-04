@@ -1,6 +1,5 @@
 'use strict'
 
-const async = require('neo-async')
 const path = require('path')
 const ejs = require('ejs')
 const util = require('chimera-framework/lib/util.js')
@@ -13,10 +12,7 @@ module.exports = {
   getInitialState,
   getShownDocument,
   getCombinedFilter,
-  getInsertValidity,
-  getUpdateValidity,
-  getPresentationRow,
-  getInputRow
+  render
 }
 
 const cckCollectionName = 'web_cck'
@@ -84,12 +80,15 @@ const defaultSchemaData = {
 
 const defaultFieldData = {
   caption: null,
-  inputChain: '<%= chainPath %>cck/inputs/text.chiml',
-  presentationChain: '<%= chainPath %>cck/presentations/text.chiml',
-  insertValidationChain: '<%= chainPath %>cck/validations/allowAll.chiml',
-  updateValidationChain: '<%= chainPath %>cck/validations/allowAll.chiml',
+  inputTemplate: '<%- cck.input.text %>',
+  presentationTemplate: '<%- cck.presentation.text %>',
   defaultValue: '',
   options: {}
+}
+
+function render (schemaInfo, fieldName, templateName, row) {
+  let fieldInfo = schemaInfo.fields[fieldName]
+  return ejs.render(fieldInfo[templateName], {row, fieldName, fieldInfo, value: row[fieldName]})
 }
 
 function getSchemaCreationData (row) {
@@ -124,14 +123,13 @@ function removeSchema (config, callback) {
   return helper.mongoExecute(cckCollectionName, 'remove', filter, callback)
 }
 
-function preprocessSchema (schema) {
-  let webConfig = helper.getWebConfig()
-  // define completeSchema
+function preprocessSchema (schema, config) {
+  config = util.isNullOrUndefined(config) ? helper.getWebConfig() : config
   let completeSchema = util.getPatchedObject(defaultSchemaData, schema)
   // completing chiml path
   for (let key in completeSchema) {
     if (util.isString(completeSchema[key])) {
-      completeSchema[key] = ejs.render(completeSchema[key], webConfig)
+      completeSchema[key] = ejs.render(completeSchema[key], config)
     }
   }
   for (let field in completeSchema.fields) {
@@ -141,7 +139,7 @@ function preprocessSchema (schema) {
     // completing chiml path
     for (let key in fieldData) {
       if (util.isString(fieldData[key])) {
-        fieldData[key] = ejs.render(fieldData[key], webConfig)
+        fieldData[key] = ejs.render(fieldData[key], config)
       }
     }
     completeSchema.fields[field] = fieldData
@@ -149,14 +147,14 @@ function preprocessSchema (schema) {
   return completeSchema
 }
 
-function findSchema (filter, callback) {
+function findSchema (filter, config, callback) {
   return helper.mongoExecute(cckCollectionName, 'find', filter, function (error, result) {
     if (error) {
       return callback(error, null)
     }
     let newResult = []
     for (let row of result) {
-      newResult.push(preprocessSchema(row))
+      newResult.push(preprocessSchema(row, config))
     }
     return callback(error, newResult)
   })
@@ -233,7 +231,7 @@ function getInitialState (state, callback) {
   let authId = 'id' in request.auth ? request.auth.id : ''
   let filter = util.isNullOrUndefined(documentId) ? queryFilter : getCombinedFilter({_id: documentId}, queryFilter)
   auth.id = helper.getNormalizedDocId(authId)
-  findSchema({name: schemaName}, (error, schemas) => {
+  findSchema({name: schemaName}, config, (error, schemas) => {
     if (error) {
       return callback(error, null)
     }
@@ -243,9 +241,9 @@ function getInitialState (state, callback) {
     let schema = schemas[0]
     let fieldNames = Object.keys(schema.fields)
     let data = getData(request, fieldNames)
-    let chainInput = {auth, documentId, apiVersion, schemaName, fieldNames, data, filter, limit, offset, excludeDeleted, showHistory, schema, basePath, chainPath, viewPath, migrationPath}
-    chainInput = util.getPatchedObject(defaultInitialState, chainInput)
-    return callback(error, chainInput)
+    let initialState = {auth, documentId, apiVersion, schemaName, fieldNames, data, filter, limit, offset, excludeDeleted, showHistory, schema, basePath, chainPath, viewPath, migrationPath}
+    initialState = util.getPatchedObject(defaultInitialState, initialState)
+    return callback(error, initialState)
   })
 }
 
@@ -294,98 +292,4 @@ function getShownSingleDocument (row, allowedFieldNames) {
     newRow._history = newHistory
   }
   return newRow
-}
-
-function getInputRow (cckState, rows, callback) {
-  return getFieldChainExecutionResult(cckState, rows, 'inputChain', callback)
-}
-
-function getPresentationRow (cckState, rows, callback) {
-  return getFieldChainExecutionResult(cckState, rows, 'presentationChain', callback)
-}
-
-function getInsertValidity (cckState, rows, callback) {
-  return getValidity(cckState, rows, 'insertValidationChain', callback)
-}
-
-function getUpdateValidity (cckState, rows, callback) {
-  return getValidity(cckState, rows, 'updateValidationChain', callback)
-}
-
-function getValidity (cckState, rows, chainKey, callback) {
-  return getFieldChainExecutionResult(cckState, rows, chainKey, (error, results) => {
-    if (error) {
-      return callback(error, null)
-    }
-    let status = true
-    let messages = {}
-    for (let fieldName in results) {
-      let validity = results[fieldName]
-      if (!util.isRealObject(validity)) {
-        continue
-      }
-      if (validity.status) {
-        status = status && validity.status
-      }
-      if (validity.message) {
-        messages[fieldName] = validity.message
-      }
-    }
-    return callback(null, {status, messages})
-  })
-}
-
-function getFieldChainExecutionResult (cckState, rows, chainKey, callback) {
-  if (util.isArray(rows)) {
-    let actions = []
-    let chainResults = []
-    for (let i = 0; i < rows.length; i++) {
-      let row = rows[i]
-      actions.push((next) => {
-        getSingleRowFieldChainExecutionResult(cckState, row, chainKey, (error, result) => {
-          if (error) {
-            console.error(error)
-            return next(error)
-          }
-          chainResults[i] = result
-          return next(null, result)
-        })
-      })
-    }
-    return async.parallel(actions, (error, result) => {
-      if (error) {
-        return callback(error, null)
-      }
-      return callback(null, chainResults)
-    })
-  }
-  return getSingleRowFieldChainExecutionResult(cckState, rows, chainKey, callback)
-}
-
-function getSingleRowFieldChainExecutionResult (cckState, row, chainKey, callback) {
-  let tmpRow = util.getPatchedObject({_id: ''}, row)
-  let chainResults = {_id: tmpRow._id}
-  let actions = []
-  for (let fieldName of cckState.fieldNames) {
-    let fieldInfo = cckState.schema.fields[fieldName]
-    let chainName = fieldInfo[chainKey]
-    actions.push((next) => {
-      let value = fieldName in tmpRow ? tmpRow[fieldName] : fieldInfo.defaultValue
-      return helper.runChain(chainName, cckState, fieldName, value, tmpRow, (error, result) => {
-        if (error) {
-          console.error(error)
-          return next(error)
-        }
-        chainResults[fieldName] = result
-        return next(null, result)
-      })
-    })
-  }
-  // execute the action
-  async.parallel(actions, (error, result) => {
-    if (error) {
-      return callback(error, null)
-    }
-    return callback(null, chainResults)
-  })
 }

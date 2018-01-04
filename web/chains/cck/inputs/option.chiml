@@ -1,6 +1,0 @@
-ins: cckState, fieldName, value, row
-out: html
-do:
-  - |ejsFile <-- (cckState.viewPath + 'cck/inputs/option.ejs')
-  - |options <-- (cckState.schema.fields[fieldName].options)
-  - |(ejsFile, {fieldName, value, row, options}) -> {$.helper.loadEjs} -> html

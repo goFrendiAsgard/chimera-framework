@@ -14,16 +14,6 @@ do:
           status: 401
         out: cckState.result
 
-  # field validity checking
-  - |(cckState, cckState.data) -> [$.cck.getInsertValidity] -> validity
-  - if: |!validity.status
-    do:
-      - ins:
-          developerMessage: validity.messages 
-          userMessage: 'Invalid Column Value'
-          status: 400
-        out: cckState.result
-
   # do pre-processing
   - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.beforeInsertChain)
     do: |(cckState.schema.beforeInsertChain, cckState) -> [$.runChain] -> cckState
