@@ -11,15 +11,14 @@ vars:
       fields:
         name: {}
         collectionName: {}
-        site: {}
         fields:
-          inputTemplate: '<%- cck.input.jsontext %>'
-          tabularPresentationTemplate: '<%- cck.presentation.text %>' 
-          presentationTemplate: '<%- cck.presentation.jsontext %>' 
-        insertGroups: {caption: 'Insert Privileges', inputTemplate: '<%- cck.input.jsontext %>'}
-        updateGroups: {caption: 'Update Privileges', inputTemplate: '<%- cck.input.jsontext %>'}
-        deleteGroups: {caption: 'Delete Privileges', inputTemplate: '<%- cck.input.jsontext %>'}
-        selectGroups: {caption: 'Select Privileges', inputTemplate: '<%- cck.input.jsontext %>'}
+          inputTemplate: '<%- cck.input.jsonText %>'
+          tabularPresentationTemplate: '<%- cck.presentation.text %>'
+          presentationTemplate: '<%- cck.presentation.jsonText %>'
+        insertGroups: {caption: 'Insert Privileges', inputTemplate: '<%- cck.input.jsonText %>'}
+        updateGroups: {caption: 'Update Privileges', inputTemplate: '<%- cck.input.jsonText %>'}
+        deleteGroups: {caption: 'Delete Privileges', inputTemplate: '<%- cck.input.jsonText %>'}
+        selectGroups: {caption: 'Select Privileges', inputTemplate: '<%- cck.input.jsonText %>'}
     - name: 'routes'
       collectionName: 'web_routes'
       insertGroups: ['superAdmin']
@@ -47,7 +46,9 @@ vars:
             purge: 'PURGE'
             lock: 'LOCK'
         chain:
-          inputTemplate: '<%- cck.input.codetext %>'
+          tabularPresentationTemplate: '<%- cck.presentation.trimmedtext %>'
+          presentationTemplate: '<%- cck.presentation.codeText %>'
+          inputTemplate: '<%- cck.input.codeText %>'
     - name: 'users'
       collectionName: 'web_users'
       insertGroups: ['superAdmin']
@@ -67,15 +68,10 @@ vars:
       selectGroups: ['superAdmin']
       fields:
         key: {}
-        value: {}
-    - name: 'pages'
-      collectionName: 'web_pages'
-      insertGroups: ['superAdmin']
-      updateGroups: ['superAdmin']
-      deleteGroups: ['superAdmin']
-      fields:
-        key: {}
-        value: {}
+        value:
+          inputTemplate: '<%- cck.input.jsonText %>'
+          tabularPresentationTemplate: '<%- cck.presentation.trimmedText %>'
+          presentationTemplate: '<%- cck.presentation.jsonText %>'
     - name: 'tests'
       collectionName: 'web_tests'
       fields:

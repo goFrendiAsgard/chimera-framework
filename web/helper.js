@@ -17,6 +17,7 @@ module.exports = {
   injectState,
   mongoExecute,
   getObjectFromJson,
+  getParsedNestedJson,
   getNormalizedDocId,
   getSubObject,
   isAuthorized,
@@ -110,6 +111,30 @@ function getObjectFromJson (jsonString) {
   } catch (error) {
     return {}
   }
+}
+
+function getParsedNestedJson (obj) {
+  if (util.isString(obj)) {
+    try {
+      obj = JSON.parse(obj)
+    } catch (error) {
+      // do nothing
+    }
+  }
+  if (util.isRealObject(obj)) {
+    for (let key in obj) {
+      if (util.isString(obj[key])) {
+        try {
+          obj[key] = JSON.parse(obj[key])
+        } catch (error) {
+          // do nothing
+        }
+      } else {
+        obj[key] = getParsedNestedJson(obj[key])
+      }
+    }
+  }
+  return obj
 }
 
 function getNormalizedDocId (docId) {

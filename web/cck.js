@@ -8,6 +8,7 @@ const helper = require('./helper.js')
 module.exports = {
   createSchema,
   removeSchema,
+  getDefaultConfigs,
   getRoutes,
   getInitialState,
   getShownDocument,
@@ -91,7 +92,6 @@ function render (schemaInfo, fieldName, templateNames, row) {
   let realTemplateName
   if (util.isArray(templateNames)) {
     for (let templateName of templateNames) {
-      console.error(templateName)
       if (templateName in fieldInfo && fieldInfo) {
         realTemplateName = templateName
         break
@@ -121,7 +121,7 @@ function createSchema (config, callback) {
 }
 
 function removeSchema (config, callback) {
-  let filterKeys = ['_id', 'name', 'site']
+  let filterKeys = ['_id', 'name']
   let filter = {}
   if (util.isArray(config)) {
     let data = []
@@ -133,6 +133,20 @@ function removeSchema (config, callback) {
     filter = helper.getSubObject(getSchemaCreationData(config), filterKeys)
   }
   return helper.mongoExecute(cckCollectionName, 'remove', filter, callback)
+}
+
+function getDefaultConfigs () {
+  let exceptions = ['routes', 'jwtSecret', 'jwtExpired', 'jwtTokenName', 'sessionSecret', 'sessionMaxAge', 'sessionSaveUnitialized', 'sessionResave', 'middlewares', 'mongoUrl', 'migrationPath', 'vars']
+  let webConfig = helper.getWebConfig()
+  let defaultConfigs = []
+  for (let key in webConfig) {
+    if (exceptions.indexOf(key) >= 0) {
+      continue
+    }
+    let value = webConfig[key]
+    defaultConfigs.push({key, value, defaultConfig: 1})
+  }
+  return defaultConfigs
 }
 
 function preprocessSchema (schema, config) {
@@ -252,7 +266,7 @@ function getInitialState (state, callback) {
     }
     let schema = schemas[0]
     let fieldNames = Object.keys(schema.fields)
-    let data = getData(request, fieldNames)
+    let data = helper.getParsedNestedJson(getData(request, fieldNames))
     let initialState = {auth, documentId, apiVersion, schemaName, fieldNames, data, filter, limit, offset, excludeDeleted, showHistory, schema, basePath, chainPath, viewPath, migrationPath}
     initialState = util.getPatchedObject(defaultInitialState, initialState)
     return callback(error, initialState)

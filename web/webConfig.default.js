@@ -58,9 +58,9 @@ const webConfig = {
     // ejs to render inputs, parameters: fieldName, row, value, fieldInfo
     input: {
       text: '<input name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control" type="text" value="<%= value %>" />',
-      textarea: '<textarea name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control"><%- value %></textarea>',
-      jsontext: '<textarea name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control" style="font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace; height:10em"><%- JSON.stringify(value, null, 2) %></textarea>',
-      codetext: '<textarea name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control" style="font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace; height:10em"><%- value %></textarea>',
+      textArea: '<textarea name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control"><%= value %></textarea>',
+      jsonText: '<textarea name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control cw-monospaced cw-textarea"><%= value === Object(value) ? JSON.stringify(value, null, 2) : value %></textarea>',
+      codeText: '<textarea name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control cw-monospaced cw-textarea"><%= value %></textarea>',
       option: '<select name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control">\n' +
               '<% for (let value in fieldInfo.options){ %>\n' +
               '  <option value="<%= value %>" <%= value === fieldInfo.options[value]? "selected": ""%>><%= fieldInfo.options[value] %></option>\n' +
@@ -71,8 +71,9 @@ const webConfig = {
     presentation: {
       text: '<%= value %>',
       option: '<%= value in fieldInfo.options? fieldInfo.options[value]: "" %>',
-      jsontext: '<pre><%= JSON.stringify(value, null, 2) %></pre>',
-      codetext: '<pre><%= JSON.stringify(value, null, 2) %></pre>'
+      trimmedText: '<%= JSON.stringify(value).length > 30 ? JSON.stringify(value).slice(0,27) + \'...\' : JSON.stringify(value) %>',
+      jsonText: '<pre><%= value === Object(value) ? JSON.stringify(value, null, 2) : value %></pre>',
+      codeText: '<pre><%= value %></pre>'
     }
   }
 }
