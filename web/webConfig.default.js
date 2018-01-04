@@ -59,7 +59,8 @@ const webConfig = {
     input: {
       text: '<input name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control" type="text" value="<%= value %>" />',
       textarea: '<textarea name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control"><%- value %></textarea>',
-      jsontext: '<textarea name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control"><%- JSON.stringify(value, null, 2) %></textarea>',
+      jsontext: '<textarea name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control" style="font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace; height:10em"><%- JSON.stringify(value, null, 2) %></textarea>',
+      codetext: '<textarea name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control" style="font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace; height:10em"><%- value %></textarea>',
       option: '<select name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control">\n' +
               '<% for (let value in fieldInfo.options){ %>\n' +
               '  <option value="<%= value %>" <%= value === fieldInfo.options[value]? "selected": ""%>><%= fieldInfo.options[value] %></option>\n' +
@@ -70,7 +71,8 @@ const webConfig = {
     presentation: {
       text: '<%= value %>',
       option: '<%= value in fieldInfo.options? fieldInfo.options[value]: "" %>',
-      jsontext: '<pre><%= JSON.stringify(value, null, 2) %></pre>'
+      jsontext: '<pre><%= JSON.stringify(value, null, 2) %></pre>',
+      codetext: '<pre><%= JSON.stringify(value, null, 2) %></pre>'
     }
   }
 }

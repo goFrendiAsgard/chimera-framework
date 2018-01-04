@@ -47,7 +47,7 @@ vars:
             purge: 'PURGE'
             lock: 'LOCK'
         chain:
-          inputTemplate: '<%- cck.input.textarea %>'
+          inputTemplate: '<%- cck.input.codetext %>'
     - name: 'users'
       collectionName: 'web_users'
       insertGroups: ['superAdmin']
