@@ -86,9 +86,21 @@ const defaultFieldData = {
   options: {}
 }
 
-function render (schemaInfo, fieldName, templateName, row) {
+function render (schemaInfo, fieldName, templateNames, row) {
   let fieldInfo = schemaInfo.fields[fieldName]
-  return ejs.render(fieldInfo[templateName], {row, fieldName, fieldInfo, value: row[fieldName]})
+  let realTemplateName
+  if (util.isArray(templateNames)) {
+    for (let templateName of templateNames) {
+      console.error(templateName)
+      if (templateName in fieldInfo && fieldInfo) {
+        realTemplateName = templateName
+        break
+      }
+    }
+  } else {
+    realTemplateName = templateNames
+  }
+  return ejs.render(fieldInfo[realTemplateName], {row, fieldName, fieldInfo, value: row[fieldName]})
 }
 
 function getSchemaCreationData (row) {

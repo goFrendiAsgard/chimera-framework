@@ -58,8 +58,9 @@ const webConfig = {
     // ejs to render inputs, parameters: fieldName, row, value, fieldInfo
     input: {
       text: '<input name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control" type="text" value="<%= value %>" />',
-      textarea: '<textarea name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control"><%= value %></textarea>',
-      option: '<select name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control" value="<%= value %>" />\n' +
+      textarea: '<textarea name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control"><%- value %></textarea>',
+      jsontext: '<textarea name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control"><%- JSON.stringify(value, null, 2) %></textarea>',
+      option: '<select name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control">\n' +
               '<% for (let value in fieldInfo.options){ %>\n' +
               '  <option value="<%= value %>" <%= value === fieldInfo.options[value]? "selected": ""%>><%= fieldInfo.options[value] %></option>\n' +
               '<% } %>\n' +
@@ -68,7 +69,8 @@ const webConfig = {
     // ejs to render presentations, parameters: fieldName, row, value, fieldInfo
     presentation: {
       text: '<%= value %>',
-      option: '<%= value in fieldInfo.options? fieldInfo.options[value]: "" %>'
+      option: '<%= value in fieldInfo.options? fieldInfo.options[value]: "" %>',
+      jsontext: '<pre><%= JSON.stringify(value, null, 2) %></pre>'
     }
   }
 }

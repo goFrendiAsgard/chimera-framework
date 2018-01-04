@@ -38,8 +38,10 @@ function loadEjs (fileName, data) {
 
 function injectBaseLayout (state, callback) {
   let cck = require('./cck.js')
-  state.response.data.render = cck.render
-  if (!util.isRealObject(state.response) || util.isNullOrUndefined(state.response.view) || state.response.view === '') {
+  if (util.isRealObject(state.response.data)) {
+    state.response.data.render = cck.render
+  }
+  if (util.isNullOrUndefined(state.response.view) || state.response.view === '') {
     return callback(null, state)
   }
   let responseData = state.response.data

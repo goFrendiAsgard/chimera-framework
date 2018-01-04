@@ -12,11 +12,14 @@ vars:
         name: {}
         collectionName: {}
         site: {}
-        fields: {} 
-        insertGroups: {caption: 'Insert Privileges'}
-        updateGroups: {caption: 'Update Privileges'}
-        deleteGroups: {caption: 'Delete Privileges'}
-        selectGroups: {caption: 'Select Privileges'}
+        fields:
+          inputTemplate: '<%- cck.input.jsontext %>'
+          tabularPresentationTemplate: '<%- cck.presentation.text %>' 
+          presentationTemplate: '<%- cck.presentation.jsontext %>' 
+        insertGroups: {caption: 'Insert Privileges', inputTemplate: '<%- cck.input.jsontext %>'}
+        updateGroups: {caption: 'Update Privileges', inputTemplate: '<%- cck.input.jsontext %>'}
+        deleteGroups: {caption: 'Delete Privileges', inputTemplate: '<%- cck.input.jsontext %>'}
+        selectGroups: {caption: 'Select Privileges', inputTemplate: '<%- cck.input.jsontext %>'}
     - name: 'routes'
       collectionName: 'web_routes'
       insertGroups: ['superAdmin']
