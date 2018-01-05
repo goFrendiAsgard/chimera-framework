@@ -37,31 +37,38 @@ function loadEjs (fileName, data) {
   return ejs.render(content, data).trim()
 }
 
+function renderContent (responseData, view, viewPath) {
+  if (fs.existsSync(view)) {
+    return loadEjs(view, responseData)
+  } else if (fs.existsSync(path.join(viewPath, view))) {
+    return loadEjs(path.join(viewPath, view), responseData)
+  } else {
+    return ejs.render(view, responseData)
+  }
+}
+
 function injectBaseLayout (state, callback) {
   let cck = require('./cck.js')
   if (util.isRealObject(state.response.data)) {
-    state.response.data.render = cck.render
+    state.response.data.renderFieldTemplate = cck.renderFieldTemplate
+    state.response.data.render = ejs.render
   }
   if (util.isNullOrUndefined(state.response.view) || state.response.view === '') {
     return callback(null, state)
   }
   let responseData = state.response.data
-  let content
-  let templateFile = getAbsoluteFilePath(state.config.viewPath, state.response.view)
-  if (fs.existsSync(templateFile)) {
-    content = loadEjs(templateFile, responseData)
-  } else {
-    content = ejs.render(templateFile, responseData)
-  }
+  let content = renderContent(responseData, state.response.view, state.config.viewPath)
   let newResponseData = {content, partial: {}}
   let actions = []
+  let config = state.config
+  let auth = state.request.auth
   for (let partialName in state.config.partial) {
     actions.push((next) => {
       let partialPath = state.config.partial[partialName]
       if (fs.existsSync(partialPath)) {
-        newResponseData.partial[partialName] = loadEjs(partialPath, {responseData})
+        newResponseData.partial[partialName] = loadEjs(partialPath, {auth, config, responseData})
       } else {
-        newResponseData.partial[partialName] = ejs.render(partialPath, {responseData})
+        newResponseData.partial[partialName] = ejs.render(partialPath, {auth, config, responseData})
       }
       next()
     })
@@ -71,13 +78,6 @@ function injectBaseLayout (state, callback) {
     state.response.view = state.config.baseLayout
     return callback(error, state)
   })
-}
-
-function getAbsoluteFilePath (basePath, filePath) {
-  if (path.isAbsolute(filePath)) {
-    return filePath
-  }
-  return path.join(basePath, filePath)
 }
 
 function isAuthorized (request, groups) {
@@ -185,7 +185,9 @@ function injectState (state, callback) {
   ], (error, result) => {
     // add db configs
     for (let doc of configDocs) {
-      state.config[doc.key] = doc.value
+      if (state.config.exceptionKeys.indexOf(doc.key) > -1) {
+        state.config[doc.key] = renderConfigValue(doc.value, state.config)
+      }
     }
     // render routes
     for (let route in state.config.routes) {
@@ -204,11 +206,28 @@ function injectState (state, callback) {
   })
 }
 
+function renderConfigValue (doc, webConfig) {
+  let value = doc.value
+  if (util.isRealObject(value) || util.isArray(value)) {
+    value = JSON.stringify(value)
+    value = ejs.render(value, webConfig)
+    value = JSON.parse(value)
+  } else if (util.isString(value)) {
+    value = ejs.render(value, webConfig)
+  }
+  return value
+}
+
 function renderRoute (doc, config) {
   let route = ejs.render(doc.route, config)
   let method = doc.method ? ejs.render(doc.method, config) : 'all'
   let chain = ejs.render(doc.chain, config)
-  return {route, method, chain}
+  let groups = 'groups' in doc ? doc.groups : []
+  let routeObj = {route, method, chain, groups}
+  if (doc.view) {
+    routeObj.view = doc.view
+  }
+  return routeObj
 }
 
 function createRandomString (length = 16) {

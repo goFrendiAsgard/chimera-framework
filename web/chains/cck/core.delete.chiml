@@ -14,15 +14,15 @@ do:
         out: cckState.result
 
   # do pre-processing
-  - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.beforeDeleteChain)
+  - if: |cckState.result.status < 400 && cckState.schema.beforeDeleteChain
     do: |(cckState.schema.beforeDeleteChain, cckState) -> [$.runChain] -> cckState
 
   # do delete
-  - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.deleteChain)
+  - if: |cckState.result.status < 400 && cckState.schema.deleteChain
     do: |(cckState.schema.deleteChain, cckState) -> [$.runChain] -> cckState
 
   # do post-processing
-  - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.afterDeleteChain)
+  - if: |cckState.result.status < 400 && cckState.schema.afterDeleteChain
     do: |(cckState.schema.afterDeleteChain, cckState) -> [$.runChain] -> cckState
 
   - |response.status <-- cckState.result.status

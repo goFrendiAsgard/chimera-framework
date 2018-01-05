@@ -14,15 +14,15 @@ do:
         out: cckState.result
   
   # do pre-processing
-  - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.beforeSelectChain)
+  - if: |cckState.result.status < 400 && cckState.schema.beforeSelectChain
     do: |(cckState.schema.beforeSelectChain, cckState) -> [$.runChain] -> cckState
 
   # do select
-  - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.selectChain)
+  - if: |cckState.result.status < 400 && cckState.schema.selectChain
     do: |(cckState.schema.selectChain, cckState) -> [$.runChain] -> cckState
 
   # do post-processing
-  - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.afterSelectChain)
+  - if: |cckState.result.status < 400 && cckState.schema.afterSelectChain
     do: |(cckState.schema.afterSelectChain, cckState) -> [$.runChain] -> cckState
 
   - |response.status <-- cckState.result.status

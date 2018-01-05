@@ -1,0 +1,7 @@
+ins: state
+out: state
+do:
+  - if: |state.matchedRoute && !$.helper.isAuthorized(state.request, state.matchedRoute.groups)
+    do:
+      - |state.response.status <-- 401 
+      - |state.response.errorMessage <-- 'Unauthorized' 

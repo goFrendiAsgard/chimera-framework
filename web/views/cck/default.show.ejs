@@ -14,7 +14,7 @@
     <% for (let row of results) { %>
       <tr>
         <% for (let fieldName of cckState.fieldNames) { %>
-          <td><%- render(cckState.schema, fieldName, ['tabularPresentationTemplate', 'presentationTemplate'], row) %></td>
+          <td><%- renderFieldTemplate(cckState.schema, fieldName, ['tabularPresentationTemplate', 'presentationTemplate'], row) %></td>
         <% } %>
         <td>
           <a class="btn btn-default button-detail" rowId="<%=row._id%>" href="/data/<%= cckState.schemaName %>/<%=row._id%>">Detail</a>

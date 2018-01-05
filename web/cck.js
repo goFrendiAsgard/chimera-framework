@@ -13,7 +13,7 @@ module.exports = {
   getInitialState,
   getShownDocument,
   getCombinedFilter,
-  render
+  renderFieldTemplate
 }
 
 const cckCollectionName = 'web_cck'
@@ -87,7 +87,7 @@ const defaultFieldData = {
   options: {}
 }
 
-function render (schemaInfo, fieldName, templateNames, row) {
+function renderFieldTemplate (schemaInfo, fieldName, templateNames, row) {
   let fieldInfo = schemaInfo.fields[fieldName]
   let realTemplateName
   if (util.isArray(templateNames)) {
@@ -136,14 +136,22 @@ function removeSchema (config, callback) {
 }
 
 function getDefaultConfigs () {
-  let exceptions = ['routes', 'jwtSecret', 'jwtExpired', 'jwtTokenName', 'sessionSecret', 'sessionMaxAge', 'sessionSaveUnitialized', 'sessionResave', 'middlewares', 'mongoUrl', 'migrationPath', 'vars']
   let webConfig = helper.getWebConfig()
+  let basePath = webConfig.basePath
   let defaultConfigs = []
   for (let key in webConfig) {
-    if (exceptions.indexOf(key) >= 0) {
+    if (webConfig.exceptionKeys.indexOf(key) >= 0) {
       continue
     }
     let value = webConfig[key]
+    let basePathPattern = new RegExp(basePath, 'g')
+    if (util.isRealObject(value) || util.isArray(value)) {
+      value = JSON.stringify(value)
+      value = value.replace(basePathPattern, '<%- basePath %>')
+      value = JSON.parse(value)
+    } else if (util.isString(value)) {
+      value = value.replace(basePathPattern, '<%- basePath %>')
+    }
     defaultConfigs.push({key, value, defaultConfig: 1})
   }
   return defaultConfigs

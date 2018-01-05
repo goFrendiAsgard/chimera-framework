@@ -11,6 +11,7 @@ const webConfig = {
   chainPath,
   cckPath: path.join(__dirname, 'cck.js'),
   helperPath: path.join(__dirname, 'helper.js'),
+  exceptionKeys: ['basePath', 'chainPath', 'cckPath', 'helperPath', 'exceptionKeys', 'routes', 'jwtSecret', 'jwtExpired', 'jwtTokenName', 'sessionSecret', 'sessionMaxAge', 'sessionSaveUnitialized', 'sessionResave', 'startupHook', 'beforeRequestHook', 'afterRequestHook', 'middlewares', 'mongoUrl', 'migrationPath', 'staticPath', 'faviconPath', 'viewPath', 'errorTemplate', 'defaultTemplate', 'baseLayout', 'vars'],
   // routes
   routes: [],
   // jwt configuration
@@ -24,7 +25,7 @@ const webConfig = {
   sessionResave: true,
   // hook configuration
   startupHook: path.join(chainPath, 'core.hook.startup.chiml'),
-  beforeRequestHook: null,
+  beforeRequestHook: path.join(chainPath, 'core.hook.beforeRequest.chiml'),
   afterRequestHook: path.join(chainPath, 'core.hook.afterRequest.chiml'),
   // list of express middlewares function
   middlewares: [],
@@ -71,7 +72,7 @@ const webConfig = {
     presentation: {
       text: '<%= value %>',
       option: '<%= value in fieldInfo.options? fieldInfo.options[value]: "" %>',
-      trimmedText: '<%= JSON.stringify(value).length > 30 ? JSON.stringify(value).slice(0,27) + \'...\' : JSON.stringify(value) %>',
+      trimmedText: '<%= value === null || value === undefined || value === \'\'? \'\': (JSON.stringify(value).length > 30 ? JSON.stringify(value).slice(0,27) + \'...\' : JSON.stringify(value)) %>',
       jsonText: '<pre><%= value === Object(value) ? JSON.stringify(value, null, 2) : value %></pre>',
       codeText: '<pre><%= value %></pre>'
     }

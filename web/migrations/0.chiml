@@ -36,12 +36,6 @@ vars:
       fields:
         name: {}
         route: {}
-        groups:
-          inputTemplate: '<%- cck.input.jsonText %>'
-        view:
-          inputTemplate: '<%- cck.input.codeText %>'
-          tabularPresentationTemplate: '<%- cck.presentation.trimmedText %>'
-          presentationTemplate: '<%- cck.presentation.codeText %>'
         method:
           inputTemplate: '<%- cck.input.option %>'
           presentationTemplate: '<%- cck.presentation.option %>'
@@ -63,6 +57,12 @@ vars:
           tabularPresentationTemplate: '<%- cck.presentation.trimmedtext %>'
           presentationTemplate: '<%- cck.presentation.codeText %>'
           inputTemplate: '<%- cck.input.codeText %>'
+        view:
+          tabularPresentationTemplate: '<%- cck.presentation.trimmedText %>'
+          presentationTemplate: '<%- cck.presentation.codeText %>'
+          inputTemplate: '<%- cck.input.codeText %>'
+        groups:
+          inputTemplate: '<%- cck.input.jsonText %>'
     - name: 'users'
       collectionName: 'web_users'
       insertGroups: ['superAdmin']

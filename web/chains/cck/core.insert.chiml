@@ -15,15 +15,15 @@ do:
         out: cckState.result
 
   # do pre-processing
-  - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.beforeInsertChain)
+  - if: |cckState.result.status < 400 && cckState.schema.beforeInsertChain
     do: |(cckState.schema.beforeInsertChain, cckState) -> [$.runChain] -> cckState
 
   # do insert
-  - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.insertChain)
+  - if: |cckState.result.status < 400 && cckState.schema.insertChain
     do: |(cckState.schema.insertChain, cckState) -> [$.runChain] -> cckState
 
   # do post-processing
-  - if: |cckState.result.status < 400 && !$.util.isNullOrUndefined(cckState.schema.afterInsertChain)
+  - if: |cckState.result.status < 400 && cckState.schema.afterInsertChain
     do: |(cckState.schema.afterInsertChain, cckState) -> [$.runChain] -> cckState
 
   - |response.status <-- cckState.result.status
