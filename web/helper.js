@@ -46,14 +46,23 @@ function injectBaseLayout (state, callback) {
     return callback(null, state)
   }
   let responseData = state.response.data
+  let content
   let templateFile = getAbsoluteFilePath(state.config.viewPath, state.response.view)
-  let content = loadEjs(templateFile, responseData)
+  if (fs.existsSync(templateFile)) {
+    content = loadEjs(templateFile, responseData)
+  } else {
+    content = ejs.render(templateFile, responseData)
+  }
   let newResponseData = {content, partial: {}}
   let actions = []
   for (let partialName in state.config.partial) {
     actions.push((next) => {
       let partialPath = state.config.partial[partialName]
-      newResponseData.partial[partialName] = loadEjs(partialPath, {responseData})
+      if (fs.existsSync(partialPath)) {
+        newResponseData.partial[partialName] = loadEjs(partialPath, {responseData})
+      } else {
+        newResponseData.partial[partialName] = ejs.render(partialPath, {responseData})
+      }
       next()
     })
   }

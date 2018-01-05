@@ -15,10 +15,18 @@ vars:
           inputTemplate: '<%- cck.input.jsonText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
-        insertGroups: {caption: 'Insert Privileges', inputTemplate: '<%- cck.input.jsonText %>'}
-        updateGroups: {caption: 'Update Privileges', inputTemplate: '<%- cck.input.jsonText %>'}
-        deleteGroups: {caption: 'Delete Privileges', inputTemplate: '<%- cck.input.jsonText %>'}
-        selectGroups: {caption: 'Select Privileges', inputTemplate: '<%- cck.input.jsonText %>'}
+        insertGroups:
+          caption: 'Insert Privileges'
+          inputTemplate: '<%- cck.input.jsonText %>'
+        updateGroups:
+          caption: 'Update Privileges'
+          inputTemplate: '<%- cck.input.jsonText %>'
+        deleteGroups:
+          caption: 'Delete Privileges'
+          inputTemplate: '<%- cck.input.jsonText %>'
+        selectGroups:
+          caption: 'Select Privileges'
+          inputTemplate: '<%- cck.input.jsonText %>'
     - name: 'routes'
       collectionName: 'web_routes'
       insertGroups: ['superAdmin']
@@ -28,6 +36,12 @@ vars:
       fields:
         name: {}
         route: {}
+        groups:
+          inputTemplate: '<%- cck.input.jsonText %>'
+        view:
+          inputTemplate: '<%- cck.input.codeText %>'
+          tabularPresentationTemplate: '<%- cck.presentation.trimmedText %>'
+          presentationTemplate: '<%- cck.presentation.codeText %>'
         method:
           inputTemplate: '<%- cck.input.option %>'
           presentationTemplate: '<%- cck.presentation.option %>'
