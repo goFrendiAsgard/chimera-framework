@@ -15,6 +15,12 @@ vars:
           inputTemplate: '<%- cck.input.jsonText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
+          hidden: ['tabular']
+        partial:
+          inputTemplate: '<%- cck.input.jsonText %>'
+          tabularPresentationTemplate: '<%- cck.presentation.text %>'
+          presentationTemplate: '<%- cck.presentation.jsonText %>'
+          hidden: ['tabular']
         insertGroups:
           caption: 'Insert Privileges'
           inputTemplate: '<%- cck.input.jsonText %>'
@@ -57,10 +63,12 @@ vars:
           tabularPresentationTemplate: '<%- cck.presentation.trimmedtext %>'
           presentationTemplate: '<%- cck.presentation.codeText %>'
           inputTemplate: '<%- cck.input.codeText %>'
+          hidden: ['tabular']
         view:
           tabularPresentationTemplate: '<%- cck.presentation.trimmedText %>'
           presentationTemplate: '<%- cck.presentation.codeText %>'
           inputTemplate: '<%- cck.input.codeText %>'
+          hidden: ['tabular']
         groups:
           inputTemplate: '<%- cck.input.jsonText %>'
     - name: 'users'
@@ -72,8 +80,10 @@ vars:
       fields:
         username: {}
         email: {}
-        password: {}
-        groups: {}
+        password:
+          hidden: ['tabular', 'detail']
+        groups:
+          inputTemplate: '<%- cck.input.jsonText %>'
     - name: 'configs'
       collectionName: 'web_configs'
       insertGroups: ['superAdmin']

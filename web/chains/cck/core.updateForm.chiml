@@ -13,6 +13,7 @@ do:
       # get presentation
       - |response.data <-- apiResponse.data
       - |response.data.cckState <-- cckState
+      - |response.partial <-- cckState.partial
     else:
       - |response.status <-- apiResponse.data.status
       - |response.errorMessage <-- apiResponse.data.userMessage

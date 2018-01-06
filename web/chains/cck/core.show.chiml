@@ -18,6 +18,7 @@ do:
     do:
       - |response.data <-- apiResponse.data
       - |response.data.cckState <-- cckState 
+      - |response.partial <-- cckState.partial
     else:
       - |response.status <-- apiResponse.status
       - |response.error <-- apiResponse.error

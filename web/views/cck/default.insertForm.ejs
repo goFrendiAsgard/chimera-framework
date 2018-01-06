@@ -1,5 +1,6 @@
 <form action="/data/<%= cckState.schemaName %>/insert" method="post">
   <% for (let fieldName of cckState.fieldNames) { %>
+    <% if (cckState.schema.fields[fieldName].hidden && cckState.schema.fields[fieldName].hidden.indexOf('insert') > -1) { continue;} %>
     <div class="form-group row">
       <label class="col-form-label col-sm-2"><%= cckState.schema.fields[fieldName].caption %></label>
       <div class="col-sm-10">

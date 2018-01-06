@@ -37,6 +37,7 @@ const defaultInitialState = {
   schema: {},
   filter: {},
   data: {},
+  partial: null,
   limit: 1000,
   offset: 0,
   excludeDeleted: 1,

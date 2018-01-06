@@ -64,7 +64,12 @@ function injectBaseLayout (state, callback) {
   let auth = state.request.auth
   for (let partialName in state.config.partial) {
     actions.push((next) => {
-      let partialPath = state.config.partial[partialName]
+      let partialPath
+      if (util.isRealObject(state.response.partial) && state.response.partial[partialName]) {
+        partialPath = ejs.render(state.response.partial[partialName], state.config)
+      } else {
+        partialPath = state.config.partial[partialName]
+      }
       if (fs.existsSync(partialPath)) {
         newResponseData.partial[partialName] = loadEjs(partialPath, {auth, config, responseData})
       } else {

@@ -6,3 +6,4 @@ do:
 
   # get presentation
   - |response.data.cckState <-- cckState
+  - |response.partial <-- cckState.partial
