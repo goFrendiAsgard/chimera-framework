@@ -36,6 +36,7 @@ const defaultInitialState = {
   state: {},
   schema: {},
   filter: {},
+  unset: {},
   data: {},
   limit: 1000,
   offset: 0,
@@ -158,6 +159,7 @@ function getDefaultConfigs () {
 }
 
 function preprocessSchema (schema, config) {
+  schema = getTrimmedObject(schema)
   config = util.isNullOrUndefined(config) ? helper.getWebConfig() : config
   let completeSchema = util.getPatchedObject(defaultSchemaData, schema)
   // completing chiml path
@@ -247,8 +249,7 @@ function getQueryFilter (request) {
 }
 
 function getInitialState (state, callback) {
-  let config = state.config
-  let request = state.request
+  let {config, request} = state
   let basePath = config.basePath ? config.basePath : null
   let chainPath = config.chainPath ? config.chainPath : null
   let viewPath = config.viewPath ? config.viewPath : null
@@ -272,12 +273,24 @@ function getInitialState (state, callback) {
     if (schemas.length === 0) {
       return callback(new Error('cckError: Undefined schema ' + schemaName), null)
     }
-    let schema = getTrimmedObject(schemas[0])
-    let fieldNames = Object.keys(schema.fields)
-    let data = helper.getParsedNestedJson(getData(request, fieldNames))
-    let initialState = {auth, documentId, apiVersion, schemaName, fieldNames, data, filter, limit, offset, excludeDeleted, showHistory, schema, basePath, chainPath, viewPath, migrationPath}
-    initialState = util.getPatchedObject(defaultInitialState, initialState)
-    return callback(error, initialState)
+    try {
+      let schema = schemas[0]
+      let fieldNames = Object.keys(schema.fields)
+      let data = getData(request, fieldNames)
+      let unset = {}
+      for (let key in data) {
+        if (data[key] === '') {
+          unset[key] = ''
+          delete data[key]
+        }
+      }
+      data = helper.getParsedNestedJson(data)
+      let initialState = {auth, documentId, apiVersion, schemaName, fieldNames, data, unset, filter, limit, offset, excludeDeleted, showHistory, schema, basePath, chainPath, viewPath, migrationPath}
+      initialState = util.getPatchedObject(defaultInitialState, initialState)
+      return callback(error, initialState)
+    } catch (error) {
+      return callback(error, null)
+    }
   })
 }
 
@@ -285,10 +298,14 @@ function getTrimmedObject (obj) {
   obj = util.getDeepCopiedObject(obj)
   if (util.isRealObject(obj)) {
     for (let key in obj) {
-      if (!obj[key]) {
-        delete obj[key]
-      } else {
-        obj[key] = getTrimmedObject(obj[key])
+      try {
+        if (!obj[key]) {
+          delete obj[key]
+        } else {
+          obj[key] = getTrimmedObject(obj[key])
+        }
+      } catch (error) {
+        // do nothing
       }
     }
   }

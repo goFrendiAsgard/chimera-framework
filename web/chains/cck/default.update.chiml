@@ -5,9 +5,10 @@ do:
   - |user <-- cckState.auth.id
   - |showHistory <-- cckState.showHistory
   - |excludeDeleted <-- cckState.excludeDeleted
-  - |data <-- cckState.data
 
-  - |options <-- {}
+  - |data <-- cckState.data
+  - |data.$unset <-- cckState.unset
+
   - if: |$.util.isNullOrUndefined(cckState.documentId)
     do: |options <-- {multi:1}
 

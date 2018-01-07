@@ -1,6 +1,16 @@
 <div style="margin-bottom:1em">
-  <a id="button-insert" class="btn btn-default" href="/data/<%= cckState.schemaName %>/insert">Add</a>
+
+  <% if (cckState.customHtmlComponents) { %>
+    <%- cckState.customHtmlComponents %>
+  <% } %>
+
+  <!-- Insert Button -->
+  <% if (isAuthorized(cckState.auth, cckState.schema.insertGroups)) { %>
+    <a id="button-insert" class="btn btn-default" href="/data/<%= cckState.schemaName %>/insert">Add</a>
+  <% } %>
+
 </div>
+
 <table class="table">
   <thead>
     <tr>
@@ -14,14 +24,27 @@
   <tbody>
     <% for (let row of results) { %>
       <tr>
+        <!-- Content -->
         <% for (let fieldName of cckState.fieldNames) { %>
           <% if (cckState.schema.fields[fieldName].hidden && cckState.schema.fields[fieldName].hidden.indexOf('tabular') > -1) { continue;} %>
           <td><%- renderFieldTemplate(cckState.schema, fieldName, ['tabularPresentationTemplate', 'presentationTemplate'], row) %></td>
         <% } %>
+
         <td>
-          <a class="btn btn-default button-detail" rowId="<%=row._id%>" href="/data/<%= cckState.schemaName %>/<%=row._id%>">Detail</a>
-          <a class="btn btn-default button-update" rowId="<%=row._id%>" href="/data/<%= cckState.schemaName %>/update/<%=row._id%>">Update</a>
-          <a class="btn btn-default button-delete" rowId="<%=row._id%>" href="/data/<%= cckState.schemaName %>/delete/<%=row._id%>">Delete</a>
+          <!-- Detail Button -->
+          <% if (isAuthorized(cckState.auth, cckState.schema.selectGroups)) { %>
+            <a class="btn btn-default button-detail" rowId="<%=row._id%>" href="/data/<%= cckState.schemaName %>/<%=row._id%>">Detail</a>
+          <% } %>
+
+          <!-- Update Button -->
+          <% if (isAuthorized(cckState.auth, cckState.schema.updateGroups)) { %>
+            <a class="btn btn-default button-update" rowId="<%=row._id%>" href="/data/<%= cckState.schemaName %>/update/<%=row._id%>">Update</a>
+          <% } %>
+
+          <!-- Update Button -->
+          <% if (isAuthorized(cckState.auth, cckState.schema.deleteGroups)) { %>
+            <a class="btn btn-default button-delete" rowId="<%=row._id%>" href="/data/<%= cckState.schemaName %>/delete/<%=row._id%>">Delete</a>
+          <% } %>
         </td>
       </tr>
     <% } %>

@@ -9,7 +9,13 @@
 <% } %>
 <div style="margin-bottom:1em">
   <a class="btn btn-default" href="/data/<%= cckState.schemaName %>/insert">Insert Again</a>
-  <a class="btn btn-default" href="/data/<%= cckState.schemaName %>">Back</a>
+
+  <% if (isAuthorized(cckState.auth, cckState.schema.selectGroups)) { %>
+    <a class="btn btn-default" href="/data/<%= cckState.schemaName %>">Back</a>
+  <% } else { %>
+    <a class="btn btn-default" href="/">Back</a>
+  <% } %>
+
 </div>
 <% if (developerMessage){ %>
   <script>

@@ -5,7 +5,7 @@ do:
   - if: |!cckState
     do: |(state) -> [$.cck.getInitialState] -> cckState
 
-  - if: |!$.helper.isAuthorized(state.request, cckState.schema.deleteGroups)
+  - if: |!$.helper.isAuthorized(state.request.auth, cckState.schema.deleteGroups)
     do:
       - ins:
           developerMessage: 'Unauthorized'

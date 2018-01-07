@@ -1,17 +1,32 @@
 <form action="/data/<%= cckState.schemaName %>/insert" method="post">
   <% for (let fieldName of cckState.fieldNames) { %>
+
     <% if (cckState.schema.fields[fieldName].hidden && cckState.schema.fields[fieldName].hidden.indexOf('insert') > -1) { continue;} %>
+
+    <% if (cckState.schema.fields[fieldName]._inputTemplate) { %>
+      <%- renderFieldTemplate(cckState.schema, fieldName, '_inputTemplate', result) %>
+      <% continue %>
+    <% } %>
+
     <div class="form-group row">
       <label class="col-form-label col-sm-2"><%= cckState.schema.fields[fieldName].caption %></label>
       <div class="col-sm-10">
         <%- renderFieldTemplate(cckState.schema, fieldName, 'inputTemplate', {}) %>
       </div>
     </div>
+
   <% } %>
+
   <div class="form-group row">
     <div class="col-sm-10 col-sm-offset-2">
       <button class="btn btn-default" href="/data/<%= cckState.schemaName %>">Save</button>
-      <a class="btn btn-default" href="/data/<%= cckState.schemaName %>">Cancel</a>
+
+      <% if (isAuthorized(cckState.auth, cckState.schema.selectGroups)) { %>
+        <a class="btn btn-default" href="/data/<%= cckState.schemaName %>">Cancel</a>
+      <% } else { %>
+        <a class="btn btn-default" href="/">Cancel</a>
+      <% } %>
+
     </div>
   </div>
 </form>

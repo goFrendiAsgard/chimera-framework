@@ -54,6 +54,7 @@ function injectBaseLayout (state, callback) {
   if (util.isRealObject(state.response.data)) {
     state.response.data.renderFieldTemplate = cck.renderFieldTemplate
     state.response.data.render = ejs.render
+    state.response.data.isAuthorized = isAuthorized
   }
   if (util.isNullOrUndefined(state.response.view) || state.response.view === '') {
     return callback(null, state)
@@ -87,12 +88,15 @@ function injectBaseLayout (state, callback) {
   })
 }
 
-function isAuthorized (request, groups) {
-  if (groups.length === 0) {
+function isAuthorized (auth, groups) {
+  if (util.isString(groups)) {
+    groups = [groups]
+  }
+  if (util.isNullOrUndefined(groups) || groups.length === 0) {
     return true
   }
-  if ('groups' in request.auth) {
-    return hasIntersectionOrEquals(request.auth.groups, groups)
+  if ('groups' in auth) {
+    return hasIntersectionOrEquals(auth.groups, groups)
   }
   return false
 }
