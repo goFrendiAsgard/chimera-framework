@@ -15,6 +15,7 @@ let webConfig = helper.getWebConfig()
 let bootstrapPath = path.join(__dirname, 'node_modules/bootstrap')
 let jqueryPath = path.join(__dirname, 'node_modules/jquery')
 let popperPath = path.join(__dirname, 'node_modules/popper.js')
+let acePath = path.join(__dirname, 'node_modules/ace-builds')
 
 // define default middlewares (bootstrap, jquery, and JWT)
 webConfig.middlewares = 'middlewares' in webConfig ? webConfig.middlewares : []
@@ -22,6 +23,7 @@ webConfig.middlewares.unshift(helper.jwtMiddleware)
 webConfig.middlewares.unshift({'/bootstrap': express.static(bootstrapPath)})
 webConfig.middlewares.unshift({'/jquery': express.static(jqueryPath)})
 webConfig.middlewares.unshift({'/popper.js': express.static(popperPath)})
+webConfig.middlewares.unshift({'/ace-builds': express.static(acePath)})
 
 // add `helper`, `cck`, and helper.runChain to webConfig.vars.$
 webConfig.vars = 'vars' in webConfig ? webConfig.vars : {}

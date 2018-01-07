@@ -196,10 +196,11 @@ function injectState (state, callback) {
   ], (error, result) => {
     // add db configs
     for (let doc of configDocs) {
-      if (state.config.exceptionKeys.indexOf(doc.key) > -1) {
-        state.config[doc.key] = renderConfigValue(doc.value, state.config)
+      if (state.config.exceptionKeys.indexOf(doc.key) === -1) {
+        state.config[doc.key] = renderConfigValue(doc, state.config)
       }
     }
+    delete state.config.exceptionKeys
     // render routes
     for (let route in state.config.routes) {
       route = renderRoute(route, state.config)

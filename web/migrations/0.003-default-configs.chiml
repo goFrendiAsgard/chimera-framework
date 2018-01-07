@@ -1,10 +1,55 @@
 ins: action, migrationConfig
 out: output
-do:
-    - if: action == 'up'
-      do:
-        - |{$.cck.getDefaultConfigs} -> defaultConfigs
-        - |('web_configs', 'insert', defaultConfigs) -> [$.helper.mongoExecute] -> output
+vars:
+  defaultConfigs:
+    - key: verbose
+      defaultConfig: 1
+      value: 1
+    - key: partial
+      defaultConfig: 1
+      value:
+        scripts: <%- viewPath %>partials/default.scripts.ejs
+        htmlHeader: <%- viewPath %>partials/default.htmlHeader.ejs
+        leftWidget: <%- viewPath %>partials/default.leftWidget.ejs
+        rightWidget: <%- viewPath %>partials/default.rightWidget.ejs
+        largeBanner: <%- viewPath %>partials/default.largeBanner.ejs
+        smallBanner: <%- viewPath %>partials/default.smallBanner.ejs
+        largeFooter: <%- viewPath %>partials/default.largeFooter.ejs
+        smallFooter: <%- viewPath %>partials/default.smallFooter.ejs
+    - key: cck
+      defaultConfig: 1
+      value:
+        input:
+          text: |
+            <input name="<%%= fieldName %>" rowId="<%%= row._id %>" class="form-control" type="text" value="<%%= value %>" />
+          textArea: |
+            <textarea name="<%%= fieldName %>" rowId="<%%= row._id %>" class="form-control cw-textarea"><%%= value %></textarea>
+          jsonText: |
+            <textarea name="<%%= fieldName %>" rowId="<%%= row._id %>" class="form-control cw-textarea" data-editor="json"><%%= value === Object(value) ? JSON.stringify(value, null, 2) : value %></textarea>
+          codeText: |
+            <textarea name="<%%= fieldName %>" rowId="<%%= row._id %>" class="form-control cw-textarea" data-editor="<%%= fieldInfo.editor %>"><%%= value %></textarea>
+          option: |
+            <select name="<%%= fieldName %>" rowId="<%%= row._id %>" class="form-control">
+            <%% for (let value in fieldInfo.options){ %>
+              <option value="<%%= value %>" <%%= value === fieldInfo.options[value]? "selected": ""%>><%%= fieldInfo.options[value] %></option>
+            <%% } %>
+            </select>
+        presentation:
+          text: 
+            <%%= value %>
+          option: |
+            <%%= value in fieldInfo.options? fieldInfo.options[value]: "" %>
+          trimmedText: |
+            <%%= value === null || value === undefined || value === ''? '': (JSON.stringify(value).length > 30 ? JSON.stringify(value).slice(0,27) + '...' : JSON.stringify(value)) %>
+          jsonText: |
+            <pre><%%= value === Object(value) ? JSON.stringify(value, null, 2) : value %></pre>
+          codeText: |
+            <pre><%%= value %></pre>
+do:  
 
-      else:
-        - |('web_configs', 'remove', {'defaultConfig': 1}) -> [$.helper.mongoExecute] -> output
+  - if: action == 'up'
+    do:
+      - |('web_configs', 'insert', defaultConfigs) -> [$.helper.mongoExecute] -> output
+
+    else:
+      - |('web_configs', 'remove', {'defaultConfig': 1}) -> [$.helper.mongoExecute] -> output

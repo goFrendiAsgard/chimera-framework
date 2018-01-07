@@ -44,39 +44,7 @@ const webConfig = {
   // error view tempalate
   errorTemplate: path.join(viewPath, 'default.error.ejs'),
   defaultTemplate: null,
-  baseLayout: path.join(viewPath, 'default.layout.ejs'),
-  partial: {
-    scripts: path.join(viewPath, 'partials/default.scripts.ejs'),
-    htmlHeader: path.join(viewPath, 'partials/default.htmlHeader.ejs'),
-    leftWidget: path.join(viewPath, 'partials/default.leftWidget.ejs'),
-    rightWidget: path.join(viewPath, 'partials/default.rightWidget.ejs'),
-    largeBanner: path.join(viewPath, 'partials/default.largeBanner.ejs'),
-    smallBanner: path.join(viewPath, 'partials/default.smallBanner.ejs'),
-    largeFooter: path.join(viewPath, 'partials/default.largeFooter.ejs'),
-    smallFooter: path.join(viewPath, 'partials/default.smallFooter.ejs')
-  },
-  cck: {
-    // ejs to render inputs, parameters: fieldName, row, value, fieldInfo
-    input: {
-      text: '<input name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control" type="text" value="<%= value %>" />',
-      textArea: '<textarea name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control"><%= value %></textarea>',
-      jsonText: '<textarea name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control cw-monospaced cw-textarea"><%= value === Object(value) ? JSON.stringify(value, null, 2) : value %></textarea>',
-      codeText: '<textarea name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control cw-monospaced cw-textarea"><%= value %></textarea>',
-      option: '<select name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control">\n' +
-              '<% for (let value in fieldInfo.options){ %>\n' +
-              '  <option value="<%= value %>" <%= value === fieldInfo.options[value]? "selected": ""%>><%= fieldInfo.options[value] %></option>\n' +
-              '<% } %>\n' +
-              '</select>'
-    },
-    // ejs to render presentations, parameters: fieldName, row, value, fieldInfo
-    presentation: {
-      text: '<%= value %>',
-      option: '<%= value in fieldInfo.options? fieldInfo.options[value]: "" %>',
-      trimmedText: '<%= value === null || value === undefined || value === \'\'? \'\': (JSON.stringify(value).length > 30 ? JSON.stringify(value).slice(0,27) + \'...\' : JSON.stringify(value)) %>',
-      jsonText: '<pre><%= value === Object(value) ? JSON.stringify(value, null, 2) : value %></pre>',
-      codeText: '<pre><%= value %></pre>'
-    }
-  }
+  baseLayout: path.join(viewPath, 'default.layout.ejs')
 }
 
 module.exports = webConfig

@@ -8,6 +8,7 @@
     "chimera-framework"
   ],
   "dependencies": {
+    "ace-builds": "^1.2.9",
     "bootstrap": "^3.3.7",
     "chimera-framework": "0.0.49",
     "jquery": "^3.2.1",

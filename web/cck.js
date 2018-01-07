@@ -8,7 +8,6 @@ const helper = require('./helper.js')
 module.exports = {
   createSchema,
   removeSchema,
-  getDefaultConfigs,
   getRoutes,
   getInitialState,
   getShownDocument,
@@ -134,28 +133,6 @@ function removeSchema (config, callback) {
     filter = helper.getSubObject(getSchemaCreationData(config), filterKeys)
   }
   return helper.mongoExecute(cckCollectionName, 'remove', filter, callback)
-}
-
-function getDefaultConfigs () {
-  let webConfig = helper.getWebConfig()
-  let basePath = webConfig.basePath
-  let defaultConfigs = []
-  for (let key in webConfig) {
-    if (webConfig.exceptionKeys.indexOf(key) >= 0) {
-      continue
-    }
-    let value = webConfig[key]
-    let basePathPattern = new RegExp(basePath, 'g')
-    if (util.isRealObject(value) || util.isArray(value)) {
-      value = JSON.stringify(value)
-      value = value.replace(basePathPattern, '<%- basePath %>')
-      value = JSON.parse(value)
-    } else if (util.isString(value)) {
-      value = value.replace(basePathPattern, '<%- basePath %>')
-    }
-    defaultConfigs.push({key, value, defaultConfig: 1})
-  }
-  return defaultConfigs
 }
 
 function preprocessSchema (schema, config) {

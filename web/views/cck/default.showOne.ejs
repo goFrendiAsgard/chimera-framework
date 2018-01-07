@@ -1,3 +1,5 @@
+<script src="/ace-builds/src-min-noconflict/ace.js"></script>
+<script src="/js/progressive-ace.js" ></script>
 <% for (let fieldName of cckState.fieldNames) { %>
 
   <% if (cckState.schema.fields[fieldName].hidden && cckState.schema.fields[fieldName].hidden.indexOf('detail') > -1) { continue;} %>
