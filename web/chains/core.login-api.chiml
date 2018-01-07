@@ -27,13 +27,9 @@ do:
       - |(password, salt) -> {$.helper.hashPassword} -> hashedObject
       - if: hashedObject.hashedPassword == user.hashedPassword
         do:
-          - |groupNames <-- user.groups
-          - |(groupNames, ['loggedIn']) -> {$.merge} -> groupNames
+          - |(user) -> {$.helper.getLoggedInAuth} -> auth
           - ins:
-              - id: user._id
-                username: user.username 
-                email: user.email
-                groups: groupNames
+              - auth
               - config.jwtSecret
               - expiresIn: config.jwtExpired
             out: jwtToken

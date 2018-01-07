@@ -37,7 +37,6 @@ const defaultInitialState = {
   schema: {},
   filter: {},
   data: {},
-  partial: null,
   limit: 1000,
   offset: 0,
   excludeDeleted: 1,
@@ -76,7 +75,7 @@ const defaultSchemaData = {
   afterUpdateChain: null,
   beforeRemoveChain: null,
   afterRemoveChain: null,
-  beforeSlectChain: null,
+  beforeSelectChain: null,
   afterSelectChain: null
 }
 
@@ -273,13 +272,27 @@ function getInitialState (state, callback) {
     if (schemas.length === 0) {
       return callback(new Error('cckError: Undefined schema ' + schemaName), null)
     }
-    let schema = schemas[0]
+    let schema = getTrimmedObject(schemas[0])
     let fieldNames = Object.keys(schema.fields)
     let data = helper.getParsedNestedJson(getData(request, fieldNames))
     let initialState = {auth, documentId, apiVersion, schemaName, fieldNames, data, filter, limit, offset, excludeDeleted, showHistory, schema, basePath, chainPath, viewPath, migrationPath}
     initialState = util.getPatchedObject(defaultInitialState, initialState)
     return callback(error, initialState)
   })
+}
+
+function getTrimmedObject (obj) {
+  obj = util.getDeepCopiedObject(obj)
+  if (util.isRealObject(obj)) {
+    for (let key in obj) {
+      if (!obj[key]) {
+        delete obj[key]
+      } else {
+        obj[key] = getTrimmedObject(obj[key])
+      }
+    }
+  }
+  return obj
 }
 
 function getData (request, fieldNames) {

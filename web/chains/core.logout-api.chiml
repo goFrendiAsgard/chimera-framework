@@ -1,11 +1,11 @@
 ins: state
 out: response
 do:
-  - |config <-- state.config
-  - |jwtTokenName <-- config.jwtTokenName
+  - |jwtTokenName <-- state.config.jwtTokenName
 
+  - |auth <- {$.helper.getLoggedOutAuth} 
   - ins:
-      - {}
+      - auth 
       - config.jwtSecret
     out: jwtToken
     do: |{$.loadJs('jsonwebtoken', 'sign')}

@@ -12,6 +12,8 @@ const core = require('chimera-framework/lib/core.js')
 
 module.exports = {
   hashPassword,
+  getLoggedInAuth,
+  getLoggedOutAuth,
   getWebConfig,
   jwtMiddleware,
   injectState,
@@ -251,8 +253,28 @@ function hashPassword (password, salt = null, algorithm = 'sha512') {
   return {salt, hashedPassword}
 }
 
+function getLoggedInAuth (userDoc) {
+  let groupNames = util.getDeepCopiedObject(userDoc.groups)
+  groupNames.push('loggedIn')
+  return {
+    id: userDoc._id,
+    username: userDoc.username,
+    email: userDoc.email,
+    groups: groupNames
+  }
+}
+
+function getLoggedOutAuth () {
+  return {
+    id: '000000000000000000000000',
+    username: null,
+    email: null,
+    groups: ['loggedOut']
+  }
+}
+
 function setCookieToken (webConfig, req, res) {
-  req.auth = {}
+  req.auth = getLoggedOutAuth()
   if (req.cookies && req.cookies[webConfig.jwtTokenName]) {
     if (!res.cookies) { res.cookies = {} }
     res.cookies[webConfig.jwtTokenName] = jwt.sign({}, webConfig.jwtSecret)
