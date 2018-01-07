@@ -1,7 +1,7 @@
 <div style="margin-bottom:1em">
 
-  <% if (cckState.customHtmlComponents) { %>
-    <%- cckState.customHtmlComponents %>
+  <% if (cckState._customHtmlComponents) { %>
+    <%- cckState._customHtmlComponents %>
   <% } %>
 
   <!-- Insert Button -->
@@ -31,6 +31,11 @@
         <% } %>
 
         <td>
+
+          <% if (row._customHtmlComponents) { %>
+            <%- row._customHtmlComponents %>
+          <% } %>
+
           <!-- Detail Button -->
           <% if (isAuthorized(cckState.auth, cckState.schema.selectGroups)) { %>
             <a class="btn btn-default button-detail" rowId="<%=row._id%>" href="/data/<%= cckState.schemaName %>/<%=row._id%>">Detail</a>
