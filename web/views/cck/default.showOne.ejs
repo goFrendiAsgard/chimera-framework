@@ -1,15 +1,27 @@
-<script src="/ace-builds/src-min-noconflict/ace.js"></script>
-<script src="/js/progressive-ace.js" ></script>
 <% for (let fieldName of cckState.fieldNames) { %>
+
+    <% if (cckState.schema.fields[fieldName].renderTab) { %>
+      <ul id="form-tabs" class="nav nav-tabs" style="margin-bottom:1em;">
+        <% let active = true %>
+        <% for (let tab in cckState.schema.tabs) { %>
+          <li role="presentation" class="nav-item <%= active? 'active': '' %>">
+            <a class="nav-link <%= active? 'active': '' %>" href="#<%= tab %>"><%- cckState.schema.tabs[tab] %></a>
+          </li>
+          <% active = false %>
+        <% } %>
+      </ul>
+    <% } %>
 
   <% if (cckState.schema.fields[fieldName].hidden && cckState.schema.fields[fieldName].hidden.indexOf('detail') > -1) { continue;} %>
 
   <% if (cckState.schema.fields[fieldName]._presentationTemplate) { %>
-    <%- renderFieldTemplate(cckState.schema, fieldName, '_presentationTemplate', result) %>
+    <span data-tab="<%= cckState.schema.fields[fieldName].tab %>">
+      <%- renderFieldTemplate(cckState.schema, fieldName, '_presentationTemplate', result) %>
+    </span>
     <% continue %>
   <% } %>
 
-  <div class="form-group row">
+  <div class="form-group row" data-tab="<%= cckState.schema.fields[fieldName].tab %>">
     <label class="col-form-label col-sm-2"><%= cckState.schema.fields[fieldName].caption %></label>
     <div class="col-sm-10">
       <%- renderFieldTemplate(cckState.schema, fieldName, 'presentationTemplate', result) %>
@@ -37,3 +49,7 @@
 
   </div>
 </div>
+
+<script src="/ace-builds/src-min-noconflict/ace.js"></script>
+<script src="/js/progressive-ace.js" ></script>
+<script src="/js/cck-form.js"></script>

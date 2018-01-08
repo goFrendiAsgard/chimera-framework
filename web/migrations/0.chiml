@@ -8,6 +8,13 @@ vars:
       updateGroups: ['superAdmin']
       deleteGroups: ['superAdmin']
       selectGroups: ['superAdmin']
+      tabs:
+        config: Configs
+        privilege: Privileges
+        select: Select
+        insert: Insert
+        update: Update
+        delete: Delete
       fields:
         name: {}
         collectionName: {}
@@ -16,133 +23,190 @@ vars:
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           hidden: ['tabular']
+          renderTab: true
+          tab: config
+        tabs:
+          inputTemplate: '<%- cck.input.jsonText %>'
+          tabularPresentationTemplate: '<%- cck.presentation.text %>'
+          presentationTemplate: '<%- cck.presentation.jsonText %>'
+          hidden: ['tabular']
+          tab: config
         partial:
           inputTemplate: '<%- cck.input.jsonText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           hidden: ['tabular']
+          tab: config
         insertGroups:
           caption: 'Insert Privileges'
           inputTemplate: '<%- cck.input.jsonText %>'
+          tab: privilege
         updateGroups:
           caption: 'Update Privileges'
           inputTemplate: '<%- cck.input.jsonText %>'
+          tab: privilege
         deleteGroups:
           caption: 'Delete Privileges'
           inputTemplate: '<%- cck.input.jsonText %>'
+          tab: privilege
         selectGroups:
           caption: 'Select Privileges'
           inputTemplate: '<%- cck.input.jsonText %>'
+          tab: privilege
         insertChain:
-          inputTemplate: '<%- cck.input.jsonText %>'
+          inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           hidden: ['tabular']
+          editor: 'yaml'
+          tab: mainChain
         updateChain:
-          inputTemplate: '<%- cck.input.jsonText %>'
+          inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           hidden: ['tabular']
+          editor: 'yaml'
+          tab: mainChain
         deleteChain:
-          inputTemplate: '<%- cck.input.jsonText %>'
+          inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           hidden: ['tabular']
-        selectChain:
-          inputTemplate: '<%- cck.input.jsonText %>'
-          tabularPresentationTemplate: '<%- cck.presentation.text %>'
-          presentationTemplate: '<%- cck.presentation.jsonText %>'
-          hidden: ['tabular']
-        insertFormChain:
-          inputTemplate: '<%- cck.input.jsonText %>'
-          tabularPresentationTemplate: '<%- cck.presentation.text %>'
-          presentationTemplate: '<%- cck.presentation.jsonText %>'
-          hidden: ['tabular']
-        updateFormChain:
-          inputTemplate: '<%- cck.input.jsonText %>'
-          tabularPresentationTemplate: '<%- cck.presentation.text %>'
-          presentationTemplate: '<%- cck.presentation.jsonText %>'
-          hidden: ['tabular']
-        showChain:
-          inputTemplate: '<%- cck.input.jsonText %>'
-          tabularPresentationTemplate: '<%- cck.presentation.text %>'
-          presentationTemplate: '<%- cck.presentation.jsonText %>'
-          hidden: ['tabular']
-        insertFormView:
-          inputTemplate: '<%- cck.input.jsonText %>'
-          tabularPresentationTemplate: '<%- cck.presentation.text %>'
-          presentationTemplate: '<%- cck.presentation.jsonText %>'
-          hidden: ['tabular']
-        updateFormView:
-          inputTemplate: '<%- cck.input.jsonText %>'
-          tabularPresentationTemplate: '<%- cck.presentation.text %>'
-          presentationTemplate: '<%- cck.presentation.jsonText %>'
-          hidden: ['tabular']
-        insertActionView:
-          inputTemplate: '<%- cck.input.jsonText %>'
-          tabularPresentationTemplate: '<%- cck.presentation.text %>'
-          presentationTemplate: '<%- cck.presentation.jsonText %>'
-          hidden: ['tabular']
-        updateActionView:
-          inputTemplate: '<%- cck.input.jsonText %>'
-          tabularPresentationTemplate: '<%- cck.presentation.text %>'
-          presentationTemplate: '<%- cck.presentation.jsonText %>'
-          hidden: ['tabular']
-        deleteActionView:
-          inputTemplate: '<%- cck.input.jsonText %>'
-          tabularPresentationTemplate: '<%- cck.presentation.text %>'
-          presentationTemplate: '<%- cck.presentation.jsonText %>'
-          hidden: ['tabular']
-        showView:
-          inputTemplate: '<%- cck.input.jsonText %>'
-          tabularPresentationTemplate: '<%- cck.presentation.text %>'
-          presentationTemplate: '<%- cck.presentation.jsonText %>'
-          hidden: ['tabular']
-        showOneView:
-          inputTemplate: '<%- cck.input.jsonText %>'
-          tabularPresentationTemplate: '<%- cck.presentation.text %>'
-          presentationTemplate: '<%- cck.presentation.jsonText %>'
-          hidden: ['tabular']
+          editor: 'yaml'
+          tab: mainChain
         beforeInsertChain:
-          inputTemplate: '<%- cck.input.jsonText %>'
+          inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           hidden: ['tabular']
+          editor: 'yaml'
+          tab: insert
         afterInsertChain:
-          inputTemplate: '<%- cck.input.jsonText %>'
+          inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           hidden: ['tabular']
+          editor: 'yaml'
+          tab: insert
         beforeUpdateChain:
-          inputTemplate: '<%- cck.input.jsonText %>'
+          inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           hidden: ['tabular']
+          editor: 'yaml'
+          tab: update
         afterUpdateChain:
-          inputTemplate: '<%- cck.input.jsonText %>'
+          inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           hidden: ['tabular']
+          editor: 'yaml'
+          tab: update
         beforeRemoveChain:
-          inputTemplate: '<%- cck.input.jsonText %>'
+          inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           hidden: ['tabular']
+          editor: 'yaml'
+          tab: delete
         afterRemoveChain:
-          inputTemplate: '<%- cck.input.jsonText %>'
+          inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           hidden: ['tabular']
+          editor: 'yaml'
+          tab: delete
         beforeSelectChain:
-          inputTemplate: '<%- cck.input.jsonText %>'
+          inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           hidden: ['tabular']
+          editor: 'yaml'
+          tab: select
         afterSelectChain:
-          inputTemplate: '<%- cck.input.jsonText %>'
+          inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           hidden: ['tabular']
+          editor: 'yaml'
+          tab: select
+        selectChain:
+          inputTemplate: '<%- cck.input.codeText %>'
+          tabularPresentationTemplate: '<%- cck.presentation.text %>'
+          presentationTemplate: '<%- cck.presentation.jsonText %>'
+          hidden: ['tabular']
+          editor: 'yaml'
+          tab: select
+        insertFormChain:
+          inputTemplate: '<%- cck.input.codeText %>'
+          tabularPresentationTemplate: '<%- cck.presentation.text %>'
+          presentationTemplate: '<%- cck.presentation.jsonText %>'
+          hidden: ['tabular']
+          editor: 'yaml'
+          tab: insert
+        updateFormChain:
+          inputTemplate: '<%- cck.input.codeText %>'
+          tabularPresentationTemplate: '<%- cck.presentation.text %>'
+          presentationTemplate: '<%- cck.presentation.jsonText %>'
+          hidden: ['tabular']
+          editor: 'yaml'
+          tab: update
+        showChain:
+          inputTemplate: '<%- cck.input.codeText %>'
+          tabularPresentationTemplate: '<%- cck.presentation.text %>'
+          presentationTemplate: '<%- cck.presentation.jsonText %>'
+          hidden: ['tabular']
+          editor: 'yaml'
+          tab: select
+        insertFormView:
+          inputTemplate: '<%- cck.input.codeText %>'
+          tabularPresentationTemplate: '<%- cck.presentation.text %>'
+          presentationTemplate: '<%- cck.presentation.jsonText %>'
+          hidden: ['tabular']
+          editor: 'ejs'
+          tab: insert
+        updateFormView:
+          inputTemplate: '<%- cck.input.codeText %>'
+          tabularPresentationTemplate: '<%- cck.presentation.text %>'
+          presentationTemplate: '<%- cck.presentation.jsonText %>'
+          hidden: ['tabular']
+          editor: 'ejs'
+          tab: update
+        insertActionView:
+          inputTemplate: '<%- cck.input.codeText %>'
+          tabularPresentationTemplate: '<%- cck.presentation.text %>'
+          presentationTemplate: '<%- cck.presentation.jsonText %>'
+          hidden: ['tabular']
+          editor: 'ejs'
+          tab: insert
+        updateActionView:
+          inputTemplate: '<%- cck.input.codeText %>'
+          tabularPresentationTemplate: '<%- cck.presentation.text %>'
+          presentationTemplate: '<%- cck.presentation.jsonText %>'
+          hidden: ['tabular']
+          editor: 'ejs'
+          tab: update
+        deleteActionView:
+          inputTemplate: '<%- cck.input.codeText %>'
+          tabularPresentationTemplate: '<%- cck.presentation.text %>'
+          presentationTemplate: '<%- cck.presentation.jsonText %>'
+          hidden: ['tabular']
+          editor: 'ejs'
+          tab: delete
+        showView:
+          inputTemplate: '<%- cck.input.codeText %>'
+          tabularPresentationTemplate: '<%- cck.presentation.text %>'
+          presentationTemplate: '<%- cck.presentation.jsonText %>'
+          hidden: ['tabular']
+          editor: 'ejs'
+          tab: select
+        showOneView:
+          inputTemplate: '<%- cck.input.codeText %>'
+          tabularPresentationTemplate: '<%- cck.presentation.text %>'
+          presentationTemplate: '<%- cck.presentation.jsonText %>'
+          hidden: ['tabular']
+          editor: 'ejs'
+          tab: select
     - name: 'routes'
       collectionName: 'web_routes'
       insertGroups: ['superAdmin']
@@ -174,11 +238,13 @@ vars:
           presentationTemplate: '<%- cck.presentation.codeText %>'
           inputTemplate: '<%- cck.input.codeText %>'
           hidden: ['tabular']
+          editor: 'yaml'
         view:
           tabularPresentationTemplate: '<%- cck.presentation.trimmedText %>'
           presentationTemplate: '<%- cck.presentation.codeText %>'
           inputTemplate: '<%- cck.input.codeText %>'
           hidden: ['tabular']
+          editor: 'ejs'
         groups:
           inputTemplate: '<%- cck.input.jsonText %>'
     - name: 'users'
