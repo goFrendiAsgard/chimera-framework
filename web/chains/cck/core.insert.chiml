@@ -26,5 +26,6 @@ do:
   - if: |cckState.result.status < 400 && cckState.schema.afterInsertChain
     do: |(cckState.schema.afterInsertChain, cckState) -> [$.runChain] -> cckState
 
-  - |response.status <-- cckState.result.status
-  - |response.data <-- cckState.result
+  - parallel:
+      - |response.status <-- cckState.result.status
+      - |response.data <-- cckState.result

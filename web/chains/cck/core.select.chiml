@@ -25,5 +25,6 @@ do:
   - if: |cckState.result.status < 400 && cckState.schema.afterSelectChain
     do: |(cckState.schema.afterSelectChain, cckState) -> [$.runChain] -> cckState
 
-  - |response.status <-- cckState.result.status
-  - |response.data <-- cckState.result
+  - parallel:
+      - |response.status <-- cckState.result.status
+      - |response.data <-- cckState.result

@@ -1,12 +1,13 @@
 ins: cckState
 out: cckState
 do:
-  - |collectionName <-- cckState.schema.collectionName
-  - |user <-- cckState.auth.id
-  - |limit <-- cckState.limit
-  - |skip <-- cckState.offset
-  - |showHistory <-- cckState.showHistory
-  - |excludeDeleted <-- cckState.excludeDeleted
+  - parallel:
+      - |collectionName <-- cckState.schema.collectionName
+      - |user <-- cckState.auth.id
+      - |limit <-- cckState.limit
+      - |skip <-- cckState.offset
+      - |showHistory <-- cckState.showHistory
+      - |excludeDeleted <-- cckState.excludeDeleted
 
   # run query
   - |dbConfig <-- ({collectionName, dbOption:{excludeDeleted, showHistory, user}})

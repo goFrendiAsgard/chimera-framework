@@ -1,11 +1,12 @@
 ins: cckState
 out: cckState
 do:
-  - |collectionName <-- cckState.schema.collectionName
-  - |user <-- cckState.auth.id
-  - |showHistory <-- cckState.showHistory
-  - |excludeDeleted <-- cckState.excludeDeleted
-  - |data <-- cckState.data
+  - parallel:
+      - |collectionName <-- cckState.schema.collectionName
+      - |user <-- cckState.auth.id
+      - |showHistory <-- cckState.showHistory
+      - |excludeDeleted <-- cckState.excludeDeleted
+      - |data <-- cckState.data
 
   - |option <-- {}
   - if: |$.util.isNullOrUndefined(cckState.documentId)

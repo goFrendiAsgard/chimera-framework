@@ -11,15 +11,15 @@ $(document).ready(function () {
     textarea.css('display', 'none');
     var editor = ace.edit(editDiv[0]);
     editor.renderer.setShowGutter(false);
-    editor.getSession().setValue(textarea.val());
-    if (textarea.data('editor')) {}
     editor.getSession().setMode("ace/mode/" + mode);
     editor.setOptions({
       showLineNumbers: true,
       showGutter: true,
       fontSize: 14
     });
-    editor.setTheme("ace/theme/monokai");
+    editor.$blockScrolling = Infinity;
+    editor.setTheme('ace/theme/monokai');
+    editor.getSession().setValue(textarea.val());
 
     editor.getSession().on('change', function(){
       textarea.val(editor.getSession().getValue());

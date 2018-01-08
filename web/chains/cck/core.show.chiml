@@ -16,10 +16,12 @@ do:
   # processing response
   - if: |apiResponse.status <400
     do:
-      - |response.data <-- apiResponse.data
-      - |response.data.cckState <-- cckState 
-      - |response.partial <-- cckState.schema.partial
+      - parallel:
+          - |response.data <-- apiResponse.data
+          - |response.data.cckState <-- cckState 
+          - |response.partial <-- cckState.schema.partial
     else:
-      - |response.status <-- apiResponse.status
-      - |response.error <-- apiResponse.error
-      - |response.errorMessage <-- apiResponse.data.userMessage
+      - parallel:
+          - |response.status <-- apiResponse.status
+          - |response.error <-- apiResponse.error
+          - |response.errorMessage <-- apiResponse.data.userMessage

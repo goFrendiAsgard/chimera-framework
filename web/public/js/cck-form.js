@@ -1,6 +1,8 @@
 $(document).ready(function() {
-  var tab = $('#form-tabs li.active a').attr('href').slice(1);
-  cwSwitchTab(tab);
+  if ($('#form-tabs li.active a').attr('href')) {
+    var tab = $('#form-tabs li.active a').attr('href').slice(1);
+    cwSwitchTab(tab);
+  }
 });
 
 $('#form-tabs a.nav-link').click(function (event) {

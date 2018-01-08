@@ -36,7 +36,10 @@ function runChain (chain, ...args) {
 
 function loadEjs (fileName, data) {
   let content = fs.readFileSync(fileName, 'utf8')
-  return ejs.render(content, data).trim()
+  if (content.indexOf('<%') > -1) {
+    return ejs.render(content, data).trim()
+  }
+  return content
 }
 
 function renderContent (responseData, view, viewPath) {
@@ -59,12 +62,15 @@ function injectBaseLayout (state, callback) {
   if (util.isNullOrUndefined(state.response.view) || state.response.view === '') {
     return callback(null, state)
   }
-  let responseData = state.response.data
-  let content = renderContent(responseData, state.response.view, state.config.viewPath)
-  let newResponseData = {content, partial: {}}
+  let {response, config, request} = state
+  let responseData = response.data
+  let newResponseData
   let actions = []
-  let config = state.config
-  let auth = state.request.auth
+  actions.push((next) => {
+    let content = renderContent(responseData, state.response.view, state.config.viewPath)
+    newResponseData = {content, partial: {}}
+    next()
+  })
   for (let partialName in state.config.partial) {
     actions.push((next) => {
       let partialPath
@@ -74,9 +80,9 @@ function injectBaseLayout (state, callback) {
         partialPath = state.config.partial[partialName]
       }
       if (fs.existsSync(partialPath)) {
-        newResponseData.partial[partialName] = loadEjs(partialPath, {auth, config, responseData})
+        newResponseData.partial[partialName] = loadEjs(partialPath, {request, response, config, isAuthorized})
       } else {
-        newResponseData.partial[partialName] = ejs.render(partialPath, {auth, config, responseData})
+        newResponseData.partial[partialName] = ejs.render(partialPath, {request, response, config, isAuthorized})
       }
       next()
     })
@@ -174,6 +180,7 @@ function mongoExecute (collectionName, fn, ...args) {
   if (!('mongoUrl' in dbConfig)) {
     dbConfig.mongoUrl = mongoUrl
   }
+  dbConfig.verbose = webConfig.verbose
   mongo.execute(dbConfig, fn, ...args)
 }
 
@@ -200,7 +207,9 @@ function injectState (state, callback) {
         state.config[doc.key] = renderConfigValue(doc, state.config)
       }
     }
-    delete state.config.exceptionKeys
+    state.config.exceptionKeys = []
+    state.config.middlewares = []
+    state.config.vars = []
     // render routes
     for (let route in state.config.routes) {
       route = renderRoute(route, state.config)
@@ -231,8 +240,8 @@ function renderConfigValue (doc, webConfig) {
 }
 
 function renderRoute (doc, config) {
-  let route = ejs.render(doc.route, config)
-  let method = doc.method ? ejs.render(doc.method, config) : 'all'
+  let route = doc.route
+  let method = doc.method ? doc.method : 'all'
   let chain = ejs.render(doc.chain, config)
   let groups = 'groups' in doc ? doc.groups : []
   let routeObj = {route, method, chain, groups}

@@ -10,10 +10,12 @@ do:
   # processing response
   - if: |apiResponse.data.status <400
     do:
-      # get presentation
-      - |response.data <-- apiResponse.data
-      - |response.data.cckState <-- cckState
-      - |response.partial <-- cckState.schema.partial
+      - parallel:
+          # get presentation
+          - |response.data <-- apiResponse.data
+          - |response.data.cckState <-- cckState
+          - |response.partial <-- cckState.schema.partial
     else:
-      - |response.status <-- apiResponse.data.status
-      - |response.errorMessage <-- apiResponse.data.userMessage
+      - parallel:
+          - |response.status <-- apiResponse.data.status
+          - |response.errorMessage <-- apiResponse.data.userMessage

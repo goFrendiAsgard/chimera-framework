@@ -5,7 +5,9 @@ do:
   - |(cckState.schema.deleteActionView) --> response.view
 
   # get data from API
-  - |(_chain_cwd + 'core.delete.chiml', state, cckState) -> [$.runChain] -> apiResponse
-  - |response.data <-- apiResponse.data
-  - |response.data.cckState <-- cckState
-  - |response.partial <-- cckState.schema.partial
+  - parallel:
+      - do:
+          - |(_chain_cwd + 'core.delete.chiml', state, cckState) -> [$.runChain] -> apiResponse
+          - |response.data <-- apiResponse.data
+      - |response.data.cckState <-- cckState
+      - |response.partial <-- cckState.schema.partial

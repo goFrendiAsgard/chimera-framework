@@ -2,9 +2,41 @@ ins: action, migrationConfig
 out: output
 vars:
   defaultConfigs:
+
+    - key: title
+      defaultConfig: 1
+      value: 'Chimera Web Application'
+
+    - key: bootstrapNavClass
+      defaultConfig: 1
+      value: 'navbar-default'
+
     - key: verbose
       defaultConfig: 1
       value: 1
+
+    - key: navigation
+      defaultConfig: 1
+      value:
+        - caption: 'Home'
+          groups: []
+          url: '/'
+        - caption: 'Settings'
+          groups: ['superAdmin']
+          children:
+            - caption: 'Routes'
+              groups: ['superAdmin']
+              url: '/data/routes'
+            - caption: 'Users'
+              groups: ['superAdmin']
+              url: '/data/users'
+            - caption: 'Configurations'
+              groups: ['superAdmin']
+              url: '/data/configs'
+            - caption: 'Content Construction Kit'
+              groups: ['superAdmin']
+              url: '/data/cck'
+
     - key: partial
       defaultConfig: 1
       value:
@@ -16,6 +48,7 @@ vars:
         smallBanner: <%- viewPath %>partials/default.smallBanner.ejs
         largeFooter: <%- viewPath %>partials/default.largeFooter.ejs
         smallFooter: <%- viewPath %>partials/default.smallFooter.ejs
+
     - key: cck
       defaultConfig: 1
       value:
@@ -45,6 +78,7 @@ vars:
             <pre><%%= value === Object(value) ? JSON.stringify(value, null, 2) : value %></pre>
           codeText: |
             <pre><%%= value %></pre>
+
 do:  
 
   - if: action == 'up'

@@ -1,4 +1,5 @@
-<% for (let fieldName of cckState.fieldNames) { %>
+<div id="cw-form">
+  <% for (let fieldName of cckState.fieldNames) { %>
 
     <% if (cckState.schema.fields[fieldName].renderTab) { %>
       <ul id="form-tabs" class="nav nav-tabs" style="margin-bottom:1em;">
@@ -12,41 +13,42 @@
       </ul>
     <% } %>
 
-  <% if (cckState.schema.fields[fieldName].hidden && cckState.schema.fields[fieldName].hidden.indexOf('detail') > -1) { continue;} %>
+    <% if (cckState.schema.fields[fieldName].hidden && cckState.schema.fields[fieldName].hidden.indexOf('detail') > -1) { continue;} %>
 
-  <% if (cckState.schema.fields[fieldName]._presentationTemplate) { %>
-    <span data-tab="<%= cckState.schema.fields[fieldName].tab %>">
-      <%- renderFieldTemplate(cckState.schema, fieldName, '_presentationTemplate', result) %>
-    </span>
-    <% continue %>
+    <% if (cckState.schema.fields[fieldName]._presentationTemplate) { %>
+      <span data-tab="<%= cckState.schema.fields[fieldName].tab %>">
+        <%- renderFieldTemplate(cckState.schema, fieldName, '_presentationTemplate', result) %>
+      </span>
+      <% continue %>
+    <% } %>
+
+    <div class="form-group col-sm-12" data-tab="<%= cckState.schema.fields[fieldName].tab %>">
+      <label class="col-form-label col-sm-2"><%= cckState.schema.fields[fieldName].caption %></label>
+      <div class="col-sm-10">
+        <%- renderFieldTemplate(cckState.schema, fieldName, 'presentationTemplate', result) %>
+      </div>
+    </div>
+
   <% } %>
 
-  <div class="form-group row" data-tab="<%= cckState.schema.fields[fieldName].tab %>">
-    <label class="col-form-label col-sm-2"><%= cckState.schema.fields[fieldName].caption %></label>
-    <div class="col-sm-10">
-      <%- renderFieldTemplate(cckState.schema, fieldName, 'presentationTemplate', result) %>
+  <div class="form-group row">
+    <div class="col-sm-10 col-sm-offset-2">
+
+      <% if (result._customHtmlComponents) { %>
+        <%- result._customHtmlComponents %>
+      <% } %>
+
+      <% if (isAuthorized(cckState.auth, cckState.schema.updateGroups)) { %>
+        <a class="btn btn-default" href="/data/<%= cckState.schemaName %>/update/<%= cckState.documentId %>">Edit</a>
+      <% } %>
+
+      <% if (isAuthorized(cckState.auth, cckState.schema.selectGroups)) { %>
+        <a class="btn btn-default" href="/data/<%= cckState.schemaName %>">Back</a>
+      <% } else { %>
+        <a class="btn btn-default" href="/">Back</a>
+      <% } %>
+
     </div>
-  </div>
-
-<% } %>
-
-<div class="form-group row">
-  <div class="col-sm-10 col-sm-offset-2">
-
-    <% if (result._customHtmlComponents) { %>
-      <%- result._customHtmlComponents %>
-    <% } %>
-
-    <% if (isAuthorized(cckState.auth, cckState.schema.updateGroups)) { %>
-    <a class="btn btn-default" href="/data/<%= cckState.schemaName %>/update/<%= cckState.documentId %>">Edit</a>
-    <% } %>
-
-    <% if (isAuthorized(cckState.auth, cckState.schema.selectGroups)) { %>
-      <a class="btn btn-default" href="/data/<%= cckState.schemaName %>">Back</a>
-    <% } else { %>
-      <a class="btn btn-default" href="/">Back</a>
-    <% } %>
-
   </div>
 </div>
 
