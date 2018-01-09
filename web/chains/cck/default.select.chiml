@@ -10,8 +10,9 @@ do:
       - |excludeDeleted <-- cckState.excludeDeleted
 
   # run query
-  - |dbConfig <-- ({collectionName, dbOption:{excludeDeleted, showHistory, user}})
-  - |(cckState.filter, cckState.data) -> {$.cck.getCombinedFilter} -> filter
+  - parallel:
+      - |dbConfig <-- ({collectionName, dbOption:{excludeDeleted, showHistory, user}})
+      - |(cckState.filter, cckState.data) -> {$.cck.getCombinedFilter} -> filter
   - |(dbConfig, 'find', filter, {limit, skip}) -> [$.helper.mongoExecute] -> results
 
   # get only shown results
@@ -24,8 +25,9 @@ do:
         do:
           - |cckState.result.result <-- results[0]
         else:
-          - |cckState.result.result <-- {}
-          - |cckState.result.status <-- 400
-          - |cckState.result.userMessage <-- 'Data not found'
-          - |cckState.result.developerMessage <-- 'Resource not found: Data does not exist or has been deleted, or query is wrong'
+          - parallel:
+              - |cckState.result.result <-- {}
+              - |cckState.result.status <-- 400
+              - |cckState.result.userMessage <-- 'Data not found'
+              - |cckState.result.developerMessage <-- 'Resource not found: Data does not exist or has been deleted, or query is wrong'
     else: |cckState.result.results <-- results

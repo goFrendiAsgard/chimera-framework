@@ -1,9 +1,10 @@
 ins: state, cckState
 out: response
 do:
-  - |response.data <-- {}
-  - if: |!cckState
-    do: |(state) -> [$.cck.getInitialState] -> cckState
+  - parallel:
+      - |response.data <-- {}
+      - if: |!cckState
+        do: |(state) -> [$.cck.getInitialState] -> cckState
 
   - if: |!$.helper.isAuthorized(state.request.auth, cckState.schema.selectGroups)
     do:

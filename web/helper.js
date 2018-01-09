@@ -187,7 +187,7 @@ function mongoExecute (collectionName, fn, ...args) {
 function injectState (state, callback) {
   let cck = require('./cck.js')
   let configDocs, routeDocs
-  async.parallel([
+  let dbActions = [
     (next) => {
       mongoExecute('web_configs', 'find', {}, (error, docs) => {
         configDocs = docs
@@ -200,40 +200,67 @@ function injectState (state, callback) {
         next(error, docs)
       })
     }
-  ], (error, result) => {
-    // add db configs
+  ]
+  async.parallel(dbActions, (error, result) => {
+    if (error) {
+      return callback(error, state)
+    }
+    // render configuration from database
+    let configActions = []
     for (let doc of configDocs) {
       if (state.config.exceptionKeys.indexOf(doc.key) === -1) {
-        state.config[doc.key] = renderConfigValue(doc, state.config)
+        configActions.push((next) => {
+          state.config[doc.key] = renderConfigValue(doc, state.config)
+          next()
+        })
       }
     }
-    state.config.exceptionKeys = []
-    state.config.middlewares = []
-    state.config.vars = []
-    // render routes
-    for (let route in state.config.routes) {
-      route = renderRoute(route, state.config)
-    }
-    // add rendered cck routes
-    let cckRoutes = cck.getRoutes()
-    for (let doc of cckRoutes) {
-      state.config.routes.push(renderRoute(doc, state.config))
-    }
-    // add rendered db routes
-    for (let doc of routeDocs) {
-      state.config.routes.push(renderRoute(doc, state.config))
-    }
-    callback(error, state)
+    return async.parallel(configActions, (error, result) => {
+      if (error) {
+        return callback(error, state)
+      }
+      state.config.exceptionKeys = []
+      state.config.middlewares = []
+      state.config.vars = []
+      let routeActions = []
+      // render routes
+      for (let route in state.config.routes) {
+        routeActions.push((next) => {
+          route = renderRoute(route, state.config)
+          next()
+        })
+      }
+      // add rendered cck routes
+      let cckRoutes = cck.getRoutes()
+      for (let doc of cckRoutes) {
+        routeActions.push((next) => {
+          state.config.routes.push(renderRoute(doc, state.config))
+          next()
+        })
+      }
+      // add rendered db routes
+      for (let doc of routeDocs) {
+        routeActions.push((next) => {
+          state.config.routes.push(renderRoute(doc, state.config))
+          next()
+        })
+      }
+      return async.parallel(routeActions, (error, result) => {
+        callback(error, state)
+      })
+    })
   })
 }
 
 function renderConfigValue (doc, webConfig) {
   let value = doc.value
   if (util.isRealObject(value) || util.isArray(value)) {
-    value = JSON.stringify(value)
-    value = ejs.render(value, webConfig)
-    value = JSON.parse(value)
-  } else if (util.isString(value)) {
+    let str = JSON.stringify(value)
+    if (str.indexOf('<%') > -1) {
+      value = ejs.render(str, webConfig)
+      value = JSON.parse(value)
+    }
+  } else if (util.isString(value) && value.indexOf('<%') > -1) {
     value = ejs.render(value, webConfig)
   }
   return value
@@ -242,7 +269,7 @@ function renderConfigValue (doc, webConfig) {
 function renderRoute (doc, config) {
   let route = doc.route
   let method = doc.method ? doc.method : 'all'
-  let chain = ejs.render(doc.chain, config)
+  let chain = doc.chain.indexOf('<%') > -1 ? ejs.render(doc.chain, config) : doc.chain
   let groups = 'groups' in doc ? doc.groups : []
   let routeObj = {route, method, chain, groups}
   if (doc.view) {

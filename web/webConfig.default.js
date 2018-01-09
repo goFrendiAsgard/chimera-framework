@@ -5,21 +5,20 @@ const path = require('path')
 let basePath = path.join(__dirname, '/')
 let chainPath = path.join(__dirname, 'chains') + '/'
 let viewPath = path.join(__dirname, 'views') + '/'
+let randomNumber = String(Math.round(Math.random() * 1000000000))
 
 const webConfig = {
   basePath,
   chainPath,
-  cckPath: path.join(__dirname, 'cck.js'),
-  helperPath: path.join(__dirname, 'helper.js'),
   exceptionKeys: ['basePath', 'chainPath', 'cckPath', 'helperPath', 'exceptionKeys', 'routes', 'jwtSecret', 'jwtExpired', 'jwtTokenName', 'sessionSecret', 'sessionMaxAge', 'sessionSaveUnitialized', 'sessionResave', 'startupHook', 'beforeRequestHook', 'afterRequestHook', 'middlewares', 'mongoUrl', 'migrationPath', 'staticPath', 'faviconPath', 'viewPath', 'errorTemplate', 'defaultTemplate', 'baseLayout', 'vars'],
   // routes
   routes: [],
   // jwt configuration
-  jwtSecret: 'secret' + String(Math.round(Math.random() * 1000000000)) + 'jwt',
+  jwtSecret: 'secret' + randomNumber + 'jwt',
   jwtExpired: 60 * 60 * 24,
   jwtTokenName: 'token',
   // session configuration
-  sessionSecret: 'secret' + String(Math.round(Math.random() * 1000000000)) + 'session',
+  sessionSecret: 'secret' + randomNumber + 'session',
   sessionMaxAge: 60 * 60 * 24,
   sessionSaveUnitialized: true,
   sessionResave: true,

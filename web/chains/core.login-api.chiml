@@ -2,18 +2,20 @@ ins: state
 out: response
 do:
   # get jwtTokenName, user, and password
-  - |config <-- state.config
-  - |request <-- state.request
-  - |identity <-- ''
-  - |password <-- ''
-  - if: (request.query.user && request.query.password)
-    do:
-      - |identity <-- request.query.user
-      - |password <-- request.query.password
-  - if: (request.body.user && request.body.password)
-    do:
-      - |identity <-- request.body.user
-      - |password <-- request.body.password
+  - parallel:
+      - |config <-- state.config
+      - |request <-- state.request
+      - |identity <-- ''
+      - |password <-- ''
+  - parallel:
+      - if: (request.query.user && request.query.password)
+        parallel:
+          - |identity <-- request.query.user
+          - |password <-- request.query.password
+      - if: (request.body.user && request.body.password)
+        parallel:
+          - |identity <-- request.body.user
+          - |password <-- request.body.password
 
   # get users from database
   - |userFilter <-- {$or: [{username:identity}, {email:identity}]}
