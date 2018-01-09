@@ -269,7 +269,7 @@ function renderConfigValue (doc, webConfig) {
 function renderRoute (doc, config) {
   let route = doc.route
   let method = doc.method ? doc.method : 'all'
-  let chain = doc.chain.indexOf('<%') > -1 ? ejs.render(doc.chain, config) : doc.chain
+  let chain = doc.chain && doc.chain.indexOf('<%') > -1 ? ejs.render(doc.chain, config) : doc.chain
   let groups = 'groups' in doc ? doc.groups : []
   let routeObj = {route, method, chain, groups}
   if (doc.view) {

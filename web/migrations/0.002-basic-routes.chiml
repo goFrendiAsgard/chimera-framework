@@ -12,12 +12,27 @@ do:
             - name: 'Login API'
               route: '/login-api'
               method: 'all'
-              chain: '<%= chainPath %>core.login-api.chiml'
+              chain: '<%= chainPath %>core.login-api.js'
               defaultRoute: 1
             - name: 'Logout API'
               route: '/logout-api'
               method: 'all'
-              chain: '<%= chainPath %>core.logout-api.chiml'
+              chain: '<%= chainPath %>core.logout-api.js'
+              defaultRoute: 1
+            - name: 'Login page'
+              route: '/login'
+              method: 'get'
+              chain: '<%= chainPath %>core.login-page.js'
+              defaultRoute: 1
+            - name: 'Login action'
+              route: '/login'
+              method: 'post'
+              chain: '<%= chainPath %>core.login.js'
+              defaultRoute: 1
+            - name: 'Logout action'
+              route: '/Logout'
+              method: 'all'
+              chain: '<%= chainPath %>core.logout.js'
               defaultRoute: 1
           out: defaultRoutes
         - |('web_routes', 'insert', defaultRoutes) -> [$.helper.mongoExecute] -> output

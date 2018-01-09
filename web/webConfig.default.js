@@ -31,7 +31,7 @@ const webConfig = {
   // mongoUrl database
   mongoUrl: 'mongodb://localhost/chimera-web-app',
   // verbosity level
-  verbose: 1,
+  verbose: 0,
   // migration path
   migrationPath: path.join(__dirname, 'migrations') + '/',
   // location of static resources
