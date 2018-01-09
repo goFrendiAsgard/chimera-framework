@@ -1,7 +1,0 @@
-ins: state
-out: state
-do:
-  - if: |state.matchedRoute && !$.helper.isAuthorized(state.request.auth, state.matchedRoute.groups)
-    parallel:
-      - |state.response.status <-- 401 
-      - |state.response.errorMessage <-- 'Unauthorized' 

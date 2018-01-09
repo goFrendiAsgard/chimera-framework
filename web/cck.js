@@ -1,5 +1,6 @@
 'use strict'
 
+const async = require('neo-async')
 const path = require('path')
 const ejs = require('ejs')
 const util = require('chimera-framework/lib/util.js')
@@ -303,35 +304,41 @@ function getData (request, fieldNames) {
   return data
 }
 
-function getShownDocument (document, fieldNames) {
+function getAllowedFieldNames (fieldNames) {
   let allowedFieldNames = util.getDeepCopiedObject(fieldNames)
   for (let field of ['_id', '_muser', '_mtime', '_deleted', '_history']) {
     if (allowedFieldNames.indexOf(field) < 0) {
       allowedFieldNames.push(field)
     }
   }
-  if (util.isArray(document)) {
-    let newDocument = []
-    for (let row of document) {
-      newDocument.push(getShownSingleDocument(row, allowedFieldNames))
-    }
-    return newDocument
-  }
-  return getShownSingleDocument(document, allowedFieldNames)
+  return allowedFieldNames
 }
 
-function getShownSingleDocument (row, allowedFieldNames) {
-  let newRow = helper.getSubObject(row, allowedFieldNames)
-  if ('_history' in newRow) {
-    let newHistory = []
-    for (let historyRow of newRow._history) {
-      let newHistoryRow = {}
-      for (let key in historyRow) {
-        newHistoryRow[key] = getShownDocument(historyRow[key], allowedFieldNames)
-      }
-      newHistory.push(newHistoryRow)
+function getShownDocument (document, fieldNames, callback) {
+  let allowedFieldNames = getAllowedFieldNames(fieldNames)
+  if (util.isArray(document)) {
+    let actions = []
+    let newDocument = []
+    for (let i = 0; i < document.length; i++) {
+      let row = document[i]
+      actions.push((next) => {
+        getShownSingleDocument(row, allowedFieldNames, (error, newRow) => {
+          if (error) {
+            return next(error)
+          }
+          newDocument[i] = newRow
+          return next(null, newRow)
+        })
+      })
     }
-    newRow._history = newHistory
+    return async.parallel(actions, (error, result) => {
+      return callback(error, newDocument)
+    })
   }
-  return newRow
+  return getShownSingleDocument(document, allowedFieldNames, callback)
+}
+
+function getShownSingleDocument (row, allowedFieldNames, callback) {
+  let newRow = helper.getSubObject(row, allowedFieldNames)
+  return callback(null, newRow)
 }

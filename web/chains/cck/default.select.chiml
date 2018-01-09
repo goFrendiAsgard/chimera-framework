@@ -16,7 +16,7 @@ do:
   - |(dbConfig, 'find', filter, {limit, skip}) -> [$.helper.mongoExecute] -> results
 
   # get only shown results
-  - |(results, cckState.fieldNames) -> {$.cck.getShownDocument} -> results
+  - |(results, cckState.fieldNames) -> [$.cck.getShownDocument] -> results
 
   # assign the result
   - if: |$.util.isString(cckState.documentId)

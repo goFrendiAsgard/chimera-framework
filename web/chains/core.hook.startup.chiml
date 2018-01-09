@@ -1,4 +1,0 @@
-ins: state
-out: state
-do:
-  - |(state) -> [$.helper.injectState] -> state

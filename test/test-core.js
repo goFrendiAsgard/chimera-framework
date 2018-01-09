@@ -16,7 +16,7 @@ describe('core', function () {
         return done(error)
       }
       assert.strictEqual(result, 100)
-      done()
+      return done()
     })
   })
 
@@ -26,7 +26,17 @@ describe('core', function () {
         return done(error)
       }
       assert.strictEqual(result, 100)
-      done()
+      return done()
+    })
+  })
+
+  it('should be able to execute square.chain.js and get the result (without vars parameter)', function (done) {
+    chimera.core.executeChain(path.join(__dirname, 'fractures/square.chain.js'), [10], function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.strictEqual(result, 100)
+      return done()
     })
   })
 
@@ -36,7 +46,7 @@ describe('core', function () {
         return done(error)
       }
       assert.strictEqual(result, 100)
-      done()
+      return done()
     })
   })
 
@@ -46,7 +56,7 @@ describe('core', function () {
         return done(error)
       }
       assert.strictEqual(result, 3.141592653589793)
-      done()
+      return done()
     })
   })
 
@@ -56,7 +66,7 @@ describe('core', function () {
         return done(error)
       }
       assert.equal(result, '3.141592653589793\n')
-      done()
+      return done()
     })
   })
 
@@ -66,7 +76,7 @@ describe('core', function () {
         return done(error)
       }
       assert.equal(result, '37\n')
-      done()
+      return done()
     })
   })
 
@@ -76,7 +86,7 @@ describe('core', function () {
         assert.equal('Error', error.name)
         return done()
       }
-      done(new Error('Error expected, but no error found'))
+      return done(new Error('Error expected, but no error found'))
     })
   })
 
@@ -86,7 +96,7 @@ describe('core', function () {
         assert.equal('YAMLException', error.name)
         return done()
       }
-      done(new Error('Error expected, but no error found'))
+      return done(new Error('Error expected, but no error found'))
     })
   })
 
@@ -96,7 +106,7 @@ describe('core', function () {
         assert.equal('YAMLException', error.name)
         return done()
       }
-      done(new Error('Error expected, but no error found'))
+      return done(new Error('Error expected, but no error found'))
     })
   })
 
@@ -106,7 +116,7 @@ describe('core', function () {
         return done(error)
       }
       assert.equal(result, expectedTestResult)
-      done()
+      return done()
     })
   })
 
@@ -116,7 +126,7 @@ describe('core', function () {
         return done(error)
       }
       assert.equal(result, expectedTestResult)
-      done()
+      return done()
     })
   })
 
@@ -126,7 +136,7 @@ describe('core', function () {
         return done(error)
       }
       assert.equal(result, expectedTestResult)
-      done()
+      return done()
     })
   })
 
@@ -136,7 +146,7 @@ describe('core', function () {
         return done(error)
       }
       assert.equal(result, expectedTestResult)
-      done()
+      return done()
     })
   })
 
@@ -146,7 +156,7 @@ describe('core', function () {
         return done(error)
       }
       assert.equal(result, expectedTestResult)
-      done()
+      return done()
     })
   })
 
@@ -156,7 +166,7 @@ describe('core', function () {
         return done(error)
       }
       assert.equal(result, expectedTestResult)
-      done()
+      return done()
     })
   })
 
@@ -166,7 +176,7 @@ describe('core', function () {
         return done(error)
       }
       assert.equal(result, expectedTestResult)
-      done()
+      return done()
     })
   })
 
@@ -178,11 +188,11 @@ describe('core', function () {
       let input = {'a': 'emiya', 'b': 'name', 'c': {'d': 'emiya', 'e': 'name'}, 'f': ['emiya', 'name', ['emiya', 'name']]}
       let expectedTestResult = {'str': input, 'dict': input}
       assert.deepEqual(result, expectedTestResult)
-      chimera.cmd.get(clearCompilationFileCommand, function (error, result) {
+      return chimera.cmd.get(clearCompilationFileCommand, function (error, result) {
         if (error) {
           return done(error)
         }
-        done()
+        return done()
       })
     })
   })

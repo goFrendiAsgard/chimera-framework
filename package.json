@@ -32,6 +32,7 @@
     "express": "^4.15.4",
     "express-fileupload": "^0.3.0",
     "express-session": "^1.15.5",
+    "express-static-cache": "0.0.6",
     "fs-extra": "^5.0.0",
     "handlebars": "^4.0.11",
     "http": "0.0.0",

@@ -13,7 +13,7 @@ do:
   - |(dbConfig, 'insert', data) -> [$.helper.mongoExecute] -> results
 
   # get only shown results
-  - |(results, cckState.fieldNames) -> {$.cck.getShownDocument} -> results
+  - |(results, cckState.fieldNames) -> [$.cck.getShownDocument] -> results
 
   # assign the result
   - |cckState.result.status <-- 201

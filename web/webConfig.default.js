@@ -23,9 +23,9 @@ const webConfig = {
   sessionSaveUnitialized: true,
   sessionResave: true,
   // hook configuration
-  startupHook: path.join(chainPath, 'core.hook.startup.chiml'),
-  beforeRequestHook: path.join(chainPath, 'core.hook.beforeRequest.chiml'),
-  afterRequestHook: path.join(chainPath, 'core.hook.afterRequest.chiml'),
+  startupHook: path.join(chainPath, 'core.hook.startup.js'),
+  beforeRequestHook: path.join(chainPath, 'core.hook.beforeRequest.js'),
+  afterRequestHook: path.join(chainPath, 'core.hook.afterRequest.js'),
   // list of express middlewares function
   middlewares: [],
   // mongoUrl database
