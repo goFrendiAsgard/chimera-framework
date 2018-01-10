@@ -23,16 +23,19 @@ do:
               route: '/login'
               method: 'get'
               chain: '<%= chainPath %>core.login-page.js'
+              view: 'default.login-page.ejs'
               defaultRoute: 1
             - name: 'Login action'
               route: '/login'
               method: 'post'
               chain: '<%= chainPath %>core.login.js'
+              view: 'default.login.ejs'
               defaultRoute: 1
             - name: 'Logout action'
               route: '/logout'
               method: 'all'
               chain: '<%= chainPath %>core.logout.js'
+              view: 'default.logout.ejs'
               defaultRoute: 1
           out: defaultRoutes
         - |('web_routes', 'insert', defaultRoutes) -> [$.helper.mongoExecute] -> output

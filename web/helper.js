@@ -246,6 +246,12 @@ function injectState (state, callback) {
         })
       }
       return async.parallel(routeActions, (error, result) => {
+        // sort routes. If route.method is 'all', it should be at the end, otherwise, sort by route.route
+        state.config.routes.sort((a, b) => {
+          let aAll = a.method === 'all' ? 1 : 0
+          let bAll = b.method === 'all' ? 1 : 0
+          return (b.route.length - a.route.length) + (aAll - bAll)
+        })
         callback(error, state)
       })
     })

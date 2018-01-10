@@ -63,8 +63,8 @@ vars:
             <textarea name="<%%= fieldName %>" rowId="<%%= row._id %>" class="form-control cw-textarea" data-editor="<%%= fieldInfo.editor %>"><%%= value %></textarea>
           option: |
             <select name="<%%= fieldName %>" rowId="<%%= row._id %>" class="form-control">
-            <%% for (let value in fieldInfo.options){ %>
-              <option value="<%%= value %>" <%%= value === fieldInfo.options[value]? "selected": ""%>><%%= fieldInfo.options[value] %></option>
+            <%% for (let optionValue in fieldInfo.options){ %>
+              <option value="<%%= optionValue %>" <%%= value === optionValue? "selected": ""%>><%%= fieldInfo.options[optionValue] %></option>
             <%% } %>
             </select>
         presentation:

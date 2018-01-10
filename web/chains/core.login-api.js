@@ -1,5 +1,6 @@
+const jsonwebtoken = require('jsonwebtoken')
+
 module.exports = (ins, vars, callback) => {
-  let jsonwebtoken = require('jsonwebtoken')
   let state = ins[0]
   let $ = vars.$
   let {config, request} = state
@@ -34,6 +35,7 @@ module.exports = (ins, vars, callback) => {
         cookies[config.jwtTokenName] = jwtToken
         response = {
           cookies,
+          auth,
           data: {
             token: jwtToken,
             status: 200,
