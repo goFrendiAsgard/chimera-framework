@@ -52,13 +52,10 @@ const defaultSchemaData = {
   collectionName: 'unnamed',
   site: null,
   fields: {},
-  insertChain: '<%= chainPath %>cck/default.insert.chiml', // insert api
-  updateChain: '<%= chainPath %>cck/default.update.chiml', // update api
-  deleteChain: '<%= chainPath %>cck/default.delete.chiml', // delete api
-  selectChain: '<%= chainPath %>cck/default.select.chiml', // select api
-  insertFormChain: '<%= chainPath %>cck/default.insertForm.chiml', // insert form
-  updateFormChain: '<%= chainPath %>cck/default.updateForm.chiml', // update form
-  showChain: '<%= chainPath %>cck/default.show.chiml', // show
+  insertChain: '<%= chainPath %>cck/default.insert.js', // insert api
+  updateChain: '<%= chainPath %>cck/default.update.js', // update api
+  deleteChain: '<%= chainPath %>cck/default.delete.js', // delete api
+  selectChain: '<%= chainPath %>cck/default.select.js', // select api
   insertFormView: '<%= viewPath %>cck/default.insertForm.ejs', // insert form
   updateFormView: '<%= viewPath %>cck/default.updateForm.ejs', // update form
   insertActionView: '<%= viewPath %>cck/default.insertAction.ejs', // insert action
@@ -70,6 +67,9 @@ const defaultSchemaData = {
   updateGroups: [],
   deleteGroups: [],
   selectGroups: [],
+  beforeShowChain: null,
+  beforeInsertFormChain: null,
+  beforeUpdateFormChain: null,
   beforeInsertChain: null,
   afterInsertChain: null,
   beforeUpdateChain: null,

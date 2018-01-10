@@ -137,21 +137,21 @@ vars:
           hidden: ['tabular']
           editor: 'yaml'
           tab: select
-        insertFormChain:
+        beforeInsertFormChain:
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           hidden: ['tabular']
           editor: 'yaml'
           tab: insert
-        updateFormChain:
+        beforeUpdateFormChain:
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           hidden: ['tabular']
           editor: 'yaml'
           tab: update
-        showChain:
+        beforeShowChain:
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'

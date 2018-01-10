@@ -114,7 +114,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "cb38be69-4b2a-4132-8ff0-87256968c895",
+								"id": "5710ba44-58af-4c79-b344-1d09ccd5053d",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON;",
@@ -127,7 +127,7 @@
 									"    responseJSON = {}; ",
 									"    tests['response is valid JSON'] = false;",
 									"}",
-									"",
+									"console.log(responseJSON);",
 									"tests['response contains `token`'] = _.has(responseJSON, 'token');",
 									"tests['response contains `userMessage`'] = _.has(responseJSON, 'userMessage');",
 									"tests['response contains `status`'] = _.has(responseJSON, 'status');",
@@ -142,10 +142,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
+						"body": {},
 						"url": {
 							"raw": "http://localhost:3000/login-api?user=admin&password=admin",
 							"protocol": "http",
@@ -271,7 +268,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "4b9eb54d-877b-4001-b70d-860d1911fda4",
+								"id": "d788216c-e57b-4caa-b6e9-c20fd73f2c05",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON;",
@@ -284,7 +281,7 @@
 									"    responseJSON = {}; ",
 									"    tests['response is valid JSON'] = false;",
 									"}",
-									"",
+									"console.log(responseJSON);",
 									"tests['response contains `token`'] = _.has(responseJSON, 'token');",
 									"tests['response contains `userMessage`'] = _.has(responseJSON, 'userMessage');",
 									"tests['response contains `status`'] = _.has(responseJSON, 'status');",
@@ -297,10 +294,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
+						"body": {},
 						"url": {
 							"raw": "http://localhost:3000/login-api?user=root&password=admin",
 							"protocol": "http",
@@ -334,7 +328,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "ab43b96f-4bf7-4f29-a7fa-6a63449a948e",
+								"id": "4b7581a3-8b19-4f6e-8cef-b1317ae100b6",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON;",
@@ -347,7 +341,7 @@
 									"    responseJSON = {}; ",
 									"    tests['response is valid JSON'] = false;",
 									"}",
-									"",
+									"console.log(responseJSON);",
 									"tests['response contains `token`'] = _.has(responseJSON, 'token');",
 									"tests['response contains `userMessage`'] = _.has(responseJSON, 'userMessage');",
 									"tests['response contains `status`'] = _.has(responseJSON, 'status');",
@@ -360,10 +354,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
+						"body": {},
 						"url": {
 							"raw": "http://localhost:3000/login-api?user=admin&password=root",
 							"protocol": "http",
@@ -397,7 +388,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "9ba0b532-2362-476d-a6b7-c8f5635986c0",
+								"id": "2e925635-56a0-4ad7-860d-763b04f82bad",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON;",
@@ -410,7 +401,7 @@
 									"    responseJSON = {}; ",
 									"    tests['response is valid JSON'] = false;",
 									"}",
-									"",
+									"console.log(responseJSON);",
 									"tests['response contains `token`'] = _.has(responseJSON, 'token');",
 									"tests['response contains `status`'] = _.has(responseJSON, 'status');",
 									"",
@@ -424,10 +415,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
+						"body": {},
 						"url": {
 							"raw": "http://localhost:3000/logout-api",
 							"protocol": "http",
@@ -485,7 +473,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "58fe57e9-01f3-40e5-87b0-319429688c01",
+								"id": "28d753f1-eae4-4838-b7de-230f6f3ad814",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON;",
@@ -498,7 +486,7 @@
 									"    responseJSON = {}; ",
 									"    tests['response is valid JSON'] = false;",
 									"}",
-									"",
+									"console.log(responseJSON);",
 									"tests['response contains `token`'] = _.has(responseJSON, 'token');",
 									"tests['response contains `userMessage`'] = _.has(responseJSON, 'userMessage');",
 									"tests['response contains `status`'] = _.has(responseJSON, 'status');",
@@ -637,7 +625,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "394266dd-e1fc-41a1-83c3-2c8304ddd06e",
+								"id": "8a8da394-2d0a-40f2-b900-59e046b05067",
 								"type": "text/javascript",
 								"exec": [
 									"tests['response contains Hello world :D'] = _.include(responseBody, 'Hello world :D');"
@@ -648,10 +636,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
+						"body": {},
 						"url": {
 							"raw": "http://localhost:3000/",
 							"protocol": "http",
@@ -678,7 +663,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "5d9c52fa-520f-4810-ba12-94066f5ebb66",
+								"id": "57783a14-5e23-4149-aff9-27397f2dd4bc",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON, result;",
@@ -691,7 +676,7 @@
 									"    responseJSON = {}; ",
 									"    tests['response is valid JSON'] = false;",
 									"}",
-									"",
+									"console.log(responseJSON);",
 									"result = responseJSON.result;",
 									"",
 									"tests['inserted key correct'] = result.key == 'testKey1';",
@@ -746,7 +731,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "9bc69347-9ce8-40af-aad8-407dbdb3d18d",
+								"id": "8c41e5b4-a684-4fbc-b474-dca9a721bdf2",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON, results;",
@@ -759,6 +744,7 @@
 									"    responseJSON = {}; ",
 									"    tests['response is valid JSON'] = false;",
 									"}",
+									"console.log(responseJSON);",
 									"results = responseJSON.results;",
 									"tests['results should contains two documents'] = results.length == 2;",
 									"tests['first result should be testKey2'] = results[0].key == 'testKey2';",
@@ -801,7 +787,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "8bb7dd75-5877-447d-8fa6-ddfd08ae4997",
+								"id": "abdf31e7-70ed-4d4b-a334-83e906478bc2",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON, results, firstResult;",
@@ -814,7 +800,7 @@
 									"    responseJSON = {}; ",
 									"    tests['response is valid JSON'] = false;",
 									"}",
-									"",
+									"console.log(responseJSON);",
 									"tests['response contains `results`'] = _.has(responseJSON, 'results');",
 									"results = responseJSON.results;",
 									"firstResult = results[0];",
@@ -830,10 +816,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
+						"body": {},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
@@ -862,7 +845,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "e6c7aa09-5302-48b1-ba6c-103a927ab250",
+								"id": "e1059011-6de3-41ec-aa0f-7445d2dbf210",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON, results, firstResult;",
@@ -875,7 +858,7 @@
 									"    responseJSON = {}; ",
 									"    tests['response is valid JSON'] = false;",
 									"}",
-									"",
+									"console.log(responseJSON);",
 									"tests['response contains `results`'] = _.has(responseJSON, 'results');",
 									"results = responseJSON.results;",
 									"firstResult = results[0];",
@@ -891,10 +874,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
+						"body": {},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
@@ -918,7 +898,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "6c972d46-71bb-4040-9414-c71cffb7c9e0",
+								"id": "018cd6e2-73a7-4704-83c2-6fc47f0905fe",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON, results, firstResult;",
@@ -931,7 +911,7 @@
 									"    responseJSON = {}; ",
 									"    tests['response is valid JSON'] = false;",
 									"}",
-									"",
+									"console.log(responseJSON);",
 									"tests['response contains `results`'] = _.has(responseJSON, 'results');",
 									"results = responseJSON.results;",
 									"firstResult = results[0];",
@@ -983,7 +963,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "1381d2fe-2eb3-404c-976c-3c2348ec7244",
+								"id": "805bb290-ac57-4ea0-ba4f-29d4e03b44c3",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON, result;",
@@ -996,7 +976,7 @@
 									"    responseJSON = {}; ",
 									"    tests['response is valid JSON'] = false;",
 									"}",
-									"",
+									"console.log(responseJSON);",
 									"tests['response contains `result`'] = _.has(responseJSON, 'result');",
 									"result = responseJSON.result;",
 									"tests['result has id'] = ('_id' in result);",
@@ -1008,10 +988,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
+						"body": {},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests/{{firstTestId}}",
 							"protocol": "http",
@@ -1036,7 +1013,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "a5981942-19b1-4313-ab39-57a2249764a2",
+								"id": "a4393f88-3d90-4d9c-ba66-5be67e8fca69",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON, result;",
@@ -1049,7 +1026,7 @@
 									"    responseJSON = {}; ",
 									"    tests['response is valid JSON'] = false;",
 									"}",
-									"",
+									"console.log(responseJSON);",
 									"tests['response contains `status`'] = _.has(responseJSON, 'status');",
 									"tests['response contains `result`'] = _.has(responseJSON, 'result');",
 									"result = responseJSON.result;",
@@ -1063,10 +1040,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
+						"body": {},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests/123",
 							"protocol": "http",
@@ -1096,7 +1070,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "26e135cc-ab8b-4fa3-9584-dbbf9b68e2ea",
+								"id": "fa4f971a-8c0a-4031-a730-a3381c52771e",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON, result;",
@@ -1109,6 +1083,7 @@
 									"    responseJSON = {}; ",
 									"    tests['response is valid JSON'] = false;",
 									"}",
+									"console.log(responseJSON);",
 									"result = responseJSON.result;",
 									"tests['result.nModified should be 3'] = result.nModified == 3;"
 								]
@@ -1155,7 +1130,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "cabf6317-8854-4a25-ab70-e623d3f9728a",
+								"id": "21779103-d686-471f-b33b-d180a0882bde",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON, result;",
@@ -1168,6 +1143,7 @@
 									"    responseJSON = {}; ",
 									"    tests['response is valid JSON'] = false;",
 									"}",
+									"console.log(responseJSON);",
 									"result = responseJSON.result;",
 									"tests['result.nModified should be 1'] = result.nModified == 1;"
 								]
@@ -1215,7 +1191,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "3cc54a34-a38f-4cc8-a2f7-78e7817c2916",
+								"id": "76dbce8c-9638-4e1f-b0da-998625d13bf2",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON, results, fooCount, barCount;",
@@ -1228,7 +1204,7 @@
 									"    responseJSON = {}; ",
 									"    tests['response is valid JSON'] = false;",
 									"}",
-									"",
+									"console.log(responseJSON);",
 									"tests['response contains `results`'] = _.has(responseJSON, 'results');",
 									"results = responseJSON.results;",
 									"",
@@ -1251,10 +1227,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
+						"body": {},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
@@ -1283,7 +1256,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "cabf6317-8854-4a25-ab70-e623d3f9728a",
+								"id": "3430ca51-5912-4acd-b288-7a562d268869",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON, result;",
@@ -1296,6 +1269,7 @@
 									"    responseJSON = {}; ",
 									"    tests['response is valid JSON'] = false;",
 									"}",
+									"console.log(responseJSON);",
 									"result = responseJSON.result;",
 									"tests['result.nModified should be 1'] = result.nModified == 1;"
 								]
@@ -1310,10 +1284,7 @@
 								"value": "application/x-www-form-urlencoded"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
+						"body": {},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests/{{firstTestId}}",
 							"protocol": "http",
@@ -1337,7 +1308,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "8fa52e37-c3d3-4741-9199-c2501eb3480e",
+								"id": "3dbbdd90-b608-4058-82d8-b57de1e7b7b2",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON, result;",
@@ -1350,6 +1321,7 @@
 									"    responseJSON = {}; ",
 									"    tests['response is valid JSON'] = false;",
 									"}",
+									"console.log(responseJSON);",
 									"result = responseJSON.result;",
 									"tests['result.nModified should be 2'] = result.nModified == 2;"
 								]
@@ -1364,10 +1336,7 @@
 								"value": "application/x-www-form-urlencoded"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
+						"body": {},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
@@ -1390,7 +1359,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "c29b44bf-df87-434e-8cdb-43805092e38b",
+								"id": "22a783c0-d852-4390-8ab7-9f02f6900ee8",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON, results;",
@@ -1403,7 +1372,7 @@
 									"    responseJSON = {}; ",
 									"    tests['response is valid JSON'] = false;",
 									"}",
-									"",
+									"console.log(responseJSON);",
 									"tests['response contains `results`'] = _.has(responseJSON, 'results');",
 									"results = responseJSON.results;",
 									"",
@@ -1415,10 +1384,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
+						"body": {},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
@@ -1442,7 +1408,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "27d3b48c-2a03-4c6d-b901-2d79338fa72b",
+								"id": "1ec73f01-c95e-442b-a5ca-82f227310604",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON, results;",
@@ -1455,11 +1421,11 @@
 									"    responseJSON = {}; ",
 									"    tests['response is valid JSON'] = false;",
 									"}",
-									"",
+									"console.log(responseJSON);",
 									"tests['response contains `results`'] = _.has(responseJSON, 'results');",
 									"results = responseJSON.results;",
 									"",
-									"tests['results should be empty'] = results.length === 3;"
+									"tests['results should be 3'] = results.length === 3;"
 								]
 							}
 						}
@@ -1467,10 +1433,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
+						"body": {},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests?_excludeDeleted=0",
 							"protocol": "http",
@@ -1501,7 +1464,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "b76c0127-0abc-40fc-98fd-1a72dbf72013",
+								"id": "9f207e73-f13b-4a41-baa3-1c40c5c24c49",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON, result;",
@@ -1514,6 +1477,7 @@
 									"    responseJSON = {}; ",
 									"    tests['response is valid JSON'] = false;",
 									"}",
+									"console.log(responseJSON);",
 									"result = responseJSON.result;",
 									"tests['result.n should be 3'] = result.n == 3;"
 								]
@@ -1528,10 +1492,7 @@
 								"value": "application/x-www-form-urlencoded"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
+						"body": {},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests?_excludeDeleted=0",
 							"protocol": "http",
@@ -1561,7 +1522,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "a7e5de0d-2377-44dc-be2a-8503307e180a",
+								"id": "2acb588e-eae6-4d03-8654-eb750438a2ca",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON, results;",
@@ -1574,7 +1535,7 @@
 									"    responseJSON = {}; ",
 									"    tests['response is valid JSON'] = false;",
 									"}",
-									"",
+									"console.log(responseJSON);",
 									"tests['response contains `results`'] = _.has(responseJSON, 'results');",
 									"results = responseJSON.results;",
 									"",
@@ -1586,10 +1547,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
+						"body": {},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests?_excludeDeleted=0",
 							"protocol": "http",

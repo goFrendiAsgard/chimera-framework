@@ -1,6 +1,7 @@
 module.exports = (ins, vars, callback) => {
   let jsonwebtoken = require('jsonwebtoken')
   let state = ins[0]
+  let $ = vars.$
   let {config, request} = state
   let identity = ''
   let password = ''
@@ -11,16 +12,23 @@ module.exports = (ins, vars, callback) => {
     identity = request.body.user
     password = request.body.password
   }
-  vars.$.helper.mongoExecute('web_users', 'find', {$or: [{username: identity}, {email: identity}]}, (error, users) => {
-    let response = {token: '', status: 400, userMesssage: 'Invalid username or password', developerMessage: 'Invalid username or password'}
+  $.helper.mongoExecute('web_users', 'find', {$or: [{username: identity}, {email: identity}]}, (error, users) => {
+    let response = {
+      data: {
+        token: '',
+        status: 400,
+        userMessage: 'Invalid username or password',
+        developerMessage: 'Invalid username or password'
+      }
+    }
     if (users.length > 0) {
       let user = users[0]
       let salt = user.salt
-      let hashedObject = vars.$.helper.hashPassword(password, salt)
+      let hashedObject = $.helper.hashPassword(password, salt)
       if (hashedObject.hashedPassword === user.hashedPassword) {
         let jwtSecret = config.jwtSecret
         let expiresIn = config.jwtExpired
-        let auth = vars.$.helper.getLoggedInAuth(user)
+        let auth = $.helper.getLoggedInAuth(user)
         let jwtToken = jsonwebtoken.sign(auth, jwtSecret, {expiresIn})
         let cookies = {}
         cookies[config.jwtTokenName] = jwtToken
