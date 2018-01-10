@@ -178,13 +178,13 @@ function getRoutes () {
   let webConfig = helper.getWebConfig()
   let chainPath = webConfig.chainPath
   return [
-    {route: '/api/:version/:schemaName', method: 'get', chain: path.join(chainPath, 'cck/core.select.chiml')},
-    {route: '/api/:version/:schemaName', method: 'post', chain: path.join(chainPath, 'cck/core.insert.chiml')},
-    {route: '/api/:version/:schemaName', method: 'put', chain: path.join(chainPath, 'cck/core.update.chiml')},
-    {route: '/api/:version/:schemaName', method: 'delete', chain: path.join(chainPath, 'cck/core.delete.chiml')},
-    {route: '/api/:version/:schemaName/:id', method: 'get', chain: path.join(chainPath, 'cck/core.select.chiml')},
-    {route: '/api/:version/:schemaName/:id', method: 'put', chain: path.join(chainPath, 'cck/core.update.chiml')},
-    {route: '/api/:version/:schemaName/:id', method: 'delete', chain: path.join(chainPath, 'cck/core.delete.chiml')},
+    {route: '/api/:version/:schemaName', method: 'get', chain: path.join(chainPath, 'cck/core.select.js')},
+    {route: '/api/:version/:schemaName', method: 'post', chain: path.join(chainPath, 'cck/core.insert.js')},
+    {route: '/api/:version/:schemaName', method: 'put', chain: path.join(chainPath, 'cck/core.update.js')},
+    {route: '/api/:version/:schemaName', method: 'delete', chain: path.join(chainPath, 'cck/core.delete.js')},
+    {route: '/api/:version/:schemaName/:id', method: 'get', chain: path.join(chainPath, 'cck/core.select.js')},
+    {route: '/api/:version/:schemaName/:id', method: 'put', chain: path.join(chainPath, 'cck/core.update.js')},
+    {route: '/api/:version/:schemaName/:id', method: 'delete', chain: path.join(chainPath, 'cck/core.delete.js')},
     {route: '/data/:schemaName', method: 'all', chain: path.join(chainPath, 'cck/core.show.chiml')},
     {route: '/data/:schemaName/insert', method: 'get', chain: path.join(chainPath, 'cck/core.insertForm.chiml')},
     {route: '/data/:schemaName/update/:id', method: 'get', chain: path.join(chainPath, 'cck/core.updateForm.chiml')},
