@@ -30,7 +30,7 @@ do:
               chain: '<%= chainPath %>core.login.js'
               defaultRoute: 1
             - name: 'Logout action'
-              route: '/Logout'
+              route: '/logout'
               method: 'all'
               chain: '<%= chainPath %>core.logout.js'
               defaultRoute: 1

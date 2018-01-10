@@ -185,13 +185,13 @@ function getRoutes () {
     {route: '/api/:version/:schemaName/:id', method: 'get', chain: path.join(chainPath, 'cck/core.select.js')},
     {route: '/api/:version/:schemaName/:id', method: 'put', chain: path.join(chainPath, 'cck/core.update.js')},
     {route: '/api/:version/:schemaName/:id', method: 'delete', chain: path.join(chainPath, 'cck/core.delete.js')},
-    {route: '/data/:schemaName', method: 'all', chain: path.join(chainPath, 'cck/core.show.chiml')},
-    {route: '/data/:schemaName/insert', method: 'get', chain: path.join(chainPath, 'cck/core.insertForm.chiml')},
-    {route: '/data/:schemaName/update/:id', method: 'get', chain: path.join(chainPath, 'cck/core.updateForm.chiml')},
-    {route: '/data/:schemaName/insert', method: 'post', chain: path.join(chainPath, 'cck/core.insertAction.chiml')},
-    {route: '/data/:schemaName/update/:id', method: 'post', chain: path.join(chainPath, 'cck/core.updateAction.chiml')},
-    {route: '/data/:schemaName/delete/:id', method: 'all', chain: path.join(chainPath, 'cck/core.deleteAction.chiml')},
-    {route: '/data/:schemaName/:id', method: 'all', chain: path.join(chainPath, 'cck/core.show.chiml')}
+    {route: '/data/:schemaName', method: 'all', chain: path.join(chainPath, 'cck/core.show.js')},
+    {route: '/data/:schemaName/insert', method: 'get', chain: path.join(chainPath, 'cck/core.insertForm.js')},
+    {route: '/data/:schemaName/update/:id', method: 'get', chain: path.join(chainPath, 'cck/core.updateForm.js')},
+    {route: '/data/:schemaName/insert', method: 'post', chain: path.join(chainPath, 'cck/core.insertAction.js')},
+    {route: '/data/:schemaName/update/:id', method: 'post', chain: path.join(chainPath, 'cck/core.updateAction.js')},
+    {route: '/data/:schemaName/delete/:id', method: 'all', chain: path.join(chainPath, 'cck/core.deleteAction.js')},
+    {route: '/data/:schemaName/:id', method: 'all', chain: path.join(chainPath, 'cck/core.show.js')}
   ]
 }
 
