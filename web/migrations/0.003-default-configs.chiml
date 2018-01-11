@@ -79,6 +79,23 @@ vars:
           codeText: |
             <pre><%%= value %></pre>
 
+    - key: showTopNav
+      defaultConfig: 1
+      value: 1
+
+    - key: showLeftNav
+      defaultConfig: 1
+      value: 1
+
+    - key: showJumbotron
+      defaultConfig: 1
+      value: ''
+
+    - key: jumbotron
+      defaultConfig: 1
+      value: ''
+
+
 do:  
 
   - if: action == 'up'
