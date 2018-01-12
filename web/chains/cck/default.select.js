@@ -15,18 +15,21 @@ module.exports = (ins, vars, callback) => {
     if (error) {
       return callback(error, null)
     }
-    if ($.util.isString(cckState.documentId)) {
-      if (results.length > 0) {
-        cckState.result.result = results[0]
+    return $.helper.mongoExecute(dbConfig, 'count', filter, (error, count) => {
+      cckState.result.metadata = {resultset: {count, limit, offset: skip}}
+      if ($.util.isString(cckState.documentId)) {
+        if (results.length > 0) {
+          cckState.result.result = results[0]
+        } else {
+          cckState.result.result = {}
+          cckState.result.status = 400
+          cckState.result.userMessage = 'Data not found'
+          cckState.result.developerMessage = 'Resource not found: Data does not exist or has been deleted, or query is wrong'
+        }
       } else {
-        cckState.result.result = {}
-        cckState.result.status = 400
-        cckState.result.userMessage = 'Data not found'
-        cckState.result.developerMessage = 'Resource not found: Data does not exist or has been deleted, or query is wrong'
+        cckState.result.results = results
       }
-    } else {
-      cckState.result.results = results
-    }
-    return callback(null, cckState)
+      return callback(error, cckState)
+    })
   })
 }

@@ -55,3 +55,37 @@
     <% } %>
   </tbody>
 </table>
+
+<% let pageCount = Math.round(metadata.resultset.count / metadata.resultset.limit) %>
+
+<% if (pageCount > 0) { %>
+  <% let pageNumber = Math.round(metadata.resultset.offset / metadata.resultset.limit) %>
+  <nav aria-label="Page navigation">
+    <ul class="pagination">
+
+      <!-- prev -->
+      <li class="<%= pageNumber === 0 ? 'disabled' : '' %>">
+        <a href="/data/<%= cckState.schemaName %>?limit=<%= metadata.resultset.limit %>&offset=<%= (pageNumber - 1) * metadata.resultset.limit %>" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+
+      <!-- pages -->
+      <% for (let i = 0; i < pageCount; i++) { %>
+        <li class="<%= i === pageNumber ? 'active' : '' %>">
+          <a href="/data/<%= cckState.schemaName %>?limit=<%= metadata.resultset.limit %>&offset=<%= i * metadata.resultset.limit %>">
+            <%= i + 1%>
+          </a>
+        </li>
+      <% } %>
+
+      <!-- next -->
+      <li class="<%= pageNumber === (pageCount - 1) ? 'disabled' : '' %>">
+        <a href="/data/<%= cckState.schemaName %>?limit=<%= metadata.resultset.limit %>&offset=<%= (pageNumber + 1) * metadata.resultset.limit %>" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+
+    </ul>
+  </nav>
+<% } %>
