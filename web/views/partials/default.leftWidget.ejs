@@ -1,0 +1,23 @@
+<% if (config.showLeftNav) { %>
+  <div class="list-group">
+    <% for (let navigation of config.navigation) { %>
+      <% if (!isAuthorized(request.auth, navigation.groups)) {continue; } %>
+
+      <% if ('url' in navigation) { %>
+        <!-- Navigation -->
+        <a class="list-group-item <%= navigation.url === request.url ? 'active' : '' %>" href="<%= navigation.url %>"><%- navigation.caption %></a>
+      <% } else { %>
+        <!-- Header -->
+        <a href="#" class="list-group-item disabled" style="font-size:large"><%- navigation.caption%></a>
+        <!-- SubNavigation -->
+        <% for (let subNavigation of navigation.children) { %>
+          <% if (!isAuthorized(request.auth, subNavigation.groups)) {continue; } %>
+          <% if ('url' in subNavigation) { %>
+            <a class="list-group-item <%= subNavigation.url === request.url ? 'active' : '' %>" href="<%= subNavigation.url %>"><%- subNavigation.caption %></a>
+          <% } %>
+        <% } %>
+      <% } %>
+
+    <% } %>
+  </div>
+<% } %>

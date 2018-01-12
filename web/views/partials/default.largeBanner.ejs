@@ -20,7 +20,7 @@
 
             <% if ('url' in navigation) { %>
               <!-- Navigation -->
-              <li><a href="<%= navigation.url %>"><%- navigation.caption %></a></li>
+              <li class="<%= navigation.url === request.url ? 'active' : '' %>"><a href="<%= navigation.url %>"><%- navigation.caption %></a></li>
             <% } else { %>
 
               <!-- Dropdown -->
@@ -30,7 +30,9 @@
                   <% for (let subNavigation of navigation.children) { %>
                     <% if (!isAuthorized(request.auth, subNavigation.groups)) {continue; } %>
                     <% if ('url' in subNavigation) { %>
-                      <li><a href="<%= subNavigation.url %>"><%- subNavigation.caption %></a></li>
+                      <li class="<%= subNavigation.url === request.url ? 'active' : '' %>">
+                        <a href="<%= subNavigation.url %>"><%- subNavigation.caption %></a>
+                      </li>
                     <% } %>
                   <% } %>
                 </ul>
