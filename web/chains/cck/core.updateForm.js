@@ -20,7 +20,7 @@ module.exports = (ins, vars, callback) => {
       if (apiResponse.status < 400) {
         response.view = cckState.schema.updateFormView
         response.data = {
-          cckState,
+          cckState: $.util.getDeepCopiedObject(apiResponse.cckState),
           result: apiResponse.data.result
         }
         response.partial = cckState.schema.partial

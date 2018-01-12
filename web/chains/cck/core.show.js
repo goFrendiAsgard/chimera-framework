@@ -17,7 +17,7 @@ module.exports = (ins, vars, callback) => {
       }
       if (apiResponse.status < 400) {
         response.data = apiResponse.data
-        response.data.cckState = cckState
+        response.data.cckState = $.util.getDeepCopiedObject(apiResponse.cckState)
         response.partial = cckState.schema.partial
       } else {
         response.status = apiResponse.status

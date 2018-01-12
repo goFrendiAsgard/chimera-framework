@@ -11,6 +11,10 @@ vars:
       defaultConfig: 1
       value: 'navbar-default'
 
+    - key: bootstrapTheme
+      defaultConfig: 1
+      value: ''
+
     - key: verbose
       defaultConfig: 1
       value: 0
@@ -64,7 +68,7 @@ vars:
           option: |
             <select name="<%%= fieldName %>" rowId="<%%= row._id %>" class="form-control">
             <%% for (let optionValue in fieldInfo.options){ %>
-              <option value="<%%= optionValue %>" <%%= value === optionValue? "selected": ""%>><%%= fieldInfo.options[optionValue] %></option>
+              <option value="<%%= optionValue %>" <%%= value == optionValue? "selected": ""%>><%%= fieldInfo.options[optionValue] %></option>
             <%% } %>
             </select>
         presentation:
@@ -85,7 +89,7 @@ vars:
 
     - key: showLeftNav
       defaultConfig: 1
-      value: 1
+      value: 0
 
     - key: showJumbotron
       defaultConfig: 1

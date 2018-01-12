@@ -6,5 +6,8 @@
 <meta name="author" content="" />
 <title><%= config.title %></title>
 <link rel="shortcut icon" href="/favicon.ico" />
-<link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
-<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css" />
+<% if (config.bootstrapTheme) { %>
+  <link rel="stylesheet" href="/css/themes/<%= config.bootstrapTheme %>.min.css" />
+<% } %>
+<link rel="stylesheet" href="/css/style.css" />

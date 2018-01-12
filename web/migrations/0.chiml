@@ -16,8 +16,11 @@ vars:
         update: Update
         delete: Delete
       fields:
-        name: {}
-        collectionName: {}
+        name:
+          notNull: 1
+          unique: 1
+        collectionName: 
+          notNull: 1
         fields:
           inputTemplate: '<%- cck.input.jsonText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
@@ -54,6 +57,7 @@ vars:
           inputTemplate: '<%- cck.input.jsonText %>'
           tab: privilege
         insertChain:
+          caption: 'Insert Chain'
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
@@ -61,6 +65,7 @@ vars:
           editor: 'yaml'
           tab: mainChain
         updateChain:
+          caption: 'Update Chain'
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
@@ -68,6 +73,7 @@ vars:
           editor: 'yaml'
           tab: mainChain
         deleteChain:
+          caption: 'Delete Chain'
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
@@ -75,6 +81,7 @@ vars:
           editor: 'yaml'
           tab: mainChain
         beforeInsertChain:
+          caption: 'Before Insert Chain'
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
@@ -82,6 +89,7 @@ vars:
           editor: 'yaml'
           tab: insert
         afterInsertChain:
+          caption: 'After Insert Chain'
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
@@ -89,6 +97,7 @@ vars:
           editor: 'yaml'
           tab: insert
         beforeUpdateChain:
+          caption: 'Before Update Chain'
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
@@ -96,6 +105,7 @@ vars:
           editor: 'yaml'
           tab: update
         afterUpdateChain:
+          caption: 'After Update Chain'
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
@@ -103,6 +113,7 @@ vars:
           editor: 'yaml'
           tab: update
         beforeRemoveChain:
+          caption: 'Before Remove Chain'
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
@@ -110,6 +121,7 @@ vars:
           editor: 'yaml'
           tab: delete
         afterRemoveChain:
+          caption: 'After Remove Chain'
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
@@ -117,6 +129,7 @@ vars:
           editor: 'yaml'
           tab: delete
         beforeSelectChain:
+          caption: 'Before Select Chain'
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
@@ -124,6 +137,7 @@ vars:
           editor: 'yaml'
           tab: select
         afterSelectChain:
+          caption: 'After Select Chain'
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
@@ -131,27 +145,7 @@ vars:
           editor: 'yaml'
           tab: select
         selectChain:
-          inputTemplate: '<%- cck.input.codeText %>'
-          tabularPresentationTemplate: '<%- cck.presentation.text %>'
-          presentationTemplate: '<%- cck.presentation.jsonText %>'
-          hidden: ['tabular']
-          editor: 'yaml'
-          tab: select
-        beforeInsertFormChain:
-          inputTemplate: '<%- cck.input.codeText %>'
-          tabularPresentationTemplate: '<%- cck.presentation.text %>'
-          presentationTemplate: '<%- cck.presentation.jsonText %>'
-          hidden: ['tabular']
-          editor: 'yaml'
-          tab: insert
-        beforeUpdateFormChain:
-          inputTemplate: '<%- cck.input.codeText %>'
-          tabularPresentationTemplate: '<%- cck.presentation.text %>'
-          presentationTemplate: '<%- cck.presentation.jsonText %>'
-          hidden: ['tabular']
-          editor: 'yaml'
-          tab: update
-        beforeShowChain:
+          caption: 'Select Chain'
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
@@ -159,6 +153,7 @@ vars:
           editor: 'yaml'
           tab: select
         insertFormView:
+          caption: 'Insert Form View'
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
@@ -166,6 +161,7 @@ vars:
           editor: 'ejs'
           tab: insert
         updateFormView:
+          caption: 'Update Form View'
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
@@ -173,6 +169,7 @@ vars:
           editor: 'ejs'
           tab: update
         insertActionView:
+          caption: 'Insert Action View'
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
@@ -180,6 +177,7 @@ vars:
           editor: 'ejs'
           tab: insert
         updateActionView:
+          caption: 'Update Action View'
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
@@ -187,6 +185,7 @@ vars:
           editor: 'ejs'
           tab: update
         deleteActionView:
+          caption: 'Delete Action View'
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
@@ -194,6 +193,7 @@ vars:
           editor: 'ejs'
           tab: delete
         showView:
+          caption: 'Show View'
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
@@ -201,6 +201,7 @@ vars:
           editor: 'ejs'
           tab: select
         showOneView:
+          caption: 'Show One View'
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
@@ -214,9 +215,13 @@ vars:
       deleteGroups: ['superAdmin']
       selectGroups: ['superAdmin']
       fields:
-        name: {}
-        route: {}
+        name:
+          notNull: 1
+          unique: 1
+        route:
+          notNull: 1
         method:
+          notNull: 1
           inputTemplate: '<%- cck.input.option %>'
           presentationTemplate: '<%- cck.presentation.option %>'
           options:
@@ -254,8 +259,11 @@ vars:
       deleteGroups: ['superAdmin']
       selectGroups: ['superAdmin']
       fields:
-        username: {}
-        email: {}
+        username:
+          notNull: 1
+          unique: 1
+        email:
+          unique: 1
         password:
           hidden: ['tabular', 'detail']
         groups:
@@ -266,12 +274,16 @@ vars:
       updateGroups: ['superAdmin']
       deleteGroups: ['superAdmin']
       selectGroups: ['superAdmin']
+      afterSelectChain: '<%= chainPath %>config.afterSelect.js'
       fields:
-        key: {}
+        key:
+          notNull: 1
+          unique: 1
         value:
-          inputTemplate: '<%- cck.input.jsonText %>'
+          inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.trimmedText %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
+          editor: 'ejs'
     - name: 'tests'
       collectionName: 'web_tests'
       fields:
