@@ -16,11 +16,11 @@ Chimera-Framework is a language agnostic framework for standalone and distribute
 
 # Why Chimera-Framework?
 
-* __Programming Language Diversity:__ Some programming language are good at machine learning. Some others are good at statistics or web development. Creating a website with some machine-learning/statistics feature will lead you to a soon-to-be-regret decision. Chimera-Framework solve this by let you choose the best programming language for each task.
+* __Programming Language Diversity:__ Some programming language are good at machine learning. Some others are good at statistics or web development. Creating a website with some machine-learning/statistics feature by using only either R or PHP will lead you to a `soon-to-be-regret` decision. Chimera-Framework solve this by let you choose the best programming language for each task.
 
-* __CLI Support in Most Programming Language:__ Most programming language supporting command line interface. So, rather than inventing a new bridging interface, Chimera-Framework simply use this already-popular-and-common interface. Thus, you don't need to learn something new in order to write your component.
+* __CLI Support in Most Programming Language:__ Most programming language supporting command line interface. So, rather than inventing a new bridging interface, Chimera-Framework simply use this already-popular-and-common interface (like JSON and CLI). Thus, you don't need to learn something new in order to write your component.
 
-* __Technology Migration in Tight Deadline is Painful:__ In software development, there is one single hell named vendor-lock. And to make it worse, some frameworks (or even programming languages) can suddenly fade away from the market. Chimera-Framework help you prevent this by let you develop component-based software. So, if your components suddenly doesn't work due to deprecation or anything, you can just simply drop in a new replacement without any need to rewrite the entire software.
+* __Technology Migration in Tight Deadline is Painful:__ In software development, there is one single hell named `vendor-lock`. It is a situation when you have build a software that depend on a particular set of technology. And to make it worse, some frameworks (or even programming languages) can suddenly fade away from the market (like netware and symbian). Chimera-Framework help you prevent this by let you develop component-based software. So, if your components suddenly doesn't work due to deprecation or anything, you can just simply drop in a new replacement without any need to rewrite the entire software.
 
 # Installation
 
