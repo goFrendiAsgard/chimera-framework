@@ -35,10 +35,12 @@ const defaultInitialState = {
   },
   state: {},
   schema: {},
+  q: null,
+  k: null,
   filter: {},
   unset: {},
   data: {},
-  limit: 1000,
+  limit: 50,
   offset: 0,
   excludeDeleted: 1,
   showHistory: 0,
@@ -193,6 +195,8 @@ function getRoutes () {
 }
 
 function getCombinedFilter (filter1, filter2) {
+  if (!filter1) { filter1 = {} }
+  if (!filter2) { filter2 = {} }
   let filter1KeyCount = Object.keys(filter1).length
   let filter2KeyCount = Object.keys(filter2).length
   if (filter1KeyCount === 0 && filter2KeyCount === 0) {
@@ -207,20 +211,45 @@ function getCombinedFilter (filter1, filter2) {
   return {$and: [filter1, filter2]}
 }
 
-function getQueryFilter (request) {
-  let queryFilter = helper.getObjectFromJson(request.query._q)
-  if ('_q' in request.body) {
-    let bodyFilter = request.body._q
-    if (util.isString(bodyFilter)) {
-      try {
-        bodyFilter = JSON.parse(bodyFilter)
-      } catch (error) {
-        // do nothing
-      }
-    }
-    queryFilter = getCombinedFilter(queryFilter, bodyFilter)
+function getFromRequest (request, key, defaultValue = null) {
+  if (key in request.query) {
+    return request.query[key]
   }
-  return queryFilter
+  if (key in request.body) {
+    return request.body[key]
+  }
+  return defaultValue
+}
+
+function getQ (request) {
+  let q = getFromRequest(request, '_q')
+  if (util.isRealObject(q) || util.isArray(q)) {
+    return JSON.stringify(q)
+  }
+  return q
+}
+
+function getK (request) {
+  return getFromRequest(request, '_k')
+}
+
+function getFilter (q, k, fieldNames, documentId) {
+  let queryFilter = helper.getObjectFromJson(q)
+  let keywordFilter = {}
+  if (k) {
+    keywordFilter = []
+    for (let fieldName of fieldNames) {
+      let singleFilter = {}
+      singleFilter[fieldName] = {$regex: new RegExp(k), $options: 'i'}
+      keywordFilter.push(singleFilter)
+    }
+    keywordFilter = {$or: keywordFilter}
+  }
+  let filter = getCombinedFilter(queryFilter, keywordFilter)
+  if (documentId) {
+    filter = getCombinedFilter({'_id': documentId}, filter)
+  }
+  return filter
 }
 
 function getInitialState (state, callback) {
@@ -232,14 +261,14 @@ function getInitialState (state, callback) {
   let apiVersion = request.params.version ? request.params.version : null
   let schemaName = request.params.schemaName ? request.params.schemaName : null
   let documentId = request.params.id ? helper.getNormalizedDocId(request.params.id) : null
-  let queryFilter = getQueryFilter(request)
+  let q = getQ(request)
+  let k = getK(request)
   let auth = request.auth
-  let limit = 'limit' in request.query ? request.query.limit : 1000
-  let offset = 'offset' in request.query ? request.query.offset : 0
-  let excludeDeleted = '_excludeDeleted' in request.query ? request.query._excludeDeleted : 1
-  let showHistory = '_showHistory' in request.query ? request.query._showHistory : 0
+  let limit = getFromRequest(request, 'limit', 50)
+  let offset = getFromRequest(request, 'offset', 0)
+  let excludeDeleted = getFromRequest(request, '_excludeDeleted', 1)
+  let showHistory = getFromRequest(request, '_showHistory', 0)
   let authId = 'id' in request.auth ? request.auth.id : ''
-  let filter = util.isNullOrUndefined(documentId) ? queryFilter : getCombinedFilter({_id: documentId}, queryFilter)
   auth.id = helper.getNormalizedDocId(authId)
   findSchema({name: schemaName}, config, (error, schemas) => {
     if (error) {
@@ -259,8 +288,9 @@ function getInitialState (state, callback) {
           delete data[key]
         }
       }
+      let filter = getFilter(q, k, fieldNames, documentId)
       data = helper.getParsedNestedJson(data)
-      let initialState = {auth, documentId, apiVersion, schemaName, fieldNames, data, unset, filter, limit, offset, excludeDeleted, showHistory, schema, basePath, chainPath, viewPath, migrationPath}
+      let initialState = {auth, documentId, apiVersion, q, k, schemaName, fieldNames, data, unset, filter, limit, offset, excludeDeleted, showHistory, schema, basePath, chainPath, viewPath, migrationPath}
       initialState = util.getPatchedObject(defaultInitialState, initialState)
       return callback(error, initialState)
     } catch (error) {

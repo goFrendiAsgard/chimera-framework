@@ -22,7 +22,7 @@ const notUniqueResponse = {
   status: 400,
   data: {
     status: 400,
-    developerMessage: 'Duplicate value',
+    developerMessage: 'Duplicate value, record might be exists. Make sure with _excludeDeleted=0 query request',
     userMessage: 'Duplicate value'
   }
 }
@@ -34,6 +34,17 @@ function createNullResponse (fieldOption) {
       status: 400,
       developerMessage: fieldOption.caption + ' should not be null',
       userMessage: fieldOption.caption + ' should not be null'
+    }
+  }
+}
+
+function createInvalidRegexValidationResponse (fieldOption) {
+  return {
+    status: 400,
+    data: {
+      status: 400,
+      developerMessage: fieldOption.regexValidationMessage,
+      userMessage: fieldOption.regexValidationMessage
     }
   }
 }
@@ -55,9 +66,10 @@ function mainProcess (state, cckState, $, chainNames, groupKey, callback) {
   // run the actions and do the callback
   return async.series(actions, (error, result) => {
     let response = {
+      error,
       cckState,
-      status: cckState.result.status,
-      data: cckState.result
+      status: (cckState && 'result' in cckState && 'status' in cckState.result) ? cckState.result.status : 500,
+      data: (cckState && 'result' in cckState) ? cckState.result : {}
     }
     return callback(error, response)
   })
@@ -77,6 +89,8 @@ function checkAndContinueProcess (state, cckState, $, chainNames, groupKey, proc
   for (let fieldName in cckState.schema.fields) {
     let fieldOption = cckState.schema.fields[fieldName]
     let nullResponse = createNullResponse(fieldOption)
+    let invalidRegexValidationResponse = createInvalidRegexValidationResponse(fieldOption)
+    let regexValidation = new RegExp(fieldOption.regexValidation)
     // check null field
     if (fieldOption.notNull) {
       if ($.util.isRealObject(cckState.data) && $.util.isNullOrUndefined(cckState.data[fieldName])) {
@@ -85,6 +99,25 @@ function checkAndContinueProcess (state, cckState, $, chainNames, groupKey, proc
         for (let row of cckState.data) {
           if ($.util.isNullOrUndefined(row[fieldName])) {
             return callback(null, nullResponse)
+          }
+        }
+      }
+    }
+    // check regex
+    if (fieldOption.regexValidation) {
+      // single insert or update
+      if ($.util.isRealObject(cckState.data) && fieldName in cckState.data) {
+        let str = $.util.isString(cckState.data[fieldName]) ? cckState.data[fieldName] : JSON.stringify(cckState.data[fieldName])
+        if (!str.match(regexValidation)) {
+          return callback(null, invalidRegexValidationResponse)
+        }
+      } else if ($.util.isArray(cckState.data)) {
+        for (let row of cckState.data) {
+          if (fieldName in row) {
+            let str = $.util.isString(row[fieldName]) ? row[fieldName] : JSON.stringify(row[fieldName])
+            if (!str.match(regexValidation)) {
+              return callback(null, invalidRegexValidationResponse)
+            }
           }
         }
       }

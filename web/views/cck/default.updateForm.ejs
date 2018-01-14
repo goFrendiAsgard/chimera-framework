@@ -1,4 +1,7 @@
 <form id="cw-form" action="/data/<%= cckState.schemaName %>/update/<%= cckState.documentId %>" method="post">
+  <input type="hidden" name="_excludeDeleted" value="<%= cckState.excludeDeleted %>" />
+  <input type="hidden" name="limit" value="<%= cckState.limit %>" />
+
   <% for (let fieldName of cckState.fieldNames) { %>
 
     <% if (cckState.schema.fields[fieldName].renderTab) { %>

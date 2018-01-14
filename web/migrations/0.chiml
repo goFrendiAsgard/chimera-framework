@@ -258,12 +258,16 @@ vars:
       updateGroups: ['superAdmin']
       deleteGroups: ['superAdmin']
       selectGroups: ['superAdmin']
+      beforeInsertChain: '<%= chainPath %>user.beforeInsertOrUpdate.js'
+      beforeUpdateChain: '<%= chainPath %>user.beforeInsertOrUpdate.js'
       fields:
         username:
           notNull: 1
           unique: 1
         email:
           unique: 1
+          regexValidation: "^\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$"
+          regexValidationMessage: 'Invalid email address'
         password:
           hidden: ['tabular', 'detail']
         groups:

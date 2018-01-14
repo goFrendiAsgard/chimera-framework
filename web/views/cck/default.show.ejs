@@ -4,10 +4,23 @@
     <%- cckState._customHtmlComponents %>
   <% } %>
 
-  <!-- Insert Button -->
-  <% if (isAuthorized(cckState.auth, cckState.schema.insertGroups)) { %>
-    <a id="button-insert" class="btn btn-default" href="/data/<%= cckState.schemaName %>/insert">Add</a>
-  <% } %>
+  <form action="/data/<%= cckState.schemaName %>" class="form-horizontal">
+    <div class="form-group">
+      <div class="col-md-6">
+        <input type="hidden" name="_excludeDeleted" value="<%= cckState.excludeDeleted %>" />
+        <input type="hidden" name="limit" value="<%= cckState.limit %>" />
+        <input type="hidden" name="_q" value="<%= cckState.q %>" />
+        <input type="text" class="form-control" name="_k" placeholder="Keyword" value="<%= cckState.k %>" />
+      </div>
+      <button class="btn btn-default" name="search" value="1">Search</button>
+
+      <!-- Insert Button -->
+      <% if (isAuthorized(cckState.auth, cckState.schema.insertGroups)) { %>
+        <a id="button-insert" class="btn btn-default" href="/data/<%= cckState.schemaName %>/insert?_excludeDeleted=<%= cckState.excludeDeleted%>&limit=<%= cckState.limit %>&_q=<%= cckState.q %>&_k=<%= cckState.k %>">Add</a>
+      <% } %>
+
+    </div>
+  </form>
 
 </div>
 
@@ -38,17 +51,17 @@
 
           <!-- Detail Button -->
           <% if (isAuthorized(cckState.auth, cckState.schema.selectGroups)) { %>
-            <a class="btn btn-default button-detail" rowId="<%=row._id%>" href="/data/<%= cckState.schemaName %>/<%=row._id%>">Detail</a>
+            <a class="btn btn-default button-detail" rowId="<%=row._id%>" href="/data/<%= cckState.schemaName %>/<%=row._id%>?_excludeDeleted=<%= cckState.excludeDeleted%>&limit=<%= cckState.limit %>&_q=<%= cckState.q %>&_k=<%= cckState.k %>">Detail</a>
           <% } %>
 
           <!-- Update Button -->
           <% if (isAuthorized(cckState.auth, cckState.schema.updateGroups)) { %>
-            <a class="btn btn-default button-update" rowId="<%=row._id%>" href="/data/<%= cckState.schemaName %>/update/<%=row._id%>">Update</a>
+            <a class="btn btn-default button-update" rowId="<%=row._id%>" href="/data/<%= cckState.schemaName %>/update/<%=row._id%>?_excludeDeleted=<%= cckState.excludeDeleted%>&limit=<%= cckState.limit %>">Update</a>
           <% } %>
 
           <!-- Update Button -->
           <% if (isAuthorized(cckState.auth, cckState.schema.deleteGroups)) { %>
-            <a class="btn btn-default button-delete" rowId="<%=row._id%>" href="/data/<%= cckState.schemaName %>/delete/<%=row._id%>">Delete</a>
+            <a class="btn btn-default button-delete" rowId="<%=row._id%>" href="/data/<%= cckState.schemaName %>/delete/<%=row._id%>?_excludeDeleted=<%= cckState.excludeDeleted%>&limit=<%= cckState.limit %>">Delete</a>
           <% } %>
         </td>
       </tr>
@@ -56,16 +69,16 @@
   </tbody>
 </table>
 
-<% let pageCount = Math.round(metadata.resultset.count / metadata.resultset.limit) %>
+<% let pageCount = Math.round(metadata.resultset.count / cckState.limit) %>
 
-<% if (pageCount > 0) { %>
-  <% let pageNumber = Math.round(metadata.resultset.offset / metadata.resultset.limit) %>
+<% if (pageCount > 1) { %>
+  <% let pageNumber = Math.round(metadata.resultset.offset / cckState.limit) %>
   <nav aria-label="Page navigation">
     <ul class="pagination">
 
       <!-- prev -->
       <li class="<%= pageNumber === 0 ? 'disabled' : '' %>">
-        <a href="/data/<%= cckState.schemaName %>?limit=<%= metadata.resultset.limit %>&offset=<%= (pageNumber - 1) * metadata.resultset.limit %>" aria-label="Previous">
+        <a href="/data/<%= cckState.schemaName %>?_excludeDeleted=<%= cckState.excludeDeleted%>&limit=<%= cckState.limit %>&offset=<%= (pageNumber - 1) * cckState.limit %>&_q=<%= cckState.q %>&_k=<%= cckState.k %>" aria-label="Previous">
           <span aria-hidden="true">&laquo;</span>
         </a>
       </li>
@@ -73,7 +86,7 @@
       <!-- pages -->
       <% for (let i = 0; i < pageCount; i++) { %>
         <li class="<%= i === pageNumber ? 'active' : '' %>">
-          <a href="/data/<%= cckState.schemaName %>?limit=<%= metadata.resultset.limit %>&offset=<%= i * metadata.resultset.limit %>">
+          <a href="/data/<%= cckState.schemaName %>?_excludeDeleted=<%= cckState.excludeDeleted%>&limit=<%= cckState.limit %>&offset=<%= i * cckState.limit %>&_q=<%= cckState.q %>&_k=<%= cckState.k %>">
             <%= i + 1%>
           </a>
         </li>
@@ -81,7 +94,7 @@
 
       <!-- next -->
       <li class="<%= pageNumber === (pageCount - 1) ? 'disabled' : '' %>">
-        <a href="/data/<%= cckState.schemaName %>?limit=<%= metadata.resultset.limit %>&offset=<%= (pageNumber + 1) * metadata.resultset.limit %>" aria-label="Next">
+        <a href="/data/<%= cckState.schemaName %>?_excludeDeleted=<%= cckState.excludeDeleted%>&limit=<%= cckState.limit %>&offset=<%= (pageNumber + 1) * cckState.limit %>&_q=<%= cckState.q %>&_k=<%= cckState.k %>" aria-label="Next">
           <span aria-hidden="true">&raquo;</span>
         </a>
       </li>

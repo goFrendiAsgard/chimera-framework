@@ -39,11 +39,11 @@
       <% } %>
 
       <% if (isAuthorized(cckState.auth, cckState.schema.updateGroups)) { %>
-        <a class="btn btn-default" href="/data/<%= cckState.schemaName %>/update/<%= cckState.documentId %>">Edit</a>
+        <a class="btn btn-default" href="/data/<%= cckState.schemaName %>/update/<%= cckState.documentId %>?_excludeDeleted=<%= cckState.excludeDeleted%>&limit=<%= cckState.limit %>&offset=<%= cckState.offset %>&_q=<%= cckState.q %>&_k=<%= cckState.k %>">Edit</a>
       <% } %>
 
       <% if (isAuthorized(cckState.auth, cckState.schema.selectGroups)) { %>
-        <a class="btn btn-default" href="/data/<%= cckState.schemaName %>">Back</a>
+        <a class="btn btn-default" href="/data/<%= cckState.schemaName %>?_excludeDeleted=<%= cckState.excludeDeleted%>&limit=<%= cckState.limit %>&offset=<%= cckState.offset %>&_q=<%= cckState.q %>&_k=<%= cckState.k %>">Back</a>
       <% } else { %>
         <a class="btn btn-default" href="/">Back</a>
       <% } %>

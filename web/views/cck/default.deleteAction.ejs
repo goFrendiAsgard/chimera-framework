@@ -10,7 +10,7 @@
 <div style="margin-bottom:1em">
 
   <% if (isAuthorized(cckState.auth, cckState.schema.selectGroups)) { %>
-    <a class="btn btn-default" href="/data/<%= cckState.schemaName %>">Back</a>
+    <a class="btn btn-default" href="/data/<%= cckState.schemaName %>?_excludeDeleted=<%= cckState.excludeDeleted%>&limit=<%= cckState.limit %>">Back</a>
   <% } else { %>
     <a class="btn btn-default" href="/">Back</a>
   <% } %>
