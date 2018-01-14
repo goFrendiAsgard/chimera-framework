@@ -2,23 +2,42 @@
 
 ## Do I need to know Javascript in order to use Chimera-Framework?
 
-No. You only need to install Node.Js and npm. However, when you want to write some `if`, `while` and native javascript `command`, you should know some basic Javascript.
+It is better if you know some Javascript. But if you don't, you can still use Chimera-Framework by writing some `CHIML` script. The only thing you really need to know is how to install `Node.Js` and `npm`.
+
+## When will I need to know Javascript?
+
+You will use Javascript if you write some `if` or `while` condition. Furthermore, for performance critical operation, you can write your chain in Javascript rather than `CHIML`. Below is the skeleton of Javascript chain:
+
+```javascript
+module.exports = (ins, vars, callback) => {
+  // do something here
+  callback (error, out)
+}
+```
 
 ## Chimera-Framework is using CLI mechanism. Isn't it better to just use UNIX Pipe instead?
 
-In many cases, using Unix Pipe will give you a better performance. However, for complex flow, UNIX Pipe can be confusing and not so readable. Also, it is kind of difficult to implament `global variables` that are accessible from every process. Creating parallel mechanism in UNIX Pipe is also possible, but it also require unnamed pipe and other mechanism.
+This is true for simple processes (e.g: something like `cat | more`). However, once your process need parallel, serial, or conditions, UNIX Pipe can be confusing and intimidating.
 
-Chimera-Framework offer a more readable definition of your processes.
+Chimera-Framework solve this by let you compose your components in a very readable format
 
 ## Why do we need Chimera-Framework if we can write a simple Javascript invoking `childProcess` in order to run a CLI command?
 
-First, it is a matter of readability. Writing a Javascript program with a lot of callback or promise might escalate quickly and become hardly readable.
+Chimera-Framework is more than just run a CLI commands or another Node modules. CHIML language provide a similar form to handle callback, normal function, and CLI command:
 
-Second, it is a matter of easiness. Chimera-Framework is a collection of useful libraries for common use cases. By using Chimera-Framework you can save you development time and focus on your business process.
+```yaml
+do:
+  - |(input1, input2) -> {javascriptFunction} -> output
+  - |(input1, input2) -> [javascriptCallbackFunction] -> output
+  - |(input1, input2) -> <javascriptPromise> -> output
+  - |(input1, input2) -> cliCommand -> output
+```
 
-## Chimera-Framework slower compared to UNIX Pipe mechanism, is it true? why? and does it matter?
+Thus, you don't need to change all your legacy script into `Promise object`, and you can escape `callback hell`
 
-Yes, it is slower. In my machine (intel core i3, 4 GB of Ram) the time execution difference is approximately ~ 250 ms.
+## Is Chimera-Framework slower than UNIX Pipe? Why? 
+
+Yes, surely Chimera-Framework run on top of CLI. It doesn't make sense that it is faster than UNIX Pipe mechanism itself
 
 This is a time test for running a single Python program:
 ```
@@ -50,4 +69,18 @@ user    0m0.596s
 sys     0m0.068s
 ```
 
-The 200 ms time is caused by `require` mechanism in Chimera-Framework source code. This mechanism is only executed once and it is not going to be significant if you use Chimera-Framework as web-service or web-application.
+The difference was around 200 ms. This is quite significant for critical purpose processes. Chimera-Framework uses `safeEval` and `require` mechanism. Both are badly impact the performance in trade of flexibility.
+
+# 200 ms difference is huge in web application. Is it still worth to build a web application by using Chimera-Framework?
+
+Web application executed once and will always available in the memory. Thus, the performance for each request won't be affected.
+
+Also, for critical processes in Chimera-Web-Framework, we use Javascript instead of CHIML. And since there is no `SafeEval` being used, the performance is good enough. (Mostly 200-something ms for CRUD)
+
+# Can I contribute? Is there any standard for contribution?
+
+We use `js standard` and 2 spaces. That's all. If you work with tabs or 4 spaces, please convert it back to 2 spaces before submit a pull request.
+
+# It doesn't work
+
+Open an issue [here](https://github.com/goFrendiAsgard/chimera-framework/issues)
