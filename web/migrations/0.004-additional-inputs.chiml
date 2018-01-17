@@ -1,0 +1,30 @@
+ins: action, migrationConfig
+out: output
+vars:
+  input:
+    file: |
+      <input name="<%%= fieldName %>" rowId="<%%= row._id %>" class="form-control" type="file" value="<%%= value %>" />
+    dateTime: |
+      <input name="<%%= fieldName %>" rowId="<%%= row._id %>" class="form-control" type="text" value="<%%= value %>" />
+    checkBoxes: |
+      <%% for (let optionValue in fieldInfo.options){ %>
+        <label>
+        <input name="<%%= fieldName %>[]" value="<%%= optionValue %>" <%%= value == optionValue? "checked": ""%> /><%%= fieldInfo.options[optionValue] %>
+        </label>
+      <%% } %>
+do:
+
+  - if: |action == 'up'
+    do: 
+      - ins:
+          - 'web_configs'
+          - 'update'
+          - key: 'cck'
+          - $set:
+              value.input.file: input.file
+              value.input.dateTime: input.dateTime
+              value.input.checkBoxes: input.checkBoxes
+        out: output
+        do: |[$.helper.mongoExecute]
+
+  - |(output) -> {$.print}
