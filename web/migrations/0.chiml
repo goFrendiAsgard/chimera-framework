@@ -2,12 +2,14 @@ ins: action, migrationConfig
 out: output
 vars:
   schemas:
+
     - name: 'cck'
       collectionName: 'web_cck'
       insertGroups: ['superAdmin']
       updateGroups: ['superAdmin']
       deleteGroups: ['superAdmin']
       selectGroups: ['superAdmin']
+      afterSelectChain: '<%= chainPath %>cck.afterSelect.js'
       tabs:
         config: Configs
         privilege: Privileges
@@ -42,19 +44,31 @@ vars:
           tab: config
         insertGroups:
           caption: 'Insert Privileges'
-          inputTemplate: '<%- cck.input.jsonText %>'
+          inputTemplate: '<%- cck.input.checkBoxes %>'
+          options:
+            loggedIn: loggedIn
+            loggedOut: loggedOut
           tab: privilege
         updateGroups:
           caption: 'Update Privileges'
-          inputTemplate: '<%- cck.input.jsonText %>'
+          inputTemplate: '<%- cck.input.checkBoxes %>'
+          options:
+            loggedIn: loggedIn
+            loggedOut: loggedOut
           tab: privilege
         deleteGroups:
           caption: 'Delete Privileges'
-          inputTemplate: '<%- cck.input.jsonText %>'
+          inputTemplate: '<%- cck.input.checkBoxes %>'
+          options:
+            loggedIn: loggedIn
+            loggedOut: loggedOut
           tab: privilege
         selectGroups:
           caption: 'Select Privileges'
-          inputTemplate: '<%- cck.input.jsonText %>'
+          inputTemplate: '<%- cck.input.checkBoxes %>'
+          options:
+            loggedIn: loggedIn
+            loggedOut: loggedOut
           tab: privilege
         insertChain:
           caption: 'Insert Chain'
@@ -208,12 +222,14 @@ vars:
           hidden: ['tabular']
           editor: 'ejs'
           tab: select
+
     - name: 'routes'
       collectionName: 'web_routes'
       insertGroups: ['superAdmin']
       updateGroups: ['superAdmin']
       deleteGroups: ['superAdmin']
       selectGroups: ['superAdmin']
+      afterSelectChain: '<%= chainPath %>route.afterSelect.js'
       fields:
         name:
           notNull: 1
@@ -251,7 +267,11 @@ vars:
           hidden: ['tabular']
           editor: 'ejs'
         groups:
-          inputTemplate: '<%- cck.input.jsonText %>'
+          inputTemplate: '<%- cck.input.checkBoxes %>'
+          options:
+            loggedIn: loggedIn
+            loggedOut: loggedOut
+
     - name: 'users'
       collectionName: 'web_users'
       insertGroups: ['superAdmin']
@@ -260,6 +280,7 @@ vars:
       selectGroups: ['superAdmin']
       beforeInsertChain: '<%= chainPath %>user.beforeInsertOrUpdate.js'
       beforeUpdateChain: '<%= chainPath %>user.beforeInsertOrUpdate.js'
+      afterSelectChain: '<%= chainPath %>user.afterSelect.js'
       fields:
         username:
           notNull: 1
@@ -271,7 +292,19 @@ vars:
         password:
           hidden: ['tabular', 'detail']
         groups:
-          inputTemplate: '<%- cck.input.jsonText %>'
+          inputTemplate: '<%- cck.input.checkBoxes %>'
+
+    - name: 'groups'
+      collectionName: 'web_groups'
+      insertGroups: ['superAdmin']
+      updateGroups: ['superAdmin']
+      deleteGroups: ['superAdmin']
+      selectGroups: ['superAdmin']
+      fields:
+        name:
+          notNull: 1
+          unique: 1
+
     - name: 'configs'
       collectionName: 'web_configs'
       insertGroups: ['superAdmin']
@@ -288,6 +321,7 @@ vars:
           tabularPresentationTemplate: '<%- cck.presentation.trimmedText %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           editor: 'ejs'
+
     - name: 'tests'
       collectionName: 'web_tests'
       fields:

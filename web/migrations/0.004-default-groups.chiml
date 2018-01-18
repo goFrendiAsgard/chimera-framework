@@ -1,0 +1,25 @@
+ins: action, migrationConfig
+out: output
+vars:
+  defaultGroups:
+
+    - name: superAdmin
+      defaultGroup: 1
+
+    - name: author
+      defaultGroup: 1
+
+    - name: contributor
+      defaultGroup: 1
+
+    - name: moderator
+      defaultGroup: 1
+
+do:  
+
+  - if: action == 'up'
+    do:
+      - |('web_groups', 'insert', defaultGroups) -> [$.helper.mongoExecute] -> output
+
+    else:
+      - |('web_groups', 'remove', {'defaultGroup': 1}) -> [$.helper.mongoExecute] -> output

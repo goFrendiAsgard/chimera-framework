@@ -21,7 +21,11 @@ module.exports = (ins, vars, callback) => {
       for (let i = 0; i < result._history.length; i++) {
         let history = result._history[i]
         if ($.util.isString(history)) {
-          result._history[i] = JSON.parse(history)
+          try {
+            result._history[i] = JSON.parse(history)
+          } catch (error) {
+            // do nothing
+          }
         }
       }
     }

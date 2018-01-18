@@ -8,20 +8,20 @@ module.exports = (ins, vars, callback) => {
     fieldNames.push(fieldName)
   }
   cckState.fieldNames = fieldNames
-  // add password to unset
-  cckState.unset['password'] = '[Not Empty]'
   // hash password(s)
   if ($.util.isRealObject(cckState.data) && 'password' in cckState.data) {
     let hashObject = $.helper.hashPassword(cckState.data.password)
     let {salt, hashedPassword} = hashObject
     cckState.data.hashedPassword = hashedPassword
     cckState.data.salt = salt
+    cckState.data.password = null
   } else if ($.util.isArray(cckState.data)) {
     for (let row of cckState.data) {
       let hashObject = $.helper.hashPassword(row.password)
       let {salt, hashedPassword} = hashObject
       row.hashedPassword = hashedPassword
       row.salt = salt
+      row.password = null
     }
   }
   callback(null, cckState)

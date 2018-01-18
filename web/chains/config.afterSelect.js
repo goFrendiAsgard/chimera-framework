@@ -1,5 +1,13 @@
-let fs = require('fs')
-let path = require('path')
+const fs = require('fs')
+const path = require('path')
+
+function getTemplate (template) {
+  if (fs.existsSync(template)) {
+    return fs.readFileSync(template, 'utf8')
+  }
+  return template
+}
+
 module.exports = (ins, vars, callback) => {
   let cckState = ins[0]
   try {
@@ -10,7 +18,7 @@ module.exports = (ins, vars, callback) => {
 
       // booleans
       if (['showLeftNav', 'showTopNav', 'showJumbotron'].indexOf(key) > -1) {
-        cckState.schema.fields.value.inputTemplate = config.cck.input.option
+        cckState.schema.fields.value.inputTemplate = getTemplate(config.cck.input.option)
         cckState.schema.fields.value.options = ['No', 'Yes']
       }
 
@@ -22,7 +30,7 @@ module.exports = (ins, vars, callback) => {
 
       // bootstrapTheme
       if (['bootstrapTheme'].indexOf(key) > -1) {
-        cckState.schema.fields.value.inputTemplate = config.cck.input.option
+        cckState.schema.fields.value.inputTemplate = getTemplate(config.cck.input.option)
         cckState.schema.fields.value.options = {'': '[No Theme]'}
         fs.readdirSync(path.join(config.staticPath, 'css/themes')).forEach((fileName) => {
           if (fileName.substr(fileName.length - 8, 8) === '.min.css') {
@@ -34,7 +42,7 @@ module.exports = (ins, vars, callback) => {
 
       // json
       if (['navigation', 'partial', 'cck'].indexOf(key) > -1) {
-        cckState.schema.fields.value.inputTemplate = config.cck.input.jsonText
+        cckState.schema.fields.value.inputTemplate = getTemplate(config.cck.input.jsonText)
       }
     }
     callback(null, cckState)

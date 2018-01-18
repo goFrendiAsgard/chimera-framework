@@ -23,11 +23,11 @@ function cwInitAce () {
       showLineNumbers: true,
       showGutter: true,
       fontSize: 14,
-      minLines: 5,
+      minLines: 7,
       maxLines: 25
     })
     editor.$blockScrolling = Infinity
-    editor.setTheme('ace/theme/monokai')
+    editor.setTheme('ace/theme/github')
     editor.getSession().setValue(textarea.val())
 
     editor.getSession().on('change', function () {
@@ -48,7 +48,7 @@ $(document).ready(function () {
   if ($('#form-tabs li.active a').attr('href')) {
     var tab = $('#form-tabs li.active a').attr('href').slice(1)
     // don't know, but seems we have to delay this in order to make ace rendered correctly
-    setTimeout(function () { cwSwitchTab(tab) }, 500)
+    setTimeout(function () { cwSwitchTab(tab) }, 50)
   }
 })
 

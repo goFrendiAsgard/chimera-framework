@@ -1,0 +1,23 @@
+ins: action, migrationConfig
+out: output
+do:
+
+  - if: |action == 'up'
+    do: 
+      - ins:
+          - 'web_configs'
+          - 'update'
+          - key: 'cck'
+          - $set:
+              value.input.file: <%- viewPath %>cck/inputs/file.ejs 
+              value.input.dateTime: <%- viewPath %>cck/inputs/dateTime.ejs 
+              value.input.checkBoxes: <%- viewPath %>cck/inputs/checkBoxes.ejs 
+              value.input.email: <%- viewPath %>cck/inputs/email.ejs
+              value.input.url: <%- viewPath %>cck/inputs/url.ejs
+              value.input.password: <%- viewPath %>cck/inputs/password.ejs
+              value.presentation.image: <%- viewPath %>cck/inputs/image.ejs
+              value.presentation.link: <%- viewPath %>cck/inputs/link.ejs
+        out: output
+        do: |[$.helper.mongoExecute]
+
+  - |(output) -> {$.print}

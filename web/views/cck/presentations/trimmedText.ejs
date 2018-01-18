@@ -1,0 +1,1 @@
+<%= value === null || value === undefined || value === ''? '': (JSON.stringify(value).length > 30 ? JSON.stringify(value).slice(0,27) + '...' : JSON.stringify(value)) %>

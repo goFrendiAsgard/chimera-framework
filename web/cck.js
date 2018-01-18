@@ -3,6 +3,7 @@
 const async = require('neo-async')
 const path = require('path')
 const ejs = require('ejs')
+const fs = require('fs')
 const util = require('chimera-framework/lib/util.js')
 const helper = require('./helper.js')
 
@@ -152,7 +153,11 @@ function preprocessSchema (schema, config) {
     // completing chiml path
     for (let key in fieldData) {
       if (util.isString(fieldData[key])) {
-        fieldData[key] = ejs.render(fieldData[key], config)
+        let value = ejs.render(fieldData[key], config)
+        if (fs.existsSync(value)) {
+          value = fs.readFileSync(value, 'utf8')
+        }
+        fieldData[key] = value
       }
     }
     completeSchema.fields[field] = fieldData
@@ -328,6 +333,16 @@ function getData (request, fieldNames) {
   let queryData = helper.getSubObject(request.query, fieldNames)
   let bodyData = helper.getSubObject(request.body, fieldNames)
   let data = util.getPatchedObject(queryData, bodyData)
+  for (let fieldName of fieldNames) {
+    if (!(fieldName in data)) {
+      if (fieldName + '.default' in request.query) {
+        data[fieldName] = request.query[fieldName + '.default']
+      }
+      if (fieldName + '.default' in request.body) {
+        data[fieldName] = request.body[fieldName + '.default']
+      }
+    }
+  }
   return data
 }
 
