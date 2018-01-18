@@ -1,7 +1,7 @@
 {
 	"info": {
 		"name": "test-web",
-		"_postman_id": "419726f7-7afc-2b4f-2e4d-b9412e77548b",
+		"_postman_id": "0a9702fa-abb1-13a9-8681-ae81a2f5a036",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -36,7 +36,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/",
 							"protocol": "http",
@@ -90,7 +93,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/users",
 							"protocol": "http",
@@ -142,7 +148,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/login-api?user=admin&password=admin",
 							"protocol": "http",
@@ -208,7 +217,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/users",
 							"protocol": "http",
@@ -294,7 +306,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/login-api?user=root&password=admin",
 							"protocol": "http",
@@ -354,7 +369,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/login-api?user=admin&password=root",
 							"protocol": "http",
@@ -415,7 +433,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/logout-api",
 							"protocol": "http",
@@ -636,7 +657,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/",
 							"protocol": "http",
@@ -816,7 +840,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
@@ -874,7 +901,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
@@ -898,7 +928,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "018cd6e2-73a7-4704-83c2-6fc47f0905fe",
+								"id": "51da0599-b1c8-433a-8265-ac2c0fa41cef",
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON, results, firstResult;",
@@ -918,7 +948,7 @@
 									"tests['results contains 3 fields'] = results.length === 2;",
 									"tests['firstResult has id'] = ('_id' in firstResult);",
 									"tests['firstResult has history'] = ('_history' in firstResult);",
-									"tests['firstResult history is correct'] = firstResult._history[0].set.key = firstResult.key;",
+									"tests['firstResult history is correct'] = firstResult._history[0].key = firstResult.key;",
 									""
 								]
 							}
@@ -988,7 +1018,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests/{{firstTestId}}",
 							"protocol": "http",
@@ -1040,7 +1073,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests/123",
 							"protocol": "http",
@@ -1227,7 +1263,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
@@ -1284,7 +1323,10 @@
 								"value": "application/x-www-form-urlencoded"
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests/{{firstTestId}}",
 							"protocol": "http",
@@ -1336,7 +1378,10 @@
 								"value": "application/x-www-form-urlencoded"
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
@@ -1384,7 +1429,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests",
 							"protocol": "http",
@@ -1433,7 +1481,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests?_excludeDeleted=0",
 							"protocol": "http",
@@ -1492,7 +1543,10 @@
 								"value": "application/x-www-form-urlencoded"
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests?_excludeDeleted=0",
 							"protocol": "http",
@@ -1547,7 +1601,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:3000/api/v1/tests?_excludeDeleted=0",
 							"protocol": "http",

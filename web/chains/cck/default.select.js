@@ -15,6 +15,16 @@ module.exports = (ins, vars, callback) => {
     if (error) {
       return callback(error, null)
     }
+    // parse history
+    for (let result of results) {
+      if (!('_history' in result)) { continue }
+      for (let i = 0; i < result._history.length; i++) {
+        let history = result._history[i]
+        if ($.util.isString(history)) {
+          result._history[i] = JSON.parse(history)
+        }
+      }
+    }
     return $.helper.mongoExecute(dbConfig, 'count', filter, (error, count) => {
       cckState.result.metadata = {resultset: {count, limit, offset: skip}}
       if ($.util.isString(cckState.documentId)) {
