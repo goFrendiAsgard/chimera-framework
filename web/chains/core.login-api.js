@@ -13,7 +13,7 @@ module.exports = (ins, vars, callback) => {
     identity = request.body.user
     password = request.body.password
   }
-  $.helper.mongoExecute('web_users', 'find', {$or: [{username: identity}, {email: identity}]}, (error, users) => {
+  $.helper.mongoExecute('web_users', 'find', {$and: [{_deleted: {$ne: 1}}, {$or: [{username: identity}, {email: identity}]}]}, (error, users) => {
     let response = {
       data: {
         token: '',

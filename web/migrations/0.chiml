@@ -282,6 +282,9 @@ vars:
       beforeUpdateChain: '<%= chainPath %>user.beforeInsertOrUpdate.js'
       afterSelectChain: '<%= chainPath %>user.afterSelect.js'
       fields:
+        profilePicture:
+          inputTemplate: '<%- cck.input.file %>'
+          presentationTemplate: '<%- cck.presentation.image %>'
         username:
           notNull: 1
           unique: 1
@@ -289,8 +292,11 @@ vars:
           unique: 1
           regexValidation: "^\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$"
           regexValidationMessage: 'Invalid email address'
+          inputTemplate: '<%- cck.input.email %>'
         password:
           hidden: ['tabular', 'detail']
+        birthdate:
+          inputTemplate: '<%- cck.input.dateTime %>'
         groups:
           inputTemplate: '<%- cck.input.checkBoxes %>'
 

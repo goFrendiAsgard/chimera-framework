@@ -1,4 +1,4 @@
-<form id="cw-form" action="/data/<%= cckState.schemaName %>/update/<%= cckState.documentId %>" method="post">
+<form id="cw-form" action="/data/<%= cckState.schemaName %>/update/<%= cckState.documentId %>" method="post" enctype="multipart/form-data">
   <input type="hidden" name="_excludeDeleted" value="<%= cckState.excludeDeleted %>" />
   <input type="hidden" name="limit" value="<%= cckState.limit %>" />
 

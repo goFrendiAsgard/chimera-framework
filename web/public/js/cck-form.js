@@ -23,7 +23,7 @@ function cwInitAce () {
       showLineNumbers: true,
       showGutter: true,
       fontSize: 14,
-      minLines: 7,
+      minLines: 5,
       maxLines: 25
     })
     editor.$blockScrolling = Infinity

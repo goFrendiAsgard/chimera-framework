@@ -15,8 +15,8 @@ do:
               value.input.email: <%- viewPath %>cck/inputs/email.ejs
               value.input.url: <%- viewPath %>cck/inputs/url.ejs
               value.input.password: <%- viewPath %>cck/inputs/password.ejs
-              value.presentation.image: <%- viewPath %>cck/inputs/image.ejs
-              value.presentation.link: <%- viewPath %>cck/inputs/link.ejs
+              value.presentation.image: <%- viewPath %>cck/presentations/image.ejs
+              value.presentation.link: <%- viewPath %>cck/presentations/link.ejs
         out: output
         do: |[$.helper.mongoExecute]
 

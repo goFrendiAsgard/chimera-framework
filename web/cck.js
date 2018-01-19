@@ -282,10 +282,9 @@ function getInitialState (state, callback) {
     if (schemas.length === 0) {
       return callback(new Error('cckError: Undefined schema ' + schemaName), null)
     }
-    try {
-      let schema = schemas[0]
-      let fieldNames = Object.keys(schema.fields)
-      let data = getData(request, fieldNames)
+    let schema = schemas[0]
+    let fieldNames = Object.keys(schema.fields)
+    return getData(request, fieldNames, config, (error, data) => {
       let unset = {}
       for (let key in data) {
         if (data[key] === '') {
@@ -298,9 +297,7 @@ function getInitialState (state, callback) {
       let initialState = {auth, documentId, apiVersion, q, k, schemaName, fieldNames, data, unset, filter, limit, offset, excludeDeleted, showHistory, schema, basePath, chainPath, viewPath, migrationPath}
       initialState = util.getPatchedObject(defaultInitialState, initialState)
       return callback(error, initialState)
-    } catch (error) {
-      return callback(error, null)
-    }
+    })
   })
 }
 
@@ -322,28 +319,78 @@ function getTrimmedObject (obj) {
   return obj
 }
 
-function getData (request, fieldNames) {
-  if (util.isArray(request.body)) {
-    let data = []
-    for (let row of request.body) {
-      data.push(helper.getSubObject(row, fieldNames))
-    }
-    return data
-  }
-  let queryData = helper.getSubObject(request.query, fieldNames)
-  let bodyData = helper.getSubObject(request.body, fieldNames)
-  let data = util.getPatchedObject(queryData, bodyData)
+function getFilteredRow (row, fieldNames) {
+  let filteredRow = helper.getSubObject(row, fieldNames)
   for (let fieldName of fieldNames) {
-    if (!(fieldName in data)) {
-      if (fieldName + '.default' in request.query) {
-        data[fieldName] = request.query[fieldName + '.default']
-      }
-      if (fieldName + '.default' in request.body) {
-        data[fieldName] = request.body[fieldName + '.default']
+    if (!(fieldName in row)) {
+      if (fieldName + '.default' in row) {
+        filteredRow[fieldName] = row[fieldName + '.default']
       }
     }
   }
-  return data
+  return filteredRow
+}
+
+function getFileName (fileName) {
+  return Date.now() + fileName
+}
+
+function getUploadPath (config) {
+  return path.join(config.staticPath, 'uploads') + '/'
+}
+
+function getMultipleData (request, fieldNames, config, callback) {
+  let uploadPath = getUploadPath(config)
+  let data = []
+  let actions = []
+  for (let i = 0; i < request.body.length; i++) {
+    let row = getFilteredRow(request.body[i], fieldNames)
+    data[i] = row
+    for (let fieldName of fieldNames) {
+      if (fieldName in request.files && util.isArray(request.files[fieldName]) && i < request.files[fieldName].length) {
+        let file = request.files[fieldName][i]
+        let fileName = getFileName(file.name)
+        data[i][fieldName] = '/uploads/' + fileName
+        actions.push((next) => {
+          file.mv(uploadPath + fileName, (error) => {
+            next(error)
+          })
+        })
+      }
+    }
+  }
+  return async.parallel(actions, (error, result) => {
+    callback(error, data)
+  })
+}
+
+function getSingleData (request, fieldNames, config, callback) {
+  let uploadPath = getUploadPath(config)
+  let actions = []
+  let data = util.getPatchedObject(request.query, request.body)
+  data = getFilteredRow(data, fieldNames)
+  for (let fieldName of fieldNames) {
+    if (util.isRealObject(request.files) && fieldName in request.files) {
+      let file = request.files[fieldName]
+      let fileName = getFileName(file.name)
+      data[fieldName] = '/uploads/' + fileName
+      actions.push((next) => {
+        file.mv(uploadPath + fileName, (error) => {
+          next(error)
+        })
+      })
+    }
+  }
+  return async.parallel(actions, (error, result) => {
+    callback(error, data)
+  })
+}
+
+function getData (request, fieldNames, config, callback) {
+  if (util.isArray(request.body)) {
+    return getMultipleData(request, fieldNames, config, callback)
+  }
+  return getSingleData(request, fieldNames, config, callback)
 }
 
 function getAllowedFieldNames (fieldNames) {

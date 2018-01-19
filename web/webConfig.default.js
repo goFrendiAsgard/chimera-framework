@@ -6,10 +6,17 @@ let basePath = path.join(__dirname, '/')
 let chainPath = path.join(__dirname, 'chains') + '/'
 let viewPath = path.join(__dirname, 'views') + '/'
 let randomNumber = String(Math.round(Math.random() * 1000000000))
+let migrationPath = path.join(__dirname, 'migrations') + '/'
+let staticPath = path.join(__dirname, 'public') + '/'
+let faviconPath = path.join(__dirname, 'public/favicon.ico')
 
 const webConfig = {
   basePath,
   chainPath,
+  viewPath,
+  migrationPath,
+  staticPath,
+  faviconPath,
   exceptionKeys: ['basePath', 'chainPath', 'cckPath', 'helperPath', 'exceptionKeys', 'routes', 'jwtSecret', 'jwtExpired', 'jwtTokenName', 'sessionSecret', 'sessionMaxAge', 'sessionSaveUnitialized', 'sessionResave', 'startupHook', 'beforeRequestHook', 'afterRequestHook', 'middlewares', 'mongoUrl', 'migrationPath', 'staticPath', 'faviconPath', 'viewPath', 'errorTemplate', 'defaultTemplate', 'baseLayout', 'vars'],
   // routes
   routes: [],
@@ -32,14 +39,6 @@ const webConfig = {
   mongoUrl: 'mongodb://localhost/chimera-web-app',
   // verbosity level
   verbose: 0,
-  // migration path
-  migrationPath: path.join(__dirname, 'migrations') + '/',
-  // location of static resources
-  staticPath: path.join(__dirname, 'public') + '/',
-  // favicon path
-  faviconPath: path.join(__dirname, 'public/favicon.ico'),
-  // location of view files
-  viewPath: viewPath,
   // error view tempalate
   errorTemplate: path.join(viewPath, 'default.error.ejs'),
   defaultTemplate: null,
