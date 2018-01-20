@@ -5,7 +5,15 @@ vars:
 
     - key: title
       defaultConfig: 1
-      value: 'Chimera Web Application'
+      value: 'Chimera'
+
+    - key: jargon
+      defaultConfig: 1
+      value: 'Because of Typhon and Echidna'
+
+    - key: logo
+      defaultConfig: 1
+      value: '/favicon.ico'
 
     - key: bootstrapNavClass
       defaultConfig: 1
@@ -86,7 +94,38 @@ vars:
 
     - key: jumbotron
       defaultConfig: 1
-      value: ''
+      value: |
+        <div class="jumbotron">
+          <img src="<%%= config.logo %>" />
+          <h1><%%= config.title %></h1>      
+          <p><%%= config.jargon %></p>
+        </div>
+
+    - key: showFooter
+      defaultConfig: 1
+      value: 0 
+
+    - key: footer
+      defaultConfig: 1
+      value: |
+        <footer style="margin-bottom:20px; text-align:right; font-size:0.8em;">
+          Chimera web app &copy; 2018-tomorrowMorning
+        </footer>
+
+    - key: showRightWidget
+      defaultConfig: 1
+      value: 0 
+
+    - key: rightWidget
+      defaultConfig: 1
+      value: |
+        <div id="google_translate_element"></div>
+        <script type="text/javascript">
+          function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+          }
+        </script>
+        <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 do:  
 

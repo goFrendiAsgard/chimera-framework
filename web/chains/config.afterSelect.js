@@ -16,8 +16,13 @@ module.exports = (ins, vars, callback) => {
     if (cckState.documentId) {
       let key = cckState.result.result.key
 
+      // images
+      if (['logo'].indexOf(key) > -1) {
+        cckState.schema.fields.value.inputTemplate = getTemplate(config.cck.input.image)
+      }
+
       // booleans
-      if (['showLeftNav', 'showTopNav', 'showJumbotron'].indexOf(key) > -1) {
+      if (['showLeftNav', 'showTopNav', 'showJumbotron', 'showRightWidget', 'showFooter'].indexOf(key) > -1) {
         cckState.schema.fields.value.inputTemplate = getTemplate(config.cck.input.option)
         cckState.schema.fields.value.options = ['No', 'Yes']
       }
