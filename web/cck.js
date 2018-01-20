@@ -55,6 +55,7 @@ const defaultSchemaData = {
   collectionName: 'unnamed',
   site: null,
   fields: {},
+  initChain: null,
   insertChain: '<%= chainPath %>cck/default.insert.js', // insert api
   updateChain: '<%= chainPath %>cck/default.update.js', // update api
   deleteChain: '<%= chainPath %>cck/default.delete.js', // delete api
@@ -136,6 +137,14 @@ function removeSchema (config, callback) {
   return helper.mongoExecute(cckCollectionName, 'remove', filter, callback)
 }
 
+function getRealTemplateValue (template, config) {
+  let value = ejs.render(template, config)
+  if (fs.existsSync(value)) {
+    value = fs.readFileSync(value, 'utf8')
+  }
+  return value
+}
+
 function preprocessSchema (schema, config) {
   schema = getTrimmedObject(schema)
   config = util.isNullOrUndefined(config) ? helper.getWebConfig() : config
@@ -150,14 +159,10 @@ function preprocessSchema (schema, config) {
     let fieldData = util.getPatchedObject(defaultFieldData, completeSchema.fields[field])
     // define default caption
     fieldData.caption = util.isNullOrUndefined(fieldData.caption) ? field.charAt(0).toUpperCase() + field.slice(1) : fieldData.caption
-    // completing chiml path
+    // completing path
     for (let key in fieldData) {
       if (util.isString(fieldData[key])) {
-        let value = ejs.render(fieldData[key], config)
-        if (fs.existsSync(value)) {
-          value = fs.readFileSync(value, 'utf8')
-        }
-        fieldData[key] = value
+        fieldData[key] = getRealTemplateValue(fieldData[key], config)
       }
     }
     completeSchema.fields[field] = fieldData
@@ -258,47 +263,77 @@ function getFilter (q, k, fieldNames, documentId) {
 }
 
 function getInitialState (state, callback) {
-  let {config, request} = state
-  let basePath = config.basePath ? config.basePath : null
-  let chainPath = config.chainPath ? config.chainPath : null
-  let viewPath = config.viewPath ? config.viewPath : null
-  let migrationPath = config.migrationPath
-  let apiVersion = request.params.version ? request.params.version : null
-  let schemaName = request.params.schemaName ? request.params.schemaName : null
-  let documentId = request.params.id ? helper.getNormalizedDocId(request.params.id) : null
-  let q = getQ(request)
-  let k = getK(request)
-  let auth = request.auth
-  let limit = getFromRequest(request, 'limit', 50)
-  let offset = getFromRequest(request, 'offset', 0)
-  let excludeDeleted = getFromRequest(request, '_excludeDeleted', 1)
-  let showHistory = getFromRequest(request, '_showHistory', 0)
-  let authId = 'id' in request.auth ? request.auth.id : ''
-  auth.id = helper.getNormalizedDocId(authId)
-  findSchema({name: schemaName}, config, (error, schemas) => {
-    if (error) {
-      return callback(error, null)
-    }
-    if (schemas.length === 0) {
-      return callback(new Error('cckError: Undefined schema ' + schemaName), null)
-    }
-    let schema = schemas[0]
-    let fieldNames = Object.keys(schema.fields)
-    return getData(request, fieldNames, config, (error, data) => {
-      let unset = {}
-      for (let key in data) {
-        if (data[key] === '') {
-          unset[key] = ''
-          delete data[key]
-        }
-      }
-      let filter = getFilter(q, k, fieldNames, documentId)
-      data = helper.getParsedNestedJson(data)
-      let initialState = {auth, documentId, apiVersion, q, k, schemaName, fieldNames, data, unset, filter, limit, offset, excludeDeleted, showHistory, schema, basePath, chainPath, viewPath, migrationPath}
-      initialState = util.getPatchedObject(defaultInitialState, initialState)
-      return callback(error, initialState)
+  try {
+    let {config, request} = state
+    let basePath = config.basePath ? config.basePath : null
+    let chainPath = config.chainPath ? config.chainPath : null
+    let viewPath = config.viewPath ? config.viewPath : null
+    let migrationPath = config.migrationPath
+    let apiVersion = request.params.version ? request.params.version : null
+    let schemaName = request.params.schemaName ? request.params.schemaName : null
+    let documentId = request.params.id ? helper.getNormalizedDocId(request.params.id) : null
+    let q = getQ(request)
+    let k = getK(request)
+    let auth = request.auth
+    let limit = parseInt(getFromRequest(request, 'limit', 50))
+    let offset = parseInt(getFromRequest(request, 'offset', 0))
+    let excludeDeleted = parseInt(getFromRequest(request, '_excludeDeleted', 1))
+    let showHistory = parseInt(getFromRequest(request, '_showHistory', 0))
+    let authId = 'id' in request.auth ? request.auth.id : ''
+    auth.id = helper.getNormalizedDocId(authId)
+    // get schema and fieldNames from the database
+    findSchema({name: schemaName}, config, (error, schemas) => {
+      if (error) { return callback(error, null) }
+      if (schemas.length === 0) { return callback(new Error('cckError: Undefined schema ' + schemaName), null) }
+      let schema = getSchemaWithDeleted(schemas[0], config, excludeDeleted)
+      let fieldNames = Object.keys(schema.fields)
+      // preprocess the data (extracted from request.query, request.body, and request.files)
+      return getData(request, fieldNames, config, (error, data) => {
+        let unset = getUnset(data)
+        let filter = getFilter(q, k, fieldNames, documentId)
+        data = helper.getParsedNestedJson(data)
+        // compose initialState
+        let initialState = util.getPatchedObject(defaultInitialState, {auth, documentId, apiVersion, q, k, schemaName, fieldNames, data, unset, filter, limit, offset, excludeDeleted, showHistory, schema, basePath, chainPath, viewPath, migrationPath})
+        return executeInitChain(initialState, state, error, callback)
+      })
     })
-  })
+  } catch (error) {
+    callback(error, null)
+  }
+}
+
+function getSchemaWithDeleted (schema, config, excludeDeleted) {
+  if (excludeDeleted === 0) {
+    let options = {0: 'Not Deleted', 1: 'Deleted'}
+    let inputTemplate = getRealTemplateValue('<%- cck.input.option %>', config)
+    let presentationTemplate = getRealTemplateValue('<%- cck.presentation.option %>', config)
+    let caption = 'Deletion Status'
+    if (fs.existsSync(inputTemplate)) {
+      inputTemplate = fs.readFileSync(inputTemplate, 'utf8')
+    }
+    schema.fields['_deleted'] = util.getPatchedObject(defaultFieldData, {inputTemplate, presentationTemplate, options, caption})
+  }
+  return schema
+}
+
+function executeInitChain (initialState, state, error, callback) {
+  if (initialState.schema.initChain) {
+    return helper.runChain(initialState.schema.initChain, initialState, state, (error, newInitialState) => {
+      callback(error, newInitialState)
+    })
+  }
+  return callback(error, initialState)
+}
+
+function getUnset (data) {
+  let unset = {}
+  for (let key in data) {
+    if (data[key] === '') {
+      unset[key] = ''
+      delete data[key]
+    }
+  }
+  return unset
 }
 
 function getTrimmedObject (obj) {

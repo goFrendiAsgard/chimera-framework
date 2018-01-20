@@ -9,10 +9,11 @@ vars:
       updateGroups: ['superAdmin']
       deleteGroups: ['superAdmin']
       selectGroups: ['superAdmin']
-      afterSelectChain: '<%= chainPath %>cck.afterSelect.js'
+      initChain: '<%= chainPath %>cck.init.js'
       tabs:
         config: Configs
         privilege: Privileges
+        init: Init
         select: Select
         insert: Insert
         update: Update
@@ -70,6 +71,14 @@ vars:
             loggedIn: loggedIn
             loggedOut: loggedOut
           tab: privilege
+        selectChain:
+          caption: 'Select Chain'
+          inputTemplate: '<%- cck.input.codeText %>'
+          tabularPresentationTemplate: '<%- cck.presentation.text %>'
+          presentationTemplate: '<%- cck.presentation.jsonText %>'
+          hidden: ['tabular']
+          editor: 'yaml'
+          tab: select
         insertChain:
           caption: 'Insert Chain'
           inputTemplate: '<%- cck.input.codeText %>'
@@ -77,7 +86,7 @@ vars:
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           hidden: ['tabular']
           editor: 'yaml'
-          tab: mainChain
+          tab: insert
         updateChain:
           caption: 'Update Chain'
           inputTemplate: '<%- cck.input.codeText %>'
@@ -85,7 +94,7 @@ vars:
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           hidden: ['tabular']
           editor: 'yaml'
-          tab: mainChain
+          tab: update
         deleteChain:
           caption: 'Delete Chain'
           inputTemplate: '<%- cck.input.codeText %>'
@@ -93,7 +102,7 @@ vars:
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           hidden: ['tabular']
           editor: 'yaml'
-          tab: mainChain
+          tab: delete
         beforeInsertChain:
           caption: 'Before Insert Chain'
           inputTemplate: '<%- cck.input.codeText %>'
@@ -152,14 +161,6 @@ vars:
           tab: select
         afterSelectChain:
           caption: 'After Select Chain'
-          inputTemplate: '<%- cck.input.codeText %>'
-          tabularPresentationTemplate: '<%- cck.presentation.text %>'
-          presentationTemplate: '<%- cck.presentation.jsonText %>'
-          hidden: ['tabular']
-          editor: 'yaml'
-          tab: select
-        selectChain:
-          caption: 'Select Chain'
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
@@ -229,7 +230,7 @@ vars:
       updateGroups: ['superAdmin']
       deleteGroups: ['superAdmin']
       selectGroups: ['superAdmin']
-      afterSelectChain: '<%= chainPath %>route.afterSelect.js'
+      initChain: '<%= chainPath %>route.init.js'
       fields:
         name:
           notNull: 1
@@ -280,7 +281,7 @@ vars:
       selectGroups: ['superAdmin']
       beforeInsertChain: '<%= chainPath %>user.beforeInsertOrUpdate.js'
       beforeUpdateChain: '<%= chainPath %>user.beforeInsertOrUpdate.js'
-      afterSelectChain: '<%= chainPath %>user.afterSelect.js'
+      initChain: '<%= chainPath %>user.init.js'
       fields:
         profilePicture:
           inputTemplate: '<%- cck.input.file %>'

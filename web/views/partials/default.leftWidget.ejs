@@ -20,4 +20,19 @@
 
     <% } %>
   </div>
+  <script>
+    $(document).ready(function (event) {
+      let requestUrl = '<%= request.url %>'
+      let maxHref = ''
+      if ($('.list-group-item.active').length === 0) {
+        $('.list-group-item').each(function () {
+          let href = $(this).attr('href')
+          if (requestUrl.indexOf(href) === 0 && href.length > maxHref.length) {
+            maxHref = href
+          }
+        })
+        $('.list-group-item[href="' + maxHref + '"]').addClass('active')
+      }
+    })
+  </script>
 <% } %>
