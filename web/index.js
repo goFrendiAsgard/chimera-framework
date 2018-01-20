@@ -22,6 +22,7 @@ let acePath = path.join(__dirname, 'node_modules/ace-builds')
 webConfig.middlewares = 'middlewares' in webConfig ? webConfig.middlewares : []
 webConfig.middlewares.unshift(helper.jwtMiddleware)
 webConfig.middlewares.unshift({'/bootstrap': staticCache(bootstrapPath, maxAgeOption)})
+webConfig.middlewares.unshift({'/css/fonts': staticCache(path.join(bootstrapPath, 'dist/fonts'), maxAgeOption)})
 webConfig.middlewares.unshift({'/jquery': staticCache(jqueryPath, maxAgeOption)})
 webConfig.middlewares.unshift({'/popper.js': staticCache(popperPath, maxAgeOption)})
 webConfig.middlewares.unshift({'/ace-builds': staticCache(acePath, maxAgeOption)})

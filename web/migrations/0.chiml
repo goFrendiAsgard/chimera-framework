@@ -43,6 +43,14 @@ vars:
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           hidden: ['tabular']
           tab: config
+        initChain:
+          caption: 'Insert Chain'
+          inputTemplate: '<%- cck.input.codeText %>'
+          tabularPresentationTemplate: '<%- cck.presentation.text %>'
+          presentationTemplate: '<%- cck.presentation.jsonText %>'
+          hidden: ['tabular']
+          editor: 'yaml'
+          tab: init
         insertGroups:
           caption: 'Insert Privileges'
           inputTemplate: '<%- cck.input.checkBoxes %>'
@@ -286,6 +294,8 @@ vars:
         profilePicture:
           inputTemplate: '<%- cck.input.file %>'
           presentationTemplate: '<%- cck.presentation.image %>'
+          caption: 'Profile Picture'
+          hidden: ['tabular']
         username:
           notNull: 1
           unique: 1
@@ -298,6 +308,8 @@ vars:
           hidden: ['tabular', 'detail']
         birthdate:
           inputTemplate: '<%- cck.input.dateTime %>'
+          caption: 'Birth Date'
+          hidden: ['tabular']
         groups:
           inputTemplate: '<%- cck.input.checkBoxes %>'
 

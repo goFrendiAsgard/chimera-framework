@@ -82,12 +82,11 @@ vars:
 
     - key: showJumbotron
       defaultConfig: 1
-      value: ''
+      value: 0 
 
     - key: jumbotron
       defaultConfig: 1
       value: ''
-
 
 do:  
 

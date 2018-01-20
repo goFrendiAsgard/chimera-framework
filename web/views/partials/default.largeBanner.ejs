@@ -20,7 +20,7 @@
 
             <% if ('url' in navigation) { %>
               <!-- Navigation -->
-              <li class="<%= navigation.url === request.url ? 'active' : '' %>"><a href="<%= navigation.url %>"><%- navigation.caption %></a></li>
+              <li class="top-menu <%= navigation.url === request.url ? 'active' : '' %>"><a href="<%= navigation.url %>"><%- navigation.caption %></a></li>
             <% } else { %>
 
               <!-- Dropdown -->
@@ -30,7 +30,7 @@
                   <% for (let subNavigation of navigation.children) { %>
                     <% if (!isAuthorized(request.auth, subNavigation.groups)) {continue; } %>
                     <% if ('url' in subNavigation) { %>
-                      <li class="<%= subNavigation.url === request.url ? 'active' : '' %>">
+                      <li class="top-menu <%= subNavigation.url === request.url ? 'active' : '' %>">
                         <a href="<%= subNavigation.url %>"><%- subNavigation.caption %></a>
                       </li>
                     <% } %>
@@ -61,6 +61,29 @@
       </div><!--/.nav-collapse -->
     </div><!--/.container-fluid -->
   </nav>
+  <script type="text/javascript">
+    $(document).ready(function (event) {
+      // determine active `.top-menu`
+      let requestUrl = '<%= request.url %>'
+      let maxHref = ''
+      if ($('.top-menu.active').length === 0) {
+        $('.top-menu').each(function () {
+          let href = $(this).children('a').attr('href')
+          if (requestUrl.indexOf(href) === 0 && href.length > maxHref.length) {
+            maxHref = href
+          }
+        })
+        $('.top-menu:has(a[href="' + maxHref + '"])').addClass('active')
+      }
+      // also make `.top-menu` parent active
+      $('.top-menu.active').parent('ul').parent('li').addClass('active')
+      // add additional padding
+      if ($('.navbar-fixed-top').length > 0) {
+        let paddingTop = $('.navbar-fixed-top').height() + 20 + 'px'
+        $('body').css('padding-top', paddingTop)
+      }
+    })
+  </script>
 <% } %>
 <% if (config.showJumbotron) { %>
   <%- config.jumbotron %>

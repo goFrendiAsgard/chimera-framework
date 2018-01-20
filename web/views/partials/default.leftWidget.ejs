@@ -5,7 +5,7 @@
 
       <% if ('url' in navigation) { %>
         <!-- Navigation -->
-        <a class="list-group-item <%= navigation.url === request.url ? 'active' : '' %>" href="<%= navigation.url %>"><%- navigation.caption %></a>
+        <a class="left-menu list-group-item <%= navigation.url === request.url ? 'active' : '' %>" href="<%= navigation.url %>"><%- navigation.caption %></a>
       <% } else { %>
         <!-- Header -->
         <a href="#" class="list-group-item disabled" style="font-size:large"><%- navigation.caption%></a>
@@ -13,25 +13,25 @@
         <% for (let subNavigation of navigation.children) { %>
           <% if (!isAuthorized(request.auth, subNavigation.groups)) {continue; } %>
           <% if ('url' in subNavigation) { %>
-            <a class="list-group-item <%= subNavigation.url === request.url ? 'active' : '' %>" href="<%= subNavigation.url %>"><%- subNavigation.caption %></a>
+            <a class="left-menu list-group-item <%= subNavigation.url === request.url ? 'active' : '' %>" href="<%= subNavigation.url %>"><%- subNavigation.caption %></a>
           <% } %>
         <% } %>
       <% } %>
 
     <% } %>
   </div>
-  <script>
+  <script type="text/javascript">
     $(document).ready(function (event) {
       let requestUrl = '<%= request.url %>'
       let maxHref = ''
-      if ($('.list-group-item.active').length === 0) {
-        $('.list-group-item').each(function () {
+      if ($('.left-menu.active').length === 0) {
+        $('.left-menu').each(function () {
           let href = $(this).attr('href')
           if (requestUrl.indexOf(href) === 0 && href.length > maxHref.length) {
             maxHref = href
           }
         })
-        $('.list-group-item[href="' + maxHref + '"]').addClass('active')
+        $('.left-menu[href="' + maxHref + '"]').addClass('active')
       }
     })
   </script>

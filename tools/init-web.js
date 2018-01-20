@@ -35,7 +35,7 @@ function initWeb (projectDir) {
         } else {
           mongoUrl = url
         }
-        callback()
+        return callback()
       })
     },
 
@@ -49,7 +49,7 @@ function initWeb (projectDir) {
         }
         console.warn('[INFO] Done...')
         chimeraVersion = obj.version
-        callback()
+        return callback()
       })
     },
 
@@ -62,7 +62,7 @@ function initWeb (projectDir) {
           return finalCallback(error)
         }
         console.warn('[INFO] Done...')
-        callback()
+        return callback()
       })
     },
 
@@ -85,7 +85,7 @@ function initWeb (projectDir) {
             return finalCallback(error)
           }
           console.warn('[INFO] Done...')
-          callback()
+          return callback()
         })
       })
     },
@@ -106,7 +106,7 @@ function initWeb (projectDir) {
             return finalCallback(error)
           }
           console.warn('[INFO] Done...')
-          callback()
+          return callback()
         })
       })
     },
@@ -122,7 +122,7 @@ function initWeb (projectDir) {
           return finalCallback(error)
         }
         console.warn('[INFO] Done...')
-        callback()
+        return callback()
       })
     },
 
@@ -132,10 +132,12 @@ function initWeb (projectDir) {
       cmd.get('npm install', function (error, result) {
         if (error) {
           console.error('[ERROR] Cannot perform npm install')
-          finalCallback(error)
+          return finalCallback(error)
         } else {
           console.warn('[INFO] Done...')
-          callback()
+          let content = fse.readFileSync('README.md', 'utf8')
+          console.warn(content)
+          return callback()
         }
       })
     }
