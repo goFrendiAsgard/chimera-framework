@@ -54,9 +54,11 @@ function renderContent (responseData, view, viewPath) {
 
 function injectBaseLayout (state, callback) {
   let cck = require('./cck.js')
+  let renderFieldTemplate = cck.renderFieldTemplate
+  let render = ejs.render
   if (util.isRealObject(state.response.data)) {
-    state.response.data.renderFieldTemplate = cck.renderFieldTemplate
-    state.response.data.render = ejs.render
+    state.response.data.renderFieldTemplate = renderFieldTemplate
+    state.response.data.render = render
     state.response.data.isAuthorized = isAuthorized
   }
   if (util.isNullOrUndefined(state.response.view) || state.response.view === '') {
@@ -80,9 +82,9 @@ function injectBaseLayout (state, callback) {
         partialPath = state.config.partial[partialName]
       }
       if (fs.existsSync(partialPath)) {
-        newResponseData.partial[partialName] = loadEjs(partialPath, {request, response, config, isAuthorized})
+        newResponseData.partial[partialName] = loadEjs(partialPath, {request, response, renderFieldTemplate, render, config, isAuthorized})
       } else {
-        newResponseData.partial[partialName] = ejs.render(partialPath, {request, response, config, isAuthorized})
+        newResponseData.partial[partialName] = ejs.render(partialPath, {request, response, renderFieldTemplate, render, config, isAuthorized})
       }
       next()
     })

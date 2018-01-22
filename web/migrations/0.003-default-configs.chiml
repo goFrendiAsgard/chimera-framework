@@ -95,10 +95,14 @@ vars:
     - key: jumbotron
       defaultConfig: 1
       value: |
-        <div class="jumbotron">
-          <img src="<%%= config.logo %>" />
-          <h1><%%= config.title %></h1>      
-          <p><%%= config.jargon %></p>
+        <div class="jumbotron col-sm-12">
+          <div class="col-sm-2">    
+            <img class="col-sm-12" src="<%%= config.logo %>" />
+          </div>
+          <div class="col-sm-10">
+            <h1><%%= config.title %></h1>      
+            <p><%%= config.jargon %></p>
+          </div>
         </div>
 
     - key: showFooter
