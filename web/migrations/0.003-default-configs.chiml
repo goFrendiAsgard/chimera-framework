@@ -141,11 +141,13 @@ vars:
         <script>
           let socket = io.connect()
           socket.on('chat-broadcast', function (data) {
-            $('#chat-messages').append(data)
+            $('#chat-messages').append(data + '<br />')
           })
           $('#chat-send').click(function (event) {
-            let message = $('#chat-box').val()
+            let userName = '<%%= request.auth.username ? request.auth.username : 'Guest' %>'
+            let message = userName + ': ' + $('#chat-box').val()
             socket.emit('chat-send', message)
+            $('#chat-box').val('')
           })
         </script>
 
