@@ -9,6 +9,11 @@ let randomNumber = String(Math.round(Math.random() * 1000000000))
 let migrationPath = path.join(__dirname, 'migrations') + '/'
 let staticPath = path.join(__dirname, 'public') + '/'
 let faviconPath = path.join(__dirname, 'public/favicon.ico')
+let socketHandler = (socket) => {
+  socket.on('chat-send', (data) => {
+    socket.emit('chat-broadcast', data)
+  })
+}
 
 const webConfig = {
   basePath,
@@ -17,6 +22,7 @@ const webConfig = {
   migrationPath,
   staticPath,
   faviconPath,
+  socketHandler,
   exceptionKeys: ['basePath', 'chainPath', 'cckPath', 'helperPath', 'exceptionKeys', 'routes', 'jwtSecret', 'jwtExpired', 'jwtTokenName', 'sessionSecret', 'sessionMaxAge', 'sessionSaveUnitialized', 'sessionResave', 'startupHook', 'beforeRequestHook', 'afterRequestHook', 'middlewares', 'mongoUrl', 'migrationPath', 'staticPath', 'faviconPath', 'viewPath', 'errorTemplate', 'defaultTemplate', 'baseLayout', 'vars'],
   // routes
   routes: [],

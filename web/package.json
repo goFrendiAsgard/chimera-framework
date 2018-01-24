@@ -15,7 +15,8 @@
     "jsonwebtoken": "^7.3.0",
     "neo-async": "^2.5.0",
     "newman": "^3.9.1",
-    "popper.js": "^1.12.9"
+    "popper.js": "^1.12.9",
+    "socket.io": "^2.0.4"
   },
   "scripts": {
     "start": "node index.js",
