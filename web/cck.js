@@ -354,18 +354,6 @@ function getTrimmedObject (obj) {
   return obj
 }
 
-function getFilteredRow (row, fieldNames) {
-  let filteredRow = helper.getSubObject(row, fieldNames)
-  for (let fieldName of fieldNames) {
-    if (!(fieldName in row)) {
-      if (fieldName + '.default' in row) {
-        filteredRow[fieldName] = row[fieldName + '.default']
-      }
-    }
-  }
-  return filteredRow
-}
-
 function getFileName (fileName) {
   return Date.now() + fileName
 }
@@ -379,7 +367,7 @@ function getMultipleData (request, fieldNames, config, callback) {
   let data = []
   let actions = []
   for (let i = 0; i < request.body.length; i++) {
-    let row = getFilteredRow(request.body[i], fieldNames)
+    let row = helper.getSubObject(request.body[i], fieldNames)
     data[i] = row
     for (let fieldName of fieldNames) {
       if (fieldName in request.files && util.isArray(request.files[fieldName]) && i < request.files[fieldName].length) {
@@ -403,7 +391,7 @@ function getSingleData (request, fieldNames, config, callback) {
   let uploadPath = getUploadPath(config)
   let actions = []
   let data = util.getPatchedObject(request.query, request.body)
-  data = getFilteredRow(data, fieldNames)
+  data = helper.getSubObject(data, fieldNames)
   for (let fieldName of fieldNames) {
     if (util.isRealObject(request.files) && fieldName in request.files) {
       let file = request.files[fieldName]

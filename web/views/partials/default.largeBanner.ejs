@@ -86,5 +86,5 @@
   </script>
 <% } %>
 <% if (config.showJumbotron) { %>
-  <%- render(config.jumbotron, {config}) %>
+  <%- render(config.jumbotron, {config, request, response, render, isAuthorized}) %>
 <% } %>

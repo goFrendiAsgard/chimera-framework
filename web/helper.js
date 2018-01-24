@@ -305,6 +305,9 @@ function hashPassword (password, salt = null, algorithm = 'sha512') {
 
 function getLoggedInAuth (userDoc) {
   let groupNames = util.getDeepCopiedObject(userDoc.groups)
+  if (!util.isArray(groupNames)) {
+    groupNames = []
+  }
   groupNames.push('loggedIn')
   return {
     id: userDoc._id,

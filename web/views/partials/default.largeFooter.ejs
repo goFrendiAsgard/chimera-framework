@@ -1,3 +1,3 @@
 <% if (config.showFooter) { %>
-  <%- render(config.footer, {config}) %>
+  <%- render(config.footer, {config, request, response, render, isAuthorized}) %>
 <% } %>

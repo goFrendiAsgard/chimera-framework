@@ -43,7 +43,7 @@ let server = require('http').Server(app)
 let io = require('socket.io')(server)
 
 // socket.io handling
-if ('socketHandler' in webConfig && util.isFunction('socketHandler')) {
+if ('socketHandler' in webConfig && util.isFunction(webConfig.socketHandler)) {
   io.on('connection', (socket) => {
     webConfig.socketHandler(socket)
   })

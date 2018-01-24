@@ -1,8 +1,21 @@
-<input type="hidden" name="<%= fieldName %>.default" value="[]" />
+<input type="hidden" name="<%= fieldName %>" value="<%= JSON.stringify(value) %>" />
 <% for (let optionValue in fieldInfo.options){ %>
   <div class="checkbox col-lg-4 col-md-6" style="margin-top:0">
     <label>
-      <input type="checkbox" name="<%= fieldName %>" value="<%= optionValue %>" <%= value && value.indexOf(optionValue) > -1 ? "checked": ""%> /><%= fieldInfo.options[optionValue] %>
+      <input type="checkbox" fieldName="<%= fieldName %>" value="<%= optionValue %>" <%= value && value.indexOf(optionValue) > -1 ? "checked": ""%> /><%= fieldInfo.options[optionValue] %>
     </label>
   </div>
 <% } %>
+<script>
+  function cwAdjust<%= fieldName %> () {
+    let val = []
+    $('input[fieldName="<%= fieldName %>"]:checked').each(function() {
+      val.push($(this).val())
+    })
+    $('input[name="<%= fieldName %>"]').val(JSON.stringify(val))
+  }
+  // listener
+  $('input[fieldName="<%= fieldName %>"]').change(function (event) {
+    cwAdjust<%= fieldName %>()
+  })
+</script>
