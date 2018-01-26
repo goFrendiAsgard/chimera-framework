@@ -5,7 +5,6 @@ const path = require('path')
 let basePath = path.join(__dirname, '/')
 let chainPath = path.join(__dirname, 'chains') + '/'
 let viewPath = path.join(__dirname, 'views') + '/'
-let randomNumber = String(Math.round(Math.random() * 1000000000))
 let migrationPath = path.join(__dirname, 'migrations') + '/'
 let staticPath = path.join(__dirname, 'public') + '/'
 let faviconPath = path.join(__dirname, 'public/favicon.ico')
@@ -28,11 +27,11 @@ const webConfig = {
   // routes
   routes: [],
   // jwt configuration
-  jwtSecret: 'secret' + randomNumber + 'jwt',
+  jwtSecret: 'jwtsecret',
   jwtExpired: 60 * 60 * 24,
   jwtTokenName: 'token',
   // session configuration
-  sessionSecret: 'secret' + randomNumber + 'session',
+  sessionSecret: 'sessionsecret',
   sessionMaxAge: 60 * 60 * 24,
   sessionSaveUnitialized: true,
   sessionResave: true,

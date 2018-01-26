@@ -306,8 +306,9 @@ vars:
           inputTemplate: '<%- cck.input.email %>'
         password:
           hidden: ['tabular', 'detail']
+          inputTemplate: '<%- cck.input.password %>'
         birthdate:
-          inputTemplate: '<%- cck.input.dateTime %>'
+          inputTemplate: '<%- cck.input.date %>'
           caption: 'Birth Date'
           hidden: ['tabular']
         groups:

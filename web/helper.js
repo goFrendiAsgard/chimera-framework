@@ -313,7 +313,8 @@ function getLoggedInAuth (userDoc) {
     id: userDoc._id,
     username: userDoc.username,
     email: userDoc.email,
-    groups: groupNames
+    groups: groupNames,
+    doc: userDoc
   }
 }
 
