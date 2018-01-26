@@ -114,6 +114,8 @@ function initWeb (projectDir) {
     // write webConfig.js
     (callback) => {
       let fileContent = 'const webConfig = require(\'./webConfig.default.js\')\n'
+      fileContent += 'webConfig.jwtSecret = \'j' + String(Math.round(Math.random() * 1000000000)) + '\'\n'
+      fileContent += 'webConfig.sessionSecret = \'s' + String(Math.round(Math.random() * 1000000000)) + '\'\n'
       fileContent += 'module.exports = webConfig'
       console.warn('[INFO] Creating webConfig.js...')
       fse.writeFile('webConfig.js', fileContent, function (error, result) {
