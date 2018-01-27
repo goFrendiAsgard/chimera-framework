@@ -18,7 +18,6 @@ function cwInitAce () {
     var editor = ace.edit(editDiv[0])
     console.log('ace')
     editor.renderer.setShowGutter(false)
-    editor.getSession().setMode('ace/mode/' + mode)
     editor.setOptions({
       showLineNumbers: true,
       showGutter: true,
@@ -28,8 +27,10 @@ function cwInitAce () {
     })
     editor.$blockScrolling = Infinity
     editor.setTheme('ace/theme/github')
+    editor.getSession().setMode('ace/mode/' + mode)
+    editor.getSession().setTabSize(2)
+    editor.getSession().setUseSoftTabs(true)
     editor.getSession().setValue(textarea.val())
-
     editor.getSession().on('change', function () {
       textarea.val(editor.getSession().getValue())
     })
