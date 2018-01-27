@@ -19,6 +19,11 @@ do:
               method: 'all'
               chain: '<%= chainPath %>core.logout-api.js'
               defaultRoute: 1
+            - name: 'Register API'
+              route: '/register-api'
+              method: 'all'
+              chain: '<%= chainPath %>core.register-api.js'
+              defaultRoute: 1
             - name: 'Login page'
               route: '/login'
               method: 'get'
@@ -30,6 +35,18 @@ do:
               method: 'post'
               chain: '<%= chainPath %>core.login.js'
               view: 'default.login.ejs'
+              defaultRoute: 1
+            - name: 'Register page'
+              route: '/register'
+              method: 'get'
+              chain: '<%= chainPath %>core.register-page.js'
+              view: 'default.register-page.ejs'
+              defaultRoute: 1
+            - name: 'Register action'
+              route: '/register'
+              method: 'post'
+              chain: '<%= chainPath %>core.register.js'
+              view: 'default.register.ejs'
               defaultRoute: 1
             - name: 'Logout action'
               route: '/logout'

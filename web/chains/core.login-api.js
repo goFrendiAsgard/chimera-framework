@@ -4,15 +4,8 @@ module.exports = (ins, vars, callback) => {
   let state = ins[0]
   let $ = vars.$
   let {config, request} = state
-  let identity = ''
-  let password = ''
-  if (request.query.user && request.query.password) {
-    identity = request.query.user
-    password = request.query.password
-  } else if (request.body.user && request.body.password) {
-    identity = request.body.user
-    password = request.body.password
-  }
+  let identity = request.query.user || request.body.user
+  let password = request.query.password || request.body.password
   $.helper.mongoExecute('web_users', 'find', {$and: [{_deleted: {$ne: 1}}, {$or: [{username: identity}, {email: identity}]}]}, (error, users) => {
     let response = {
       data: {
