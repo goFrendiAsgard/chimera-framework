@@ -6,16 +6,16 @@ if (typeof $ === 'undefined') {
 
 function cwInitAce () {
   $('textarea[data-editor]').each(function () {
-    var textarea = $(this)
-    var mode = textarea.data('editor') ? textarea.data('editor') : 'ejs'
-    var editDiv = $('<div>', {
+    let textarea = $(this)
+    let mode = textarea.data('editor') ? textarea.data('editor') : 'ejs'
+    let editDiv = $('<div>', {
       position: 'absolute',
       width: textarea.width(),
       height: textarea.height(),
       'class': textarea.attr('class')
     }).insertBefore(textarea)
     textarea.css('display', 'none')
-    var editor = ace.edit(editDiv[0])
+    let editor = ace.edit(editDiv[0])
     console.log('ace')
     editor.renderer.setShowGutter(false)
     editor.setOptions({
@@ -47,14 +47,14 @@ function cwSwitchTab (tab) {
 $(document).ready(function () {
   cwInitAce()
   if ($('#form-tabs li.active a').attr('href')) {
-    var tab = $('#form-tabs li.active a').attr('href').slice(1)
+    let tab = $('#form-tabs li.active a').attr('href').slice(1)
     // don't know, but seems we have to delay this in order to make ace rendered correctly
     setTimeout(function () { cwSwitchTab(tab) }, 50)
   }
 })
 
 $('#form-tabs a.nav-link').click(function (event) {
-  var tab = $(this).attr('href').slice(1)
+  let tab = $(this).attr('href').slice(1)
   cwSwitchTab(tab)
   event.preventDefault()
 })
