@@ -1,1 +1,55 @@
-<input name="<%= fieldName %>" rowId="<%= row._id %>" type="hidden" value="<%= value %>" />
+<input id="<%= fieldName %>" name="<%= fieldName %>" rowId="<%= row._id %>" type="hidden" value="<%= value %>" />
+
+<!-- Presentation -->
+<span id="<%=fieldName %>PresentationContainer"><%= value %></span>
+
+<!-- Trigger the modal with a button -->
+<a class="btn btn-default" data-toggle="modal" data-target="#<%= fieldName %>ModalContainer">Edit</a>
+
+<!-- Modal -->
+<div class="modal fade" id="<%= fieldName %>ModalContainer" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"><%= fieldInfo.caption %></h4>
+      </div>
+      <div class="modal-body">
+        <input id="<%= fieldName %>SearchBox" class="form-control" />
+        <div id="<%= fieldName %>inputContainer"></div>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-default" data-dismiss="modal">Close</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+
+  $(document).ready(function () {
+    // load presentation container
+    cwLoadMany2OnePresentationContainer('<%- fieldName %>', $('#<%- fieldName %>').val(), '<%- fieldInfo.ref %>', '<%- fieldInfo.keyField %>', JSON.parse('<%- JSON.stringify(fieldInfo.fields) %>'))
+
+    // load input container
+    cwLoadMany2OneInputContainer('<%- fieldName %>', $('#<%- fieldName %>inputContainer'), '<%- fieldInfo.ref %>', '<%- fieldInfo.keyField %>', JSON.parse('<%- JSON.stringify(fieldInfo.fields) %>'))
+
+    // if searchBox changed, reload input container
+    $('#<%- fieldName %>SearchBox').keydown(function (event) {
+      cwLoadMany2OneInputContainer('<%- fieldName %>', $('#<%- fieldName %>inputContainer'), '<%- fieldInfo.ref %>', '<%- fieldInfo.keyField %>', JSON.parse('<%- JSON.stringify(fieldInfo.fields) %>'))
+    })
+
+    // if select button clicked
+    $('#<%= fieldName %>inputContainer').on('click', '.<%- fieldName %>BtnSelect', function (event) {
+      // change input value
+      let value = $(this).attr('value')
+      $('#<%- fieldName %>').val(value)
+      // reload presentation container
+      cwLoadMany2OnePresentationContainer('<%- fieldName %>', $('#<%- fieldName %>').val(), '<%- fieldInfo.ref %>', '<%- fieldInfo.keyField %>', JSON.parse('<%- JSON.stringify(fieldInfo.fields) %>'))
+    })
+
+  })
+
+</script>

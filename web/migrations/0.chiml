@@ -352,7 +352,7 @@ vars:
           presentationTemplate: '<%- cck.presentation.many2one %>'
           ref: 'groups'
           keyField: 'name'
-          presentationField: 'name'
+          fields: ['name']
         groups:
           inputTemplate: '<%- cck.input.one2many %>'
           presentationTemplate: '<%- cck.presentation.one2many %>'
