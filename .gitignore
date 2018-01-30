@@ -3,5 +3,6 @@ npm_debug.log
 .cache-require-paths.json
 .*.cjson
 .nyc_output/
+.vscode
 coverage/
 test.sh

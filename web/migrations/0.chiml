@@ -347,6 +347,20 @@ vars:
       fields:
         key: {}
         value: {}
+        group:
+          inputTemplate: '<%- cck.input.many2one %>'
+          presentationTemplate: '<%- cck.presentation.many2one %>'
+          ref: 'groups'
+          keyField: 'name'
+          presentationField: 'name'
+        groups:
+          inputTemplate: '<%- cck.input.one2many %>'
+          presentationTemplate: '<%- cck.presentation.one2many %>'
+          fields:
+            name:
+              inputTemplate: '<%- cck.input.many2one %>'
+              presentationTemplate: '<%- cck.presentation.many2one %>'
+            other: {}
 
 do:
 

@@ -102,7 +102,8 @@ function renderFieldTemplate (schemaInfo, fieldName, templateNames, row) {
   } else {
     realTemplateName = templateNames
   }
-  return ejs.render(fieldInfo[realTemplateName], {row, fieldName, fieldInfo, value: row[fieldName]})
+  let value = row[fieldName]
+  return ejs.render(fieldInfo[realTemplateName], {row, fieldName, fieldInfo, value})
 }
 
 function getSchemaCreationData (row) {

@@ -1,5 +1,5 @@
 <select name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control">
   <% for (let optionValue in fieldInfo.options){ %>
     <option value="<%= optionValue %>" <%= value == optionValue? "selected": ""%>><%= fieldInfo.options[optionValue] %></option>
-    <% } %>
+  <% } %>
 </select>

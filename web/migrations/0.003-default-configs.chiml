@@ -73,12 +73,16 @@ vars:
           jsonText: <%- viewPath %>cck/inputs/jsonText.ejs
           codeText: <%- viewPath %>cck/inputs/codeText.ejs
           option: <%- viewPath %>cck/inputs/option.ejs
+          many2one: <%- viewPath %>cck/inputs/many2one.ejs
+          one2many: <%- viewPath %>cck/inputs/one2many.ejs
         presentation:
           text: <%- viewPath %>cck/presentations/text.ejs
           option: <%- viewPath %>cck/presentations/option.ejs
           trimmedText: <%- viewPath %>cck/presentations/trimmedText.ejs
           jsonText: <%- viewPath %>cck/presentations/jsonText.ejs
           codeText: <%- viewPath %>cck/presentations/codeText.ejs
+          many2one: <%- viewPath %>cck/presentations/many2one.ejs
+          one2many: <%- viewPath %>cck/presentations/one2many.ejs
 
     - key: showTopNav
       defaultConfig: 1
