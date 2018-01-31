@@ -17,7 +17,7 @@
       </div>
       <div class="modal-body">
         <input id="<%= fieldName %>SearchBox" class="form-control" />
-        <div id="<%= fieldName %>inputContainer"></div>
+        <div id="<%= fieldName %>InputContainer"></div>
       </div>
       <div class="modal-footer">
         <a class="btn btn-default" data-dismiss="modal">Close</a>
@@ -35,11 +35,11 @@
     cwLoadMany2OnePresentationContainer('<%- fieldName %>', $('#<%- fieldName %>').val(), fieldInfo)
 
     // load input container
-    cwLoadMany2OneInputContainer('<%- fieldName %>', $('#<%- fieldName %>inputContainer'), fieldInfo)
+    cwLoadMany2OneInputContainer('<%- fieldName %>', fieldInfo)
 
     // if searchBox changed, reload input container
     $('#<%- fieldName %>SearchBox').keydown(function (event) {
-      cwLoadMany2OneInputContainer('<%- fieldName %>', $('#<%- fieldName %>inputContainer'), fieldInfo)
+      cwLoadMany2OneInputContainer('<%- fieldName %>', fieldInfo)
     })
 
     // if select button clicked

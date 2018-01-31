@@ -16,8 +16,8 @@
         <h4 class="modal-title"><%= fieldInfo.caption %></h4>
       </div>
       <div class="modal-body">
-        <a id="<%= fieldName %>BtnAdd" class="btn btn-default" href="">Add</a>
-        <div id="<%= fieldName %>inputContainer"></div>
+        <a id="<%= fieldName %>BtnAdd" class="btn btn-default" href="#">Add</a>
+        <div id="<%= fieldName %>InputContainer"></div>
       </div>
       <div class="modal-footer">
         <a class="btn btn-default" data-dismiss="modal">Close</a>
@@ -32,23 +32,14 @@
     let fieldInfo = JSON.parse(unescape('<%- escape(JSON.stringify(fieldInfo)) %>'))
 
     // load presentation container
-    cwLoadOne2ManyPresentationContainer('<%- fieldName %>', $('#<%- fieldName %>').val(), fieldInfo)
+    cwLoadOne2ManyPresentationContainer('<%= fieldName %>', $('#<%- fieldName %>').val(), fieldInfo)
 
     // load input container
-    cwLoadOne2ManyInputContainer('<%- fieldName %>', $('#<%- fieldName %>inputContainer'), fieldInfo)
+    cwLoadOne2ManyInputContainer('<%= fieldName %>', fieldInfo)
 
-    // if searchBox changed, reload input container
-    $('#<%- fieldName %>SearchBox').keydown(function (event) {
-      cwLoadOne2ManyInputContainer('<%- fieldName %>', $('#<%- fieldName %>inputContainer'), fieldInfo)
-    })
-
-    // if select button clicked
-    $('#<%= fieldName %>inputContainer').on('click', '.<%- fieldName %>BtnSelect', function (event) {
-      // change input value
-      let value = $(this).attr('value')
-      $('#<%- fieldName %>').val(value)
-      // reload presentation container
-      cwLoadOne2ManyPresentationContainer('<%- fieldName %>', $('#<%- fieldName %>').val(), fieldInfo)
+    $('#<%= fieldName %>BtnAdd').click(function (event) {
+      let html = cwOne2ManyTableRow({}, fieldInfo.fields)
+      $('#<%= fieldName %>Table').append(html)
     })
 
   })

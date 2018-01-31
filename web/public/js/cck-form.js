@@ -44,7 +44,7 @@ function cwSwitchTab (tab) {
   $('*[data-tab="' + tab + '"], *[data-tab=""]').show()
 }
 
-function cwLoadMany2OnePresentationContainer(componentFieldName, value, componentFieldInfo) {
+function cwLoadMany2OnePresentationContainer(componentId, value, componentFieldInfo) {
   let {ref, keyField, fields} = componentFieldInfo
   let q = {}
   q[keyField] = value
@@ -74,7 +74,7 @@ function cwLoadMany2OnePresentationContainer(componentFieldName, value, componen
           html += '</table>'
         }
       }
-      $('#' + componentFieldName + 'PresentationContainer').html(html)
+      $('#' + componentId + 'PresentationContainer').html(html)
     }
   })
 }
@@ -92,9 +92,9 @@ function cwGetTableHeader (fields, fieldInfoList, addAction = false) {
   return html
 }
 
-function cwLoadMany2OneInputContainer(componentFieldName, inputContainer, componentFieldInfo) {
+function cwLoadMany2OneInputContainer(componentId, componentFieldInfo) {
   let {ref, keyField, fields} = componentFieldInfo
-  let keyword = $('#' + componentFieldName + 'SearchBox').val()
+  let keyword = $('#' + componentId + 'SearchBox').val()
   $.ajax({
     url: '/api/v1/' + ref + '?_k=' + keyword,
     method: 'get',
@@ -116,29 +116,64 @@ function cwLoadMany2OneInputContainer(componentFieldName, inputContainer, compon
           let presentation = ejs.render(fieldInfo['presentationTemplate'], { row, fieldInfo, value, fieldName})
           html += '<td>' + presentation + '</td>'
         }
-        html += '<td><a class="' + componentFieldName + 'BtnSelect btn btn-default" value="' +row[keyField] + '" href="#" data-dismiss="modal">Select</a></td>'
+        html += '<td><a class="' + componentId + 'BtnSelect btn btn-default" value="' +row[keyField] + '" href="#" data-dismiss="modal">Select</a></td>'
         html += '</tr>'
       }
       // end of the table
       html += '</table>'
-      inputContainer.html(html)
+      $('#' + componentId + 'InputContainer').html(html)
     }
   })
 }
 
-function cwLoadOne2ManyPresentationContainer (componentFieldName, value, componentFieldInfo) {
+function cwLoadOne2ManyPresentationContainer (componentId, value, componentFieldInfo) {
   let fieldInfoList = componentFieldInfo.fields
   let fields = Object.keys(fieldInfoList)
   let html = '<table class="table">'
   html += cwGetTableHeader(fields, fieldInfoList)
   for (let row of value) {
+    html += '<tr>'
+    for (let fieldName of fields) {
+      let fieldInfo = fieldInfoList[fieldName]
+      let value = row[fieldName]
+      let presentation = ejs.render(fieldInfo['presentationTemplate'], { row, fieldName, fieldInfo, value })
+      html += '<td>' + presentation + '</td>'
+    }
+    html += '</tr>'
   }
   html += '</table>'
-  $('#' + componentFieldName + 'PresentationContainer').html(html)
+  $('#' + componentId + 'PresentationContainer').html(html)
 }
 
-function cwLoadOne2ManyInputContainer (componentFieldName, inputContainer, componentFieldInfo) {
+function cwOne2ManyTableRow (row, fieldInfoList) {
+  let html = '<tr>'
+  for (let fieldName in fieldInfoList) {
+    let fieldInfo = fieldInfoList[fieldName]
+    let value = fieldName in row ? row[fieldName] : ''
+    let presentation = ejs.render(fieldInfo['inputTemplate'], { row, fieldName, fieldInfo, value })
+    html += '<td>' + presentation + '</td>'
+  }
+  html += '</tr>'
+  return html
+}
+
+function cwLoadOne2ManyInputContainer (componentId, componentFieldInfo) {
   let fieldInfoList = componentFieldInfo.fields
+  let fields = Object.keys(fieldInfoList)
+  let value = $('#' + componentId).val()
+  try {
+    value = JSON.parse(value)
+  } catch (error) {
+    value = []
+  }
+  if (!Array.isArray(value)) { value = [] }
+  let html = '<table id="' + componentId + 'Table" class="table">'
+  html += cwGetTableHeader(fields, fieldInfoList)
+  for (let row of value) {
+    html += cwOne2ManyTableRow(row, fieldInfoList)
+  }
+  html += '</table>'
+  $('#' + componentId + 'InputContainer').html(html)
 }
 
 $(document).ready(function () {
