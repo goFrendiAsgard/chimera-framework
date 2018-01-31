@@ -54,7 +54,6 @@ function cwLoadMany2OnePresentationContainer(componentFieldName, value, ref, key
     success: function (response) {
       let results = response.results
       let fieldInfoList = response.metadata.fieldInfo
-
       let html = ''
       if (results.length === 0) {
         html = value
@@ -75,7 +74,6 @@ function cwLoadMany2OnePresentationContainer(componentFieldName, value, ref, key
         }
       }
       $('#' + componentFieldName + 'PresentationContainer').html(html)
-
     }
   })
 }
@@ -124,6 +122,12 @@ function cwLoadMany2OneInputContainer(componentFieldName, inputContainer, ref, k
       inputContainer.html(html)
     }
   })
+}
+
+function cwLoadOne2ManyPresentationContainer (componentFieldName, value, fields) {
+}
+
+function cwLoadOne2ManyInputContainer (componentFieldName, value, fields) {
 }
 
 $(document).ready(function () {

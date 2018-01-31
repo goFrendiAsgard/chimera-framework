@@ -1,0 +1,28 @@
+<input id="<%= fieldName %>" name="<%= fieldName %>" rowId="<%= row._id %>" type="hidden" value="<%= value %>" />
+
+<!-- Presentation -->
+<span id="<%=fieldName %>PresentationContainer"><%= value %></span>
+
+<!-- Trigger the modal with a button -->
+<a class="btn btn-default pull-right" data-toggle="modal" data-target="#<%= fieldName %>ModalContainer">Edit</a>
+
+<!-- Modal -->
+<div class="modal fade" id="<%= fieldName %>ModalContainer" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"><%= fieldInfo.caption %></h4>
+      </div>
+      <div class="modal-body">
+        <a id="<%= fieldName %>BtnAdd" class="btn btn-default" href="">Add</a>
+        <div id="<%= fieldName %>inputContainer"></div>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-default" data-dismiss="modal">Close</a>
+      </div>
+    </div>
+
+  </div>
+</div>
