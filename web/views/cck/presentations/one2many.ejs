@@ -3,6 +3,8 @@
 
 <script>
   $(document).ready(function () {
+    let fieldInfo = JSON.parse(unescape('<%- escape(JSON.stringify(fieldInfo)) %>'))
     // load presentation container
+    cwLoadOne2ManyPresentationContainer('<%- fieldName %>', $('#<%- fieldName %>').val(), JSON.parse('<%- JSON.stringify(fieldInfo.fields) %>'))
   })
 </script>

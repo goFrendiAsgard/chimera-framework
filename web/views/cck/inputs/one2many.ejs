@@ -26,3 +26,30 @@
 
   </div>
 </div>
+
+<script>
+  $(document).ready(function () {
+    let fieldInfo = JSON.parse(unescape('<%- escape(JSON.stringify(fieldInfo)) %>'))
+
+    // load presentation container
+    cwLoadOne2ManyPresentationContainer('<%- fieldName %>', $('#<%- fieldName %>').val(), '<%- fieldInfo.ref %>', '<%- fieldInfo.keyField %>', JSON.parse('<%- JSON.stringify(fieldInfo.fields) %>'))
+
+    // load input container
+    cwLoadOne2ManyInputContainer('<%- fieldName %>', $('#<%- fieldName %>inputContainer'), JSON.parse('<%- JSON.stringify(fieldInfo.fields) %>'))
+
+    // if searchBox changed, reload input container
+    $('#<%- fieldName %>SearchBox').keydown(function (event) {
+      cwLoadOne2ManyInputContainer('<%- fieldName %>', $('#<%- fieldName %>inputContainer'), JSON.parse('<%- JSON.stringify(fieldInfo.fields) %>'))
+    })
+
+    // if select button clicked
+    $('#<%= fieldName %>inputContainer').on('click', '.<%- fieldName %>BtnSelect', function (event) {
+      // change input value
+      let value = $(this).attr('value')
+      $('#<%- fieldName %>').val(value)
+      // reload presentation container
+      cwLoadOne2ManyPresentationContainer('<%- fieldName %>', $('#<%- fieldName %>').val(), JSON.parse('<%- JSON.stringify(fieldInfo.fields) %>'))
+    })
+
+  })
+</script>
