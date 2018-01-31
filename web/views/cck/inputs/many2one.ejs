@@ -32,14 +32,14 @@
     let fieldInfo = JSON.parse(unescape('<%- escape(JSON.stringify(fieldInfo)) %>'))
 
     // load presentation container
-    cwLoadMany2OnePresentationContainer('<%- fieldName %>', $('#<%- fieldName %>').val(), '<%- fieldInfo.ref %>', '<%- fieldInfo.keyField %>', JSON.parse('<%- JSON.stringify(fieldInfo.fields) %>'))
+    cwLoadMany2OnePresentationContainer('<%- fieldName %>', $('#<%- fieldName %>').val(), fieldInfo)
 
     // load input container
-    cwLoadMany2OneInputContainer('<%- fieldName %>', $('#<%- fieldName %>inputContainer'), '<%- fieldInfo.ref %>', '<%- fieldInfo.keyField %>', JSON.parse('<%- JSON.stringify(fieldInfo.fields) %>'))
+    cwLoadMany2OneInputContainer('<%- fieldName %>', $('#<%- fieldName %>inputContainer'), fieldInfo)
 
     // if searchBox changed, reload input container
     $('#<%- fieldName %>SearchBox').keydown(function (event) {
-      cwLoadMany2OneInputContainer('<%- fieldName %>', $('#<%- fieldName %>inputContainer'), '<%- fieldInfo.ref %>', '<%- fieldInfo.keyField %>', JSON.parse('<%- JSON.stringify(fieldInfo.fields) %>'))
+      cwLoadMany2OneInputContainer('<%- fieldName %>', $('#<%- fieldName %>inputContainer'), fieldInfo)
     })
 
     // if select button clicked
@@ -48,7 +48,7 @@
       let value = $(this).attr('value')
       $('#<%- fieldName %>').val(value)
       // reload presentation container
-      cwLoadMany2OnePresentationContainer('<%- fieldName %>', $('#<%- fieldName %>').val(), '<%- fieldInfo.ref %>', '<%- fieldInfo.keyField %>', JSON.parse('<%- JSON.stringify(fieldInfo.fields) %>'))
+      cwLoadMany2OnePresentationContainer('<%- fieldName %>', $('#<%- fieldName %>').val(), fieldInfo)
     })
 
   })

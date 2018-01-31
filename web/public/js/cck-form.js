@@ -44,7 +44,8 @@ function cwSwitchTab (tab) {
   $('*[data-tab="' + tab + '"], *[data-tab=""]').show()
 }
 
-function cwLoadMany2OnePresentationContainer(componentFieldName, value, ref, keyField, fields) {
+function cwLoadMany2OnePresentationContainer(componentFieldName, value, componentFieldInfo) {
+  let {ref, keyField, fields} = componentFieldInfo
   let q = {}
   q[keyField] = value
   $.ajax({
@@ -91,7 +92,8 @@ function cwGetTableHeader (fields, fieldInfoList, addAction = false) {
   return html
 }
 
-function cwLoadMany2OneInputContainer(componentFieldName, inputContainer, ref, keyField, fields) {
+function cwLoadMany2OneInputContainer(componentFieldName, inputContainer, componentFieldInfo) {
+  let {ref, keyField, fields} = componentFieldInfo
   let keyword = $('#' + componentFieldName + 'SearchBox').val()
   $.ajax({
     url: '/api/v1/' + ref + '?_k=' + keyword,
@@ -124,10 +126,12 @@ function cwLoadMany2OneInputContainer(componentFieldName, inputContainer, ref, k
   })
 }
 
-function cwLoadOne2ManyPresentationContainer (componentFieldName, value, fields) {
+function cwLoadOne2ManyPresentationContainer (componentFieldName, value, componentFieldInfo) {
+  let {fields} = componentFieldInfo
 }
 
-function cwLoadOne2ManyInputContainer (componentFieldName, value, fields) {
+function cwLoadOne2ManyInputContainer (componentFieldName, inputContainer, componentFieldInfo) {
+  let {fields} = componentFieldInfo
 }
 
 $(document).ready(function () {
