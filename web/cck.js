@@ -146,6 +146,26 @@ function getRealTemplateValue (template, config) {
   return value
 }
 
+function getCompleteSchemaFields (schemaFields, config) {
+  for (let field in schemaFields) {
+    let fieldData = util.getPatchedObject(defaultFieldData, schemaFields[field])
+    // define default caption
+    fieldData.caption = util.isNullOrUndefined(fieldData.caption) ? field.charAt(0).toUpperCase() + field.slice(1) : fieldData.caption
+    // recursively complete fields key
+    if ('fields' in fieldData && util.isRealObject(fieldData.fields)) {
+      fieldData['fields'] = getCompleteSchemaFields(fieldData.fields, config)
+    }
+    // completing path
+    for (let key in fieldData) {
+      if (util.isString(fieldData[key])) {
+        fieldData[key] = getRealTemplateValue(fieldData[key], config)
+      }
+    }
+    schemaFields[field] = fieldData
+  }
+  return schemaFields
+}
+
 function preprocessSchema (schema, config) {
   schema = getTrimmedObject(schema)
   config = util.isNullOrUndefined(config) ? helper.getWebConfig() : config
@@ -156,18 +176,7 @@ function preprocessSchema (schema, config) {
       completeSchema[key] = ejs.render(completeSchema[key], config)
     }
   }
-  for (let field in completeSchema.fields) {
-    let fieldData = util.getPatchedObject(defaultFieldData, completeSchema.fields[field])
-    // define default caption
-    fieldData.caption = util.isNullOrUndefined(fieldData.caption) ? field.charAt(0).toUpperCase() + field.slice(1) : fieldData.caption
-    // completing path
-    for (let key in fieldData) {
-      if (util.isString(fieldData[key])) {
-        fieldData[key] = getRealTemplateValue(fieldData[key], config)
-      }
-    }
-    completeSchema.fields[field] = fieldData
-  }
+  completeSchema.fields = getCompleteSchemaFields(completeSchema.fields, config)
   return completeSchema
 }
 

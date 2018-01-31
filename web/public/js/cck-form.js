@@ -127,11 +127,18 @@ function cwLoadMany2OneInputContainer(componentFieldName, inputContainer, compon
 }
 
 function cwLoadOne2ManyPresentationContainer (componentFieldName, value, componentFieldInfo) {
-  let {fields} = componentFieldInfo
+  let fieldInfoList = componentFieldInfo.fields
+  let fields = Object.keys(fieldInfoList)
+  let html = '<table class="table">'
+  html += cwGetTableHeader(fields, fieldInfoList)
+  for (let row of value) {
+  }
+  html += '</table>'
+  $('#' + componentFieldName + 'PresentationContainer').html(html)
 }
 
 function cwLoadOne2ManyInputContainer (componentFieldName, inputContainer, componentFieldInfo) {
-  let {fields} = componentFieldInfo
+  let fieldInfoList = componentFieldInfo.fields
 }
 
 $(document).ready(function () {
