@@ -1,5 +1,6 @@
 <script src="/ace-builds/src-min-noconflict/ace.js"></script>
 <script src="/js/cck-form.js"></script>
+<script src="/ejs/ejs.min.js"></script>
 <form id="cw-form" action="/data/<%= cckState.schemaName %>/update/<%= cckState.documentId %>" method="post" enctype="multipart/form-data">
   <input type="hidden" name="_excludeDeleted" value="<%= cckState.excludeDeleted %>" />
   <input type="hidden" name="limit" value="<%= cckState.limit %>" />

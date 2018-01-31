@@ -341,25 +341,34 @@ vars:
           tabularPresentationTemplate: '<%- cck.presentation.trimmedText %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           editor: 'ejs'
+    
+    - name: 'test_metas'
+      collectionName: 'web_test_metas'
+      fields:
+        name: {}
+        description: {}
 
     - name: 'tests'
       collectionName: 'web_tests'
       fields:
         key: {}
         value: {}
-        group:
+        meta:
           inputTemplate: '<%- cck.input.many2one %>'
           presentationTemplate: '<%- cck.presentation.many2one %>'
-          ref: 'groups'
+          ref: 'test_metas'
           keyField: 'name'
-          fields: ['name']
-        groups:
+          fields: ['name', 'description']
+        metas:
           inputTemplate: '<%- cck.input.one2many %>'
           presentationTemplate: '<%- cck.presentation.one2many %>'
           fields:
             name:
               inputTemplate: '<%- cck.input.many2one %>'
               presentationTemplate: '<%- cck.presentation.many2one %>'
+              ref: 'test_metas'
+              keyField: 'name'
+              fields: ['name', 'description']
             other: {}
 
 do:

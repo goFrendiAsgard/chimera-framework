@@ -19,6 +19,7 @@ let jqueryPath = path.join(__dirname, 'node_modules/jquery')
 let popperPath = path.join(__dirname, 'node_modules/popper.js')
 let acePath = path.join(__dirname, 'node_modules/ace-builds')
 let socketIoClientPath = path.join(__dirname, 'node_modules/socket.io-client')
+let ejsPath = path.join(__dirname, 'node_modules/ejs')
 
 // define default middlewares (bootstrap, jquery, and JWT)
 webConfig.middlewares = 'middlewares' in webConfig ? webConfig.middlewares : []
@@ -29,6 +30,7 @@ webConfig.middlewares.unshift({'/jquery': staticCache(jqueryPath, maxAgeOption)}
 webConfig.middlewares.unshift({'/popper.js': staticCache(popperPath, maxAgeOption)})
 webConfig.middlewares.unshift({'/ace-builds': staticCache(acePath, maxAgeOption)})
 webConfig.middlewares.unshift({'/socket.io-client': staticCache(socketIoClientPath, maxAgeOption)})
+webConfig.middlewares.unshift({'/ejs': staticCache(ejsPath, maxAgeOption)})
 
 // add `helper`, `cck`, and helper.runChain to webConfig.vars.$
 webConfig.vars = 'vars' in webConfig ? webConfig.vars : {}

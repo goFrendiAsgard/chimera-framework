@@ -30,7 +30,7 @@ module.exports = (ins, vars, callback) => {
       }
     }
     return $.helper.mongoExecute(dbConfig, 'count', filter, (error, count) => {
-      cckState.result.metadata = {resultset: {count, limit, offset: skip}}
+      cckState.result.metadata = {resultset: {count, limit, offset: skip}, fieldInfo: cckState.schema.fields}
       if ($.util.isString(cckState.documentId)) {
         if (results.length > 0) {
           cckState.result.result = results[0]
