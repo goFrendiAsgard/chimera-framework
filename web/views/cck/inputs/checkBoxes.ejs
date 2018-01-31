@@ -1,4 +1,4 @@
-<input type="hidden" name="<%= fieldName %>" value="<%= JSON.stringify(value) %>" />
+<input type="hidden" name="<%= fieldName %>" rowId="<%= row._id %>" value="<%= JSON.stringify(value) %>" />
 <% for (let optionValue in fieldInfo.options){ %>
   <div class="checkbox col-lg-4 col-md-6" style="margin-top:0">
     <label>
