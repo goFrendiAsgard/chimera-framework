@@ -6,16 +6,13 @@
     </label>
   </div>
 <% } %>
+
 <script>
-  function cwAdjust<%= fieldName %> () {
+  $('input[fieldName="<%= fieldName %>"]').change(function (event) {
     let val = []
     $('input[fieldName="<%= fieldName %>"]:checked').each(function() {
       val.push($(this).val())
     })
     $('input[name="<%= fieldName %>"]').val(JSON.stringify(val))
-  }
-  // listener
-  $('input[fieldName="<%= fieldName %>"]').change(function (event) {
-    cwAdjust<%= fieldName %>()
   })
 </script>
