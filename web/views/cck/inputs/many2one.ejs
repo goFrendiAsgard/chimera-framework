@@ -55,6 +55,8 @@
       $('#<%= inputId %>').val(value)
       // reload presentation container
       cwLoadMany2OnePresentationContainer('<%= inputId %>', fieldInfo)
+      // clear inputContainer
+      $('<%= inputId %>InputContainer">').html('')
     })
 
   })

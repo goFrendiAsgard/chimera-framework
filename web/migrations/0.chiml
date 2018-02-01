@@ -264,7 +264,7 @@ vars:
             purge: 'PURGE'
             lock: 'LOCK'
         chain:
-          tabularPresentationTemplate: '<%- cck.presentation.trimmedtext %>'
+          tabularPresentationTemplate: '<%- cck.presentation.trimmedText %>'
           presentationTemplate: '<%- cck.presentation.codeText %>'
           inputTemplate: '<%- cck.input.codeText %>'
           hidden: ['tabular']
@@ -353,7 +353,7 @@ vars:
           unique: 1
         description:
           inputTemplate: '<%- cck.input.textArea %>'
-          tabularPresentationTemplate: '<%- cck.presentation.trimmedtext %>'
+          tabularPresentationTemplate: '<%- cck.presentation.trimmedText %>'
           presentationTemplate: '<%- cck.presentation.text %>'
 
     - name: 'servants'
@@ -395,7 +395,7 @@ vars:
               fields: ['picture', 'name', 'description']
             story:
               inputTemplate: '<%- cck.input.textArea %>'
-              tabularPresentationTemplate: '<%- cck.presentation.trimmedtext %>'
+              tabularPresentationTemplate: '<%- cck.presentation.trimmedText %>'
               presentationTemplate: '<%- cck.presentation.text %>'
 
     - name: 'tests'

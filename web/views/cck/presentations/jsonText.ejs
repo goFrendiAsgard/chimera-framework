@@ -1,1 +1,5 @@
-<pre><%= value === Object(value) ? JSON.stringify(value, null, 2) : value %></pre>
+<% if (typeof value === 'undefined' || value === null || (typeof value === 'string' && value.trim() === '')) { %>
+  <i>[Not set]</i>
+<% } else { %>
+  <pre><%= value === Object(value) ? JSON.stringify(value, null, 2) : value %></pre>
+<% } %>

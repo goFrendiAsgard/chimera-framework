@@ -1,1 +1,5 @@
-<%= value === null || value === undefined || value === ''? '': (JSON.stringify(value).length > 30 ? JSON.stringify(value).slice(0,27) + '...' : JSON.stringify(value)) %>
+<% if (typeof value === 'undefined' || value === null || (typeof value === 'string' && value.trim() === '')) { %>
+  <i>[Not set]</i>
+<% } else { %>
+  <%= value === null || value === undefined || value === ''? '': (JSON.stringify(value).length > 30 ? JSON.stringify(value).slice(0,27) + '...' : JSON.stringify(value)) %>
+<% } %>

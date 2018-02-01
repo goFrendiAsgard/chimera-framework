@@ -1,1 +1,5 @@
-<img src="<%= value %>" style="max-height:100px" />
+<% if (typeof value === 'undefined' || value === null || (typeof value === 'string' && value.trim() === '')) { %>
+  <i>[Not set]</i>
+<% } else { %>
+  <img src="<%= value %>" style="max-height:100px" />
+<% } %>

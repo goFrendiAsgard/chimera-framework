@@ -44,6 +44,13 @@ function cwSwitchTab (tab) {
   $('*[data-tab="' + tab + '"], *[data-tab=""]').show()
 }
 
+function cwPreprocessValue (value) {
+  if (typeof value === 'null' || typeof value === 'undefined' || (typeof value === 'string' && value.trim() === '')) {
+    return '<i>[Not set]</i>'
+  }
+  return value
+}
+
 function cwLoadMany2OnePresentationContainer(componentId, componentFieldInfo) {
   let {ref, keyField, fields} = componentFieldInfo
   let value = $('#' + componentId).val()
@@ -71,25 +78,35 @@ function cwLoadMany2OnePresentationContainer(componentId, componentFieldInfo) {
             let value = row[fieldName]
             let presentation = ejs.render(fieldInfo['presentationTemplate'], {row, fieldName, fieldInfo, value})
             html += '<div class="col-sm-4" style="padding-left:0px"><b>' + caption + '</b></div>'
-            html += '<div class="col-sm-8">' + presentation + '</div>'
+            html += '<div class="col-sm-8">' + cwPreprocessValue(presentation) + '</div>'
           }
           html += '</div>'
         }
       }
-      if (html === '') { html = '<i>[Not set]</i>'}
+      html = cwPreprocessValue(html)
       $('#' + componentId + 'PresentationContainer').html(html)
     }
   })
 }
 
 function cwGetTableHeader (fields, fieldInfoList, addAction = false) {
+  let fieldCount = fields.length
+  let gridCount = addAction? 11 : 12
+  let colWidth = Math.floor(gridCount / fieldCount)
+  let actionWidth = addAction ? 12 - (colWidth * fieldCount) : 0
+  let colClass = ''
+  let actionClass = ''
+  if (colWidth > 0) {
+    colClass= 'col-sm-' + colWidth
+    actionClass= 'col-sm-' + actionWidth
+  }
   // table header
   let html = '<tr>'
   for (let fieldName of fields) {
-    html += '<th>' + fieldInfoList[fieldName].caption + '</th>'
+    html += '<th class="' + colClass + '">' + fieldInfoList[fieldName].caption + '</th>'
   }
   if (addAction) {
-    html += '<th>Action</th>'
+    html += '<th class="' + actionClass + '">Action</th>'
   }
   html += '</tr>'
   return html
@@ -144,19 +161,23 @@ function cwLoadOne2ManyPresentationContainer (componentId, componentFieldInfo) {
   let fieldInfoList = componentFieldInfo.fields
   let fields = Object.keys(fieldInfoList)
   let value = cwGetOne2ManyFieldValue(componentId)
-  let html = '<table class="table table-bordered" style="font-size:small">'
-  html += cwGetTableHeader(fields, fieldInfoList)
-  for (let row of value) {
-    html += '<tr>'
-    for (let fieldName of fields) {
-      let fieldInfo = fieldInfoList[fieldName]
-      let value = row[fieldName]
-      let presentation = ejs.render(fieldInfo['presentationTemplate'], { row, fieldName, fieldInfo, value })
-      html += '<td>' + presentation + '</td>'
+  let html = ''
+  if (value.length > 0) {
+    html += '<table class="table table-bordered" style="font-size:small">'
+    html += cwGetTableHeader(fields, fieldInfoList)
+    for (let row of value) {
+      html += '<tr>'
+      for (let fieldName of fields) {
+        let fieldInfo = fieldInfoList[fieldName]
+        let value = row[fieldName]
+        let presentation = ejs.render(fieldInfo['presentationTemplate'], { row, fieldName, fieldInfo, value })
+        html += '<td>' + presentation + '</td>'
+      }
+      html += '</tr>'
     }
-    html += '</tr>'
+    html += '</table>'
   }
-  html += '</table>'
+  html = cwPreprocessValue(html)
   $('#' + componentId + 'PresentationContainer').html(html)
 }
 

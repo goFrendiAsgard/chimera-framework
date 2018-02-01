@@ -57,6 +57,7 @@
 
     // Save value and reload presentation
     $('#<%= inputId %>BtnClose').click(function (event) {
+      // build value
       let value = []
       $('#<%= inputId %>Table tr.row-data').each(function () {
         let row = {}
@@ -67,8 +68,12 @@
         }
         value.push(row)
       })
+      // set value
       $('#<%= inputId %>').val(JSON.stringify(value))
+      // show presentation
       cwLoadOne2ManyPresentationContainer('<%= inputId %>', fieldInfo)
+      // clear inputContainer
+      $('<%= inputId %>InputContainer">').html('')
     })
 
   })

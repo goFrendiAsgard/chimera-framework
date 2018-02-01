@@ -20,7 +20,7 @@ vars:
       class: archer
       mainNoblePhantasm: Unlimited blade works
       otherNoblePhantasm:
-        - name: Kanshou and Bakuya
+        - name: Kanshou and bakuya
           story: Archer's favorite dual blade
         - name: Rho aias 
           story: Unknown how the hell trojan's greatest shield become his possession
