@@ -1,5 +1,6 @@
 <% let inputId = fieldName + (new Date()).getTime() + Math.floor((Math.random() * 100000)) %>
 <input id="<%= inputId %>" name="<%= fieldName %>" rowId="<%= row._id %>" type="hidden" value="<%= JSON.stringify(value) %>" />
+<div id="<%= inputId %>UploadContainer" style="display:none;"></div>
 
 <!-- Presentation -->
 <span id="<%= inputId %>PresentationContainer"><%= value %></span>
@@ -57,6 +58,8 @@
 
     // Save value and reload presentation
     $('#<%= inputId %>BtnClose').click(function (event) {
+      // clear uploadContainer
+      $('#<%= inputId %>UploadContainer').html('')
       // build value
       let value = []
       $('#<%= inputId %>Table tr.row-data').each(function () {
@@ -64,6 +67,10 @@
         for (let fieldName in fieldInfo.fields) {
           let td = $(this).children('td[fieldName="' + fieldName + '"]')[0]
           let input = $(td).children('[name="' + fieldName + '"]')[0]
+          // copy file input into uploadContainer
+          if (input.attr('type') === 'file') {
+            $('#<%= inputId %>UploadContainer').append('<input type="file" name="<%= fieldName %>.' + fieldName + '" value="' + input.val() + '" />')
+          }
           row[fieldName] = $(input).val() 
         }
         value.push(row)

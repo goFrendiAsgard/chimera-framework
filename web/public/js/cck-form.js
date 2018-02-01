@@ -135,7 +135,8 @@ function cwLoadMany2OneInputContainer(componentId, componentFieldInfo) {
           let fieldInfo = fieldInfoList[fieldName]
           let caption = fieldInfo.caption
           let value = row[fieldName]
-          let presentation = ejs.render(fieldInfo['presentationTemplate'], { row, fieldInfo, value, fieldName})
+          let template = 'tabularPresentationTemplate' in fieldInfo ? fieldInfo.tabularPresentationTemplate : fieldInfo.presentationTemplate
+          let presentation = ejs.render(template, { row, fieldInfo, value, fieldName})
           html += '<td>' + presentation + '</td>'
         }
         html += '<td><a class="' + componentId + 'BtnSelect btn btn-default" value="' +row[keyField] + '" href="#" data-toggle="modal" data-target="#' + componentId + 'ModalContainer">Select</a></td>'
