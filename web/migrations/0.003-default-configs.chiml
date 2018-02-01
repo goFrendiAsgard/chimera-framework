@@ -51,6 +51,12 @@ vars:
             - caption: 'Content Construction Kit'
               groups: ['superAdmin']
               url: '/data/cck'
+        - caption: 'Show Case'
+          children:
+            - caption: 'Noble Phantasm'
+              url: '/data/hogu'
+            - caption: 'Servants'
+              url: '/data/servants'
 
     - key: partial
       defaultConfig: 1

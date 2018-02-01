@@ -1,0 +1,31 @@
+ins: action, migrationConfig
+out: output
+vars:
+  data:
+
+    - name: Excalibur
+      default: 1
+
+    - name: Avalon
+      default: 1
+
+    - name: Gaebolg
+      default: 1
+
+    - name: Unlimited blade works
+      default: 1
+
+    - name: Rho aias
+      default: 1
+
+    - name: Kanshou and bakuya
+      default: 1
+
+do:  
+
+  - if: action == 'up'
+    do:
+      - |('test_hogu', 'insert', data) -> [$.helper.mongoExecute] -> output
+
+    else:
+      - |('test_hogu', 'remove', {'default': 1}) -> [$.helper.mongoExecute] -> output

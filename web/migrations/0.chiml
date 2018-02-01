@@ -342,34 +342,67 @@ vars:
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           editor: 'ejs'
     
-    - name: 'test_metas'
-      collectionName: 'web_test_metas'
+    - name: 'hogu'
+      collectionName: 'test_hogu'
       fields:
-        name: {}
-        description: {}
+        picture:
+          inputTemplate: '<%- cck.input.file %>'
+          presentationTemplate: '<%- cck.presentation.image %>'
+        name:
+          notNull: 1
+          unique: 1
+        description:
+          inputTemplate: '<%- cck.input.textArea %>'
+          tabularPresentationTemplate: '<%- cck.presentation.trimmedtext %>'
+          presentationTemplate: '<%- cck.presentation.text %>'
 
-    - name: 'tests'
-      collectionName: 'web_tests'
+    - name: 'servants'
+      collectionName: 'test_servants'
       fields:
-        key: {}
-        value: {}
-        meta:
+        picture:
+          inputTemplate: '<%- cck.input.file %>'
+          presentationTemplate: '<%- cck.presentation.image %>'
+        name:
+          notNull: 1
+          unique: 1
+        class:
+          inputTemplate: '<%- cck.input.option %>'
+          presentationTemplate: '<%- cck.presentation.option %>'
+          options:
+            saber: 'Saber'
+            lancer: 'Lancer'
+            archer: 'Archer'
+            rider: 'Rider'
+            caster: 'Caster'
+            assassin: 'Assassin'
+        mainNoblePhantasm:
+          caption: 'Noble Phantasm'
           inputTemplate: '<%- cck.input.many2one %>'
           presentationTemplate: '<%- cck.presentation.many2one %>'
-          ref: 'test_metas'
+          ref: 'hogu'
           keyField: 'name'
           fields: ['name', 'description']
-        metas:
+        otherNoblePhantasm:
+          caption: 'Secondary Noble Phantasm'
           inputTemplate: '<%- cck.input.one2many %>'
           presentationTemplate: '<%- cck.presentation.one2many %>'
           fields:
             name:
               inputTemplate: '<%- cck.input.many2one %>'
               presentationTemplate: '<%- cck.presentation.many2one %>'
-              ref: 'test_metas'
+              ref: 'hogu'
               keyField: 'name'
-              fields: ['name', 'description']
-            other: {}
+              fields: ['picture', 'name', 'description']
+            story:
+              inputTemplate: '<%- cck.input.textArea %>'
+              tabularPresentationTemplate: '<%- cck.presentation.trimmedtext %>'
+              presentationTemplate: '<%- cck.presentation.text %>'
+
+    - name: 'tests'
+      collectionName: 'web_tests'
+      fields:
+        key: {}
+        value: {}
 
 do:
 

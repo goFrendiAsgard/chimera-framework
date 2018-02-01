@@ -1,0 +1,36 @@
+ins: action, migrationConfig
+out: output
+vars:
+  data:
+
+    - name: Arthuria Pendragon
+      class: saber
+      mainNoblePhantasm: Excalibur
+      otherNoblePhantasm:
+        - name: Avalon
+          story: It was hidden in Shirou's body
+      default: 1
+
+    - name: Chuchulain
+      class: lancer
+      mainNoblePhantasm: Gaebolg
+      default: 1
+
+    - name: Shirou Emiya
+      class: archer
+      mainNoblePhantasm: Unlimited blade works
+      otherNoblePhantasm:
+        - name: Kanshou and Bakuya
+          story: Archer's favorite dual blade
+        - name: Rho aias 
+          story: Unknown how the hell trojan's greatest shield become his possession
+      default: 1
+
+do:  
+
+  - if: action == 'up'
+    do:
+      - |('test_servants', 'insert', data) -> [$.helper.mongoExecute] -> output
+
+    else:
+      - |('test_servants', 'remove', {'default': 1}) -> [$.helper.mongoExecute] -> output
