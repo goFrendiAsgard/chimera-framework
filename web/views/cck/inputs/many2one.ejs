@@ -5,11 +5,11 @@
 <span id="<%= inputId %>PresentationContainer"><%= value %></span>
 
 <!-- Trigger the modal with a button -->
-<a class="btn btn-default pull-right" data-toggle="modal" data-target="#<%= inputId %>ModalContainer">Edit</a>
+<a id="<%= inputId %>BtnShowModal" class="btn btn-default pull-right" data-toggle="modal" data-target="#<%= inputId %>ModalContainer">Edit</a>
 
 <!-- Modal -->
 <div class="modal fade" id="<%= inputId %>ModalContainer">
-  <div class="modal-dialog" style="width:100%; height:100%; padding-left:15px; padding-top:30px; overflow-y:auto; margin-top:0px; margin-bottom:0px;">
+  <div class="modal-dialog cw-modal-dialog">
 
     <!-- Modal content-->
     <div class="modal-content">
@@ -33,10 +33,12 @@
     let fieldInfo = JSON.parse(unescape('<%- escape(JSON.stringify(fieldInfo)) %>'))
 
     // load presentation container
-    cwLoadMany2OnePresentationContainer('<%= inputId %>', $('#<%= inputId %>').val(), fieldInfo)
+    cwLoadMany2OnePresentationContainer('<%= inputId %>', fieldInfo)
 
     // load input container
-    cwLoadMany2OneInputContainer('<%= inputId %>', fieldInfo)
+    $('#<%= inputId %>BtnShowModal').click(function (event) {
+      cwLoadMany2OneInputContainer('<%= inputId %>', fieldInfo)
+    })
 
     // if searchBox changed, reload input container
     $('#<%= inputId %>SearchBox').keyup(function (event) {
@@ -49,7 +51,7 @@
       let value = $(this).attr('value')
       $('#<%= inputId %>').val(value)
       // reload presentation container
-      cwLoadMany2OnePresentationContainer('<%= inputId %>', $('#<%= inputId %>').val(), fieldInfo)
+      cwLoadMany2OnePresentationContainer('<%= inputId %>', fieldInfo)
     })
 
   })

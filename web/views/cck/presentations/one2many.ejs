@@ -1,11 +1,11 @@
 <% let inputId = fieldName + (new Date()).getTime() + Math.floor((Math.random() * 100000)) %>
-<input id="<%= inputId %>" name="<%= fieldName %>" rowId="<%= row._id %>" type="hidden" value="<%= value %>" />
+<input id="<%= inputId %>" name="<%= fieldName %>" rowId="<%= row._id %>" type="hidden" value="<%= JSON.stringify(value) %>" />
 <span id="<%= inputId %>PresentationContainer"><%= value %></span>
 
 <script>
   $(document).ready(function () {
     let fieldInfo = JSON.parse(unescape('<%- escape(JSON.stringify(fieldInfo)) %>'))
     // load presentation container
-    cwLoadOne2ManyPresentationContainer('<%= inputId %>', $('#<%= inputId %>').val(), fieldInfo)
+    cwLoadOne2ManyPresentationContainer('<%= inputId %>', fieldInfo)
   })
 </script>

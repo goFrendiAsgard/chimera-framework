@@ -1,15 +1,15 @@
 <% let inputId = fieldName + (new Date()).getTime() + Math.floor((Math.random() * 100000)) %>
-<input id="<%= inputId %>" name="<%= fieldName %>" rowId="<%= row._id %>" type="hidden" value="<%= value %>" />
+<input id="<%= inputId %>" name="<%= fieldName %>" rowId="<%= row._id %>" type="hidden" value="<%= JSON.stringify(value) %>" />
 
 <!-- Presentation -->
 <span id="<%= inputId %>PresentationContainer"><%= value %></span>
 
 <!-- Trigger the modal with a button -->
-<a class="btn btn-default pull-right" data-toggle="modal" data-target="#<%= inputId %>ModalContainer">Edit</a>
+<a id="<%= inputId %>BtnShowModal" class="btn btn-default pull-right" data-toggle="modal" data-target="#<%= inputId %>ModalContainer">Edit</a>
 
 <!-- Modal -->
 <div class="modal fade" id="<%= inputId %>ModalContainer">
-  <div class="modal-dialog" style="width:100%; height:100%; padding-left:15px; padding-top:30px; overflow-y:auto; margin-top:0px; margin-bottom:0px;">
+  <div class="modal-dialog cw-modal-dialog">
 
     <!-- Modal content-->
     <div class="modal-content">
@@ -23,7 +23,7 @@
         <div id="<%= inputId %>InputContainer"></div>
       </div>
       <div class="modal-footer">
-        <a class="btn btn-default" data-toggle="modal" data-target="#<%= inputId %>ModalContainer">Close</a>
+        <a id="<%= inputId %>BtnClose" class="btn btn-default" data-toggle="modal" data-target="#<%= inputId %>ModalContainer">Close</a>
       </div>
     </div>
 
@@ -35,15 +35,40 @@
     let fieldInfo = JSON.parse(unescape('<%- escape(JSON.stringify(fieldInfo)) %>'))
 
     // load presentation container
-    cwLoadOne2ManyPresentationContainer('<%= inputId %>', $('#<%- inputId %>').val(), fieldInfo)
+    cwLoadOne2ManyPresentationContainer('<%= inputId %>', fieldInfo)
 
     // load input container
-    cwLoadOne2ManyInputContainer('<%= inputId %>', fieldInfo)
+    $('#<%= inputId %>BtnShowModal').click(function (event) {
+      cwLoadOne2ManyInputContainer('<%= inputId %>', fieldInfo)
+    })
 
+    // Add new record
     $('#<%= inputId %>BtnAdd').click(function (event) {
       event.preventDefault()
-      let html = cwOne2ManyTableRow({}, fieldInfo.fields)
+      let html = cwGetOne2ManyTableRow({}, fieldInfo.fields)
       $('#<%= inputId %>Table').append(html)
+    })
+
+    // Delete record
+    $('#<%= inputId %>Table').on('click', '.btnDeleteRow', function (event) {
+      event.preventDefault()
+      $(this).parent().parent().remove()
+    })
+
+    // Save value and reload presentation
+    $('#<%= inputId %>BtnClose').click(function (event) {
+      let value = []
+      $('#<%= inputId %>Table tr.row-data').each(function () {
+        let row = {}
+        for (let fieldName in fieldInfo.fields) {
+          let td = $(this).children('td[fieldName="' + fieldName + '"]')[0]
+          let input = $(td).children('[name="' + fieldName + '"]')[0]
+          row[fieldName] = $(input).val() 
+        }
+        value.push(row)
+      })
+      $('#<%= inputId %>').val(JSON.stringify(value))
+      cwLoadOne2ManyPresentationContainer('<%= inputId %>', fieldInfo)
     })
 
   })
