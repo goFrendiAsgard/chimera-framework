@@ -1,11 +1,14 @@
 <% let inputId = fieldName + (new Date()).getTime() + Math.floor((Math.random() * 100000)) %>
 <input id="<%= inputId %>" name="<%= fieldName %>" rowId="<%= row._id %>" type="hidden" value="<%= value %>" />
 
-<!-- Presentation -->
-<span id="<%= inputId %>PresentationContainer"><%= value %></span>
-
-<!-- Trigger the modal with a button -->
-<a id="<%= inputId %>BtnShowModal" class="btn btn-default pull-right" data-toggle="modal" data-target="#<%= inputId %>ModalContainer">Edit</a>
+<div>
+  <!-- Presentation -->
+  <div id="<%= inputId %>PresentationContainer" class="col-md-8" style="padding-left:0px"><%= value %></div>
+  <!-- Trigger the modal with a button -->
+  <div class="col-md-4" style="padding-right:0px">
+    <a id="<%= inputId %>BtnShowModal" class="btn btn-default pull-right" data-toggle="modal" data-target="#<%= inputId %>ModalContainer">Edit</a>
+  </div>
+</div>
 
 <!-- Modal -->
 <div class="modal fade" id="<%= inputId %>ModalContainer">
@@ -17,7 +20,7 @@
         <h4 class="modal-title"><%= fieldInfo.caption %></h4>
       </div>
       <div class="modal-body">
-        <input id="<%= inputId %>SearchBox" class="form-control" />
+        <input id="<%= inputId %>SearchBox" class="form-control" placeholder="Search" />
         <div id="<%= inputId %>InputContainer"></div>
       </div>
       <div class="modal-footer">

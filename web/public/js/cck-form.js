@@ -64,15 +64,16 @@ function cwLoadMany2OnePresentationContainer(componentId, componentFieldInfo) {
         if (fields.length === 1) {
           html = row[fields[0]]
         } else {
-          html += '<table class="table table-bordered" style="font-size:small">'
+          html += '<div style="font-size:small">'
           for (let fieldName of fields) {
             let fieldInfo = fieldInfoList[fieldName]
             let caption = fieldInfo.caption
             let value = row[fieldName]
             let presentation = ejs.render(fieldInfo['presentationTemplate'], {row, fieldName, fieldInfo, value})
-            html += '<tr><th class="col-xs-4">' + caption + '</th><td class="col-xs-8">' + presentation + '</td></tr>'
+            html += '<div class="col-sm-4" style="padding-left:0px"><b>' + caption + '</b></div>'
+            html += '<div class="col-sm-8">' + presentation + '</div>'
           }
-          html += '</table>'
+          html += '</div>'
         }
       }
       if (html === '') { html = '<i>[Not set]</i>'}

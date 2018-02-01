@@ -304,18 +304,21 @@ function hashPassword (password, salt = null, algorithm = 'sha512') {
 }
 
 function getLoggedInAuth (userDoc) {
-  let groupNames = util.getDeepCopiedObject(userDoc.groups)
-  if (!util.isArray(groupNames)) {
-    groupNames = []
+  let auth = util.getDeepCopiedObject(userDoc)
+  auth.id = auth._id
+  delete auth['_id']
+  delete auth['_history']
+  delete auth['_deleted']
+  delete auth['_muser']
+  delete auth['_mtime']
+  delete auth['password']
+  delete auth['salt']
+  delete auth['hashed_password']
+  if (!util.isArray(auth.groups)) {
+    auth.groups = []
   }
-  groupNames.push('loggedIn')
-  return {
-    id: userDoc._id,
-    username: userDoc.username,
-    email: userDoc.email,
-    groups: groupNames,
-    doc: userDoc
-  }
+  auth.groups.push('loggedIn')
+  return auth
 }
 
 function getLoggedOutAuth () {
