@@ -69,7 +69,7 @@ function cwLoadMany2OnePresentationContainer(componentId, value, componentFieldI
             let caption = fieldInfo.caption
             let value = row[fieldName]
             let presentation = ejs.render(fieldInfo['presentationTemplate'], {row, fieldName, fieldInfo, value})
-            html += '<tr><th>' + caption + '</th><td>' + presentation + '</td></tr>'
+            html += '<tr><th class="col-xs-4">' + caption + '</th><td class="col-xs-8">' + presentation + '</td></tr>'
           }
           html += '</table>'
         }
@@ -116,7 +116,7 @@ function cwLoadMany2OneInputContainer(componentId, componentFieldInfo) {
           let presentation = ejs.render(fieldInfo['presentationTemplate'], { row, fieldInfo, value, fieldName})
           html += '<td>' + presentation + '</td>'
         }
-        html += '<td><a class="' + componentId + 'BtnSelect btn btn-default" value="' +row[keyField] + '" href="#" data-dismiss="modal">Select</a></td>'
+        html += '<td><a class="' + componentId + 'BtnSelect btn btn-default" value="' +row[keyField] + '" href="#" data-toggle="modal" data-target="#' + componentId + 'ModalContainer">Select</a></td>'
         html += '</tr>'
       }
       // end of the table
@@ -177,7 +177,10 @@ function cwLoadOne2ManyInputContainer (componentId, componentFieldInfo) {
 }
 
 $(document).ready(function () {
+  // init aceEditors
   cwInitAce()
+
+  // handle tabs
   if ($('#form-tabs li.active a').attr('href')) {
     let tab = $('#form-tabs li.active a').attr('href').slice(1)
     // don't know, but seems we have to delay this in order to make ace rendered correctly
@@ -188,4 +191,5 @@ $(document).ready(function () {
     cwSwitchTab(tab)
     event.preventDefault()
   })
+
 })

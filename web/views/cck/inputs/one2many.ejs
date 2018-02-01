@@ -1,14 +1,15 @@
-<input id="<%= fieldName %>" name="<%= fieldName %>" rowId="<%= row._id %>" type="hidden" value="<%= value %>" />
+<% let inputId = fieldName + (new Date()).getTime() + Math.floor((Math.random() * 100000)) %>
+<input id="<%= inputId %>" name="<%= fieldName %>" rowId="<%= row._id %>" type="hidden" value="<%= value %>" />
 
 <!-- Presentation -->
-<span id="<%=fieldName %>PresentationContainer"><%= value %></span>
+<span id="<%= inputId %>PresentationContainer"><%= value %></span>
 
 <!-- Trigger the modal with a button -->
-<a class="btn btn-default pull-right" data-toggle="modal" data-target="#<%= fieldName %>ModalContainer">Edit</a>
+<a class="btn btn-default pull-right" data-toggle="modal" data-target="#<%= inputId %>ModalContainer">Edit</a>
 
 <!-- Modal -->
-<div class="modal fade" id="<%= fieldName %>ModalContainer" role="dialog">
-  <div class="modal-dialog">
+<div class="modal fade" id="<%= inputId %>ModalContainer">
+  <div class="modal-dialog" style="width:100%; height:100%; padding-left:15px; padding-top:30px; overflow-y:auto; margin-top:0px; margin-bottom:0px;">
 
     <!-- Modal content-->
     <div class="modal-content">
@@ -16,11 +17,13 @@
         <h4 class="modal-title"><%= fieldInfo.caption %></h4>
       </div>
       <div class="modal-body">
-        <a id="<%= fieldName %>BtnAdd" class="btn btn-default" href="#">Add</a>
-        <div id="<%= fieldName %>InputContainer"></div>
+        <div style="margin-bottom:1em">
+          <a id="<%= inputId %>BtnAdd" class="btn btn-default" href="#">Add</a>
+        </div>
+        <div id="<%= inputId %>InputContainer"></div>
       </div>
       <div class="modal-footer">
-        <a class="btn btn-default" data-dismiss="modal">Close</a>
+        <a class="btn btn-default" data-toggle="modal" data-target="#<%= inputId %>ModalContainer">Close</a>
       </div>
     </div>
 
@@ -32,14 +35,15 @@
     let fieldInfo = JSON.parse(unescape('<%- escape(JSON.stringify(fieldInfo)) %>'))
 
     // load presentation container
-    cwLoadOne2ManyPresentationContainer('<%= fieldName %>', $('#<%- fieldName %>').val(), fieldInfo)
+    cwLoadOne2ManyPresentationContainer('<%= inputId %>', $('#<%- inputId %>').val(), fieldInfo)
 
     // load input container
-    cwLoadOne2ManyInputContainer('<%= fieldName %>', fieldInfo)
+    cwLoadOne2ManyInputContainer('<%= inputId %>', fieldInfo)
 
-    $('#<%= fieldName %>BtnAdd').click(function (event) {
+    $('#<%= inputId %>BtnAdd').click(function (event) {
+      event.preventDefault()
       let html = cwOne2ManyTableRow({}, fieldInfo.fields)
-      $('#<%= fieldName %>Table').append(html)
+      $('#<%= inputId %>Table').append(html)
     })
 
   })
