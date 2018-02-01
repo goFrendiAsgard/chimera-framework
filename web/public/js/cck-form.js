@@ -76,7 +76,8 @@ function cwLoadMany2OnePresentationContainer(componentId, componentFieldInfo) {
             let fieldInfo = fieldInfoList[fieldName]
             let caption = fieldInfo.caption
             let value = row[fieldName]
-            let presentation = ejs.render(fieldInfo['presentationTemplate'], {row, fieldName, fieldInfo, value})
+            let template = 'tabularPresentationTemplate' in fieldInfo ? fieldInfo.tabularPresentationTemplate : fieldInfo.presentationTemplate
+            let presentation = ejs.render(template, {row, fieldName, fieldInfo, value})
             html += '<div class="col-sm-4" style="padding-left:0px"><b>' + caption + '</b></div>'
             html += '<div class="col-sm-8">' + cwPreprocessValue(presentation) + '</div>'
           }

@@ -292,7 +292,7 @@ vars:
       initChain: '<%= chainPath %>user.init.js'
       fields:
         profilePicture:
-          inputTemplate: '<%- cck.input.file %>'
+          inputTemplate: '<%- cck.input.image %>'
           presentationTemplate: '<%- cck.presentation.image %>'
           caption: 'Profile Picture'
           hidden: ['tabular']
@@ -346,7 +346,7 @@ vars:
       collectionName: 'test_hogu'
       fields:
         picture:
-          inputTemplate: '<%- cck.input.file %>'
+          inputTemplate: '<%- cck.input.image %>'
           presentationTemplate: '<%- cck.presentation.image %>'
         name:
           notNull: 1
@@ -360,7 +360,7 @@ vars:
       collectionName: 'test_servants'
       fields:
         picture:
-          inputTemplate: '<%- cck.input.file %>'
+          inputTemplate: '<%- cck.input.image %>'
           presentationTemplate: '<%- cck.presentation.image %>'
         name:
           notNull: 1
@@ -381,7 +381,7 @@ vars:
           presentationTemplate: '<%- cck.presentation.many2one %>'
           ref: 'hogu'
           keyField: 'name'
-          fields: ['name', 'description']
+          fields: ['picture', 'name', 'description']
         otherNoblePhantasm:
           caption: 'Secondary Noble Phantasm'
           inputTemplate: '<%- cck.input.one2many %>'

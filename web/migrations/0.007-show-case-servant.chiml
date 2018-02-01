@@ -4,6 +4,7 @@ vars:
   data:
 
     - name: Arthuria Pendragon
+      picture: /uploads/1517487760495saber.jpg
       class: saber
       mainNoblePhantasm: Excalibur
       otherNoblePhantasm:
@@ -12,18 +13,20 @@ vars:
       default: 1
 
     - name: Chuchulain
+      picture: /uploads/1517487885770lancer.jpg
       class: lancer
       mainNoblePhantasm: Gaebolg
       default: 1
 
     - name: Shirou Emiya
+      picture: /uploads/1517488023584archer.jpg
       class: archer
       mainNoblePhantasm: Unlimited blade works
       otherNoblePhantasm:
         - name: Kanshou and bakuya
           story: Archer's favorite dual blade
         - name: Rho aias 
-          story: Unknown how the hell trojan's greatest shield become his possession
+          story: It is unknown, how this trojan's greatest shield become his possession
       default: 1
 
 do:  

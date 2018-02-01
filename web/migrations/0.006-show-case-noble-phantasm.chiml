@@ -4,9 +4,13 @@ vars:
   data:
 
     - name: Excalibur
+      picture: /uploads/1517488897850excalibur.png
+      description: Excalibur is a Divine Construct, the pinnacle of holy swords, and the strongest holy sword whose equal is the strongest demonic sword Gram; one of the ultimate god-forged weapons, a Last Phantasm, forged by the planet as the crystallization of the wishes of mankind stored and tempered within the planet.
       default: 1
 
     - name: Avalon
+      picture: /uploads/1517489090600avalon.png
+      description: Avalon, The Everdistant Utopia is the hallowed scabbard of Excalibur, the embodiment of the utopia King Arthur seeks, originally stolen from her shortly before the Battle of Camlann due to the machinations of Morgan le Fay. It is a luxurious piece of equipment made of gold and decorated with blue enamel that seems more like a treasure to show dignity and nobility like a crown or staff than a weapon.
       default: 1
 
     - name: Gaebolg

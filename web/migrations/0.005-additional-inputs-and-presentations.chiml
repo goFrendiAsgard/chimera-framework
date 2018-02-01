@@ -10,6 +10,7 @@ do:
           - key: 'cck'
           - $set:
               value.input.file: <%- viewPath %>cck/inputs/file.ejs 
+              value.input.image: <%- viewPath %>cck/inputs/image.ejs 
               value.input.dateTime: <%- viewPath %>cck/inputs/dateTime.ejs 
               value.input.date: <%- viewPath %>cck/inputs/date.ejs 
               value.input.checkBoxes: <%- viewPath %>cck/inputs/checkBoxes.ejs 
