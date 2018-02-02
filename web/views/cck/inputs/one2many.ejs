@@ -62,25 +62,29 @@
       $('#<%= inputId %>UploadContainer').html('')
       // build value
       let value = []
+      let rowIndex = 0
       $('#<%= inputId %>Table tr.row-data').each(function () {
         let row = {}
         for (let fieldName in fieldInfo.fields) {
+          if ($(this).children('td[fieldName="' + fieldName + '"]').length === 0) { continue }
           let td = $(this).children('td[fieldName="' + fieldName + '"]')[0]
+          if ($(td).children('[name="' + fieldName + '"]').length === 0) { continue }
           let input = $(td).children('[name="' + fieldName + '"]')[0]
           // copy file input into uploadContainer
-          if (input.attr('type') === 'file') {
-            $('#<%= inputId %>UploadContainer').append('<input type="file" name="<%= fieldName %>.' + fieldName + '" value="' + input.val() + '" />')
+          if ($(input).attr('type') === 'file') {
+            $('#<%= inputId %>UploadContainer').append('<input type="file" name="<%= fieldName %>.' + rowIndex + '.' + fieldName + '" value="' + input.val() + '" />')
           }
-          row[fieldName] = $(input).val() 
+        row[fieldName] = $(input).val() 
         }
         value.push(row)
+        rowIndex ++
       })
       // set value
       $('#<%= inputId %>').val(JSON.stringify(value))
       // show presentation
       cwLoadOne2ManyPresentationContainer('<%= inputId %>', fieldInfo)
       // clear inputContainer
-      $('#<%= inputId %>InputContainer">').html('')
+      $('#<%= inputId %>InputContainer').html('')
     })
 
   })

@@ -402,16 +402,27 @@ function getSingleData (request, fieldNames, config, callback) {
   let actions = []
   let data = util.getPatchedObject(request.query, request.body)
   data = helper.getSubObject(data, fieldNames)
-  for (let fieldName of fieldNames) {
-    if (util.isRealObject(request.files) && fieldName in request.files) {
-      let file = request.files[fieldName]
+  if (util.isRealObject(request.files)) {
+    for (let key in request.files) {
+      let file = request.files[key]
       let fileName = getFileName(file.name)
-      data[fieldName] = '/uploads/' + fileName
-      actions.push((next) => {
-        file.mv(uploadPath + fileName, (error) => {
-          next(error)
+      let keyParts = key.split('.')
+      let script = 'data'
+      for (let keyPart of keyParts) {
+        script += '[' + JSON.stringify(keyPart) + ']'
+      }
+      script += ' = ' + JSON.stringify('/uploads/' + fileName)
+      try {
+        eval(script)
+        actions.push((next) => {
+          file.mv(uploadPath + fileName, (error) => {
+            next(error)
+          })
         })
-      })
+      } catch (error) {
+        console.error(script)
+        console.error(error)
+      }
     }
   }
   return async.parallel(actions, (error, result) => {

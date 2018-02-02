@@ -14,6 +14,8 @@ vars:
       default: 1
 
     - name: Gaebolg
+      picture: /uploads/1517534859811gaebolg.png
+      description: Cursed spear with an ominous design that was obtained from Scáthach in the Land of Shadows by Cú Chulainn and one of the many weapons inside Gilgamesh's Gate of Babylon. Gáe Bolg was carved from the remains of Curruid's skull. Its name is derived from the term for "serrated throwing weapon", ga bool’ga, evoking an image of lightning.
       default: 1
 
     - name: Unlimited blade works
