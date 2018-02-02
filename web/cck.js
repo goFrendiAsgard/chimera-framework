@@ -372,39 +372,14 @@ function getUploadPath (config) {
   return path.join(config.staticPath, 'uploads') + '/'
 }
 
-function getMultipleData (request, fieldNames, config, callback) {
-  let uploadPath = getUploadPath(config)
-  let data = []
+function getPreprocessedSingleData (data, files, fieldNames, config) {
   let actions = []
-  for (let i = 0; i < request.body.length; i++) {
-    let row = helper.getSubObject(request.body[i], fieldNames)
-    data[i] = row
-    for (let fieldName of fieldNames) {
-      if (fieldName in request.files && util.isArray(request.files[fieldName]) && i < request.files[fieldName].length) {
-        let file = request.files[fieldName][i]
-        let fileName = getFileName(file.name)
-        data[i][fieldName] = '/uploads/' + fileName
-        actions.push((next) => {
-          file.mv(uploadPath + fileName, (error) => {
-            next(error)
-          })
-        })
-      }
-    }
-  }
-  return async.parallel(actions, (error, result) => {
-    callback(error, data)
-  })
-}
-
-function getSingleData (request, fieldNames, config, callback) {
   let uploadPath = getUploadPath(config)
-  let actions = []
-  let data = util.getPatchedObject(request.query, request.body)
   data = helper.getSubObject(data, fieldNames)
-  if (util.isRealObject(request.files)) {
-    for (let key in request.files) {
-      let file = request.files[key]
+  data = helper.getParsedNestedJson(data)
+  if (util.isRealObject(files)) {
+    for (let key in files) {
+      let file = files[key]
       let fileName = getFileName(file.name)
       let keyParts = key.split('.')
       let script = 'data'
@@ -425,8 +400,39 @@ function getSingleData (request, fieldNames, config, callback) {
       }
     }
   }
+  return {data, actions}
+}
+
+function getSingleData (request, fieldNames, config, callback) {
+  let uploadPath = getUploadPath(config)
+  let rawData = util.getPatchedObject(request.query, request.body)
+  let rawFiles = request.files
+  let {data, actions} = getPreprocessedSingleData (rawData, rawFiles, fieldNames, config)
   return async.parallel(actions, (error, result) => {
     callback(error, data)
+  })
+}
+
+function getMultipleData (request, fieldNames, config, callback) {
+  let uploadPath = getUploadPath(config)
+  let allData = []
+  let allActions = []
+  for (let i = 0; i < request.body.length; i++) {
+    let rawData = request.body[i]
+    let rawFiles = {}
+    for (let fieldName in request.files) {
+      if (util.isArray(request.files[fieldName]) && i < request.files[fieldName].length) {
+        rawFiles[fieldName] = request.files[fieldName][i]
+      }
+    }
+    let {data, actions} = getPreprocessedSingleData(rawData, rawFiles, fieldNames, config)
+    allData.push(data)
+    for (let action of actions) {
+      allActions.push(action)
+    }
+  }
+  return async.parallel(allActions, (error, result) => {
+    callback(error, allData)
   })
 }
 

@@ -72,7 +72,8 @@
           let input = $(td).children('[name="' + fieldName + '"]')[0]
           // copy file input into uploadContainer
           if ($(input).attr('type') === 'file') {
-            $('#<%= inputId %>UploadContainer').append('<input type="file" name="<%= fieldName %>.' + rowIndex + '.' + fieldName + '" value="' + input.val() + '" />')
+            $(input).attr('name', '<%= fieldName %>.' + rowIndex + '.' + fieldName)
+            $(input).appendTo('#<%= inputId %>UploadContainer')
           }
         row[fieldName] = $(input).val() 
         }
