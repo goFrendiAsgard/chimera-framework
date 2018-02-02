@@ -7,33 +7,39 @@ if (typeof $ === 'undefined') {
 function cwInitAce () {
   $('textarea[data-editor]').each(function () {
     let textarea = $(this)
-    let mode = textarea.data('editor') ? textarea.data('editor') : 'ejs'
-    let editDiv = $('<div>', {
-      position: 'absolute',
-      width: textarea.width(),
-      height: textarea.height(),
-      'class': textarea.attr('class')
-    }).insertBefore(textarea)
-    textarea.css('display', 'none')
-    let editor = ace.edit(editDiv[0])
-    console.log('ace')
-    editor.renderer.setShowGutter(false)
-    editor.setOptions({
-      showLineNumbers: true,
-      showGutter: true,
-      fontSize: 14,
-      minLines: 5,
-      maxLines: 25
-    })
-    editor.$blockScrolling = Infinity
-    editor.setTheme('ace/theme/github')
-    editor.getSession().setMode('ace/mode/' + mode)
-    editor.getSession().setTabSize(2)
-    editor.getSession().setUseSoftTabs(true)
-    editor.getSession().setValue(textarea.val())
-    editor.getSession().on('change', function () {
-      textarea.val(editor.getSession().getValue())
-    })
+    if (!textarea.attr('rendered')) {
+      let mode = textarea.data('editor') ? textarea.data('editor') : 'ejs'
+      let editDiv = $('<div>', {
+        position: 'absolute',
+        width: textarea.width(),
+        height: textarea.height(),
+        'class': textarea.attr('class')
+      }).insertBefore(textarea)
+      textarea.css('display', 'none')
+      let editor = ace.edit(editDiv[0])
+      editor.renderer.setShowGutter(false)
+      editor.setOptions({
+        showLineNumbers: true,
+        showGutter: true,
+        fontSize: 14,
+        minLines: 5,
+        maxLines: 35
+      })
+      editor.$blockScrolling = Infinity
+      editor.setTheme('ace/theme/github')
+      editor.getSession().setMode('ace/mode/' + mode)
+      editor.getSession().setTabSize(2)
+      editor.getSession().setUseSoftTabs(true)
+      editor.getSession().setValue(textarea.val())
+      editor.getSession().on('change', function () {
+        textarea.val(editor.getSession().getValue())
+      })
+      setTimeout(function () {
+        editor.getSession().foldAll(2)
+      }, 50)
+    } else {
+      textarea.attr('rendered', '1')
+    }
   })
 }
 
