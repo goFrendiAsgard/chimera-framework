@@ -31,7 +31,7 @@ npm install --global chimera-framework
 
 __Using git__ You should have `Node.Js`, `npm`, and `git client` installed. This method is recommended for Chimera-Framework tester/developer/contributor:
 ```sh
-npm install --global standard nyc
+npm install --global standard nyc newman
 git clone git@github.com:goFrendiAsgard/chimera-framework.git
 cd chimera-framework
 npm install --global
@@ -71,7 +71,7 @@ Chimera-Framework can be used for
 
 * [Stand alone computing](doc/gettingStarted.md#stand-alone-computing)
 * [Distributed computing](doc/gettingStarted.md#distributed-computing)
-* [Creating Web Application](doc/gettingStarted.md#web-app)
+* [Creating simple web application](doc/gettingStarted.md#web-app)
 
 In order to use Chimera-Framework, you need to write a `CHIML script`. CHIML is a simple superset of YAML. The sepecification of CHIML script is presented [here](doc/chiml.md)
 
@@ -84,6 +84,18 @@ const chimera = require('chimera-framework')
 ```
 
 The list of available API is available [here](doc/api.md)
+
+# Content Management System (CMS) 
+
+Sometime you need a more sophisticated web application. Something similar to `wordpress` or `drupal`. You need your users to be able to write their own content in a simple way. In that case, you can cast
+
+```bash
+chimera-init-web <your-project-name>
+```
+
+The command will let you have a CMS boilerplate, which is a Chimera-Framework web application with a lot of additional features like a `CCK` (Content Construction Kit)
+
+More information about CMS features can be found [here](doc/cms.md)
 
 # FAQ (Frequently Asked Question)
 

@@ -1,14 +1,12 @@
 # Chimera Web Application 
 
 ## Prerequisites
-In order to run this application, you need to have
-* Mongodb
+Before run the application, you need to make sure you have following softwares installed in your computer:
 * Node.Js
 * npm
-installed in your computer
+* Mongodb
 
 ## TODO
-* Edit `webConfig.js`, set your `mongoUrl` setting
 * Run migration by invoking `npm run-script migrate`
 * Start the server by invoking `npm start`
 

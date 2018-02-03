@@ -24,6 +24,7 @@ Below are the list of available API
     - `eisn (srcFile, dstFile, command, callback)`: Alias for `chimera.eisn`
     - `join (array, delimiter)`
     - `merge (array1, array2)`
+    - `mongoExecute (dbConfig, functionName, ...args)`: Alias for `chimera.mongo.execute`
     - `loadJs (moduleName, namespace)`
     - `loadJs (moduleName)`
     - `print (value)`
@@ -46,7 +47,10 @@ Below are the list of available API
     - `db (dbManager)`
     - `collection (dbManager, collectionName, dbOption)`
     - `collection (dbManager, collectionName)`: Returning a `monk` collection instance (`dbCollection`). This instance also has several addtional methods
-* `dbCollection` instance (return value of `chimera.mongo.collection()`)
+    - `execute (dbConfig, functionName, ...args)`
+* `dbCollection`
+
+  `dbCollection` is basically an extended version of `monk` [Collection class](https://automattic.github.io/monk/docs/collection/). Aside from the original properties and methods, `dbCollection` has several additional methods:
     - `softRemove (query, opts, callback)`
     - `avg (field, filter, groupBy, callback)`
     - `avg (field, filter, callback)`
@@ -88,9 +92,10 @@ Below are the list of available API
     - `readJsonFile (jsonFile, callback)`
     - `writeJsonFile (jsonFile, obj, callback)`
 * `chimera.web`
-    - `createApp (webConfig)`
+    - `createApp (webConfig, ...middlewares)`
+      
+      A middleware can be an `express` middleware function or an object which it's key is the `url` and it's value is `express` middleware function
+
     - `isRouteMatch (route, urlPath)`
     - `getRouteMatches (route, urlPath)`
     - `getParametersAsObject (route, urlPath)`
-
-
