@@ -34,9 +34,11 @@ function cwInitAce () {
       editor.getSession().on('change', function () {
         textarea.val(editor.getSession().getValue())
       })
+      /*
       setTimeout(function () {
         editor.getSession().foldAll(2)
       }, 50)
+      */
     } else {
       textarea.attr('rendered', '1')
     }

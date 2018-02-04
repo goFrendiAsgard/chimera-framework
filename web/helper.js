@@ -313,7 +313,7 @@ function getLoggedInAuth (userDoc) {
   delete auth['_mtime']
   delete auth['password']
   delete auth['salt']
-  delete auth['hashed_password']
+  delete auth['hashedPassword']
   if (!util.isArray(auth.groups)) {
     auth.groups = []
   }

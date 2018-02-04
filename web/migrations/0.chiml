@@ -23,6 +23,7 @@ vars:
           notNull: 1
           unique: 1
         collectionName: 
+          caption: Collection Name
           notNull: 1
         fields:
           inputTemplate: '<%- cck.input.jsonText %>'
@@ -44,7 +45,7 @@ vars:
           hidden: ['tabular']
           tab: config
         initChain:
-          caption: 'Insert Chain'
+          caption: 'Init Chain'
           inputTemplate: '<%- cck.input.codeText %>'
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
