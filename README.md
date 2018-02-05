@@ -90,7 +90,7 @@ The list of available API is available [here](doc/api.md)
 Sometime you need a more sophisticated web application. Something similar to `wordpress` or `drupal`. You need your users to be able to write their own content in a simple way. In that case, you can cast
 
 ```bash
-chimera-init-web <your-project-name>
+chimera-init-cms <your-project-name>
 ```
 
 The command will let you have a CMS boilerplate, which is a Chimera-Framework web application with a lot of additional features like a `CCK` (Content Construction Kit)

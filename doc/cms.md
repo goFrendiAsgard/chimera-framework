@@ -4,7 +4,7 @@ CMS is a web application like `wordpress`, `drupal`, or `joomla`. It support dig
 
 By using Chimera-Framework you can build your own CMS easily. What you need to do is just invoking
 ```bash
-chimera-init-web <your-project-name>
+chimera-init-cms <your-project-name>
 ```
 
 # Creating your own CMS
@@ -14,14 +14,14 @@ To create your own CMS, you need to do the following steps
   - Node.Js
   - npm
   - MongoDb
-* Create the boilerplate by invoking `chimera-init-web <your-project-name>` in your terminal
+* Create the boilerplate by invoking `chimera-init-cms <your-project-name>` in your terminal
 * Change current directory to `<your-project-name>` by invoking `cd <your-project-name>`
 * Run migration by invoking `npm run-script migrate`
 
 If everything works correctly, you will see this output in your terminal (The process might take a while)
 
 ```
-gofrendi@asgard:~$ chimera-init-web test
+gofrendi@asgard:~$ chimera-init-cms test
 Mongodb Url (mongodb://localhost/test):
 [INFO] Read chimera-framework's package.json...
 [INFO] Done...

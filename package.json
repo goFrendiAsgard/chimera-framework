@@ -7,7 +7,7 @@
     "chimera-serve": "tools/serve.js",
     "chimera-send": "tools/send.js",
     "chimera-eisn": "tools/eisn.js",
-    "chimera-init-web": "tools/init-web.js"
+    "chimera-init-cms": "tools/init-cms.js"
   },
   "scripts": {
     "test": "mocha"
