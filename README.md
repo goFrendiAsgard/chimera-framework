@@ -1,7 +1,7 @@
 <h1 align="center">Chimera-Framework</h1>
 
 <div align="center">
-  <img src="other/logo.png" />
+  <img src="logo.png" />
 </div>
 <br />
 <div align="center">
