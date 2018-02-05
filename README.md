@@ -65,15 +65,15 @@ To perform the test, you can invoke `npm test`. A `g++` compiler is required for
 
 # Getting Started
 
-The brief introduction of Chimera-Framework usage is presented [here](doc/gettingStarted.md)
+The brief introduction of Chimera-Framework usage is presented [here](https://github.com/goFrendiAsgard/chimera-framework/wiki/Getting-Started)
 
 Chimera-Framework can be used for
 
-* [Stand alone computing](doc/gettingStarted.md#stand-alone-computing)
-* [Distributed computing](doc/gettingStarted.md#distributed-computing)
-* [Creating simple web application](doc/gettingStarted.md#web-app)
+* [Stand alone computing](https://github.com/goFrendiAsgard/chimera-framework/wiki/Getting-Started#stand-alone-computing)
+* [Distributed computing](https://github.com/goFrendiAsgard/chimera-framework/wiki/Getting-Started#distributed-computing)
+* [Creating simple web application](https://github.com/goFrendiAsgard/chimera-framework/wiki/Getting-Started#web-app)
 
-In order to use Chimera-Framework, you need to write a `CHIML script`. CHIML is a simple superset of YAML. The sepecification of CHIML script is presented [here](doc/chiml.md)
+In order to use Chimera-Framework, you need to write a `CHIML script`. CHIML is a simple superset of YAML. The sepecification of CHIML script is presented [here](https://github.com/goFrendiAsgard/chimera-framework/wiki/CHIML)
 
 # API
 
@@ -83,7 +83,7 @@ Chimera-Framework has several API. The API are accessible from any Node.Js progr
 const chimera = require('chimera-framework')
 ```
 
-The list of available API is available [here](doc/api.md)
+The list of available API is available [here](https://github.com/goFrendiAsgard/chimera-framework/wiki/API)
 
 # Content Management System (CMS) 
 
@@ -95,8 +95,8 @@ chimera-init-cms <your-project-name>
 
 The command will let you have a CMS boilerplate, which is a Chimera-Framework web application with a lot of additional features like a `CCK` (Content Construction Kit)
 
-More information about CMS features can be found [here](doc/cms.md)
+More information about CMS features can be found [here](https://github.com/goFrendiAsgard/chimera-framework/wiki/Content-Management-System-(CMS))
 
 # FAQ (Frequently Asked Question)
 
-Have some questions?  Open an [issue](https://github.com/goFrendiAsgard/chimera-framework/issues) or click the [FAQ](doc/faq.md).
+Have some questions?  Open an [issue](https://github.com/goFrendiAsgard/chimera-framework/issues) or click the [FAQ](https://github.com/goFrendiAsgard/chimera-framework/wiki/FAQ).
