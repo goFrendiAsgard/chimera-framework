@@ -1,0 +1,14 @@
+ins: action, migrationConfig
+out: output
+do:
+
+  - if: "action == 'up'"
+    do: 
+      - ins:
+          - 'web_cck'
+          - 'update'
+          - name: 'cck'
+          - $set:
+              fields.fields.inputTemplate: <%- viewPath %>cck/inputs/cckField.ejs 
+        out: output
+        do: "[$.helper.mongoExecute]"

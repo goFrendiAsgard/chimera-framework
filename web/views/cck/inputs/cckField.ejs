@@ -1,0 +1,54 @@
+<div style="margin-bottom:10px;">
+  <div class="col-xs-10" style="padding-left:0">
+    <select id="fieldType" class="form-control">
+      <option value="text">Text</option>
+      <option value="textArea">Text Area</option>
+      <option value="url">URL</option>
+      <option value="email">Email</option>
+      <option value="password">Password</option>
+      <option value="option">Options</option>
+      <option value="checkBoxes">Check Boxes</option>
+      <option value="date">Date</option>
+      <option value="dateTime">Date &amp; Time</option>
+      <option value="one2many">One to Many</option>
+      <option value="many2one">Many to One</option>
+      <option value="jsonText">JSON</option>
+      <option value="codeText">Source Code</option>
+    </select>
+  </div>
+  <a href="#" id="btnAddField" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></a>
+</div>
+<textarea name="<%= fieldName %>" rowId="<%= row._id %>" class="form-control cw-textarea" data-editor="json"><%= value === Object(value) ? JSON.stringify(value, null, 2) : value %></textarea>
+
+<script>
+  $(document).ready(function () {
+
+    const defaultFields = {
+      text: {
+        inputTemplate: '<%%- cck.input.text %>',
+        presentationTemplate: '<%%- cck.presentation.text %>'
+      },
+      textArea: {
+        inputTemplate: '<%%- cck.input.textArea %>',
+        presentationTemplate: '<%%- cck.presentation.trimmedText %>'
+      }
+    }
+
+    $('#btnAddField').click(function (event) {
+      event.preventDefault()
+      let fieldType = $('#fieldType').val()
+      let value = $('textarea[name="<%= fieldName %>"]').val()
+      try {
+        value = JSON.parse(value)
+      } catch (error) {
+        value = {}
+      }
+      let keyCount = Object.keys(value).length
+      value['field-' + (keyCount + 1)] = defaultFields[fieldType]
+      value = JSON.stringify(value, null, 2)
+      $('textarea[name="<%= fieldName %>"]').val(value)
+      $('textarea[name="<%= fieldName %>"]').trigger('change')
+    })
+
+  })
+</script>

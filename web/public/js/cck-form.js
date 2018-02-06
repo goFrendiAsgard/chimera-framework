@@ -34,6 +34,9 @@ function cwInitAce () {
       editor.getSession().on('change', function () {
         textarea.val(editor.getSession().getValue())
       })
+      textarea.change(function(event) {
+        editor.setValue($(this).val(), 1)
+      })
       textarea.attr('rendered', '1')
     }
   })
