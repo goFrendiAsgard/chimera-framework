@@ -30,7 +30,6 @@ vars:
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           hidden: ['tabular']
-          renderTab: true
           tab: config
         tabs:
           inputTemplate: '<%- cck.input.jsonText %>'
@@ -376,6 +375,7 @@ vars:
             rider: 'Rider'
             caster: 'Caster'
             assassin: 'Assassin'
+          notNull: 1
         mainNoblePhantasm:
           caption: 'Noble Phantasm'
           inputTemplate: '<%- cck.input.many2one %>'
@@ -383,6 +383,7 @@ vars:
           ref: 'hogu'
           keyField: 'name'
           fields: ['picture', 'name', 'description']
+          tab: 'main'
         otherNoblePhantasm:
           caption: 'Secondary Noble Phantasm'
           inputTemplate: '<%- cck.input.one2many %>'
@@ -398,6 +399,10 @@ vars:
               inputTemplate: '<%- cck.input.textArea %>'
               tabularPresentationTemplate: '<%- cck.presentation.trimmedText %>'
               presentationTemplate: '<%- cck.presentation.text %>'
+          tab: 'secondary'
+      tabs:
+        main: 'Main'
+        secondary: 'Additional'
 
     - name: 'tests'
       collectionName: 'web_tests'
@@ -410,8 +415,8 @@ do:
   - if: action == 'up'
     do:
       # upgrade
-      - |(schemas) -> [$.cck.createSchema]
+      - '(schemas) -> [$.cck.createSchema]'
 
     else:
       # downgrade
-      - |(schemas) -> [$.cck.removeSchema]
+      - '(schemas) -> [$.cck.removeSchema]'

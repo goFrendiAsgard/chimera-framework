@@ -5,19 +5,19 @@ do:
   - if: action == 'up'
     do:
       # check existance of super admin
-      - |('web_users', 'find', {'groups': 'superAdmin'}) -> [$.helper.mongoExecute] -> superAdmins
+      - "('web_users', 'find', {'groups': 'superAdmin'}) -> [$.helper.mongoExecute] -> superAdmins"
       - if: superAdmins.length === 0
         do:
 
           # ask superAdmin username and password
-          - |('SuperAdmin username: ') -> [$.prompt] -> superAdminUsername
-          - |('SuperAdmin email: ') -> [$.prompt] -> superAdminEmail
-          - |('SuperAdmin password: ') -> [$.prompt] -> superAdminPassword
+          - "('SuperAdmin username: ') -> [$.prompt] -> superAdminUsername"
+          - "('SuperAdmin email: ') -> [$.prompt] -> superAdminEmail"
+          - "('SuperAdmin password: ') -> [$.prompt] -> superAdminPassword"
 
           # create hashed object and salt
-          - |(superAdminPassword) -> {$.helper.hashPassword} -> hashObject
-          - |(hashObject.hashedPassword) --> hashedPassword
-          - |(hashObject.salt) --> salt
+          - "(superAdminPassword) -> {$.helper.hashPassword} -> hashObject"
+          - "(hashObject.hashedPassword) --> hashedPassword"
+          - "(hashObject.salt) --> salt"
 
           # create new user
           - ins:
@@ -27,4 +27,4 @@ do:
               salt: salt
               groups: ['superAdmin']
             out: newUser
-          - |('web_users', 'insert', newUser) -> [$.helper.mongoExecute] -> output
+          - "('web_users', 'insert', newUser) -> [$.helper.mongoExecute] -> output"

@@ -31,7 +31,7 @@ do:
 
   - if: action == 'up'
     do:
-      - |('test_hogu', 'insert', data) -> [$.helper.mongoExecute] -> output
+      - "('test_hogu', 'insert', data) -> [$.helper.mongoExecute] -> output"
 
     else:
-      - |('test_hogu', 'remove', {'default': 1}) -> [$.helper.mongoExecute] -> output
+      - "('test_hogu', 'remove', {'default': 1}) -> [$.helper.mongoExecute] -> output"

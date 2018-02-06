@@ -165,7 +165,7 @@ do:
 
   - if: action == 'up'
     do:
-      - |('web_configs', 'insert', defaultConfigs) -> [$.helper.mongoExecute] -> output
+      - "('web_configs', 'insert', defaultConfigs) -> [$.helper.mongoExecute] -> output"
 
     else:
-      - |('web_configs', 'remove', {'defaultConfig': 1}) -> [$.helper.mongoExecute] -> output
+      - "('web_configs', 'remove', {'defaultConfig': 1}) -> [$.helper.mongoExecute] -> output"

@@ -16,6 +16,51 @@ module.exports = (ins, vars, callback) => {
     if (cckState.documentId) {
       let key = cckState.result.result.key
 
+      // navigation
+      if (['navigation'].indexOf(key) > -1) {
+        cckState.schema.fields.value.inputTemplate = getTemplate(config.cck.input.one2many)
+        cckState.schema.fields.value.presentationTemplate = getTemplate(config.cck.presentation.one2many)
+        cckState.schema.fields.value.fields = {
+          caption: {
+            caption: 'Caption',
+            inputTemplate: getTemplate(config.cck.input.text),
+            presentationTemplate: getTemplate(config.cck.presentation.text)
+          },
+          url: {
+            caption: 'URL',
+            inputTemplate: getTemplate(config.cck.input.text),
+            presentationTemplate: getTemplate(config.cck.presentation.text)
+          },
+          groups: {
+            caption: 'Groups',
+            inputTemplate: getTemplate(config.cck.input.jsonText),
+            presentationTemplate: getTemplate(config.cck.presentation.text)
+          },
+          children: {
+            caption: 'Children',
+            inputTemplate: getTemplate(config.cck.input.one2many),
+            presentationTemplate: getTemplate(config.cck.presentation.one2many),
+            fields: {
+              caption: {
+                caption: 'Caption',
+                inputTemplate: getTemplate(config.cck.input.text),
+                presentationTemplate: getTemplate(config.cck.presentation.text)
+              },
+              url: {
+                caption: 'URL',
+                inputTemplate: getTemplate(config.cck.input.text),
+                presentationTemplate: getTemplate(config.cck.presentation.text)
+              },
+              groups: {
+                caption: 'Groups',
+                inputTemplate: getTemplate(config.cck.input.jsonText),
+                presentationTemplate: getTemplate(config.cck.presentation.text)
+              }
+            }
+          }
+        }
+      }
+
       // images
       if (['logo'].indexOf(key) > -1) {
         cckState.schema.fields.value.inputTemplate = getTemplate(config.cck.input.image)
@@ -59,7 +104,7 @@ module.exports = (ins, vars, callback) => {
       }
 
       // json
-      if (['navigation', 'partial', 'cck'].indexOf(key) > -1) {
+      if (['partial', 'cck'].indexOf(key) > -1) {
         cckState.schema.fields.value.inputTemplate = getTemplate(config.cck.input.jsonText)
       }
     }

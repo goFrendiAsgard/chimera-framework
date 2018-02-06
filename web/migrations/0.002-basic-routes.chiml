@@ -55,7 +55,7 @@ do:
               view: 'default.logout.ejs'
               defaultRoute: 1
           out: defaultRoutes
-        - |('web_routes', 'insert', defaultRoutes) -> [$.helper.mongoExecute] -> output
+        - "('web_routes', 'insert', defaultRoutes) -> [$.helper.mongoExecute] -> output"
 
       else:
-        - |('web_routes', 'remove', {'defaultRoute': 1}) -> [$.helper.mongoExecute] -> output
+        - "('web_routes', 'remove', {'defaultRoute': 1}) -> [$.helper.mongoExecute] -> output"

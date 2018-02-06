@@ -2,7 +2,7 @@ ins: action, migrationConfig
 out: output
 do:
 
-  - if: |action == 'up'
+  - if: "action == 'up'"
     do: 
       - ins:
           - 'web_configs'
@@ -21,4 +21,4 @@ do:
               value.presentation.file: <%- viewPath %>cck/presentations/file.ejs
               value.presentation.link: <%- viewPath %>cck/presentations/link.ejs
         out: output
-        do: |[$.helper.mongoExecute]
+        do: "[$.helper.mongoExecute]"

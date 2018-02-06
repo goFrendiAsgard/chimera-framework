@@ -14,3 +14,10 @@ textarea.cw-textarea {
   margin-top: 0px;
   margin-bottom: 0px;
 }
+.cw-modal-content{
+  height:95%;
+}
+.cw-modal-body{
+  max-height:75%;
+  overflow-y: auto;
+}

@@ -33,7 +33,7 @@ do:
 
   - if: action == 'up'
     do:
-      - |('test_servants', 'insert', data) -> [$.helper.mongoExecute] -> output
+      - "('test_servants', 'insert', data) -> [$.helper.mongoExecute] -> output"
 
     else:
-      - |('test_servants', 'remove', {'default': 1}) -> [$.helper.mongoExecute] -> output
+      - "('test_servants', 'remove', {'default': 1}) -> [$.helper.mongoExecute] -> output"

@@ -177,6 +177,14 @@ function preprocessSchema (schema, config) {
     }
   }
   completeSchema.fields = getCompleteSchemaFields(completeSchema.fields, config)
+  // automatically add renderTab key
+  let tabRendered = false
+  for (let fieldName in completeSchema.fields) {
+    if (!tabRendered && 'tab' in completeSchema.fields[fieldName]) {
+      completeSchema.fields[fieldName]['renderTab'] = true
+      tabRendered = true
+    }
+  }
   return completeSchema
 }
 

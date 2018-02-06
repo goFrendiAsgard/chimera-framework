@@ -19,7 +19,7 @@ do:
 
   - if: action == 'up'
     do:
-      - |('web_groups', 'insert', defaultGroups) -> [$.helper.mongoExecute] -> output
+      - "('web_groups', 'insert', defaultGroups) -> [$.helper.mongoExecute] -> output"
 
     else:
-      - |('web_groups', 'remove', {'defaultGroup': 1}) -> [$.helper.mongoExecute] -> output
+      - "('web_groups', 'remove', {'defaultGroup': 1}) -> [$.helper.mongoExecute] -> output"

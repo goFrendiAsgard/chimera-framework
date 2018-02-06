@@ -18,7 +18,7 @@
           <% for (let navigation of config.navigation) { %>
             <% if (!isAuthorized(request.auth, navigation.groups)) {continue; } %>
 
-            <% if ('url' in navigation) { %>
+            <% if ('url' in navigation && typeof(navigation.url) === 'string' && navigation.url.trim() !== '') { %>
               <!-- Navigation -->
               <li class="top-menu <%= navigation.url === request.url ? 'active' : '' %>"><a href="<%= navigation.url %>"><%- navigation.caption %></a></li>
             <% } else { %>

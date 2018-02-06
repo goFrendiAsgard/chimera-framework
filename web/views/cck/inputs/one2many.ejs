@@ -6,25 +6,25 @@
 <span id="<%= inputId %>PresentationContainer"><%= value %></span>
 
 <!-- Trigger the modal with a button -->
-<a id="<%= inputId %>BtnShowModal" class="btn btn-default pull-right" data-toggle="modal" data-target="#<%= inputId %>ModalContainer">Edit</a>
+<a id="<%= inputId %>BtnShowModal" class="btn btn-default pull-right" data-toggle="modal" data-target="#<%= inputId %>ModalContainer"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
 
 <!-- Modal -->
 <div class="modal fade" id="<%= inputId %>ModalContainer">
   <div class="modal-dialog cw-modal-dialog">
 
     <!-- Modal content-->
-    <div class="modal-content">
+    <div class="modal-content cw-modal-content">
       <div class="modal-header">
         <h4 class="modal-title"><%= fieldInfo.caption %></h4>
       </div>
-      <div class="modal-body">
+      <div class="modal-body cw-modal-body">
         <div style="margin-bottom:1em">
-          <a id="<%= inputId %>BtnAdd" class="btn btn-default" href="#">Add</a>
+          <a id="<%= inputId %>BtnAdd" class="btn btn-default" href="#"><span class="glyphicon glyphicon-plus"></span></a>
         </div>
         <div id="<%= inputId %>InputContainer"></div>
       </div>
       <div class="modal-footer">
-        <a id="<%= inputId %>BtnClose" class="btn btn-default" data-toggle="modal" data-target="#<%= inputId %>ModalContainer">Close</a>
+        <a id="<%= inputId %>BtnClose" class="btn btn-default btn-lg" data-toggle="modal" data-target="#<%= inputId %>ModalContainer">Close</a>
       </div>
     </div>
 
@@ -75,7 +75,12 @@
             $(input).attr('name', '<%= fieldName %>.' + rowIndex + '.' + fieldName)
             $(input).appendTo('#<%= inputId %>UploadContainer')
           }
-        row[fieldName] = $(input).val() 
+          if ($(input).val() === "") { continue }
+          try {
+            row[fieldName] = JSON.parse($(input).val())
+          } catch (error) {
+            row[fieldName] = $(input).val()
+          }
         }
         value.push(row)
         rowIndex ++
@@ -87,6 +92,5 @@
       // clear inputContainer
       $('#<%= inputId %>InputContainer').html('')
     })
-
   })
 </script>

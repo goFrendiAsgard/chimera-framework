@@ -11,7 +11,7 @@ function cwInitAce () {
       let mode = textarea.data('editor') ? textarea.data('editor') : 'ejs'
       let editDiv = $('<div>', {
         position: 'absolute',
-        width: textarea.width(),
+        //width: textarea.width(),
         height: textarea.height(),
         'class': textarea.attr('class')
       }).insertBefore(textarea)
@@ -23,7 +23,7 @@ function cwInitAce () {
         showGutter: true,
         fontSize: 14,
         minLines: 5,
-        maxLines: 35
+        maxLines: 35,
       })
       editor.$blockScrolling = Infinity
       editor.setTheme('ace/theme/github')
@@ -34,12 +34,6 @@ function cwInitAce () {
       editor.getSession().on('change', function () {
         textarea.val(editor.getSession().getValue())
       })
-      /*
-      setTimeout(function () {
-        editor.getSession().foldAll(2)
-      }, 50)
-      */
-    } else {
       textarea.attr('rendered', '1')
     }
   })
@@ -107,7 +101,7 @@ function cwGetTableHeader (fields, fieldInfoList, addAction = false) {
   let actionClass = ''
   if (colWidth > 0) {
     colClass= 'col-sm-' + colWidth
-    actionClass= 'col-sm-' + actionWidth
+    actionClass= 'col-sm-1'
   }
   // table header
   let html = '<tr>'
@@ -147,7 +141,7 @@ function cwLoadMany2OneInputContainer(componentId, componentFieldInfo) {
           let presentation = ejs.render(template, { row, fieldInfo, value, fieldName})
           html += '<td>' + presentation + '</td>'
         }
-        html += '<td><a class="' + componentId + 'BtnSelect btn btn-default" value="' +row[keyField] + '" href="#" data-toggle="modal" data-target="#' + componentId + 'ModalContainer">Select</a></td>'
+        html += '<td><a class="' + componentId + 'BtnSelect btn btn-default" value="' +row[keyField] + '" href="#" data-toggle="modal" data-target="#' + componentId + 'ModalContainer"><span class="glyphicon glyphicon-ok"></span></a></td>'
         html += '</tr>'
       }
       // end of the table
@@ -199,7 +193,7 @@ function cwGetOne2ManyTableRow (row, fieldInfoList) {
     let presentation = ejs.render(fieldInfo['inputTemplate'], { row, fieldName, fieldInfo, value })
     html += '<td fieldName="' + fieldName + '">' + presentation + '</td>'
   }
-  html += '<td><a class="btnDeleteRow btn btn-default" href="#">Delete</a></td>'
+  html += '<td><a class="btnDeleteRow btn btn-default" href="#"><span class="glyphicon glyphicon-remove"></span> </a></td>'
   html += '</tr>'
   return html
 }
@@ -217,6 +211,7 @@ function cwLoadOne2ManyInputContainer (componentId, componentFieldInfo) {
   }
   html += '</table>'
   $('#' + componentId + 'InputContainer').html(html)
+  cwInitAce()
 }
 
 $(document).ready(function () {

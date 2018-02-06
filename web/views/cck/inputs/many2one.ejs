@@ -6,7 +6,7 @@
   <div id="<%= inputId %>PresentationContainer" class="col-md-8" style="padding-left:0px"><%= value %></div>
   <!-- Trigger the modal with a button -->
   <div class="col-md-4" style="padding-right:0px">
-    <a id="<%= inputId %>BtnShowModal" class="btn btn-default pull-right" data-toggle="modal" data-target="#<%= inputId %>ModalContainer">Edit</a>
+    <a id="<%= inputId %>BtnShowModal" class="btn btn-default pull-right" data-toggle="modal" data-target="#<%= inputId %>ModalContainer"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
   </div>
 </div>
 
@@ -15,16 +15,16 @@
   <div class="modal-dialog cw-modal-dialog">
 
     <!-- Modal content-->
-    <div class="modal-content">
+    <div class="modal-content cw-modal-content">
       <div class="modal-header">
         <h4 class="modal-title"><%= fieldInfo.caption %></h4>
       </div>
-      <div class="modal-body">
+      <div class="modal-body cw-modal-body">
         <input id="<%= inputId %>SearchBox" class="form-control" placeholder="Search" style="margin-bottom:20px;" />
         <div id="<%= inputId %>InputContainer"></div>
       </div>
       <div class="modal-footer">
-        <a class="btn btn-default" data-toggle="modal" data-target="#<%= inputId %>ModalContainer">Close</a>
+        <a class="btn btn-default btn-lg" data-toggle="modal" data-target="#<%= inputId %>ModalContainer">Close</a>
       </div>
     </div>
 
