@@ -1,2 +1,5 @@
 const processor = require('./lib.processor.js')
-module.exports = processor(['beforeDeleteChain', 'deleteChain', 'afterDeleteChain'], 'deleteGroups', false)
+const wrapper = require('./lib.documentPrivilegeWrapper.js')
+const deleter = processor(['beforeDeleteChain', 'deleteChain', 'afterDeleteChain'], 'deleteGroups', false)
+
+module.exports = wrapper(deleter, '_restrictDelete')

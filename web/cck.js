@@ -261,6 +261,10 @@ function getK (request) {
   return getFromRequest(request, '_k')
 }
 
+function getIncludeFieldInfo (request) {
+  return getFromRequest(request, '_includeFieldInfo')
+}
+
 function getFilter (q, k, fieldNames, documentId) {
   let queryFilter = helper.getObjectFromJson(q)
   let keywordFilter = {}
@@ -292,6 +296,7 @@ function getInitialState (state, callback) {
     let documentId = request.params.id ? helper.getNormalizedDocId(request.params.id) : null
     let q = getQ(request)
     let k = getK(request)
+    let includeFieldInfo = getIncludeFieldInfo(request)
     let auth = request.auth
     let limit = parseInt(getFromRequest(request, 'limit', 50))
     let offset = parseInt(getFromRequest(request, 'offset', 0))
@@ -310,8 +315,9 @@ function getInitialState (state, callback) {
         let unset = getUnset(data)
         let filter = getFilter(q, k, fieldNames, documentId)
         data = helper.getParsedNestedJson(data)
+        let caption  = 'caption' in schema && schema.caption.trim() !== '' ? schema.caption : schema.name.charAt(0).toUpperCase() + schema.name.slice(1)
         // compose initialState
-        let initialState = util.getPatchedObject(defaultInitialState, {auth, documentId, apiVersion, q, k, schemaName, fieldNames, data, unset, filter, limit, offset, excludeDeleted, showHistory, schema, basePath, chainPath, viewPath, migrationPath})
+        let initialState = util.getPatchedObject(defaultInitialState, {auth, documentId, apiVersion, q, k, includeFieldInfo, caption, schemaName, fieldNames, data, unset, filter, limit, offset, excludeDeleted, showHistory, schema, basePath, chainPath, viewPath, migrationPath})
         return executeInitChain(initialState, state, error, callback)
       })
     })

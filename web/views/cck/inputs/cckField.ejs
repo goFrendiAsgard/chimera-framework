@@ -10,8 +10,9 @@
       <option value="checkBoxes">Check Boxes</option>
       <option value="date">Date</option>
       <option value="dateTime">Date &amp; Time</option>
-      <option value="one2many">One to Many</option>
       <option value="many2one">Many to One</option>
+      <option value="one2many">One to Many</option>
+      <option value="many2many">Many to Many</option>
       <option value="jsonText">JSON</option>
       <option value="codeText">Source Code</option>
     </select>
@@ -31,6 +32,89 @@
       textArea: {
         inputTemplate: '<%%- cck.input.textArea %>',
         presentationTemplate: '<%%- cck.presentation.trimmedText %>'
+      },
+      url: {
+        inputTemplate: '<%%- cck.input.url %>',
+        presentationTemplate: '<%%- cck.presentation.text %>'
+      },
+      email: {
+        inputTemplate: '<%%- cck.input.email %>',
+        presentationTemplate: '<%%- cck.presentation.text %>'
+      },
+      password: {
+        inputTemplate: '<%%- cck.input.password %>',
+        presentationTemplate: '******'
+      },
+      option: {
+        inputTemplate: '<%%- cck.input.option %>',
+        presentationTemplate: '<%%- cck.presentation.option %>',
+        options: {
+          'option-1': 'caption-1',
+          'option-2': 'caption-2'
+        }
+      },
+      checkBoxes: {
+        inputTemplate: '<%%- cck.input.checkBoxes %>',
+        presentationTemplate: '<%%- cck.presentation.text %>',
+        options: {
+          'option-1': 'caption-1',
+          'option-2': 'caption-2'
+        }
+      },
+      date: {
+        inputTemplate: '<%%- cck.input.date %>',
+        presentationTemplate: '<%%- cck.presentation.text %>'
+      },
+      dateTime: {
+        inputTemplate: '<%%- cck.input.dateTime %>',
+        presentationTemplate: '<%%- cck.presentation.text %>'
+      },
+      one2many: {
+        inputTemplate: '<%%- cck.input.one2many %>',
+        presentationTemplate: '<%%- cck.presentation.one2many %>',
+        fields: {
+          'field-1': {
+            inputTemplate: '<%%- cck.input.text %>',
+            presentationTemplate: '<%%- cck.presentation.text %>'
+           },
+          'field-2': {
+            inputTemplate: '<%%- cck.input.text %>',
+            presentationTemplate: '<%%- cck.presentation.text %>'
+          }
+        }
+      },
+      many2many: {
+        inputTemplate: '<%%- cck.input.one2many %>',
+        presentationTemplate: '<%%- cck.presentation.one2many %>',
+        fields: {
+          'sub-reference-field': {
+            inputTemplate: '<%%- cck.input.many2one %>',
+            presentationTemplate: '<%%- cck.presentation.many2one %>',
+            ref: 'cck-reference-entity',
+            keyField: 'reference-key-field',
+            fields: ['reference-field-1', 'reference-field-2']
+           },
+          'sub-field-1': {
+            inputTemplate: '<%%- cck.input.text %>',
+            presentationTemplate: '<%%- cck.presentation.text %>'
+          }
+        }
+      },
+      many2one: {
+        inputTemplate: '<%%- cck.input.many2one %>',
+        presentationTemplate: '<%%- cck.presentation.many2one %>',
+        ref: 'cck-reference-entity',
+        keyField: 'reference-key-field',
+        fields: ['reference-field-1', 'reference-field-2']
+      },
+      jsonText: {
+        inputTemplate: '<%%- cck.input.jsonText %>',
+        presentationTemplate: '<%%- cck.presentation.jsonText %>'
+      },
+      codeText: {
+        inputTemplate: '<%%- cck.input.codeText %>',
+        presentationTemplate: '<%%- cck.presentation.codeText %>',
+        editor: 'ejs'
       }
     }
 

@@ -1,2 +1,5 @@
 const processor = require('./lib.processor.js')
-module.exports = processor(['beforeUpdateChain', 'updateChain', 'afterUpdateChain'], 'updateGroups', true)
+const wrapper = require('./lib.documentPrivilegeWrapper.js')
+const updater = processor(['beforeUpdateChain', 'updateChain', 'afterUpdateChain'], 'updateGroups', true)
+
+module.exports = wrapper(updater, '_restrictUpdate')

@@ -8,13 +8,32 @@ function getTemplate (template) {
   return template
 }
 
+function restrictDelete(row) {
+  if (row.defaultConfig) {
+    row._restrictDelete = true
+  }
+  return row
+}
+
 module.exports = (ins, vars, callback) => {
   let cckState = ins[0]
+  let state = ins[1]
+  let config = state.config
+
+  // prepare
   try {
-    let state = ins[1]
-    let config = state.config
-    if (cckState.documentId) {
+    if ('results' in cckState.result) {
+      for (let i=0; i<cckState.result.results.length; i++) {
+        cckState.result.results[i] = restrictDelete(cckState.result.results[i])
+      }
+    } else if ('result' in cckState.result) {
       let key = cckState.result.result.key
+
+      cckState.result.result = restrictDelete(cckState.result.result)
+
+      if (cckState.result.result.defaultConfig) {
+        cckState.schema.fields.key.inputTemplate = '<%= value %><input name="key" value="<%= value %>" type="hidden" />'
+      }
 
       // navigation
       if (['navigation'].indexOf(key) > -1) {
@@ -74,7 +93,7 @@ module.exports = (ins, vars, callback) => {
 
       // verbose
       if (['verbose'].indexOf(key) > -1) {
-        cckState.schema.fields.value.inputTemplate = config.cck.input.option
+        cckState.schema.fields.value.inputTemplate = getTemplate(config.cck.input.option)
         cckState.schema.fields.value.options = ['Not Verbose', 'Verbose', 'Very Verbose']
       }
 

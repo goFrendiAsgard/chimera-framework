@@ -1,6 +1,9 @@
 <script src="/ace-builds/src-min-noconflict/ace.js"></script>
 <script src="/js/cck-form.js"></script>
 <script src="/ejs/ejs.min.js"></script>
+
+<h3><%='caption' in cckState && cckState.caption ? cckState.caption : cckState.schemaName %></h3>
+
 <div style="margin-bottom:1em">
 
   <% if (cckState._customHtmlComponents) { %>
@@ -8,7 +11,8 @@
   <% } %>
 
   <form action="/data/<%= cckState.schemaName %>" class="form-horizontal">
-    <div class="form-group">
+
+      <div class="form-group">
       <div class="col-sm-6">
         <input type="hidden" name="_excludeDeleted" value="<%= cckState.excludeDeleted %>" />
         <input type="hidden" name="limit" value="<%= cckState.limit %>" />
@@ -16,7 +20,6 @@
         <input type="text" class="form-control" name="_k" placeholder="Keyword" value="<%= cckState.k %>" />
       </div>
       <button class="btn btn-default" name="search" value="1"><span class="glyphicon glyphicon-search"></button>
-
 
       <a id="button-show-all" class="btn btn-default" href="/data/<%= cckState.schemaName %>?_excludeDeleted=<%= cckState.excludeDeleted == 1 ? 0 : 1 %>&limit=<%= cckState.limit %>&_q=<%= cckState.q %>&_k=<%= cckState.k %>">
         <span class="glyphicon <%= cckState.excludeDeleted == 1 ? 'glyphicon-eye-close' : 'glyphicon-eye-open' %>"></span>
@@ -68,14 +71,14 @@
             <% } %>
 
             <!-- Update Button -->
-            <% if (isAuthorized(cckState.auth, cckState.schema.updateGroups)) { %>
+            <% if (isAuthorized(cckState.auth, cckState.schema.updateGroups) && !row._restrictUpdate) { %>
               <a class="btn btn-default button-update" rowId="<%=row._id%>" href="/data/<%= cckState.schemaName %>/update/<%=row._id%>?_excludeDeleted=<%= cckState.excludeDeleted%>&limit=<%= cckState.limit %>">
                 <span class="glyphicon glyphicon-pencil"></span>
               </a>
             <% } %>
 
             <!-- Delete Button -->
-            <% if (isAuthorized(cckState.auth, cckState.schema.deleteGroups)) { %>
+            <% if (isAuthorized(cckState.auth, cckState.schema.deleteGroups) && !row._restrictDelete) { %>
               <a class="btn btn-default button-delete" rowId="<%=row._id%>" href="/data/<%= cckState.schemaName %>/delete/<%=row._id%>?_excludeDeleted=<%= row._deleted ? 0 : 1%>&limit=<%= cckState.limit %>">
                 <span class="glyphicon glyphicon-trash"></span>
               </a>

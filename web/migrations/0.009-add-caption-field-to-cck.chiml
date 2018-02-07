@@ -1,0 +1,26 @@
+ins: action, migrationConfig
+out: output
+do:
+
+  - if: "action == 'up'"
+    do: 
+      - "('web_cck', 'find', {'name': 'cck'}) -> [$.helper.mongoExecute] -> cckList"
+      - "cckList[0] --> cck"
+
+      - ins: cck.fields
+        out: newFields 
+        do: |
+          (oldFields) => {
+            let newFields = {}
+            for (let fieldName in oldFields) {
+              newFields[fieldName] = oldFields[fieldName]
+              if (fieldName === 'collectionName') {
+                newFields['caption'] = {
+                  hidden: ["tabular"]
+                }
+              }
+            }
+            return newFields
+          }
+
+      - "('web_cck', 'update', {'_id': cck._id}, {'fields': newFields}) -> [$.helper.mongoExecute] -> output"

@@ -62,7 +62,7 @@ function cwLoadMany2OnePresentationContainer(componentId, componentFieldInfo) {
   let q = {}
   q[keyField] = value
   $.ajax({
-    url: '/api/v1/' + ref + '?_q=' + JSON.stringify(q),
+    url: '/api/v1/' + ref + '?_includeFieldInfo=1&_q=' + JSON.stringify(q),
     method: 'get',
     dataType: 'json',
     success: function (response) {
@@ -123,7 +123,7 @@ function cwLoadMany2OneInputContainer(componentId, componentFieldInfo) {
   let {ref, keyField, fields} = componentFieldInfo
   let keyword = $('#' + componentId + 'SearchBox').val()
   $.ajax({
-    url: '/api/v1/' + ref + '?_k=' + keyword,
+    url: '/api/v1/' + ref + '?_includeFieldInfo=1&_k=' + keyword,
     method: 'get',
     dataType: 'json',
     success: function (response) {

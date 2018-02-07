@@ -11,13 +11,13 @@ vars:
       selectGroups: ['superAdmin']
       initChain: '<%= chainPath %>cck.init.js'
       tabs:
-        config: Configs
-        privilege: Privileges
-        init: Init
-        select: Select
-        insert: Insert
-        update: Update
-        delete: Delete
+        config: '<span class="glyphicon glyphicon-cog"></span> Configs'
+        privilege: '<span class="glyphicon glyphicon-user"></span> Privileges'
+        init: '<span class="glyphicon glyphicon-play"></span> Init'
+        select: '<span class="glyphicon glyphicon-eye-open"></span> Select'
+        insert: '<span class="glyphicon glyphicon-plus"></span> Insert'
+        update: '<span class="glyphicon glyphicon-pencil"></span> Update'
+        delete: '<span class="glyphicon glyphicon-trash"></span> Delete'
       fields:
         name:
           notNull: 1
@@ -341,7 +341,13 @@ vars:
           tabularPresentationTemplate: '<%- cck.presentation.trimmedText %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           editor: 'ejs'
-    
+
+    - name: 'tests'
+      collectionName: 'web_tests'
+      fields:
+        key: {}
+        value: {}
+
     - name: 'hogu'
       collectionName: 'test_hogu'
       fields:
@@ -401,14 +407,8 @@ vars:
               presentationTemplate: '<%- cck.presentation.text %>'
           tab: 'secondary'
       tabs:
-        main: 'Main'
-        secondary: 'Additional'
-
-    - name: 'tests'
-      collectionName: 'web_tests'
-      fields:
-        key: {}
-        value: {}
+        main: '<span class="glyphicon glyphicon-cog"></span> Main'
+        secondary: '<span class="glyphicon glyphicon-cog"></span> Additional'
 
 do:
 
