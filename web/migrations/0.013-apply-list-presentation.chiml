@@ -1,0 +1,22 @@
+ins: action, migrationConfig
+out: output
+do:
+
+  - if: "action == 'up'"
+    do: 
+   
+      - "('web_cck', 'update', {'name': 'users'}, {'fields.groups.presentationTemplate': '<%- cck.presentation.list %>'}) -> [$.helper.mongoExecute] -> output"
+      - "('web_cck', 'update', {'name': 'routes'}, {'fields.groups.presentationTemplate': '<%- cck.presentation.list %>'}) -> [$.helper.mongoExecute] -> output"
+
+      - ins:
+          - 'web_cck'
+          - 'update'
+          - name: 'cck'
+          - $set:
+              fields.selectGroups.presentationTemplate: '<%- cck.presentation.list %>'
+              fields.insertGroups.presentationTemplate: '<%- cck.presentation.list %>'
+              fields.updateGroups.presentationTemplate: '<%- cck.presentation.list %>'
+              fields.deleteGroups.presentationTemplate: '<%- cck.presentation.list %>'
+        out: output
+        do: "[$.helper.mongoExecute]"
+      

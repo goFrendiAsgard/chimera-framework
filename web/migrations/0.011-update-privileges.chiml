@@ -1,0 +1,42 @@
+ins: action, migrationConfig
+out: output
+do:
+
+  - if: "action == 'up'"
+    do: 
+      - "('web_configs', 'find', {'key': 'navigation'}) -> [$.helper.mongoExecute] -> configList"
+      - "configList[0] --> config"
+
+      - ins: config.value
+        out: newValue 
+        do: |
+          (oldValue) => {
+            let newValue = []
+            for (let navigation of oldValue) {
+              if (!navigation.groups || navigation.groups.length === 0) {
+                navigation.groups = ['loggedIn', 'loggedOut']
+                if (navigation.children) {
+                  let oldChildren = navigation.children
+                  let newChildren = []
+                  for (let child of oldChildren) {
+                    if (!('groups' in child) || child.groups.length === 0) {
+                      child.groups = ['loggedIn', 'loggedOut']
+                    }
+                    newChildren.push(child)
+                  }
+                  navigation.children = newChildren
+                }
+              }
+              newValue.push(navigation)
+            }
+            return newValue
+          }
+
+      - "('web_configs', 'update', {'_id': config._id}, {'value': newValue}, {'multi': 1}) -> [$.helper.mongoExecute] -> output"
+
+      - "('web_routes', 'update', {'groups': {'$exists': false}}, {'groups': ['loggedIn', 'loggedOut']}, {'multi': 1}) -> [$.helper.mongoExecute] -> output"
+
+      - "('web_cck', 'update', {'selectGroups': {'$exists': false}}, {'selectGroups': ['loggedIn', 'loggedOut']}, {'multi': 1}) -> [$.helper.mongoExecute] -> output"
+      - "('web_cck', 'update', {'insertGroups': {'$exists': false}}, {'insertGroups': ['loggedIn', 'loggedOut']}, {'multi': 1}) -> [$.helper.mongoExecute] -> output"
+      - "('web_cck', 'update', {'updateGroups': {'$exists': false}}, {'updateGroups': ['loggedIn', 'loggedOut']}, {'multi': 1}) -> [$.helper.mongoExecute] -> output"
+      - "('web_cck', 'update', {'deleteGroups': {'$exists': false}}, {'deleteGroups': ['loggedIn', 'loggedOut']}, {'multi': 1}) -> [$.helper.mongoExecute] -> output"

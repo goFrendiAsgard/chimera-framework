@@ -205,20 +205,20 @@ function getRoutes () {
   let webConfig = helper.getWebConfig()
   let chainPath = webConfig.chainPath
   return [
-    {route: '/api/:version/:schemaName', method: 'get', chain: path.join(chainPath, 'cck/core.select.js')},
-    {route: '/api/:version/:schemaName', method: 'post', chain: path.join(chainPath, 'cck/core.insert.js')},
-    {route: '/api/:version/:schemaName', method: 'put', chain: path.join(chainPath, 'cck/core.update.js')},
-    {route: '/api/:version/:schemaName', method: 'delete', chain: path.join(chainPath, 'cck/core.delete.js')},
-    {route: '/api/:version/:schemaName/:id', method: 'get', chain: path.join(chainPath, 'cck/core.select.js')},
-    {route: '/api/:version/:schemaName/:id', method: 'put', chain: path.join(chainPath, 'cck/core.update.js')},
-    {route: '/api/:version/:schemaName/:id', method: 'delete', chain: path.join(chainPath, 'cck/core.delete.js')},
-    {route: '/data/:schemaName', method: 'all', chain: path.join(chainPath, 'cck/core.show.js')},
-    {route: '/data/:schemaName/insert', method: 'get', chain: path.join(chainPath, 'cck/core.insertForm.js')},
-    {route: '/data/:schemaName/update/:id', method: 'get', chain: path.join(chainPath, 'cck/core.updateForm.js')},
-    {route: '/data/:schemaName/insert', method: 'post', chain: path.join(chainPath, 'cck/core.insertAction.js')},
-    {route: '/data/:schemaName/update/:id', method: 'post', chain: path.join(chainPath, 'cck/core.updateAction.js')},
-    {route: '/data/:schemaName/delete/:id', method: 'all', chain: path.join(chainPath, 'cck/core.deleteAction.js')},
-    {route: '/data/:schemaName/:id', method: 'all', chain: path.join(chainPath, 'cck/core.show.js')}
+    {route: '/api/:version/:schemaName', method: 'get', chain: path.join(chainPath, 'cck/core.select.js'), groups: ['loggedIn', 'loggedOut']},
+    {route: '/api/:version/:schemaName', method: 'post', chain: path.join(chainPath, 'cck/core.insert.js'), groups: ['loggedIn', 'loggedOut']},
+    {route: '/api/:version/:schemaName', method: 'put', chain: path.join(chainPath, 'cck/core.update.js'), groups: ['loggedIn', 'loggedOut']},
+    {route: '/api/:version/:schemaName', method: 'delete', chain: path.join(chainPath, 'cck/core.delete.js'), groups: ['loggedIn', 'loggedOut']},
+    {route: '/api/:version/:schemaName/:id', method: 'get', chain: path.join(chainPath, 'cck/core.select.js'), groups: ['loggedIn', 'loggedOut']},
+    {route: '/api/:version/:schemaName/:id', method: 'put', chain: path.join(chainPath, 'cck/core.update.js'), groups: ['loggedIn', 'loggedOut']},
+    {route: '/api/:version/:schemaName/:id', method: 'delete', chain: path.join(chainPath, 'cck/core.delete.js'), groups: ['loggedIn', 'loggedOut']},
+    {route: '/data/:schemaName', method: 'all', chain: path.join(chainPath, 'cck/core.show.js'), groups: ['loggedIn', 'loggedOut']},
+    {route: '/data/:schemaName/insert', method: 'get', chain: path.join(chainPath, 'cck/core.insertForm.js'), groups: ['loggedIn', 'loggedOut']},
+    {route: '/data/:schemaName/update/:id', method: 'get', chain: path.join(chainPath, 'cck/core.updateForm.js'), groups: ['loggedIn', 'loggedOut']},
+    {route: '/data/:schemaName/insert', method: 'post', chain: path.join(chainPath, 'cck/core.insertAction.js'), groups: ['loggedIn', 'loggedOut']},
+    {route: '/data/:schemaName/update/:id', method: 'post', chain: path.join(chainPath, 'cck/core.updateAction.js'), groups: ['loggedIn', 'loggedOut']},
+    {route: '/data/:schemaName/delete/:id', method: 'all', chain: path.join(chainPath, 'cck/core.deleteAction.js'), groups: ['loggedIn', 'loggedOut']},
+    {route: '/data/:schemaName/:id', method: 'all', chain: path.join(chainPath, 'cck/core.show.js'), groups: ['loggedIn', 'loggedOut']}
   ]
 }
 

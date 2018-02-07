@@ -101,7 +101,7 @@ function isAuthorized (auth, groups) {
     groups = [groups]
   }
   if (util.isNullOrUndefined(groups) || groups.length === 0) {
-    return true
+    return false
   }
   if ('groups' in auth) {
     return hasIntersectionOrEquals(auth.groups, groups)

@@ -53,7 +53,7 @@ module.exports = (ins, vars, callback) => {
           groups: {
             caption: 'Groups',
             inputTemplate: getTemplate(config.cck.input.jsonText),
-            presentationTemplate: getTemplate(config.cck.presentation.text)
+            presentationTemplate: getTemplate(config.cck.presentation.list)
           },
           children: {
             caption: 'Children',
@@ -73,7 +73,7 @@ module.exports = (ins, vars, callback) => {
               groups: {
                 caption: 'Groups',
                 inputTemplate: getTemplate(config.cck.input.jsonText),
-                presentationTemplate: getTemplate(config.cck.presentation.text)
+                presentationTemplate: getTemplate(config.cck.presentation.list)
               }
             }
           }

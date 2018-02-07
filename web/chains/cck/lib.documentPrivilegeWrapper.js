@@ -15,26 +15,33 @@ module.exports = (processor, rowRestrictionKey) => {
     let $ = vars.$
     let response = state.response
     let chainPath = path.join(__dirname, 'core.select.js')
-    $.runChain(chainPath, ...ins, (error, apiResponse) => {
+    $.cck.getInitialState(state, (error, cckState) => {
       if (error) {
         return callback(error, response)
       }
-      if (apiResponse.status >= 400) {
-        return callback(error, apiResponse)
-      }
-      let data = apiResponse.data
-      if ('result' in data) {
-        if (data.result[rowRestrictionKey]) {
-          return callback(error, unauthorizedResponse)
+      // when selecting, make sure data is empty so that it will not affect the filter
+      cckState.data = {}
+      $.runChain(chainPath, state, cckState, (error, apiResponse) => {
+        if (error) {
+          return callback(error, response)
         }
-      } else if ('results' in data) {
-        for (let row in data.results) {
-          if (row[rowRestrictionKey]) {
+        if (apiResponse.status >= 400) {
+          return callback(error, apiResponse)
+        }
+        let data = apiResponse.data
+        if ('result' in data) {
+          if (data.result[rowRestrictionKey]) {
             return callback(error, unauthorizedResponse)
           }
+        } else if ('results' in data) {
+          for (let row in data.results) {
+            if (row[rowRestrictionKey]) {
+              return callback(error, unauthorizedResponse)
+            }
+          }
         }
-      }
-      return processor(ins, vars, callback)
+        return processor(ins, vars, callback)
+      })
     })
   }
 }

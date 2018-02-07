@@ -1,0 +1,5 @@
+<% if (!Array.isArray(value)) { %>
+  <i>[Not set]</i>
+<% } else { %>
+  <%= value.map((val) => {return ('options' in fieldInfo && val in fieldInfo.options) ? fieldInfo.options[val] : val }).join(', ') %>
+<% } %>
