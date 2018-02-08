@@ -1,0 +1,8 @@
+ins: action, migrationConfig
+out: output
+do:
+
+  - if: "action == 'up'"
+    do:
+      - "('web_cck', 'update', {'name': 'groups'}, {'afterSelectChain': '<%- chainPath %>group.afterSelect.js'}) -> [$.helper.mongoExecute] -> output"
+      - "('web_cck', 'update', {'name': 'users'}, {'afterSelectChain': '<%- chainPath %>user.afterSelect.js'}) -> [$.helper.mongoExecute] -> output"
