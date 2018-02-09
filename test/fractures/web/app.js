@@ -1,5 +1,4 @@
-
-const chimera = require('chimera-framework')
+const chimera = require('../../../index.js')
 const path = require('path')
 const port = 3010
 const webConfig = {

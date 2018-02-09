@@ -10,7 +10,7 @@
   "dependencies": {
     "ace-builds": "^1.2.9",
     "bootstrap": "^3.3.7",
-    "chimera-framework": "0.0.58",
+    "chimera-framework": "0.0.59",
     "jquery": "^3.2.1",
     "jsonwebtoken": "^7.3.0",
     "neo-async": "^2.5.0",

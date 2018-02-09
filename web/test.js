@@ -1,10 +1,10 @@
 var newman = require('newman') // require newman in your project
 var web = require('./index.js')
 
-let app = web.app
+let server = web.server
 let port = 3000
 // Start the server
-let server = app.listen(port, function () {
+let serverHandler = server.listen(port, function () {
   console.error('Start test session at port ' + port)
   // Run the test
   newman.run({
@@ -13,7 +13,7 @@ let server = app.listen(port, function () {
   }, function (err) {
     if (err) { throw err }
     // Stop the server
-    server.close()
+    serverHandler.close()
     console.log('Test session complete!')
   })
 })

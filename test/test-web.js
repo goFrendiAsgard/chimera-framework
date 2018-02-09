@@ -11,10 +11,11 @@ let sessionId
 describe('web', function () {
   this.timeout(5000)
 
-  it('app.listen shoud return http.server. It should be runnable and listening for request', function (done) {
+  it('server.listen shoud return http.server. It should be runnable and listening for request', function (done) {
     app = require('./fractures/web/app.js')
+    server = require('http').Server(app)
     let port = 3010
-    server = app.listen(port, function () {
+    server = server.listen(port, function () {
       console.error('Start at port ' + port)
     })
     assert.equal(server.listening, true)
@@ -158,7 +159,7 @@ describe('web', function () {
     })
   })
 
-  it('http.server returned by app.listen should be closeable programmatically', function (done) {
+  it('http.server returned by server.listen should be closeable programmatically', function (done) {
     server.close()
     assert.equal(server.listening, false)
     done()

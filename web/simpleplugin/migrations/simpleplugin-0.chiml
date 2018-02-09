@@ -1,0 +1,52 @@
+ins: action, migrationConfig
+out: output
+do:
+
+  - if: action === 'up'
+    do:
+
+      # Add Route
+      - ins:
+          - 'web_routes'
+          - 'insert'
+          - name: 'Simple Page'
+            route: '/simple'
+            method: 'all'
+            view: '<h1>Simple Plugin</h1><p>Simple plugin test </p>'
+            groups: ['loggedIn', 'loggedOut']
+        out: output
+        do: '[$.helper.mongoExecute]'
+      
+      # Add Navigation
+      - ins:
+          - 'web_configs'
+          - 'update'
+          - key: 'navigation'
+          - $push:
+              value:
+                caption: 'Simple Page'
+                url: '/simple'
+                groups: ['loggedIn', 'loggedOut']
+        out: output
+        do: '[$.helper.mongoExecute]'
+           
+    else:
+
+      # Remove Navigation
+      - ins:
+          - 'web_configs'
+          - 'update'
+          - key: 'navigation'
+          - $pull:
+              value:
+                caption: 'Simple Page'
+        out: output
+        do: '[$.helper.mongoExecute]'
+           
+      # Remove Route
+      - ins:
+          - 'web_routes'
+          - 'remove'
+          - name: 'Simple Page'
+        out: output
+        do: '[$.helper.mongoExecute]'

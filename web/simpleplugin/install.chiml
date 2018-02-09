@@ -1,0 +1,11 @@
+ins: action
+out: output
+do:
+
+  # create custom configuration
+  - ins:
+      migrationPath: _chain_cwd + "migrations/"
+    out: config
+ 
+  # run plugin migration
+  - "(_chain_cwd + '../../migrate.js', action, config) -> node -> output"
