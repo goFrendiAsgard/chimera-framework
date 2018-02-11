@@ -18,5 +18,7 @@ RUN npm install
 # If you are building your code for production
 # RUN npm install --only=production
 
+RUN node migrate.js
+
 EXPOSE 3000
 CMD [ "node", "index.js" ]

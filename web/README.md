@@ -26,3 +26,8 @@ Before run the application, you need to make sure you have following softwares i
 * Run migration (`npm run-script migrate up`)
 * When prompted for superAdmin's username and password, please type `admin` and `admin`
 * Run the test (`npm test`)
+
+## Docker
+* Build docker image (`docker build -f dockerfile -t cms-docker .`)
+* Run docker image (`docker run --rm -it -p 3000:3000 cms-docker`)
+* For more information, you can refer to [this](https://blog.hasura.io/an-exhaustive-guide-to-writing-dockerfiles-for-node-js-web-apps-bbee6bd2f3c4) article.
