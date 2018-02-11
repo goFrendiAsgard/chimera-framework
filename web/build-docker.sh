@@ -1,1 +1,1 @@
-docker build -f [dockerfile] -t cms-docker .
+docker build -f dockerfile -t cms-docker .
