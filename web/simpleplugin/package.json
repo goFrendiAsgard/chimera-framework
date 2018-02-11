@@ -1,7 +1,7 @@
 {
   "name": "simpleplugin",
   "version": "0.0.0",
-  "description": "simple chimera-cms plugin",
+  "description": "simple plugin for chimera-cms (https://npmjs.com/chimera-framework)",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "install": "chimera install.chiml up",
