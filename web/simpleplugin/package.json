@@ -2,7 +2,6 @@
   "name": "simpleplugin",
   "version": "0.0.0",
   "description": "simple chimera-cms plugin",
-  "main": "info.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "install": "chimera install.chiml up",
