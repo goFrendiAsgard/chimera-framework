@@ -12,7 +12,7 @@ do:
           - name: 'Simple Page'
             route: '/simple'
             method: 'all'
-            view: '<h1>Simple Plugin</h1><p>Simple plugin test </p>'
+            view: 'simpleplugin/example.ejs'
             groups: ['loggedIn', 'loggedOut']
         out: output
         do: '[$.helper.mongoExecute]'
