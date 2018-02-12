@@ -2,10 +2,18 @@ ins: action
 out: output
 do:
 
-  # create custom configuration
-  - ins:
-      migrationPath: _chain_cwd + "migrations/"
-    out: config
- 
-  # run plugin migration
-  - "(_chain_cwd + '../../migrate.js', action, config) -> node -> output"
+  # do migration
+  - "(_chain_cwd) -> {$.loadJs(_chain_cwd + 'helper.js', 'getMigrationConfig')} -> migrationConfig"
+  - "('../../migrate.js', action, migrationConfig) -> node -> output"
+
+  - if: action === 'up'
+    do:
+      # copy plugin directory to CMS directory
+      - "(_chain_cwd, 'views') -> [$.loadJs(_chain_cwd + 'helper.js', 'copyDir')]"
+      - "(_chain_cwd, 'chains') -> [$.loadJs(_chain_cwd + 'helper.js', 'copyDir')]"
+      - "(_chain_cwd, 'public') -> [$.loadJs(_chain_cwd + 'helper.js', 'copyDir')]"
+    else:
+      # remove from CMS directory
+      - "(_chain_cwd, 'views') -> [$.loadJs(_chain_cwd + 'helper.js', 'removeDir')]"
+      - "(_chain_cwd, 'chains') -> [$.loadJs(_chain_cwd + 'helper.js', 'removeDir')]"
+      - "(_chain_cwd, 'public') -> [$.loadJs(_chain_cwd + 'helper.js', 'removeDir')]"

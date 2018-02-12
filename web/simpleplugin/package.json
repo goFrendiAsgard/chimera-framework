@@ -8,5 +8,8 @@
     "uninstall": "chimera install.chiml down"
   },
   "author": "goFrendi",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "fs-extra": "^5.0.0"
+  }
 }
