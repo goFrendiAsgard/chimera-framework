@@ -3,7 +3,7 @@
     <% for (let navigation of config.navigation) { %>
       <% if (!isAuthorized(request.auth, navigation.groups)) {continue; } %>
 
-      <% if ('url' in navigation) { %>
+      <% if ('url' in navigation && typeof(navigation.url) === 'string' && navigation.url.trim() !== '') { %>
         <!-- Navigation -->
         <a class="left-menu list-group-item <%= navigation.url === request.url ? 'active' : '' %>" href="<%= navigation.url %>"><%- navigation.caption %></a>
       <% } else { %>

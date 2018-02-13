@@ -9,7 +9,7 @@ const util = require('../lib/util.js')
 const dollar = require('../lib/core-dollar.js')
 const path = require('path')
 
-function finalCallback (error, result) {
+function finalCallback (error) {
   if (error) {
     console.error(error)
   } else {
@@ -131,7 +131,7 @@ function initWeb (projectDir) {
     // run npm install
     (callback) => {
       console.warn('[INFO] Performing npm install...')
-      cmd.get('npm install', function (error, result) {
+      cmd.get('npm install', function (error) {
         if (error) {
           console.error('[ERROR] Cannot perform npm install')
           return finalCallback(error)

@@ -4,12 +4,9 @@
   "description": "simple plugin for chimera-cms (https://npmjs.com/chimera-framework)",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "install": "chimera install.chiml up",
-    "uninstall": "chimera install.chiml down"
+    "install": "node setup.js install",
+    "uninstall": "node setup.js uninstall"
   },
   "author": "goFrendi",
-  "license": "MIT",
-  "dependencies": {
-    "fs-extra": "^5.0.0"
-  }
+  "license": "MIT"
 }

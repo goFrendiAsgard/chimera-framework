@@ -51,7 +51,7 @@ vars:
             - caption: 'Content Construction Kit'
               groups: ['superAdmin']
               url: '/data/cck'
-        - caption: 'Show Case'
+        - caption: 'Demo'
           children:
             - caption: 'Noble Phantasm'
               url: '/data/hogu'

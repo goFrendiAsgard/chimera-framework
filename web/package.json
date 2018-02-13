@@ -22,8 +22,9 @@
   "scripts": {
     "start": "node index.js",
     "test": "node test.js",
-    "migrate": "node migrate.js"
+    "migrate": "node migrate.js",
+    "plugin": "node plugin.js"
   },
-  "author": "Another earthling",
-  "license": "ISC"
+  "author": "Earthling",
+  "license": "MIT"
 }

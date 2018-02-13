@@ -139,11 +139,16 @@ function removeSchema (config, callback) {
 }
 
 function getRealTemplateValue (template, config) {
-  let value = ejs.render(template, config)
-  if (fs.existsSync(value)) {
-    value = fs.readFileSync(value, 'utf8')
+  try {
+    let value = ejs.render(template, config)
+    if (fs.existsSync(value)) {
+      value = fs.readFileSync(value, 'utf8')
+    }
+    return value
+  } catch (error) {
+    console.error(error)
+    return ''
   }
-  return value
 }
 
 function getCompleteSchemaFields (schemaFields, config) {
