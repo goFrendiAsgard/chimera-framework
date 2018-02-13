@@ -4,18 +4,6 @@ do:
 
   - if: action === 'up'
     do:
-
-      # Add Route
-      - ins:
-          - 'web_routes'
-          - 'insert'
-          - name: 'Simple Page'
-            route: '/simple'
-            method: 'all'
-            view: 'simpleplugin/example.ejs'
-            groups: ['loggedIn', 'loggedOut']
-        out: output
-        do: '[$.helper.mongoExecute]'
       
       # Add Navigation
       - ins:
@@ -40,13 +28,5 @@ do:
           - $pull:
               value:
                 caption: 'Simple Page'
-        out: output
-        do: '[$.helper.mongoExecute]'
-           
-      # Remove Route
-      - ins:
-          - 'web_routes'
-          - 'remove'
-          - name: 'Simple Page'
         out: output
         do: '[$.helper.mongoExecute]'
