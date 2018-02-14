@@ -6,5 +6,5 @@ npm_debug.log
 .vscode/
 coverage/
 test.sh
-web/plugins/
 web/npm_debug.log
+web/plugins/
