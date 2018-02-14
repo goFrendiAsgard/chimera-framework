@@ -1,0 +1,12 @@
+{
+  "name": "default",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "node setup.js install",
+    "uninstall": "node setup.js uninstall"
+  },
+  "author": "Earthling",
+  "license": "MIT"
+}
