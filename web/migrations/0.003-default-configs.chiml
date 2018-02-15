@@ -31,7 +31,7 @@ vars:
       defaultConfig: 1
       value:
         - caption: 'Home'
-          groups: []
+          groups: ['loggedIn','loggedOut']
           url: '/'
         - caption: 'Settings'
           groups: ['superAdmin']
@@ -51,25 +51,7 @@ vars:
             - caption: 'Content Construction Kit'
               groups: ['superAdmin']
               url: '/data/cck'
-        - caption: 'Demo'
-          children:
-            - caption: 'Noble Phantasm'
-              url: '/data/hogu'
-            - caption: 'Servants'
-              url: '/data/servants'
-
-    - key: partial
-      defaultConfig: 1
-      value:
-        scripts: <%- viewPath %>partials/default.scripts.ejs
-        htmlHeader: <%- viewPath %>partials/default.htmlHeader.ejs
-        leftWidget: <%- viewPath %>partials/default.leftWidget.ejs
-        rightWidget: <%- viewPath %>partials/default.rightWidget.ejs
-        largeBanner: <%- viewPath %>partials/default.largeBanner.ejs
-        smallBanner: <%- viewPath %>partials/default.smallBanner.ejs
-        largeFooter: <%- viewPath %>partials/default.largeFooter.ejs
-        smallFooter: <%- viewPath %>partials/default.smallFooter.ejs
-
+        
     - key: cck
       defaultConfig: 1
       value:
@@ -81,6 +63,14 @@ vars:
           option: <%- viewPath %>cck/inputs/option.ejs
           many2one: <%- viewPath %>cck/inputs/many2one.ejs
           one2many: <%- viewPath %>cck/inputs/one2many.ejs
+          file: <%- viewPath %>cck/inputs/file.ejs 
+          image: <%- viewPath %>cck/inputs/image.ejs 
+          dateTime: <%- viewPath %>cck/inputs/dateTime.ejs 
+          date: <%- viewPath %>cck/inputs/date.ejs 
+          checkBoxes: <%- viewPath %>cck/inputs/checkBoxes.ejs 
+          email: <%- viewPath %>cck/inputs/email.ejs
+          url: <%- viewPath %>cck/inputs/url.ejs
+          password: <%- viewPath %>cck/inputs/password.ejs
         presentation:
           text: <%- viewPath %>cck/presentations/text.ejs
           option: <%- viewPath %>cck/presentations/option.ejs
@@ -89,6 +79,10 @@ vars:
           codeText: <%- viewPath %>cck/presentations/codeText.ejs
           many2one: <%- viewPath %>cck/presentations/many2one.ejs
           one2many: <%- viewPath %>cck/presentations/one2many.ejs
+          image: <%- viewPath %>cck/presentations/image.ejs
+          file: <%- viewPath %>cck/presentations/file.ejs
+          link: <%- viewPath %>cck/presentations/link.ejs
+          list: <%- viewPath %>cck/presentations/list.ejs
 
     - key: showTopNav
       defaultConfig: 1

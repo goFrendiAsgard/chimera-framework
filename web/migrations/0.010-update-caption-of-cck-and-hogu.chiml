@@ -1,8 +1,0 @@
-ins: action, migrationConfig
-out: output
-do:
-
-  - if: "action == 'up'"
-    do: 
-      - "('web_cck', 'update', {'name': 'cck'}, {'caption': 'Content Construction Kit'}) -> [$.helper.mongoExecute] -> output"
-      - "('web_cck', 'update', {'name': 'hogu'}, {'caption': 'Noble Phantasm'}) -> [$.helper.mongoExecute] -> output"

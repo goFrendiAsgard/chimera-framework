@@ -4,6 +4,7 @@ vars:
   schemas:
 
     - name: 'cck'
+      caption: 'Content Construction Kit'
       collectionName: 'web_cck'
       insertGroups: ['superAdmin']
       updateGroups: ['superAdmin']
@@ -25,8 +26,10 @@ vars:
         collectionName: 
           caption: Collection Name
           notNull: 1
+        caption:
+          hidden: ["tabular"]
         fields:
-          inputTemplate: '<%- cck.input.jsonText %>'
+          inputTemplate: '<%- viewPath %>cck/inputs/cckField.ejs '
           tabularPresentationTemplate: '<%- cck.presentation.text %>'
           presentationTemplate: '<%- cck.presentation.jsonText %>'
           hidden: ['tabular']
@@ -54,6 +57,7 @@ vars:
         insertGroups:
           caption: 'Insert Privileges'
           inputTemplate: '<%- cck.input.checkBoxes %>'
+          presentationTemplate: '<%- cck.presentation.list %>'
           options:
             loggedIn: loggedIn
             loggedOut: loggedOut
@@ -61,6 +65,7 @@ vars:
         updateGroups:
           caption: 'Update Privileges'
           inputTemplate: '<%- cck.input.checkBoxes %>'
+          presentationTemplate: '<%- cck.presentation.list %>'
           options:
             loggedIn: loggedIn
             loggedOut: loggedOut
@@ -68,6 +73,7 @@ vars:
         deleteGroups:
           caption: 'Delete Privileges'
           inputTemplate: '<%- cck.input.checkBoxes %>'
+          presentationTemplate: '<%- cck.presentation.list %>'
           options:
             loggedIn: loggedIn
             loggedOut: loggedOut
@@ -75,6 +81,7 @@ vars:
         selectGroups:
           caption: 'Select Privileges'
           inputTemplate: '<%- cck.input.checkBoxes %>'
+          presentationTemplate: '<%- cck.presentation.list %>'
           options:
             loggedIn: loggedIn
             loggedOut: loggedOut
@@ -277,6 +284,7 @@ vars:
           editor: 'ejs'
         groups:
           inputTemplate: '<%- cck.input.checkBoxes %>'
+          presentationTemplate: '<%- cck.presentation.list %>'
           options:
             loggedIn: loggedIn
             loggedOut: loggedOut
@@ -290,6 +298,7 @@ vars:
       beforeInsertChain: '<%= chainPath %>user.beforeInsertOrUpdate.js'
       beforeUpdateChain: '<%= chainPath %>user.beforeInsertOrUpdate.js'
       initChain: '<%= chainPath %>user.init.js'
+      afterSelectChain: '<%- chainPath %>user.afterSelect.js'
       fields:
         profilePicture:
           inputTemplate: '<%- cck.input.image %>'
@@ -313,13 +322,15 @@ vars:
           hidden: ['tabular']
         groups:
           inputTemplate: '<%- cck.input.checkBoxes %>'
+          presentationTemplate: '<%- cck.presentation.list %>'
 
     - name: 'groups'
       collectionName: 'web_groups'
       insertGroups: ['superAdmin']
-      updateGroups: ['superAdmin']
+      updateGroups: []
       deleteGroups: ['superAdmin']
       selectGroups: ['superAdmin']
+      afterSelectChain: '<%- chainPath %>group.afterSelect.js'
       fields:
         name:
           notNull: 1
@@ -344,71 +355,10 @@ vars:
 
     - name: 'tests'
       collectionName: 'web_tests'
+      groups: ['loggedIn', 'loggedOut']
       fields:
         key: {}
         value: {}
-
-    - name: 'hogu'
-      collectionName: 'test_hogu'
-      fields:
-        picture:
-          inputTemplate: '<%- cck.input.image %>'
-          presentationTemplate: '<%- cck.presentation.image %>'
-        name:
-          notNull: 1
-          unique: 1
-        description:
-          inputTemplate: '<%- cck.input.textArea %>'
-          tabularPresentationTemplate: '<%- cck.presentation.trimmedText %>'
-          presentationTemplate: '<%- cck.presentation.text %>'
-
-    - name: 'servants'
-      collectionName: 'test_servants'
-      fields:
-        picture:
-          inputTemplate: '<%- cck.input.image %>'
-          presentationTemplate: '<%- cck.presentation.image %>'
-        name:
-          notNull: 1
-          unique: 1
-        class:
-          inputTemplate: '<%- cck.input.option %>'
-          presentationTemplate: '<%- cck.presentation.option %>'
-          options:
-            saber: 'Saber'
-            lancer: 'Lancer'
-            archer: 'Archer'
-            rider: 'Rider'
-            caster: 'Caster'
-            assassin: 'Assassin'
-          notNull: 1
-        mainNoblePhantasm:
-          caption: 'Noble Phantasm'
-          inputTemplate: '<%- cck.input.many2one %>'
-          presentationTemplate: '<%- cck.presentation.many2one %>'
-          ref: 'hogu'
-          keyField: 'name'
-          fields: ['picture', 'name', 'description']
-          tab: 'main'
-        otherNoblePhantasm:
-          caption: 'Secondary Noble Phantasm'
-          inputTemplate: '<%- cck.input.one2many %>'
-          presentationTemplate: '<%- cck.presentation.one2many %>'
-          fields:
-            name:
-              inputTemplate: '<%- cck.input.many2one %>'
-              presentationTemplate: '<%- cck.presentation.many2one %>'
-              ref: 'hogu'
-              keyField: 'name'
-              fields: ['picture', 'name', 'description']
-            story:
-              inputTemplate: '<%- cck.input.textArea %>'
-              tabularPresentationTemplate: '<%- cck.presentation.trimmedText %>'
-              presentationTemplate: '<%- cck.presentation.text %>'
-          tab: 'secondary'
-      tabs:
-        main: '<span class="glyphicon glyphicon-cog"></span> Main'
-        secondary: '<span class="glyphicon glyphicon-cog"></span> Additional'
 
 do:
 
