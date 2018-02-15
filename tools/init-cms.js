@@ -101,7 +101,7 @@ function initWeb (projectDir) {
         }
         fileContent = String(fileContent)
         fileContent = fileContent.replace(/mongodb:\/\/localhost\/chimera-web-app/, mongoUrl)
-        fse.writeFile('webConfig.default.js', fileContent, function (error, result) {
+        fse.writeFile('webConfig.default.js', fileContent, function (error) {
           if (error) {
             console.error('[ERROR] Cannot write webConfig.default.js')
             return finalCallback(error)
@@ -119,7 +119,7 @@ function initWeb (projectDir) {
       fileContent += 'webConfig.sessionSecret = \'s' + String(Math.round(Math.random() * 1000000000)) + '\'\n'
       fileContent += 'module.exports = webConfig'
       console.warn('[INFO] Creating webConfig.js...')
-      fse.writeFile('webConfig.js', fileContent, function (error, result) {
+      fse.writeFile('webConfig.js', fileContent, function (error) {
         if (error) {
           console.error('[ERROR] Cannot create webConfig.js')
           return finalCallback(error)
@@ -138,8 +138,6 @@ function initWeb (projectDir) {
           return finalCallback(error)
         } else {
           console.warn('[INFO] Done...')
-          let content = fse.readFileSync('README.md', 'utf8')
-          console.warn(content)
           return callback()
         }
       })
