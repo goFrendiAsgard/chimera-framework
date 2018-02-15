@@ -141,6 +141,13 @@ function initWeb (projectDir) {
           return callback()
         }
       })
+    },
+
+    // run migration
+    (callback) => {
+      console.warn('[INFO] Performing migration...')
+      const { migrate } = require(path.join(projectDir, 'migrate.js'))
+      migrate('up', null, null, callback)
     }
 
   ], finalCallback)
