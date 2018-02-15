@@ -146,7 +146,7 @@ function initWeb (projectDir) {
     // run migration
     (callback) => {
       console.warn('[INFO] Performing migration...')
-      const { migrate } = require(path.join(projectDir, 'migrate.js'))
+      const { migrate } = require(path.join(process.cwd(), 'migrate.js'))
       migrate('up', null, null, callback)
     }
 
