@@ -1,5 +1,0 @@
-<% if (typeof value === 'undefined' || value === null || (typeof value === 'string' && value.trim() === '')) { %>
-  <i>[Not set]</i>
-<% } else { %>
-  <a href="<%= value %>" target="blank"><%= value.split('/').slice(-1)[0] %></a>
-<% } %>

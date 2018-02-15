@@ -55,7 +55,16 @@ function initWeb (projectDir) {
 
     // copy directory
     (callback) => {
-      console.warn('[INFO] Copying directory...')
+      console.warn('[INFO] Clone CMS...')
+      cmd.get('git clone https://github.com/goFrendiAsgadr/chimera-cms ' + projectDir, function (error) {
+        if (error) {
+          console.error('[ERROR] Cannot clone CMS. Make sure you have git installed and you are connected to the internet')
+          return finalCallback(error)
+        } else {
+          console.warn('[INFO] Done...')
+          return callback()
+        }
+      })
       fse.copy(path.join(__dirname, '../web'), projectDir, function (error) {
         if (error) {
           console.error('[ERROR] Cannot copy directory')
