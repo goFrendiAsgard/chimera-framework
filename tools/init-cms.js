@@ -90,38 +90,35 @@ function initWeb (projectDir) {
         })
       })
     },
-
-    // read and rewrite webConfig.default.js
-    (callback) => {
-      console.warn('[INFO] Creating webConfig.default.js...')
-      fse.readFile('webConfig.default.js', function (error, fileContent) {
-        if (error) {
-          console.error('[ERROR] Cannot read core.startup.chiml')
-          return finalCallback(error)
-        }
-        fileContent = String(fileContent)
-        fileContent = fileContent.replace(/mongodb:\/\/localhost\/chimera-web-app/, mongoUrl)
-        fse.writeFile('webConfig.default.js', fileContent, function (error) {
-          if (error) {
-            console.error('[ERROR] Cannot write webConfig.default.js')
-            return finalCallback(error)
-          }
-          console.warn('[INFO] Done...')
-          return callback()
-        })
-      })
-    },
-
+    
     // write webConfig.js
     (callback) => {
       let fileContent = 'const webConfig = require(\'./webConfig.default.js\')\n'
-      fileContent += 'webConfig.jwtSecret = \'j' + String(Math.round(Math.random() * 1000000000)) + '\'\n'
-      fileContent += 'webConfig.sessionSecret = \'s' + String(Math.round(Math.random() * 1000000000)) + '\'\n'
       fileContent += 'module.exports = webConfig'
       console.warn('[INFO] Creating webConfig.js...')
       fse.writeFile('webConfig.js', fileContent, function (error) {
         if (error) {
           console.error('[ERROR] Cannot create webConfig.js')
+          return finalCallback(error)
+        }
+        console.warn('[INFO] Done...')
+        return callback()
+      })
+    },
+
+    // write webConfig.json
+    (callback) => {
+      const obj = {
+        jwtSecret: 'j' + String(Math.round(Math.random() * 1000000000)),
+        sessionSecret: 's' + String(Math.round(Math.random() * 1000000000)),
+        mongoUrl: mongoUrl,
+        port: 3000
+      }
+      const fileContent = JSON.stringify(obj, null, 2)
+      console.warn('[INFO] Creating webConfig.json...')
+      fse.writeFile('webConfig.json', fileContent, function (error) {
+        if (error) {
+          console.error('[ERROR] Cannot create webConfig.json')
           return finalCallback(error)
         }
         console.warn('[INFO] Done...')
