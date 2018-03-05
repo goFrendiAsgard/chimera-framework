@@ -93,8 +93,7 @@ function initWeb (projectDir) {
     
     // write webConfig.js
     (callback) => {
-      let fileContent = 'const webConfig = require(\'./webConfig.default.js\')\n'
-      fileContent += 'module.exports = webConfig'
+      const fileContent = 'module.exports = {}'
       console.warn('[INFO] Creating webConfig.js...')
       fse.writeFile('webConfig.js', fileContent, function (error) {
         if (error) {
