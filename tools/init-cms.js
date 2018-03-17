@@ -90,7 +90,7 @@ function initWeb (projectDir) {
         })
       })
     },
-    
+
     // write webConfig.js
     (callback) => {
       const fileContent = 'module.exports = {}'
