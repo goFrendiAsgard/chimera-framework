@@ -61,6 +61,7 @@ describe('core', function () {
   })
 
   it('should able to execute `chimera fractures/showPi.chiml`', function (done) {
+    console.error('a')
     chimera.cmd.get('chimera ' + chimera.util.getQuoted(path.resolve(__dirname, 'fractures/showPi.chiml')), function (error, result) {
       if (error) {
         return done(error)
@@ -81,7 +82,7 @@ describe('core', function () {
   })
 
   it('should be able to setnov.chiml and yield error', function (done) {
-    chimera.core.executeChain(path.join(__dirname, 'fractures/setnov.chiml'), function (error, result) {
+    chimera.core.executeChain(path.join(__dirname, 'fractures/setnov.chiml'), function (error) {
       if (error) {
         assert.equal('Error', error.name)
         return done()
@@ -91,7 +92,7 @@ describe('core', function () {
   })
 
   it('should be able to execute malformed.json and yield error', function (done) {
-    chimera.core.executeChain(path.join(__dirname, 'fractures/malformed.json'), function (error, result) {
+    chimera.core.executeChain(path.join(__dirname, 'fractures/malformed.json'), function (error) {
       if (error) {
         assert.equal('YAMLException', error.name)
         return done()
@@ -101,7 +102,7 @@ describe('core', function () {
   })
 
   it('should be able to execute malformed json script and yield error', function (done) {
-    chimera.core.executeChain('{', function (error, result) {
+    chimera.core.executeChain('{', function (error) {
       if (error) {
         assert.equal('YAMLException', error.name)
         return done()
@@ -188,7 +189,7 @@ describe('core', function () {
       let input = {'a': 'emiya', 'b': 'name', 'c': {'d': 'emiya', 'e': 'name'}, 'f': ['emiya', 'name', ['emiya', 'name']]}
       let expectedTestResult = {'str': input, 'dict': input}
       assert.deepEqual(result, expectedTestResult)
-      return chimera.cmd.get(clearCompilationFileCommand, function (error, result) {
+      return chimera.cmd.get(clearCompilationFileCommand, function (error) {
         if (error) {
           return done(error)
         }
