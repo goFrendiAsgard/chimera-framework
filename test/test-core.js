@@ -61,7 +61,6 @@ describe('core', function () {
   })
 
   it('should able to execute `chimera fractures/showPi.chiml`', function (done) {
-    console.error('a')
     chimera.cmd.get('chimera ' + chimera.util.getQuoted(path.resolve(__dirname, 'fractures/showPi.chiml')), function (error, result) {
       if (error) {
         return done(error)
