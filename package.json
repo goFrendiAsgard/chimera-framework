@@ -30,7 +30,7 @@
     "cookie-parser": "^1.4.3",
     "ejs": "^2.5.7",
     "express": "^4.15.4",
-    "express-fileupload": "^0.3.0",
+    "express-fileupload": "^0.4.0",
     "express-session": "^1.15.5",
     "express-static-cache": "0.0.6",
     "fs-extra": "^5.0.0",
