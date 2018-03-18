@@ -80,7 +80,7 @@ function initWeb (projectDir) {
         obj.dependencies['chimera-framework'] = chimeraVersion
         obj.name = projectDir
         // write the new package.json
-        util.writeJsonFile('package.json', obj, function (error) {
+        util.writePrettyJsonFile('package.json', obj, function (error) {
           if (error) {
             console.error('[ERROR] Cannot write package.json')
             return finalCallback(error)

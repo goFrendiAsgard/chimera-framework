@@ -1,6 +1,6 @@
 {
   "name": "chimera-framework",
-  "version": "0.0.67",
+  "version": "0.0.68",
   "description": "Language agnostic framework for stand-alone and distributed computing",
   "bin": {
     "chimera": "tools/run.js",
@@ -49,12 +49,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/goFrendiAsgard/chimera.git"
+    "url": "git://github.com/goFrendiAsgard/chimera-framework.git"
   },
   "bugs": {
-    "url": "https://github.com/goFrendiAsgard/chimera/issues"
+    "url": "https://github.com/goFrendiAsgard/chimera-framework/issues"
   },
-  "homepage": "https://github.com/goFrendiAsgard/chimera#readme",
+  "homepage": "https://github.com/goFrendiAsgard/chimera-framework#readme",
   "main": "index.js",
   "directories": {
     "test": "tests"
