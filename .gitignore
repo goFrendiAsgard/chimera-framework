@@ -1,3 +1,4 @@
+package-lock.json
 node_modules/
 npm_debug.log
 .cache-require-paths.json
