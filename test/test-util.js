@@ -452,7 +452,7 @@ describe('util', function () {
     let obj = {a: 1, b: 2, c: [1, 2, 3], d: {e: 4, f: 5}, g: 'string'}
 
     it('should write JSON object to a file', function (done) {
-      chimera.util.writeJsonFile(jsonFileName, obj, function (error, result) {
+      chimera.util.writeJsonFile(jsonFileName, obj, function (error) {
         if (error) {
           return done(error)
         }
@@ -476,7 +476,7 @@ describe('util', function () {
           return done(error)
         }
         assert.deepEqual(result, obj)
-        chimera.cmd.get('rm ' + quotedJsonFileName, function (error, result) {
+        chimera.cmd.get('rm ' + quotedJsonFileName, function (error) {
           if (error) {
             return done(error)
           }
@@ -486,7 +486,7 @@ describe('util', function () {
     })
 
     it('should throw error when accessing non-existing file', function (done) {
-      chimera.util.readJsonFile('nonExistFile.json', function (error, result) {
+      chimera.util.readJsonFile('nonExistFile.json', function (error) {
         if (error) {
           assert.equal('Error', error.name)
           return done()
@@ -496,7 +496,7 @@ describe('util', function () {
     })
 
     it('should throw error when accessing malformed json file', function (done) {
-      chimera.util.readJsonFile(path.join(__dirname, 'fractures/malformed.json'), function (error, result) {
+      chimera.util.readJsonFile(path.join(__dirname, 'fractures/malformed.json'), function (error) {
         if (error) {
           assert.equal('SyntaxError', error.name)
           return done()
