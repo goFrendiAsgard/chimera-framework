@@ -180,6 +180,16 @@ describe('core', function () {
     })
   })
 
+  it('should be able to run shell command defined in a nested chain', function (done) {
+    chimera.core.executeChain(path.join(__dirname, 'fractures/square.nestedChain.chiml'), [4], {}, function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(result, 16)
+      return done()
+    })
+  })
+
   it('should be able to parse inputs correctly, either as string or as block array', function (done) {
     chimera.core.executeChain(path.join(__dirname, 'fractures/input-variation.chiml'), [], {}, function (error, result) {
       if (error) {
