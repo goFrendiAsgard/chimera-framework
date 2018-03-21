@@ -121,7 +121,7 @@ describe('web', function () {
     let cookie = request.cookie('data=3')
     let url = 'http://localhost:3010/plus-one-cookie'
     cookieJar.setCookie(cookie, url)
-    request({url: url, jar: cookieJar}, function (error, response, body) {
+    request({url: url, jar: cookieJar}, function (error, response) {
       if (error) {
         return done(error)
       }

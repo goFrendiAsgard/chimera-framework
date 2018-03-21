@@ -21,7 +21,7 @@ describe('eisn', function () {
   this.timeout(5000)
 
   it('should return error if srcFile not found', function (done) {
-    chimera.eisn(srcFile, dstFile, command, function (error, result) {
+    chimera.eisn(srcFile, dstFile, command, function (error) {
       if (error) {
         assert.equal(!!error, true)
         return done()
@@ -31,7 +31,7 @@ describe('eisn', function () {
   })
 
   it('should return error if command is not valid', function (done) {
-    chimera.eisn(srcFile, dstFile, '', function (error, result) {
+    chimera.eisn(srcFile, dstFile, '', function (error) {
       if (error) {
         assert.equal(!!error, true)
         return done()
@@ -41,7 +41,7 @@ describe('eisn', function () {
   })
 
   it('should run command if dstFile does not exist', function (done) {
-    chimera.cmd.get(copySrcFileCmd, function (error, result) {
+    chimera.cmd.get(copySrcFileCmd, function (error) {
       if (error) {
         return done(error)
       }
@@ -56,7 +56,7 @@ describe('eisn', function () {
   })
 
   it('should run command if dstFile exist but older than srcFile', function (done) {
-    chimera.cmd.get(copySrcFileCmd, function (error, result) {
+    chimera.cmd.get(copySrcFileCmd, function (error) {
       if (error) {
         return done(error)
       }
@@ -71,7 +71,7 @@ describe('eisn', function () {
   })
 
   it('should not run command if dstFile exist and newer than srcFile (by tool)', function (done) {
-    chimera.cmd.get('chimera-eisn substract.cpp substract g++ -o substract substract.cpp', {cwd: path.join(__dirname, 'tmp')}, function (error, result) {
+    chimera.cmd.get('node tools/eisn.js substract.cpp substract g++ -o substract substract.cpp', {cwd: path.join(__dirname, 'tmp')}, function (error, result) {
       if (error) {
         return done(error)
       }
@@ -86,7 +86,7 @@ describe('eisn', function () {
         return done(error)
       }
       assert.deepEqual(result, {isCommandExecuted: false})
-      chimera.cmd.get(removeSrcAndDstFileCmd, function (error, result) {
+      chimera.cmd.get(removeSrcAndDstFileCmd, function (error) {
         if (error) {
           return done(error)
         }
@@ -100,7 +100,7 @@ describe('dollar.eisn', function () {
   this.timeout(5000)
 
   it('should run command if dstFile does not exist', function (done) {
-    chimera.cmd.get(copySrcFileCmd, function (error, result) {
+    chimera.cmd.get(copySrcFileCmd, function (error) {
       if (error) {
         return done(error)
       }
@@ -115,7 +115,7 @@ describe('dollar.eisn', function () {
   })
 
   it('should run command if dstFile exist but older than srcFile', function (done) {
-    chimera.cmd.get(copySrcFileCmd, function (error, result) {
+    chimera.cmd.get(copySrcFileCmd, function (error) {
       if (error) {
         return done(error)
       }
@@ -135,7 +135,7 @@ describe('dollar.eisn', function () {
         return done(error)
       }
       assert.deepEqual(result, {isCommandExecuted: false})
-      chimera.cmd.get(removeSrcAndDstFileCmd, function (error, result) {
+      chimera.cmd.get(removeSrcAndDstFileCmd, function (error) {
         if (error) {
           return done(error)
         }

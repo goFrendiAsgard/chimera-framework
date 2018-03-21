@@ -47,7 +47,7 @@ describe('core-chiml-parser', function () {
 
   // throw error when parsing malformed json
   it('should change block delimiter into quoted string', function (done) {
-    chimera.coreChimlParser.parseChiml('{', function (error, chainScript) {
+    chimera.coreChimlParser.parseChiml('{', function (error) {
       if (error) {
         assert.equal('YAMLException', error.name)
         return done()

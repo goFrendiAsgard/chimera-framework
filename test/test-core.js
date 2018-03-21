@@ -61,7 +61,7 @@ describe('core', function () {
   })
 
   it('should able to execute `chimera fractures/showPi.chiml`', function (done) {
-    chimera.cmd.get('chimera ' + chimera.util.getQuoted(path.resolve(__dirname, 'fractures/showPi.chiml')), function (error, result) {
+    chimera.cmd.get('node tools/run.js ' + chimera.util.getQuoted(path.resolve(__dirname, 'fractures/showPi.chiml')), function (error, result) {
       if (error) {
         return done(error)
       }
@@ -71,7 +71,7 @@ describe('core', function () {
   })
 
   it('should able to execute `chimera fractures/showBestNumberPalindrome.chiml`', function (done) {
-    chimera.cmd.get('chimera ' + chimera.util.getQuoted(path.resolve(__dirname, 'fractures/showBestNumberPalindrome.chiml')), function (error, result) {
+    chimera.cmd.get('node tools/run.js ' + chimera.util.getQuoted(path.resolve(__dirname, 'fractures/showBestNumberPalindrome.chiml')), function (error, result) {
       if (error) {
         return done(error)
       }

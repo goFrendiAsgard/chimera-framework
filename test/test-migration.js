@@ -16,11 +16,11 @@ let migrationConfig = {migrationPath, mongoUrl}
 let dbConfig = {mongoUrl, collectionName}
 describe('migration', function () {
   it('should be able to upgrade to certain version', function (done) {
-    chimera.mongo.execute(dbConfig, 'remove', {}, function (error, result) {
+    chimera.mongo.execute(dbConfig, 'remove', {}, function (error) {
       if (error) {
         return done(error)
       }
-      return chimera.migration.upgrade(migrationConfig, '003', function (error, result) {
+      return chimera.migration.upgrade(migrationConfig, '003', function (error) {
         if (error) {
           return done(error)
         }
@@ -36,7 +36,7 @@ describe('migration', function () {
   })
 
   it('should be able to downgrade to certain version', function (done) {
-    chimera.migration.downgrade(migrationConfig, '002', function (error, result) {
+    chimera.migration.downgrade(migrationConfig, '002', function (error) {
       if (error) {
         return done(error)
       }
@@ -51,7 +51,7 @@ describe('migration', function () {
   })
 
   it('should be able to upgrade to latest version', function (done) {
-    chimera.migration.upgrade(migrationConfig, function (error, result) {
+    chimera.migration.upgrade(migrationConfig, function (error) {
       if (error) {
         return done(error)
       }
@@ -66,7 +66,7 @@ describe('migration', function () {
   })
 
   it('should be able to downgrade to first version', function (done) {
-    chimera.migration.downgrade(migrationConfig, function (error, result) {
+    chimera.migration.downgrade(migrationConfig, function (error) {
       if (error) {
         return done(error)
       }
@@ -75,7 +75,7 @@ describe('migration', function () {
           return done(error)
         }
         assert.equal(result, 0)
-        return chimera.mongo.execute(dbConfig, 'remove', {}, function (error, result) {
+        return chimera.mongo.execute(dbConfig, 'remove', {}, function (error) {
           if (error) {
             return done(error)
           }
