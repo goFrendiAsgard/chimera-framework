@@ -6,3 +6,4 @@ npm_debug.log
 .nyc_output/
 .vscode/
 coverage/
+upload-coverage.sh
