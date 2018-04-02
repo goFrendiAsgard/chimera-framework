@@ -49,5 +49,11 @@ describe('cmd', function () {
       assert.exists(result.pid)
       done()
     })
+
+    it('should return an object with process id (for non existing command)', function (done) {
+      let result = chimera.cmd.run('setnov.exe')
+      assert.exists(result.pid)
+      done()
+    })
   })
 })
