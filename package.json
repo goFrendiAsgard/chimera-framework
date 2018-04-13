@@ -1,6 +1,6 @@
 {
   "name": "chimera-framework",
-  "version": "0.0.80",
+  "version": "0.0.81",
   "description": "Language agnostic framework for stand-alone and distributed computing",
   "bin": {
     "chimera": "tools/run.js",
@@ -44,7 +44,8 @@
     "pug": "^2.0.0-rc.4",
     "request": "^2.83.0",
     "safe-eval": "^0.3.0",
-    "serve-favicon": "^2.4.4"
+    "serve-favicon": "^2.4.4",
+    "socket.io": "^2.1.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
