@@ -20,6 +20,16 @@ describe('core', function () {
     })
   })
 
+  it('should be able to assign variable even if the variable is not exist before', function (done) {
+    chimera.core.executeChain(path.join(__dirname, 'fractures/variable-assignment.chiml'), [], {}, function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.strictEqual(result, 'bar')
+      return done()
+    })
+  })
+
   it('should be able to execute square.chiml and get the result', function (done) {
     chimera.core.executeChain(path.join(__dirname, 'fractures/square.chiml'), [10], {}, function (error, result) {
       if (error) {

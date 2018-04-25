@@ -1,0 +1,12 @@
+outs:
+  output
+vars:
+  foo: bar
+  x:
+    y: {}
+do:
+  - |(foo) --> n
+  - |(n) --> x.y[foo].foo
+
+  # should yield `bar`
+  - |(x.y.bar.foo) --> output
