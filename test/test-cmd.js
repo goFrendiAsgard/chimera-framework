@@ -34,6 +34,13 @@ describe('cmd', function () {
       assert.exists(result)
       done()
     })
+
+    it('should yield error for non existing command)', function (done) {
+      chimera.cmd.get('setnov.exe', function (error, result) {
+        assert.exists(error)
+        done()
+      })
+    })
   })
 
   // cmd.run
