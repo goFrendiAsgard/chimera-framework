@@ -41,7 +41,9 @@ const middleware = (request, response, next) => {
 }
 
 let app = chimera.web.createApp(webConfig, middleware)
-module.exports = app
+let server = chimera.web.createServer(app)
+let webSocket = chimera.web.createWebSocket(server)
+module.exports = {app, server, webSocket}
 
 if (require.main === module) {
   app.listen(port, function () {

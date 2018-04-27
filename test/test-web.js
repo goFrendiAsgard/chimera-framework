@@ -4,7 +4,6 @@ const chai = require('chai')
 const assert = chai.assert
 const request = require('request')
 
-let app
 let server
 let sessionId
 
@@ -12,8 +11,8 @@ describe('web', function () {
   this.timeout(5000)
 
   it('server.listen shoud return http.server. It should be runnable and listening for request', function (done) {
-    app = require('./fractures/web/app.js')
-    server = require('http').Server(app)
+    let web = require('./fractures/web/app.js')
+    server = web.server
     let port = 3010
     server = server.listen(port, function () {
       console.error('Start at port ' + port)
@@ -155,6 +154,17 @@ describe('web', function () {
         return done(error)
       }
       assert.equal(body, '2')
+      return done()
+    })
+  })
+
+  it('should able to yield 404', function (done) {
+    let url = 'http://localhost:3010/not-found'
+    request({url: url}, function (error, response, body) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(response.statusCode, 404)
       return done()
     })
   })
