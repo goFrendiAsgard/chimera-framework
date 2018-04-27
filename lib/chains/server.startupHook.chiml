@@ -1,6 +1,0 @@
-ins: webState
-out: webState
-do:
-  - |(webState.config.localStartupHook) --> hook
-  - if: hook 
-    do: |(_init_cwd + hook, webState) -> [$.runChain] -> webState

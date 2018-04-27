@@ -1,7 +1,0 @@
-ins: webState
-out: webState
-series:
-  - |(webState.config.localAfterRequestHook) --> hook
-  - if: hook
-    do: |(_init_cwd + hook, webState) -> [$.runChain] -> webState
-  - |(webState.response) -> [$.loadJs( _chain_cwd + 'js/afterRequestProcessor.js')] -> webState.response
