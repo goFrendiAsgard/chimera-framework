@@ -1,5 +1,5 @@
 const path = require('path')
-const web = require('chimera-framework/lib/web.js')
+const web = require(path.join(__dirname, '../../lib/web.js'))
 const port = process.env.PORT || 3000
 
 const webConfig = {

@@ -71,11 +71,11 @@ describe('eisn', function () {
   })
 
   it('should not run command if dstFile exist and newer than srcFile (by tool)', function (done) {
-    chimera.cmd.get('node ../../tools/eisn.js substract.cpp substract g++ -o substract substract.cpp', {cwd: path.join(__dirname, 'tmp')}, function (error, result) {
+    chimera.eisn(srcFile, dstFile, command, function (error, result) {
       if (error) {
         return done(error)
       }
-      assert.strictEqual(result, '{"result":{"isCommandExecuted":false},"error":false,"errorMessage":""}\n')
+      assert.deepEqual(result, {isCommandExecuted: false})
       done()
     })
   })

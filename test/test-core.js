@@ -70,22 +70,12 @@ describe('core', function () {
     })
   })
 
-  it('should able to execute `chimera fractures/showPi.chiml`', function (done) {
-    chimera.cmd.get('node tools/run.js ' + chimera.util.getQuoted(path.resolve(__dirname, 'fractures/showPi.chiml')), function (error, result) {
-      if (error) {
-        return done(error)
-      }
-      assert.equal(result, '3.141592653589793\n')
-      return done()
-    })
-  })
-
   it('should able to execute `chimera fractures/showBestNumberPalindrome.chiml`', function (done) {
-    chimera.cmd.get('node tools/run.js ' + chimera.util.getQuoted(path.resolve(__dirname, 'fractures/showBestNumberPalindrome.chiml')), function (error, result) {
+    chimera.core.executeChain((path.join(__dirname, 'fractures/showBestNumberPalindrome.chiml')), function (error, result) {
       if (error) {
         return done(error)
       }
-      assert.equal(result, '37\n')
+      assert.equal(result, 37)
       return done()
     })
   })

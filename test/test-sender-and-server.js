@@ -64,13 +64,23 @@ describe('server and sender', function () {
     })
   })
 
+  it('should notice non-success result when trying to access inacessible chain', function (done) {
+    chimera.sender.send('http://localhost:3011', path.join(__dirname, 'fractures/malformed.json'), [4], function (error) {
+      if (error) {
+        assert.exists(error)
+        return done()
+      }
+      done(new Error('Error expected, but no error found'))
+    })
+  })
+
   it('should return error when trying to access dummy.chiml', function (done) {
     chimera.sender.send('http://localhost:3011', 'dummy.chiml', [4], function (error) {
       if (error) {
         assert.equal(error.message, 'Cannot access dummy.chiml')
         return done()
       }
-      done(new Error('Error expected, but no error found'))
+      return done(new Error('Error expected, but no error found'))
     })
   })
 
@@ -90,7 +100,6 @@ describe('server and sender', function () {
       if (error) {
         return done(error)
       }
-      console.error(body)
       assert.equal(response.statusCode, 500)
       return done()
     })
