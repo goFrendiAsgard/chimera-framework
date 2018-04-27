@@ -169,6 +169,17 @@ describe('web', function () {
     })
   })
 
+  it('able to hit emit', function (done) {
+    let url = 'http://localhost:3010/emit'
+    request({url: url}, function (error, response, body) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(response.statusCode, 200)
+      return done()
+    })
+  })
+
   it('http.server returned by server.listen should be closeable programmatically', function (done) {
     server.close()
     assert.equal(server.listening, false)

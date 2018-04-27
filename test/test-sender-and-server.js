@@ -1,5 +1,6 @@
 /* eslint-env mocha */
 
+const request = require('request')
 const path = require('path')
 const chai = require('chai')
 const chimera = require('../index.js')
@@ -70,6 +71,28 @@ describe('server and sender', function () {
         return done()
       }
       done(new Error('Error expected, but no error found'))
+    })
+  })
+
+  it('should return error when trying to access inactive server', function (done) {
+    chimera.sender.send('http://localhost:3012', 'dummy.chiml', [4], function (error) {
+      if (error) {
+        assert.equal(error.code, 'ECONNREFUSED')
+        return done()
+      }
+      return done(new Error('Error expected, but no error found'))
+    })
+  })
+
+  it('should able to yield 500', function (done) {
+    let url = 'http://localhost:3011'
+    request({url: url}, function (error, response, body) {
+      if (error) {
+        return done(error)
+      }
+      console.error(body)
+      assert.equal(response.statusCode, 500)
+      return done()
     })
   })
 

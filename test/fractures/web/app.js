@@ -22,13 +22,20 @@ const webConfig = {
       'route': '/hello-json',
       'method': 'all',
       'chain': path.join(__dirname, 'chains/hello-json.chiml')
+    },
+    {
+      'route': '/emit',
+      'method': 'all',
+      'chain': path.join(__dirname, 'chains/emit.chiml')
     }
+
   ],
   'staticPath': path.join(__dirname, 'public'),
   'faviconPath': path.join(__dirname, 'public/favicon.ico'),
   'viewPath': path.join(__dirname, 'views'),
   'errorTemplate': path.join(__dirname, 'views/error.pug'),
   'startupHook': path.join(__dirname, 'chains/hook-startup.chiml'),
+  'afterRequestHook': {},
   'vars': {
     '$': {message: 'hi'}
   }

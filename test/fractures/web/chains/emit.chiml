@@ -1,0 +1,3 @@
+ins: webState
+out: response
+do: |{event: 'broadcast', args: ['blah']} --> response._emit
