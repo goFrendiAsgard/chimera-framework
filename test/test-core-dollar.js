@@ -1,23 +1,10 @@
 /* eslint-env mocha */
 
-const path = require('path')
 const chai = require('chai')
 const chimera = require('../index.js')
 const assert = chai.assert
 
 describe('chain dollar', function () {
-  describe('runChain', function () {
-    it('should runChain(square.chiml, 4) successfully', function (done) {
-      chimera.coreDollar.runChain(path.resolve(__dirname, 'fractures/square.chiml'), 4, function (error, result) {
-        if (error) {
-          return done(error)
-        }
-        assert.equal(result, '16')
-        return done()
-      })
-    })
-  })
-
   describe('assignValue', function () {
     it('should assignValue(5) successfully', function (done) {
       let result = chimera.coreDollar.assignValue(5)
