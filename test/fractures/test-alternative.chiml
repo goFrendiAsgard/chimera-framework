@@ -29,7 +29,7 @@ do:
     - "sekai"
     out: info["helloSekai"]
     do: |{$.concat}
-  - |info.square <- [$.runChain] <- (_chain_cwd+"square.chiml", 10)
+  - |info.square <- [_runChain] <- (_chain_cwd+"square.chiml", 10)
   - |output <- {$.join} <- ([info.helloWorld, info.helloSekai, info.evens, info.circle, info.area, info.square], "\n")
 catch: |typeof(num1) !== "number" || typeof(num2) !== "number"
 throw: num1 dan num2 should be number

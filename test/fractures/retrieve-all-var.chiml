@@ -1,0 +1,9 @@
+out: _vars 
+vars:
+  number: 73
+  person:
+    name: Sheldon
+do:
+  - |('Cooper') --> person.lastName
+  - |(_vars.person) -> {$.print}
+  - |(person) -> {$.print}

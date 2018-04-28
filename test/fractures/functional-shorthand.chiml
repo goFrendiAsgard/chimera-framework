@@ -1,0 +1,19 @@
+vars:
+  numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+  plus: 1
+  divide: 2
+out: result
+parallel:
+
+  - map: numbers
+    into: result.map
+    do: |(n) -> (x) => {return x+plus} -> y
+
+  - filter: numbers
+    into: result.filter
+    ins: x
+    out: y
+    do:
+      - if: x % divide === 0
+        do: y <-- true
+        else: y <-- false

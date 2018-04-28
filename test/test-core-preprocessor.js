@@ -21,8 +21,18 @@ describe('core-preprocessor', function () {
         }
         standardChainScript = String(standardChainScript)
         assert.equal(JSON.stringify(trueChain), JSON.stringify(JSON.parse(standardChainScript)))
-        done()
+        return done()
       })
+    })
+  })
+
+  it('should run fractures/functional-shorthand.chiml successfully', function (done) {
+    chimera.core.executeChain(path.join(__dirname, 'fractures/functional-shorthand.chiml'), function (error, result) {
+      if (error) {
+        return done(error)
+      }
+      assert.deepEqual(result, {map: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11], filter: [2, 4, 6, 8, 10]})
+      done()
     })
   })
 })

@@ -200,7 +200,7 @@
           "branch": "true",
           "ins": "_chain_cwd+\"square.chiml\", 10",
           "out": "info.square",
-          "command": "[$.runChain]",
+          "command": "[_runChain]",
           "loop": "false"
         },
         {
