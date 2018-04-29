@@ -2,14 +2,14 @@
 'use strict'
 
 require('cache-require-paths')
-let core = require('../lib/core.js')
+const core = require('../lib/core.js')
 
 if (require.main === module) {
   if (process.argv.length > 2) {
     // first argument of the program (start from 2) is chain name or json
-    var parameter = process.argv[2]
+    const parameter = process.argv[2]
     // second until last arguments are input of the first chain
-    var argv = process.argv.slice(3)
+    const argv = process.argv.slice(3)
     // execute Yaml
     core.executeChain(parameter, argv)
   } else {

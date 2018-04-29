@@ -24,7 +24,7 @@ function initWeb (projectDir) {
 
     // read mongoUrl
     (callback) => {
-      let defaultMongoUrl = 'mongodb://localhost/' + projectDir
+      const defaultMongoUrl = 'mongodb://localhost/' + projectDir
       dollar.prompt('Mongodb Url (' + defaultMongoUrl + '):', function (error, url) {
         if (error) {
           console.error('[ERROR] Cannot read mongodb url')
