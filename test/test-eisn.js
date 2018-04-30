@@ -13,8 +13,8 @@ const quotedTmpPath = chimera.util.getQuoted(tmpPath)
 const quotedOriginalSrcFile = chimera.util.getQuoted(originalSrcFile)
 const quotedSrcFile = chimera.util.getQuoted(srcFile)
 const quotedDstFile = chimera.util.getQuoted(dstFile)
-const copySrcFileCmd = 'cp ' + quotedOriginalSrcFile + ' ' + quotedSrcFile + ' && sleep 0.001'
-const removeSrcAndDstFileCmd = 'rm ' + quotedSrcFile + ' && rm ' + quotedDstFile + ' && sleep 0.001'
+const copySrcFileCmd = 'cp ' + quotedOriginalSrcFile + ' ' + quotedSrcFile
+const removeSrcAndDstFileCmd = 'rm ' + quotedSrcFile + ' && rm ' + quotedDstFile
 const command = 'cd ' + quotedTmpPath + ' && g++ -o substract substract.cpp'
 
 describe('eisn', function () {
