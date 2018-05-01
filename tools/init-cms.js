@@ -2,7 +2,7 @@
 'use strict'
 
 require('cache-require-paths')
-const fse = require('fs-extra')
+const fs = require('fs')
 const nsync = require('neo-async')
 const cmd = require('../lib/cmd.js')
 const util = require('../lib/util.js')
@@ -95,7 +95,7 @@ function initWeb (projectDir) {
     (callback) => {
       const fileContent = 'module.exports = {}'
       console.warn('[INFO] Creating webConfig.js...')
-      fse.writeFile('webConfig.js', fileContent, function (error) {
+      fs.writeFile('webConfig.js', fileContent, function (error) {
         if (error) {
           console.error('[ERROR] Cannot create webConfig.js')
           return finalCallback(error)
@@ -115,7 +115,7 @@ function initWeb (projectDir) {
       }
       const fileContent = JSON.stringify(obj, null, 2)
       console.warn('[INFO] Creating webConfig.json...')
-      fse.writeFile('webConfig.json', fileContent, function (error) {
+      fs.writeFile('webConfig.json', fileContent, function (error) {
         if (error) {
           console.error('[ERROR] Cannot create webConfig.json')
           return finalCallback(error)

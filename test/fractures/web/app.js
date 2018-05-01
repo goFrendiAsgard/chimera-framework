@@ -53,7 +53,7 @@ let webSocket = chimera.web.createWebSocket(server)
 module.exports = {app, server, webSocket}
 
 if (require.main === module) {
-  app.listen(port, function () {
+  server.listen(port, function () {
     console.error('Start at port ' + port)
   })
 }

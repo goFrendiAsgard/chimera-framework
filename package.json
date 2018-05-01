@@ -39,7 +39,6 @@
     "neo-async": "^2.5.1",
     "pug": "^2.0.3",
     "request": "^2.83.0",
-    "safe-eval": "^0.3.0",
     "serve-favicon": "^2.5.0",
     "socket.io": "^2.1.0"
   },
