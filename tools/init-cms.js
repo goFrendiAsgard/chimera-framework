@@ -3,7 +3,7 @@
 
 require('cache-require-paths')
 const fse = require('fs-extra')
-const async = require('neo-async')
+const nsync = require('neo-async')
 const cmd = require('../lib/cmd.js')
 const util = require('../lib/util.js')
 const dollar = require('../lib/core-dollar.js')
@@ -20,7 +20,7 @@ function finalCallback (error) {
 function initWeb (projectDir) {
   let chimeraVersion, mongoUrl
 
-  async.series([
+  nsync.series([
 
     // read mongoUrl
     (callback) => {
