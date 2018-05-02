@@ -467,6 +467,26 @@ describe('util', function () {
     })
   })
 
+  describe('writePrettyJsonFile', function () {
+    let obj = {a: 1, b: 2, c: [1, 2, 3], d: {e: 4, f: 5}, g: 'string'}
+
+    it('should write JSON object to a file (pretty)', function (done) {
+      chimera.util.writePrettyJsonFile(jsonFileName, obj, function (error) {
+        if (error) {
+          return done(error)
+        }
+        chimera.cmd.get('cat ' + quotedJsonFileName, function (error, result) {
+          if (error) {
+            done(error)
+          }
+          let expected = JSON.stringify(obj, null, 2)
+          assert.equal(result, expected)
+          done()
+        })
+      })
+    })
+  })
+
   describe('readJsonFile', function () {
     let obj = {a: 1, b: 2, c: [1, 2, 3], d: {e: 4, f: 5}, g: 'string'}
 

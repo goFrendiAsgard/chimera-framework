@@ -11,7 +11,12 @@ if (require.main === module) {
     const srcFile = process.argv[2]
     const dstFile = process.argv[3]
     const command = process.argv.slice(4).join(' ')
-    eisn(srcFile, dstFile, command)
+    eisn(srcFile, dstFile, command, (error, result) => {
+      if (error) {
+        return console.error(error)
+      }
+      return console.log(result)
+    })
   } else {
     // show missing argument warning
     console.error('Missing Arguments')

@@ -13,7 +13,7 @@ if (require.main === module) {
       if (error) {
         return console.error(error)
       }
-      console.log(output)
+      return console.log(output)
     })
   } else {
     console.error('INVALID ARGUMENTS')
