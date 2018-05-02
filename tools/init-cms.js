@@ -151,7 +151,7 @@ function initWeb (projectDir) {
 
 if (require.main === module) {
   if (process.argv.length > 2) {
-    let projectDir = process.argv.slice(2).join('_')
+    const projectDir = process.argv.slice(2).join('_')
     initWeb(projectDir)
   } else {
     console.error('INVALID PARAMETERS')
