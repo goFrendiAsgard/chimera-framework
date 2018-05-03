@@ -3,6 +3,7 @@
 const chai = require('chai')
 const assert = chai.assert
 const request = require('request')
+const chimera = require('../index.js')
 
 let server
 let sessionId
@@ -19,6 +20,16 @@ describe('web', function () {
     })
     assert.equal(server.listening, true)
     done()
+  })
+
+  it('should serve hello-string and catchable by $.httpRequest', function (done) {
+    chimera.coreDollar.httpRequest('http://localhost:3010/hello-string', function (error, response) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(response.body, 'Hello :D')
+      return done()
+    })
   })
 
   it('should serve hello-string', function (done) {
