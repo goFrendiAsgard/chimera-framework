@@ -8,3 +8,5 @@ npm_debug.log
 .tern-port
 coverage/
 upload-coverage.sh
+profile.log
+isolate-*.log
