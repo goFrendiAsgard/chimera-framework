@@ -32,6 +32,16 @@ describe('web', function () {
     })
   })
 
+  it('should serve hello-string and catchable by $.httpRequestBody', function (done) {
+    chimera.coreDollar.httpRequestBody('http://localhost:3010/hello-string', function (error, responseBody) {
+      if (error) {
+        return done(error)
+      }
+      assert.equal(responseBody, 'Hello :D')
+      return done()
+    })
+  })
+
   it('should serve hello-string', function (done) {
     request('http://localhost:3010/hello-string', function (error, response, body) {
       if (error) {

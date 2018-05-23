@@ -13,7 +13,4 @@ parallel:
     into: result.filter
     ins: x
     out: y
-    do:
-      - if: x % divide === 0
-        do: y <-- true
-        else: y <-- false
+    do: |(x) => {return x%divide === 0}

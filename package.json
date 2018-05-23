@@ -1,6 +1,6 @@
 {
   "name": "chimera-framework",
-  "version": "0.0.92",
+  "version": "0.0.93",
   "description": "Language agnostic framework for stand-alone and distributed computing",
   "bin": {
     "chimera": "tools/run.js",
