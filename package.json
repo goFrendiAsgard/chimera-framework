@@ -4,10 +4,11 @@
   "description": "Language agnostic framework for stand-alone and distributed computing",
   "bin": {
     "chimera": "tools/run.js",
-    "chimera-serve": "tools/serve.js",
-    "chimera-send": "tools/send.js",
+    "chimera-echo": "tools/echoMany.js",
     "chimera-eisn": "tools/eisn.js",
-    "chimera-init-cms": "tools/init-cms.js"
+    "chimera-init-cms": "tools/init-cms.js",
+    "chimera-send": "tools/send.js",
+    "chimera-serve": "tools/serve.js"
   },
   "scripts": {
     "test": "mocha"
@@ -15,7 +16,7 @@
   "keywords": [
     "framework",
     "chain",
-    "multiple-programming-language",
+    "orchestration",
     "language agnostic"
   ],
   "author": "goFrendi",
