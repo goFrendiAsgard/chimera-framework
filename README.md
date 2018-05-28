@@ -20,7 +20,7 @@ You can use [CHIML](https://github.com/goFrendiAsgard/chimera-framework/wiki/CHI
 # How it looks like
 
 ```yaml
-# hi.chiml
+# filename: hi.chiml
 ins: name
 out: output
 do:
@@ -34,6 +34,67 @@ Mon Feb  5 22:10:37 WIB 2018
 
 gofrendi@asgard:~$ chimera hi.chiml Naomi
 Hi Naomi today is Mon Feb  5 22:10:37 WIB 2018
+```
+
+# How it looks like again
+
+The `C++` program
+
+```c
+#include <stdio.h>
+
+// filename: calculate.cpp
+// compile: gcc calculate.cpp -o calculate
+// execute: ./calculate
+
+int main () {
+  float n1, n2;
+  char op;
+  scanf("%f", &n1);
+  scanf(" %c", &op);
+  scanf("%f", &n2);
+  switch (op) {
+    case '+': printf("%f\n", n1 + n2); break;
+    case '-': printf("%f\n", n1 - n2); break;
+    case '*': printf("%f\n", n1 * n2); break;
+    case '/': printf("%f\n", n1 / n2); break;
+    default: printf("Invalid operator\n");
+  }
+  return 0;
+}
+```
+
+The CHIML orchestration, calculating `(a^2 - b^2)`
+
+```yaml
+# filename: trick.chiml
+# purpose: calculate (a^2 - b^2)
+# math: (a^2 - b^2) = (a + b) * (a - b)
+# composition:
+#    process 1: c = a + b
+#    process 2: d = a - b
+#    process 3: result = c * d
+
+ins: a, b
+out: result
+do:
+  - parallel:
+    - |(a, '+', b) -> ./calculate -> c
+    - |(a, '-', b) -> ./calculate -> d
+  - |(c, '*', d) -> ./calculate -> result
+```
+
+The CHIML orchestration, calculating `(5^2 - 3^2)`
+
+```bash
+gofrendi@asgard:~/Projects$ gcc calculate.cpp -o calculate
+gofrendi@asgard:~/Projects$ ./calculate
+5
++
+7
+12.000000
+gofrendi@asgard:~/Projects$ chimera trick.chiml 5 3
+16
 ```
 
 # Getting Started
