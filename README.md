@@ -36,9 +36,9 @@ gofrendi@asgard:~$ chimera hi.chiml Naomi
 Hi Naomi today is Mon Feb  5 22:10:37 WIB 2018
 ```
 
-# How it looks like again
+# Use Case
 
-The `C++` program
+The `C++` program (as component)
 
 ```c
 #include <stdio.h>
@@ -64,7 +64,7 @@ int main () {
 }
 ```
 
-The CHIML orchestration, calculating `(a^2 - b^2)`
+The CHIML orchestration to calculate `(a^2 - b^2)`
 
 ```yaml
 # filename: trick.chiml
@@ -84,7 +84,7 @@ do:
   - |(c, '*', d) -> ./calculate -> result
 ```
 
-The CHIML orchestration, calculating `(5^2 - 3^2)`
+Calculate `(5^2 - 3^2)`
 
 ```bash
 gofrendi@asgard:~/Projects$ gcc calculate.cpp -o calculate
